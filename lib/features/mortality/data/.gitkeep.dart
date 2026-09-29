@@ -1,0 +1,1 @@
+// CucoCare mortality / data scaffold

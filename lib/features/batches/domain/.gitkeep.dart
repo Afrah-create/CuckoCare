@@ -1,0 +1,1 @@
+// CucoCare batches / domain scaffold

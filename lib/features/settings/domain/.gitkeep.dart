@@ -1,0 +1,1 @@
+// CucoCare settings / domain scaffold

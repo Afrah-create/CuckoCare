@@ -1,0 +1,1 @@
+// CucoCare settings / data scaffold

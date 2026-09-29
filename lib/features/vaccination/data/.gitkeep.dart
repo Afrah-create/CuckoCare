@@ -1,0 +1,1 @@
+// CucoCare vaccination / data scaffold

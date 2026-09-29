@@ -1,0 +1,13905 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'app_database.dart';
+
+// ignore_for_file: type=lint
+class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FarmsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _locationMeta = const VerificationMeta(
+    'location',
+  );
+  @override
+  late final GeneratedColumn<String> location = GeneratedColumn<String>(
+    'location',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    location,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'farms';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FarmRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('location')) {
+      context.handle(
+        _locationMeta,
+        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FarmRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FarmRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      location: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $FarmsTable createAlias(String alias) {
+    return $FarmsTable(attachedDatabase, alias);
+  }
+}
+
+class FarmRow extends DataClass implements Insertable<FarmRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String name;
+  final String? location;
+  final String? notes;
+  const FarmRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.name,
+    this.location,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || location != null) {
+      map['location'] = Variable<String>(location);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  FarmsCompanion toCompanion(bool nullToAbsent) {
+    return FarmsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      name: Value(name),
+      location: location == null && nullToAbsent
+          ? const Value.absent()
+          : Value(location),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory FarmRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FarmRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      name: serializer.fromJson<String>(json['name']),
+      location: serializer.fromJson<String?>(json['location']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'name': serializer.toJson<String>(name),
+      'location': serializer.toJson<String?>(location),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  FarmRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? name,
+    Value<String?> location = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => FarmRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    name: name ?? this.name,
+    location: location.present ? location.value : this.location,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  FarmRow copyWithCompanion(FarmsCompanion data) {
+    return FarmRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      name: data.name.present ? data.name.value : this.name,
+      location: data.location.present ? data.location.value : this.location,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('location: $location, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    location,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FarmRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.name == this.name &&
+          other.location == this.location &&
+          other.notes == this.notes);
+}
+
+class FarmsCompanion extends UpdateCompanion<FarmRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> name;
+  final Value<String?> location;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const FarmsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.name = const Value.absent(),
+    this.location = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FarmsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String name,
+    this.location = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       name = Value(name);
+  static Insertable<FarmRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? name,
+    Expression<String>? location,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (name != null) 'name': name,
+      if (location != null) 'location': location,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FarmsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? name,
+    Value<String?>? location,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return FarmsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      name: name ?? this.name,
+      location: location ?? this.location,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (location.present) {
+      map['location'] = Variable<String>(location.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('location: $location, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FarmMembersTable extends FarmMembers
+    with TableInfo<$FarmMembersTable, FarmMemberRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FarmMembersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    userId,
+    role,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'farm_members';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FarmMemberRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FarmMemberRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FarmMemberRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+    );
+  }
+
+  @override
+  $FarmMembersTable createAlias(String alias) {
+    return $FarmMembersTable(attachedDatabase, alias);
+  }
+}
+
+class FarmMemberRow extends DataClass implements Insertable<FarmMemberRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String userId;
+  final String role;
+  const FarmMemberRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.userId,
+    required this.role,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['user_id'] = Variable<String>(userId);
+    map['role'] = Variable<String>(role);
+    return map;
+  }
+
+  FarmMembersCompanion toCompanion(bool nullToAbsent) {
+    return FarmMembersCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      userId: Value(userId),
+      role: Value(role),
+    );
+  }
+
+  factory FarmMemberRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FarmMemberRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      userId: serializer.fromJson<String>(json['userId']),
+      role: serializer.fromJson<String>(json['role']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'userId': serializer.toJson<String>(userId),
+      'role': serializer.toJson<String>(role),
+    };
+  }
+
+  FarmMemberRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? userId,
+    String? role,
+  }) => FarmMemberRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    userId: userId ?? this.userId,
+    role: role ?? this.role,
+  );
+  FarmMemberRow copyWithCompanion(FarmMembersCompanion data) {
+    return FarmMemberRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      role: data.role.present ? data.role.value : this.role,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmMemberRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('userId: $userId, ')
+          ..write('role: $role')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    userId,
+    role,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FarmMemberRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.userId == this.userId &&
+          other.role == this.role);
+}
+
+class FarmMembersCompanion extends UpdateCompanion<FarmMemberRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> userId;
+  final Value<String> role;
+  final Value<int> rowid;
+  const FarmMembersCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FarmMembersCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String userId,
+    required String role,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       userId = Value(userId),
+       role = Value(role);
+  static Insertable<FarmMemberRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? userId,
+    Expression<String>? role,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (userId != null) 'user_id': userId,
+      if (role != null) 'role': role,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FarmMembersCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? userId,
+    Value<String>? role,
+    Value<int>? rowid,
+  }) {
+    return FarmMembersCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      userId: userId ?? this.userId,
+      role: role ?? this.role,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmMembersCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('userId: $userId, ')
+          ..write('role: $role, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _birdTypeMeta = const VerificationMeta(
+    'birdType',
+  );
+  @override
+  late final GeneratedColumn<String> birdType = GeneratedColumn<String>(
+    'bird_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _initialCountMeta = const VerificationMeta(
+    'initialCount',
+  );
+  @override
+  late final GeneratedColumn<int> initialCount = GeneratedColumn<int>(
+    'initial_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _acquiredOnMeta = const VerificationMeta(
+    'acquiredOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> acquiredOn = GeneratedColumn<DateTime>(
+    'acquired_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ageAtAcquisitionDaysMeta =
+      const VerificationMeta('ageAtAcquisitionDays');
+  @override
+  late final GeneratedColumn<int> ageAtAcquisitionDays = GeneratedColumn<int>(
+    'age_at_acquisition_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _hatcheryVaccinatedMeta =
+      const VerificationMeta('hatcheryVaccinated');
+  @override
+  late final GeneratedColumn<bool> hatcheryVaccinated = GeneratedColumn<bool>(
+    'hatchery_vaccinated',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("hatchery_vaccinated" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programmeIdMeta = const VerificationMeta(
+    'programmeId',
+  );
+  @override
+  late final GeneratedColumn<String> programmeId = GeneratedColumn<String>(
+    'programme_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programmeVersionMeta = const VerificationMeta(
+    'programmeVersion',
+  );
+  @override
+  late final GeneratedColumn<int> programmeVersion = GeneratedColumn<int>(
+    'programme_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    birdType,
+    initialCount,
+    acquiredOn,
+    ageAtAcquisitionDays,
+    hatcheryVaccinated,
+    source,
+    status,
+    programmeId,
+    programmeVersion,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'batches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BatchRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('bird_type')) {
+      context.handle(
+        _birdTypeMeta,
+        birdType.isAcceptableOrUnknown(data['bird_type']!, _birdTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_birdTypeMeta);
+    }
+    if (data.containsKey('initial_count')) {
+      context.handle(
+        _initialCountMeta,
+        initialCount.isAcceptableOrUnknown(
+          data['initial_count']!,
+          _initialCountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_initialCountMeta);
+    }
+    if (data.containsKey('acquired_on')) {
+      context.handle(
+        _acquiredOnMeta,
+        acquiredOn.isAcceptableOrUnknown(data['acquired_on']!, _acquiredOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_acquiredOnMeta);
+    }
+    if (data.containsKey('age_at_acquisition_days')) {
+      context.handle(
+        _ageAtAcquisitionDaysMeta,
+        ageAtAcquisitionDays.isAcceptableOrUnknown(
+          data['age_at_acquisition_days']!,
+          _ageAtAcquisitionDaysMeta,
+        ),
+      );
+    }
+    if (data.containsKey('hatchery_vaccinated')) {
+      context.handle(
+        _hatcheryVaccinatedMeta,
+        hatcheryVaccinated.isAcceptableOrUnknown(
+          data['hatchery_vaccinated']!,
+          _hatcheryVaccinatedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('programme_id')) {
+      context.handle(
+        _programmeIdMeta,
+        programmeId.isAcceptableOrUnknown(
+          data['programme_id']!,
+          _programmeIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programmeIdMeta);
+    }
+    if (data.containsKey('programme_version')) {
+      context.handle(
+        _programmeVersionMeta,
+        programmeVersion.isAcceptableOrUnknown(
+          data['programme_version']!,
+          _programmeVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programmeVersionMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BatchRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BatchRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      birdType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bird_type'],
+      )!,
+      initialCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}initial_count'],
+      )!,
+      acquiredOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}acquired_on'],
+      )!,
+      ageAtAcquisitionDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}age_at_acquisition_days'],
+      )!,
+      hatcheryVaccinated: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}hatchery_vaccinated'],
+      ),
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      programmeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}programme_id'],
+      )!,
+      programmeVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}programme_version'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $BatchesTable createAlias(String alias) {
+    return $BatchesTable(attachedDatabase, alias);
+  }
+}
+
+class BatchRow extends DataClass implements Insertable<BatchRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String name;
+  final String birdType;
+  final int initialCount;
+  final DateTime acquiredOn;
+  final int ageAtAcquisitionDays;
+  final bool? hatcheryVaccinated;
+  final String? source;
+  final String status;
+  final String programmeId;
+  final int programmeVersion;
+  final String? notes;
+  const BatchRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.name,
+    required this.birdType,
+    required this.initialCount,
+    required this.acquiredOn,
+    required this.ageAtAcquisitionDays,
+    this.hatcheryVaccinated,
+    this.source,
+    required this.status,
+    required this.programmeId,
+    required this.programmeVersion,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['name'] = Variable<String>(name);
+    map['bird_type'] = Variable<String>(birdType);
+    map['initial_count'] = Variable<int>(initialCount);
+    map['acquired_on'] = Variable<DateTime>(acquiredOn);
+    map['age_at_acquisition_days'] = Variable<int>(ageAtAcquisitionDays);
+    if (!nullToAbsent || hatcheryVaccinated != null) {
+      map['hatchery_vaccinated'] = Variable<bool>(hatcheryVaccinated);
+    }
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
+    }
+    map['status'] = Variable<String>(status);
+    map['programme_id'] = Variable<String>(programmeId);
+    map['programme_version'] = Variable<int>(programmeVersion);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  BatchesCompanion toCompanion(bool nullToAbsent) {
+    return BatchesCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      name: Value(name),
+      birdType: Value(birdType),
+      initialCount: Value(initialCount),
+      acquiredOn: Value(acquiredOn),
+      ageAtAcquisitionDays: Value(ageAtAcquisitionDays),
+      hatcheryVaccinated: hatcheryVaccinated == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hatcheryVaccinated),
+      source: source == null && nullToAbsent
+          ? const Value.absent()
+          : Value(source),
+      status: Value(status),
+      programmeId: Value(programmeId),
+      programmeVersion: Value(programmeVersion),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory BatchRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BatchRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      name: serializer.fromJson<String>(json['name']),
+      birdType: serializer.fromJson<String>(json['birdType']),
+      initialCount: serializer.fromJson<int>(json['initialCount']),
+      acquiredOn: serializer.fromJson<DateTime>(json['acquiredOn']),
+      ageAtAcquisitionDays: serializer.fromJson<int>(
+        json['ageAtAcquisitionDays'],
+      ),
+      hatcheryVaccinated: serializer.fromJson<bool?>(
+        json['hatcheryVaccinated'],
+      ),
+      source: serializer.fromJson<String?>(json['source']),
+      status: serializer.fromJson<String>(json['status']),
+      programmeId: serializer.fromJson<String>(json['programmeId']),
+      programmeVersion: serializer.fromJson<int>(json['programmeVersion']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'name': serializer.toJson<String>(name),
+      'birdType': serializer.toJson<String>(birdType),
+      'initialCount': serializer.toJson<int>(initialCount),
+      'acquiredOn': serializer.toJson<DateTime>(acquiredOn),
+      'ageAtAcquisitionDays': serializer.toJson<int>(ageAtAcquisitionDays),
+      'hatcheryVaccinated': serializer.toJson<bool?>(hatcheryVaccinated),
+      'source': serializer.toJson<String?>(source),
+      'status': serializer.toJson<String>(status),
+      'programmeId': serializer.toJson<String>(programmeId),
+      'programmeVersion': serializer.toJson<int>(programmeVersion),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  BatchRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? name,
+    String? birdType,
+    int? initialCount,
+    DateTime? acquiredOn,
+    int? ageAtAcquisitionDays,
+    Value<bool?> hatcheryVaccinated = const Value.absent(),
+    Value<String?> source = const Value.absent(),
+    String? status,
+    String? programmeId,
+    int? programmeVersion,
+    Value<String?> notes = const Value.absent(),
+  }) => BatchRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    name: name ?? this.name,
+    birdType: birdType ?? this.birdType,
+    initialCount: initialCount ?? this.initialCount,
+    acquiredOn: acquiredOn ?? this.acquiredOn,
+    ageAtAcquisitionDays: ageAtAcquisitionDays ?? this.ageAtAcquisitionDays,
+    hatcheryVaccinated: hatcheryVaccinated.present
+        ? hatcheryVaccinated.value
+        : this.hatcheryVaccinated,
+    source: source.present ? source.value : this.source,
+    status: status ?? this.status,
+    programmeId: programmeId ?? this.programmeId,
+    programmeVersion: programmeVersion ?? this.programmeVersion,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  BatchRow copyWithCompanion(BatchesCompanion data) {
+    return BatchRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      name: data.name.present ? data.name.value : this.name,
+      birdType: data.birdType.present ? data.birdType.value : this.birdType,
+      initialCount: data.initialCount.present
+          ? data.initialCount.value
+          : this.initialCount,
+      acquiredOn: data.acquiredOn.present
+          ? data.acquiredOn.value
+          : this.acquiredOn,
+      ageAtAcquisitionDays: data.ageAtAcquisitionDays.present
+          ? data.ageAtAcquisitionDays.value
+          : this.ageAtAcquisitionDays,
+      hatcheryVaccinated: data.hatcheryVaccinated.present
+          ? data.hatcheryVaccinated.value
+          : this.hatcheryVaccinated,
+      source: data.source.present ? data.source.value : this.source,
+      status: data.status.present ? data.status.value : this.status,
+      programmeId: data.programmeId.present
+          ? data.programmeId.value
+          : this.programmeId,
+      programmeVersion: data.programmeVersion.present
+          ? data.programmeVersion.value
+          : this.programmeVersion,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BatchRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('birdType: $birdType, ')
+          ..write('initialCount: $initialCount, ')
+          ..write('acquiredOn: $acquiredOn, ')
+          ..write('ageAtAcquisitionDays: $ageAtAcquisitionDays, ')
+          ..write('hatcheryVaccinated: $hatcheryVaccinated, ')
+          ..write('source: $source, ')
+          ..write('status: $status, ')
+          ..write('programmeId: $programmeId, ')
+          ..write('programmeVersion: $programmeVersion, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    birdType,
+    initialCount,
+    acquiredOn,
+    ageAtAcquisitionDays,
+    hatcheryVaccinated,
+    source,
+    status,
+    programmeId,
+    programmeVersion,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BatchRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.name == this.name &&
+          other.birdType == this.birdType &&
+          other.initialCount == this.initialCount &&
+          other.acquiredOn == this.acquiredOn &&
+          other.ageAtAcquisitionDays == this.ageAtAcquisitionDays &&
+          other.hatcheryVaccinated == this.hatcheryVaccinated &&
+          other.source == this.source &&
+          other.status == this.status &&
+          other.programmeId == this.programmeId &&
+          other.programmeVersion == this.programmeVersion &&
+          other.notes == this.notes);
+}
+
+class BatchesCompanion extends UpdateCompanion<BatchRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> name;
+  final Value<String> birdType;
+  final Value<int> initialCount;
+  final Value<DateTime> acquiredOn;
+  final Value<int> ageAtAcquisitionDays;
+  final Value<bool?> hatcheryVaccinated;
+  final Value<String?> source;
+  final Value<String> status;
+  final Value<String> programmeId;
+  final Value<int> programmeVersion;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const BatchesCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.name = const Value.absent(),
+    this.birdType = const Value.absent(),
+    this.initialCount = const Value.absent(),
+    this.acquiredOn = const Value.absent(),
+    this.ageAtAcquisitionDays = const Value.absent(),
+    this.hatcheryVaccinated = const Value.absent(),
+    this.source = const Value.absent(),
+    this.status = const Value.absent(),
+    this.programmeId = const Value.absent(),
+    this.programmeVersion = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BatchesCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String name,
+    required String birdType,
+    required int initialCount,
+    required DateTime acquiredOn,
+    this.ageAtAcquisitionDays = const Value.absent(),
+    this.hatcheryVaccinated = const Value.absent(),
+    this.source = const Value.absent(),
+    required String status,
+    required String programmeId,
+    required int programmeVersion,
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       name = Value(name),
+       birdType = Value(birdType),
+       initialCount = Value(initialCount),
+       acquiredOn = Value(acquiredOn),
+       status = Value(status),
+       programmeId = Value(programmeId),
+       programmeVersion = Value(programmeVersion);
+  static Insertable<BatchRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? name,
+    Expression<String>? birdType,
+    Expression<int>? initialCount,
+    Expression<DateTime>? acquiredOn,
+    Expression<int>? ageAtAcquisitionDays,
+    Expression<bool>? hatcheryVaccinated,
+    Expression<String>? source,
+    Expression<String>? status,
+    Expression<String>? programmeId,
+    Expression<int>? programmeVersion,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (name != null) 'name': name,
+      if (birdType != null) 'bird_type': birdType,
+      if (initialCount != null) 'initial_count': initialCount,
+      if (acquiredOn != null) 'acquired_on': acquiredOn,
+      if (ageAtAcquisitionDays != null)
+        'age_at_acquisition_days': ageAtAcquisitionDays,
+      if (hatcheryVaccinated != null) 'hatchery_vaccinated': hatcheryVaccinated,
+      if (source != null) 'source': source,
+      if (status != null) 'status': status,
+      if (programmeId != null) 'programme_id': programmeId,
+      if (programmeVersion != null) 'programme_version': programmeVersion,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BatchesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? name,
+    Value<String>? birdType,
+    Value<int>? initialCount,
+    Value<DateTime>? acquiredOn,
+    Value<int>? ageAtAcquisitionDays,
+    Value<bool?>? hatcheryVaccinated,
+    Value<String?>? source,
+    Value<String>? status,
+    Value<String>? programmeId,
+    Value<int>? programmeVersion,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return BatchesCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      name: name ?? this.name,
+      birdType: birdType ?? this.birdType,
+      initialCount: initialCount ?? this.initialCount,
+      acquiredOn: acquiredOn ?? this.acquiredOn,
+      ageAtAcquisitionDays: ageAtAcquisitionDays ?? this.ageAtAcquisitionDays,
+      hatcheryVaccinated: hatcheryVaccinated ?? this.hatcheryVaccinated,
+      source: source ?? this.source,
+      status: status ?? this.status,
+      programmeId: programmeId ?? this.programmeId,
+      programmeVersion: programmeVersion ?? this.programmeVersion,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (birdType.present) {
+      map['bird_type'] = Variable<String>(birdType.value);
+    }
+    if (initialCount.present) {
+      map['initial_count'] = Variable<int>(initialCount.value);
+    }
+    if (acquiredOn.present) {
+      map['acquired_on'] = Variable<DateTime>(acquiredOn.value);
+    }
+    if (ageAtAcquisitionDays.present) {
+      map['age_at_acquisition_days'] = Variable<int>(
+        ageAtAcquisitionDays.value,
+      );
+    }
+    if (hatcheryVaccinated.present) {
+      map['hatchery_vaccinated'] = Variable<bool>(hatcheryVaccinated.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (programmeId.present) {
+      map['programme_id'] = Variable<String>(programmeId.value);
+    }
+    if (programmeVersion.present) {
+      map['programme_version'] = Variable<int>(programmeVersion.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BatchesCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('birdType: $birdType, ')
+          ..write('initialCount: $initialCount, ')
+          ..write('acquiredOn: $acquiredOn, ')
+          ..write('ageAtAcquisitionDays: $ageAtAcquisitionDays, ')
+          ..write('hatcheryVaccinated: $hatcheryVaccinated, ')
+          ..write('source: $source, ')
+          ..write('status: $status, ')
+          ..write('programmeId: $programmeId, ')
+          ..write('programmeVersion: $programmeVersion, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgrammesTable extends Programmes
+    with TableInfo<$ProgrammesTable, ProgrammeRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgrammesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _birdTypesJsonMeta = const VerificationMeta(
+    'birdTypesJson',
+  );
+  @override
+  late final GeneratedColumn<String> birdTypesJson = GeneratedColumn<String>(
+    'bird_types_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    version,
+    birdTypesJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'programmes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgrammeRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('bird_types_json')) {
+      context.handle(
+        _birdTypesJsonMeta,
+        birdTypesJson.isAcceptableOrUnknown(
+          data['bird_types_json']!,
+          _birdTypesJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_birdTypesJsonMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgrammeRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgrammeRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      birdTypesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}bird_types_json'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgrammesTable createAlias(String alias) {
+    return $ProgrammesTable(attachedDatabase, alias);
+  }
+}
+
+class ProgrammeRow extends DataClass implements Insertable<ProgrammeRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String name;
+  final int version;
+  final String birdTypesJson;
+  const ProgrammeRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.name,
+    required this.version,
+    required this.birdTypesJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['name'] = Variable<String>(name);
+    map['version'] = Variable<int>(version);
+    map['bird_types_json'] = Variable<String>(birdTypesJson);
+    return map;
+  }
+
+  ProgrammesCompanion toCompanion(bool nullToAbsent) {
+    return ProgrammesCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      name: Value(name),
+      version: Value(version),
+      birdTypesJson: Value(birdTypesJson),
+    );
+  }
+
+  factory ProgrammeRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgrammeRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      name: serializer.fromJson<String>(json['name']),
+      version: serializer.fromJson<int>(json['version']),
+      birdTypesJson: serializer.fromJson<String>(json['birdTypesJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'name': serializer.toJson<String>(name),
+      'version': serializer.toJson<int>(version),
+      'birdTypesJson': serializer.toJson<String>(birdTypesJson),
+    };
+  }
+
+  ProgrammeRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? name,
+    int? version,
+    String? birdTypesJson,
+  }) => ProgrammeRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    name: name ?? this.name,
+    version: version ?? this.version,
+    birdTypesJson: birdTypesJson ?? this.birdTypesJson,
+  );
+  ProgrammeRow copyWithCompanion(ProgrammesCompanion data) {
+    return ProgrammeRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      name: data.name.present ? data.name.value : this.name,
+      version: data.version.present ? data.version.value : this.version,
+      birdTypesJson: data.birdTypesJson.present
+          ? data.birdTypesJson.value
+          : this.birdTypesJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgrammeRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('version: $version, ')
+          ..write('birdTypesJson: $birdTypesJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    version,
+    birdTypesJson,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgrammeRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.name == this.name &&
+          other.version == this.version &&
+          other.birdTypesJson == this.birdTypesJson);
+}
+
+class ProgrammesCompanion extends UpdateCompanion<ProgrammeRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> name;
+  final Value<int> version;
+  final Value<String> birdTypesJson;
+  final Value<int> rowid;
+  const ProgrammesCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.name = const Value.absent(),
+    this.version = const Value.absent(),
+    this.birdTypesJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgrammesCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String name,
+    required int version,
+    required String birdTypesJson,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       name = Value(name),
+       version = Value(version),
+       birdTypesJson = Value(birdTypesJson);
+  static Insertable<ProgrammeRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? name,
+    Expression<int>? version,
+    Expression<String>? birdTypesJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (name != null) 'name': name,
+      if (version != null) 'version': version,
+      if (birdTypesJson != null) 'bird_types_json': birdTypesJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgrammesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? name,
+    Value<int>? version,
+    Value<String>? birdTypesJson,
+    Value<int>? rowid,
+  }) {
+    return ProgrammesCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      name: name ?? this.name,
+      version: version ?? this.version,
+      birdTypesJson: birdTypesJson ?? this.birdTypesJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (birdTypesJson.present) {
+      map['bird_types_json'] = Variable<String>(birdTypesJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgrammesCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('version: $version, ')
+          ..write('birdTypesJson: $birdTypesJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgrammeStepsTable extends ProgrammeSteps
+    with TableInfo<$ProgrammeStepsTable, ProgrammeStepRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgrammeStepsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _programmeIdMeta = const VerificationMeta(
+    'programmeId',
+  );
+  @override
+  late final GeneratedColumn<String> programmeId = GeneratedColumn<String>(
+    'programme_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ageDaysMeta = const VerificationMeta(
+    'ageDays',
+  );
+  @override
+  late final GeneratedColumn<int> ageDays = GeneratedColumn<int>(
+    'age_days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _locationMeta = const VerificationMeta(
+    'location',
+  );
+  @override
+  late final GeneratedColumn<String> location = GeneratedColumn<String>(
+    'location',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _optionalMeta = const VerificationMeta(
+    'optional',
+  );
+  @override
+  late final GeneratedColumn<bool> optional = GeneratedColumn<bool>(
+    'optional',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("optional" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _dueWindowDaysBeforeMeta =
+      const VerificationMeta('dueWindowDaysBefore');
+  @override
+  late final GeneratedColumn<int> dueWindowDaysBefore = GeneratedColumn<int>(
+    'due_window_days_before',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _dueWindowDaysAfterMeta =
+      const VerificationMeta('dueWindowDaysAfter');
+  @override
+  late final GeneratedColumn<int> dueWindowDaysAfter = GeneratedColumn<int>(
+    'due_window_days_after',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _recurringJsonMeta = const VerificationMeta(
+    'recurringJson',
+  );
+  @override
+  late final GeneratedColumn<String> recurringJson = GeneratedColumn<String>(
+    'recurring_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    programmeId,
+    name,
+    ageDays,
+    location,
+    optional,
+    dueWindowDaysBefore,
+    dueWindowDaysAfter,
+    recurringJson,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'programme_steps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgrammeStepRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('programme_id')) {
+      context.handle(
+        _programmeIdMeta,
+        programmeId.isAcceptableOrUnknown(
+          data['programme_id']!,
+          _programmeIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programmeIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('age_days')) {
+      context.handle(
+        _ageDaysMeta,
+        ageDays.isAcceptableOrUnknown(data['age_days']!, _ageDaysMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ageDaysMeta);
+    }
+    if (data.containsKey('location')) {
+      context.handle(
+        _locationMeta,
+        location.isAcceptableOrUnknown(data['location']!, _locationMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_locationMeta);
+    }
+    if (data.containsKey('optional')) {
+      context.handle(
+        _optionalMeta,
+        optional.isAcceptableOrUnknown(data['optional']!, _optionalMeta),
+      );
+    }
+    if (data.containsKey('due_window_days_before')) {
+      context.handle(
+        _dueWindowDaysBeforeMeta,
+        dueWindowDaysBefore.isAcceptableOrUnknown(
+          data['due_window_days_before']!,
+          _dueWindowDaysBeforeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('due_window_days_after')) {
+      context.handle(
+        _dueWindowDaysAfterMeta,
+        dueWindowDaysAfter.isAcceptableOrUnknown(
+          data['due_window_days_after']!,
+          _dueWindowDaysAfterMeta,
+        ),
+      );
+    }
+    if (data.containsKey('recurring_json')) {
+      context.handle(
+        _recurringJsonMeta,
+        recurringJson.isAcceptableOrUnknown(
+          data['recurring_json']!,
+          _recurringJsonMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProgrammeStepRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgrammeStepRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      programmeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}programme_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      ageDays: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}age_days'],
+      )!,
+      location: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location'],
+      )!,
+      optional: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}optional'],
+      )!,
+      dueWindowDaysBefore: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_window_days_before'],
+      )!,
+      dueWindowDaysAfter: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_window_days_after'],
+      )!,
+      recurringJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recurring_json'],
+      ),
+    );
+  }
+
+  @override
+  $ProgrammeStepsTable createAlias(String alias) {
+    return $ProgrammeStepsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgrammeStepRow extends DataClass
+    implements Insertable<ProgrammeStepRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String programmeId;
+  final String name;
+  final int ageDays;
+  final String location;
+  final bool optional;
+  final int dueWindowDaysBefore;
+  final int dueWindowDaysAfter;
+  final String? recurringJson;
+  const ProgrammeStepRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.programmeId,
+    required this.name,
+    required this.ageDays,
+    required this.location,
+    required this.optional,
+    required this.dueWindowDaysBefore,
+    required this.dueWindowDaysAfter,
+    this.recurringJson,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['programme_id'] = Variable<String>(programmeId);
+    map['name'] = Variable<String>(name);
+    map['age_days'] = Variable<int>(ageDays);
+    map['location'] = Variable<String>(location);
+    map['optional'] = Variable<bool>(optional);
+    map['due_window_days_before'] = Variable<int>(dueWindowDaysBefore);
+    map['due_window_days_after'] = Variable<int>(dueWindowDaysAfter);
+    if (!nullToAbsent || recurringJson != null) {
+      map['recurring_json'] = Variable<String>(recurringJson);
+    }
+    return map;
+  }
+
+  ProgrammeStepsCompanion toCompanion(bool nullToAbsent) {
+    return ProgrammeStepsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      programmeId: Value(programmeId),
+      name: Value(name),
+      ageDays: Value(ageDays),
+      location: Value(location),
+      optional: Value(optional),
+      dueWindowDaysBefore: Value(dueWindowDaysBefore),
+      dueWindowDaysAfter: Value(dueWindowDaysAfter),
+      recurringJson: recurringJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recurringJson),
+    );
+  }
+
+  factory ProgrammeStepRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgrammeStepRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      programmeId: serializer.fromJson<String>(json['programmeId']),
+      name: serializer.fromJson<String>(json['name']),
+      ageDays: serializer.fromJson<int>(json['ageDays']),
+      location: serializer.fromJson<String>(json['location']),
+      optional: serializer.fromJson<bool>(json['optional']),
+      dueWindowDaysBefore: serializer.fromJson<int>(
+        json['dueWindowDaysBefore'],
+      ),
+      dueWindowDaysAfter: serializer.fromJson<int>(json['dueWindowDaysAfter']),
+      recurringJson: serializer.fromJson<String?>(json['recurringJson']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'programmeId': serializer.toJson<String>(programmeId),
+      'name': serializer.toJson<String>(name),
+      'ageDays': serializer.toJson<int>(ageDays),
+      'location': serializer.toJson<String>(location),
+      'optional': serializer.toJson<bool>(optional),
+      'dueWindowDaysBefore': serializer.toJson<int>(dueWindowDaysBefore),
+      'dueWindowDaysAfter': serializer.toJson<int>(dueWindowDaysAfter),
+      'recurringJson': serializer.toJson<String?>(recurringJson),
+    };
+  }
+
+  ProgrammeStepRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? programmeId,
+    String? name,
+    int? ageDays,
+    String? location,
+    bool? optional,
+    int? dueWindowDaysBefore,
+    int? dueWindowDaysAfter,
+    Value<String?> recurringJson = const Value.absent(),
+  }) => ProgrammeStepRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    programmeId: programmeId ?? this.programmeId,
+    name: name ?? this.name,
+    ageDays: ageDays ?? this.ageDays,
+    location: location ?? this.location,
+    optional: optional ?? this.optional,
+    dueWindowDaysBefore: dueWindowDaysBefore ?? this.dueWindowDaysBefore,
+    dueWindowDaysAfter: dueWindowDaysAfter ?? this.dueWindowDaysAfter,
+    recurringJson: recurringJson.present
+        ? recurringJson.value
+        : this.recurringJson,
+  );
+  ProgrammeStepRow copyWithCompanion(ProgrammeStepsCompanion data) {
+    return ProgrammeStepRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      programmeId: data.programmeId.present
+          ? data.programmeId.value
+          : this.programmeId,
+      name: data.name.present ? data.name.value : this.name,
+      ageDays: data.ageDays.present ? data.ageDays.value : this.ageDays,
+      location: data.location.present ? data.location.value : this.location,
+      optional: data.optional.present ? data.optional.value : this.optional,
+      dueWindowDaysBefore: data.dueWindowDaysBefore.present
+          ? data.dueWindowDaysBefore.value
+          : this.dueWindowDaysBefore,
+      dueWindowDaysAfter: data.dueWindowDaysAfter.present
+          ? data.dueWindowDaysAfter.value
+          : this.dueWindowDaysAfter,
+      recurringJson: data.recurringJson.present
+          ? data.recurringJson.value
+          : this.recurringJson,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgrammeStepRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('programmeId: $programmeId, ')
+          ..write('name: $name, ')
+          ..write('ageDays: $ageDays, ')
+          ..write('location: $location, ')
+          ..write('optional: $optional, ')
+          ..write('dueWindowDaysBefore: $dueWindowDaysBefore, ')
+          ..write('dueWindowDaysAfter: $dueWindowDaysAfter, ')
+          ..write('recurringJson: $recurringJson')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    programmeId,
+    name,
+    ageDays,
+    location,
+    optional,
+    dueWindowDaysBefore,
+    dueWindowDaysAfter,
+    recurringJson,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgrammeStepRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.programmeId == this.programmeId &&
+          other.name == this.name &&
+          other.ageDays == this.ageDays &&
+          other.location == this.location &&
+          other.optional == this.optional &&
+          other.dueWindowDaysBefore == this.dueWindowDaysBefore &&
+          other.dueWindowDaysAfter == this.dueWindowDaysAfter &&
+          other.recurringJson == this.recurringJson);
+}
+
+class ProgrammeStepsCompanion extends UpdateCompanion<ProgrammeStepRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> programmeId;
+  final Value<String> name;
+  final Value<int> ageDays;
+  final Value<String> location;
+  final Value<bool> optional;
+  final Value<int> dueWindowDaysBefore;
+  final Value<int> dueWindowDaysAfter;
+  final Value<String?> recurringJson;
+  final Value<int> rowid;
+  const ProgrammeStepsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.programmeId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.ageDays = const Value.absent(),
+    this.location = const Value.absent(),
+    this.optional = const Value.absent(),
+    this.dueWindowDaysBefore = const Value.absent(),
+    this.dueWindowDaysAfter = const Value.absent(),
+    this.recurringJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgrammeStepsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String programmeId,
+    required String name,
+    required int ageDays,
+    required String location,
+    this.optional = const Value.absent(),
+    this.dueWindowDaysBefore = const Value.absent(),
+    this.dueWindowDaysAfter = const Value.absent(),
+    this.recurringJson = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       programmeId = Value(programmeId),
+       name = Value(name),
+       ageDays = Value(ageDays),
+       location = Value(location);
+  static Insertable<ProgrammeStepRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? programmeId,
+    Expression<String>? name,
+    Expression<int>? ageDays,
+    Expression<String>? location,
+    Expression<bool>? optional,
+    Expression<int>? dueWindowDaysBefore,
+    Expression<int>? dueWindowDaysAfter,
+    Expression<String>? recurringJson,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (programmeId != null) 'programme_id': programmeId,
+      if (name != null) 'name': name,
+      if (ageDays != null) 'age_days': ageDays,
+      if (location != null) 'location': location,
+      if (optional != null) 'optional': optional,
+      if (dueWindowDaysBefore != null)
+        'due_window_days_before': dueWindowDaysBefore,
+      if (dueWindowDaysAfter != null)
+        'due_window_days_after': dueWindowDaysAfter,
+      if (recurringJson != null) 'recurring_json': recurringJson,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgrammeStepsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? programmeId,
+    Value<String>? name,
+    Value<int>? ageDays,
+    Value<String>? location,
+    Value<bool>? optional,
+    Value<int>? dueWindowDaysBefore,
+    Value<int>? dueWindowDaysAfter,
+    Value<String?>? recurringJson,
+    Value<int>? rowid,
+  }) {
+    return ProgrammeStepsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      programmeId: programmeId ?? this.programmeId,
+      name: name ?? this.name,
+      ageDays: ageDays ?? this.ageDays,
+      location: location ?? this.location,
+      optional: optional ?? this.optional,
+      dueWindowDaysBefore: dueWindowDaysBefore ?? this.dueWindowDaysBefore,
+      dueWindowDaysAfter: dueWindowDaysAfter ?? this.dueWindowDaysAfter,
+      recurringJson: recurringJson ?? this.recurringJson,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (programmeId.present) {
+      map['programme_id'] = Variable<String>(programmeId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (ageDays.present) {
+      map['age_days'] = Variable<int>(ageDays.value);
+    }
+    if (location.present) {
+      map['location'] = Variable<String>(location.value);
+    }
+    if (optional.present) {
+      map['optional'] = Variable<bool>(optional.value);
+    }
+    if (dueWindowDaysBefore.present) {
+      map['due_window_days_before'] = Variable<int>(dueWindowDaysBefore.value);
+    }
+    if (dueWindowDaysAfter.present) {
+      map['due_window_days_after'] = Variable<int>(dueWindowDaysAfter.value);
+    }
+    if (recurringJson.present) {
+      map['recurring_json'] = Variable<String>(recurringJson.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgrammeStepsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('programmeId: $programmeId, ')
+          ..write('name: $name, ')
+          ..write('ageDays: $ageDays, ')
+          ..write('location: $location, ')
+          ..write('optional: $optional, ')
+          ..write('dueWindowDaysBefore: $dueWindowDaysBefore, ')
+          ..write('dueWindowDaysAfter: $dueWindowDaysAfter, ')
+          ..write('recurringJson: $recurringJson, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VaccinationTasksTable extends VaccinationTasks
+    with TableInfo<$VaccinationTasksTable, VaccinationTaskRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VaccinationTasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stepIdMeta = const VerificationMeta('stepId');
+  @override
+  late final GeneratedColumn<String> stepId = GeneratedColumn<String>(
+    'step_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dueOnMeta = const VerificationMeta('dueOn');
+  @override
+  late final GeneratedColumn<DateTime> dueOn = GeneratedColumn<DateTime>(
+    'due_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _doneOnMeta = const VerificationMeta('doneOn');
+  @override
+  late final GeneratedColumn<DateTime> doneOn = GeneratedColumn<DateTime>(
+    'done_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _productUsedMeta = const VerificationMeta(
+    'productUsed',
+  );
+  @override
+  late final GeneratedColumn<String> productUsed = GeneratedColumn<String>(
+    'product_used',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    stepId,
+    dueOn,
+    status,
+    doneOn,
+    productUsed,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vaccination_tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VaccinationTaskRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_batchIdMeta);
+    }
+    if (data.containsKey('step_id')) {
+      context.handle(
+        _stepIdMeta,
+        stepId.isAcceptableOrUnknown(data['step_id']!, _stepIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stepIdMeta);
+    }
+    if (data.containsKey('due_on')) {
+      context.handle(
+        _dueOnMeta,
+        dueOn.isAcceptableOrUnknown(data['due_on']!, _dueOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dueOnMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('done_on')) {
+      context.handle(
+        _doneOnMeta,
+        doneOn.isAcceptableOrUnknown(data['done_on']!, _doneOnMeta),
+      );
+    }
+    if (data.containsKey('product_used')) {
+      context.handle(
+        _productUsedMeta,
+        productUsed.isAcceptableOrUnknown(
+          data['product_used']!,
+          _productUsedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VaccinationTaskRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VaccinationTaskRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      )!,
+      stepId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}step_id'],
+      )!,
+      dueOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}due_on'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      doneOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}done_on'],
+      ),
+      productUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}product_used'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $VaccinationTasksTable createAlias(String alias) {
+    return $VaccinationTasksTable(attachedDatabase, alias);
+  }
+}
+
+class VaccinationTaskRow extends DataClass
+    implements Insertable<VaccinationTaskRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String batchId;
+  final String stepId;
+  final DateTime dueOn;
+  final String status;
+  final DateTime? doneOn;
+  final String? productUsed;
+  final String? notes;
+  const VaccinationTaskRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.batchId,
+    required this.stepId,
+    required this.dueOn,
+    required this.status,
+    this.doneOn,
+    this.productUsed,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['batch_id'] = Variable<String>(batchId);
+    map['step_id'] = Variable<String>(stepId);
+    map['due_on'] = Variable<DateTime>(dueOn);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || doneOn != null) {
+      map['done_on'] = Variable<DateTime>(doneOn);
+    }
+    if (!nullToAbsent || productUsed != null) {
+      map['product_used'] = Variable<String>(productUsed);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  VaccinationTasksCompanion toCompanion(bool nullToAbsent) {
+    return VaccinationTasksCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      batchId: Value(batchId),
+      stepId: Value(stepId),
+      dueOn: Value(dueOn),
+      status: Value(status),
+      doneOn: doneOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(doneOn),
+      productUsed: productUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(productUsed),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory VaccinationTaskRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VaccinationTaskRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      batchId: serializer.fromJson<String>(json['batchId']),
+      stepId: serializer.fromJson<String>(json['stepId']),
+      dueOn: serializer.fromJson<DateTime>(json['dueOn']),
+      status: serializer.fromJson<String>(json['status']),
+      doneOn: serializer.fromJson<DateTime?>(json['doneOn']),
+      productUsed: serializer.fromJson<String?>(json['productUsed']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'batchId': serializer.toJson<String>(batchId),
+      'stepId': serializer.toJson<String>(stepId),
+      'dueOn': serializer.toJson<DateTime>(dueOn),
+      'status': serializer.toJson<String>(status),
+      'doneOn': serializer.toJson<DateTime?>(doneOn),
+      'productUsed': serializer.toJson<String?>(productUsed),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  VaccinationTaskRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? batchId,
+    String? stepId,
+    DateTime? dueOn,
+    String? status,
+    Value<DateTime?> doneOn = const Value.absent(),
+    Value<String?> productUsed = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => VaccinationTaskRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    batchId: batchId ?? this.batchId,
+    stepId: stepId ?? this.stepId,
+    dueOn: dueOn ?? this.dueOn,
+    status: status ?? this.status,
+    doneOn: doneOn.present ? doneOn.value : this.doneOn,
+    productUsed: productUsed.present ? productUsed.value : this.productUsed,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  VaccinationTaskRow copyWithCompanion(VaccinationTasksCompanion data) {
+    return VaccinationTaskRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      stepId: data.stepId.present ? data.stepId.value : this.stepId,
+      dueOn: data.dueOn.present ? data.dueOn.value : this.dueOn,
+      status: data.status.present ? data.status.value : this.status,
+      doneOn: data.doneOn.present ? data.doneOn.value : this.doneOn,
+      productUsed: data.productUsed.present
+          ? data.productUsed.value
+          : this.productUsed,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VaccinationTaskRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('stepId: $stepId, ')
+          ..write('dueOn: $dueOn, ')
+          ..write('status: $status, ')
+          ..write('doneOn: $doneOn, ')
+          ..write('productUsed: $productUsed, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    stepId,
+    dueOn,
+    status,
+    doneOn,
+    productUsed,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VaccinationTaskRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.batchId == this.batchId &&
+          other.stepId == this.stepId &&
+          other.dueOn == this.dueOn &&
+          other.status == this.status &&
+          other.doneOn == this.doneOn &&
+          other.productUsed == this.productUsed &&
+          other.notes == this.notes);
+}
+
+class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> batchId;
+  final Value<String> stepId;
+  final Value<DateTime> dueOn;
+  final Value<String> status;
+  final Value<DateTime?> doneOn;
+  final Value<String?> productUsed;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const VaccinationTasksCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.stepId = const Value.absent(),
+    this.dueOn = const Value.absent(),
+    this.status = const Value.absent(),
+    this.doneOn = const Value.absent(),
+    this.productUsed = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VaccinationTasksCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String batchId,
+    required String stepId,
+    required DateTime dueOn,
+    required String status,
+    this.doneOn = const Value.absent(),
+    this.productUsed = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       batchId = Value(batchId),
+       stepId = Value(stepId),
+       dueOn = Value(dueOn),
+       status = Value(status);
+  static Insertable<VaccinationTaskRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? batchId,
+    Expression<String>? stepId,
+    Expression<DateTime>? dueOn,
+    Expression<String>? status,
+    Expression<DateTime>? doneOn,
+    Expression<String>? productUsed,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (batchId != null) 'batch_id': batchId,
+      if (stepId != null) 'step_id': stepId,
+      if (dueOn != null) 'due_on': dueOn,
+      if (status != null) 'status': status,
+      if (doneOn != null) 'done_on': doneOn,
+      if (productUsed != null) 'product_used': productUsed,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VaccinationTasksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? batchId,
+    Value<String>? stepId,
+    Value<DateTime>? dueOn,
+    Value<String>? status,
+    Value<DateTime?>? doneOn,
+    Value<String?>? productUsed,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return VaccinationTasksCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      batchId: batchId ?? this.batchId,
+      stepId: stepId ?? this.stepId,
+      dueOn: dueOn ?? this.dueOn,
+      status: status ?? this.status,
+      doneOn: doneOn ?? this.doneOn,
+      productUsed: productUsed ?? this.productUsed,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (stepId.present) {
+      map['step_id'] = Variable<String>(stepId.value);
+    }
+    if (dueOn.present) {
+      map['due_on'] = Variable<DateTime>(dueOn.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (doneOn.present) {
+      map['done_on'] = Variable<DateTime>(doneOn.value);
+    }
+    if (productUsed.present) {
+      map['product_used'] = Variable<String>(productUsed.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VaccinationTasksCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('stepId: $stepId, ')
+          ..write('dueOn: $dueOn, ')
+          ..write('status: $status, ')
+          ..write('doneOn: $doneOn, ')
+          ..write('productUsed: $productUsed, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FeedItemsTable extends FeedItems
+    with TableInfo<$FeedItemsTable, FeedItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FeedItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _feedTypeMeta = const VerificationMeta(
+    'feedType',
+  );
+  @override
+  late final GeneratedColumn<String> feedType = GeneratedColumn<String>(
+    'feed_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _reorderLevelMeta = const VerificationMeta(
+    'reorderLevel',
+  );
+  @override
+  late final GeneratedColumn<double> reorderLevel = GeneratedColumn<double>(
+    'reorder_level',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    feedType,
+    unit,
+    reorderLevel,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'feed_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FeedItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('feed_type')) {
+      context.handle(
+        _feedTypeMeta,
+        feedType.isAcceptableOrUnknown(data['feed_type']!, _feedTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_feedTypeMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('reorder_level')) {
+      context.handle(
+        _reorderLevelMeta,
+        reorderLevel.isAcceptableOrUnknown(
+          data['reorder_level']!,
+          _reorderLevelMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FeedItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FeedItemRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      feedType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}feed_type'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      reorderLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}reorder_level'],
+      ),
+    );
+  }
+
+  @override
+  $FeedItemsTable createAlias(String alias) {
+    return $FeedItemsTable(attachedDatabase, alias);
+  }
+}
+
+class FeedItemRow extends DataClass implements Insertable<FeedItemRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String name;
+  final String feedType;
+  final String unit;
+  final double? reorderLevel;
+  const FeedItemRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.name,
+    required this.feedType,
+    required this.unit,
+    this.reorderLevel,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['name'] = Variable<String>(name);
+    map['feed_type'] = Variable<String>(feedType);
+    map['unit'] = Variable<String>(unit);
+    if (!nullToAbsent || reorderLevel != null) {
+      map['reorder_level'] = Variable<double>(reorderLevel);
+    }
+    return map;
+  }
+
+  FeedItemsCompanion toCompanion(bool nullToAbsent) {
+    return FeedItemsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      name: Value(name),
+      feedType: Value(feedType),
+      unit: Value(unit),
+      reorderLevel: reorderLevel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reorderLevel),
+    );
+  }
+
+  factory FeedItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FeedItemRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      name: serializer.fromJson<String>(json['name']),
+      feedType: serializer.fromJson<String>(json['feedType']),
+      unit: serializer.fromJson<String>(json['unit']),
+      reorderLevel: serializer.fromJson<double?>(json['reorderLevel']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'name': serializer.toJson<String>(name),
+      'feedType': serializer.toJson<String>(feedType),
+      'unit': serializer.toJson<String>(unit),
+      'reorderLevel': serializer.toJson<double?>(reorderLevel),
+    };
+  }
+
+  FeedItemRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? name,
+    String? feedType,
+    String? unit,
+    Value<double?> reorderLevel = const Value.absent(),
+  }) => FeedItemRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    name: name ?? this.name,
+    feedType: feedType ?? this.feedType,
+    unit: unit ?? this.unit,
+    reorderLevel: reorderLevel.present ? reorderLevel.value : this.reorderLevel,
+  );
+  FeedItemRow copyWithCompanion(FeedItemsCompanion data) {
+    return FeedItemRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      name: data.name.present ? data.name.value : this.name,
+      feedType: data.feedType.present ? data.feedType.value : this.feedType,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      reorderLevel: data.reorderLevel.present
+          ? data.reorderLevel.value
+          : this.reorderLevel,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedItemRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('feedType: $feedType, ')
+          ..write('unit: $unit, ')
+          ..write('reorderLevel: $reorderLevel')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    name,
+    feedType,
+    unit,
+    reorderLevel,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FeedItemRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.name == this.name &&
+          other.feedType == this.feedType &&
+          other.unit == this.unit &&
+          other.reorderLevel == this.reorderLevel);
+}
+
+class FeedItemsCompanion extends UpdateCompanion<FeedItemRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> name;
+  final Value<String> feedType;
+  final Value<String> unit;
+  final Value<double?> reorderLevel;
+  final Value<int> rowid;
+  const FeedItemsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.name = const Value.absent(),
+    this.feedType = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.reorderLevel = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FeedItemsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String name,
+    required String feedType,
+    required String unit,
+    this.reorderLevel = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       name = Value(name),
+       feedType = Value(feedType),
+       unit = Value(unit);
+  static Insertable<FeedItemRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? name,
+    Expression<String>? feedType,
+    Expression<String>? unit,
+    Expression<double>? reorderLevel,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (name != null) 'name': name,
+      if (feedType != null) 'feed_type': feedType,
+      if (unit != null) 'unit': unit,
+      if (reorderLevel != null) 'reorder_level': reorderLevel,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FeedItemsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? name,
+    Value<String>? feedType,
+    Value<String>? unit,
+    Value<double?>? reorderLevel,
+    Value<int>? rowid,
+  }) {
+    return FeedItemsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      name: name ?? this.name,
+      feedType: feedType ?? this.feedType,
+      unit: unit ?? this.unit,
+      reorderLevel: reorderLevel ?? this.reorderLevel,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (feedType.present) {
+      map['feed_type'] = Variable<String>(feedType.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (reorderLevel.present) {
+      map['reorder_level'] = Variable<double>(reorderLevel.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('name: $name, ')
+          ..write('feedType: $feedType, ')
+          ..write('unit: $unit, ')
+          ..write('reorderLevel: $reorderLevel, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FeedTransactionsTable extends FeedTransactions
+    with TableInfo<$FeedTransactionsTable, FeedTransactionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FeedTransactionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _feedItemIdMeta = const VerificationMeta(
+    'feedItemId',
+  );
+  @override
+  late final GeneratedColumn<String> feedItemId = GeneratedColumn<String>(
+    'feed_item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<double> quantity = GeneratedColumn<double>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitCostMeta = const VerificationMeta(
+    'unitCost',
+  );
+  @override
+  late final GeneratedColumn<double> unitCost = GeneratedColumn<double>(
+    'unit_cost',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _occurredOnMeta = const VerificationMeta(
+    'occurredOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> occurredOn = GeneratedColumn<DateTime>(
+    'occurred_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    feedItemId,
+    batchId,
+    kind,
+    quantity,
+    unitCost,
+    occurredOn,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'feed_transactions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FeedTransactionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('feed_item_id')) {
+      context.handle(
+        _feedItemIdMeta,
+        feedItemId.isAcceptableOrUnknown(
+          data['feed_item_id']!,
+          _feedItemIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_feedItemIdMeta);
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityMeta);
+    }
+    if (data.containsKey('unit_cost')) {
+      context.handle(
+        _unitCostMeta,
+        unitCost.isAcceptableOrUnknown(data['unit_cost']!, _unitCostMeta),
+      );
+    }
+    if (data.containsKey('occurred_on')) {
+      context.handle(
+        _occurredOnMeta,
+        occurredOn.isAcceptableOrUnknown(data['occurred_on']!, _occurredOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_occurredOnMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FeedTransactionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FeedTransactionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      feedItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}feed_item_id'],
+      )!,
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      ),
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}quantity'],
+      )!,
+      unitCost: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}unit_cost'],
+      ),
+      occurredOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}occurred_on'],
+      )!,
+    );
+  }
+
+  @override
+  $FeedTransactionsTable createAlias(String alias) {
+    return $FeedTransactionsTable(attachedDatabase, alias);
+  }
+}
+
+class FeedTransactionRow extends DataClass
+    implements Insertable<FeedTransactionRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String feedItemId;
+  final String? batchId;
+  final String kind;
+  final double quantity;
+  final double? unitCost;
+  final DateTime occurredOn;
+  const FeedTransactionRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.feedItemId,
+    this.batchId,
+    required this.kind,
+    required this.quantity,
+    this.unitCost,
+    required this.occurredOn,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['feed_item_id'] = Variable<String>(feedItemId);
+    if (!nullToAbsent || batchId != null) {
+      map['batch_id'] = Variable<String>(batchId);
+    }
+    map['kind'] = Variable<String>(kind);
+    map['quantity'] = Variable<double>(quantity);
+    if (!nullToAbsent || unitCost != null) {
+      map['unit_cost'] = Variable<double>(unitCost);
+    }
+    map['occurred_on'] = Variable<DateTime>(occurredOn);
+    return map;
+  }
+
+  FeedTransactionsCompanion toCompanion(bool nullToAbsent) {
+    return FeedTransactionsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      feedItemId: Value(feedItemId),
+      batchId: batchId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(batchId),
+      kind: Value(kind),
+      quantity: Value(quantity),
+      unitCost: unitCost == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitCost),
+      occurredOn: Value(occurredOn),
+    );
+  }
+
+  factory FeedTransactionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FeedTransactionRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      feedItemId: serializer.fromJson<String>(json['feedItemId']),
+      batchId: serializer.fromJson<String?>(json['batchId']),
+      kind: serializer.fromJson<String>(json['kind']),
+      quantity: serializer.fromJson<double>(json['quantity']),
+      unitCost: serializer.fromJson<double?>(json['unitCost']),
+      occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'feedItemId': serializer.toJson<String>(feedItemId),
+      'batchId': serializer.toJson<String?>(batchId),
+      'kind': serializer.toJson<String>(kind),
+      'quantity': serializer.toJson<double>(quantity),
+      'unitCost': serializer.toJson<double?>(unitCost),
+      'occurredOn': serializer.toJson<DateTime>(occurredOn),
+    };
+  }
+
+  FeedTransactionRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? feedItemId,
+    Value<String?> batchId = const Value.absent(),
+    String? kind,
+    double? quantity,
+    Value<double?> unitCost = const Value.absent(),
+    DateTime? occurredOn,
+  }) => FeedTransactionRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    feedItemId: feedItemId ?? this.feedItemId,
+    batchId: batchId.present ? batchId.value : this.batchId,
+    kind: kind ?? this.kind,
+    quantity: quantity ?? this.quantity,
+    unitCost: unitCost.present ? unitCost.value : this.unitCost,
+    occurredOn: occurredOn ?? this.occurredOn,
+  );
+  FeedTransactionRow copyWithCompanion(FeedTransactionsCompanion data) {
+    return FeedTransactionRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      feedItemId: data.feedItemId.present
+          ? data.feedItemId.value
+          : this.feedItemId,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      unitCost: data.unitCost.present ? data.unitCost.value : this.unitCost,
+      occurredOn: data.occurredOn.present
+          ? data.occurredOn.value
+          : this.occurredOn,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedTransactionRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('feedItemId: $feedItemId, ')
+          ..write('batchId: $batchId, ')
+          ..write('kind: $kind, ')
+          ..write('quantity: $quantity, ')
+          ..write('unitCost: $unitCost, ')
+          ..write('occurredOn: $occurredOn')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    feedItemId,
+    batchId,
+    kind,
+    quantity,
+    unitCost,
+    occurredOn,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FeedTransactionRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.feedItemId == this.feedItemId &&
+          other.batchId == this.batchId &&
+          other.kind == this.kind &&
+          other.quantity == this.quantity &&
+          other.unitCost == this.unitCost &&
+          other.occurredOn == this.occurredOn);
+}
+
+class FeedTransactionsCompanion extends UpdateCompanion<FeedTransactionRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> feedItemId;
+  final Value<String?> batchId;
+  final Value<String> kind;
+  final Value<double> quantity;
+  final Value<double?> unitCost;
+  final Value<DateTime> occurredOn;
+  final Value<int> rowid;
+  const FeedTransactionsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.feedItemId = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.unitCost = const Value.absent(),
+    this.occurredOn = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FeedTransactionsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String feedItemId,
+    this.batchId = const Value.absent(),
+    required String kind,
+    required double quantity,
+    this.unitCost = const Value.absent(),
+    required DateTime occurredOn,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       feedItemId = Value(feedItemId),
+       kind = Value(kind),
+       quantity = Value(quantity),
+       occurredOn = Value(occurredOn);
+  static Insertable<FeedTransactionRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? feedItemId,
+    Expression<String>? batchId,
+    Expression<String>? kind,
+    Expression<double>? quantity,
+    Expression<double>? unitCost,
+    Expression<DateTime>? occurredOn,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (feedItemId != null) 'feed_item_id': feedItemId,
+      if (batchId != null) 'batch_id': batchId,
+      if (kind != null) 'kind': kind,
+      if (quantity != null) 'quantity': quantity,
+      if (unitCost != null) 'unit_cost': unitCost,
+      if (occurredOn != null) 'occurred_on': occurredOn,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FeedTransactionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? feedItemId,
+    Value<String?>? batchId,
+    Value<String>? kind,
+    Value<double>? quantity,
+    Value<double?>? unitCost,
+    Value<DateTime>? occurredOn,
+    Value<int>? rowid,
+  }) {
+    return FeedTransactionsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      feedItemId: feedItemId ?? this.feedItemId,
+      batchId: batchId ?? this.batchId,
+      kind: kind ?? this.kind,
+      quantity: quantity ?? this.quantity,
+      unitCost: unitCost ?? this.unitCost,
+      occurredOn: occurredOn ?? this.occurredOn,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (feedItemId.present) {
+      map['feed_item_id'] = Variable<String>(feedItemId.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<double>(quantity.value);
+    }
+    if (unitCost.present) {
+      map['unit_cost'] = Variable<double>(unitCost.value);
+    }
+    if (occurredOn.present) {
+      map['occurred_on'] = Variable<DateTime>(occurredOn.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedTransactionsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('feedItemId: $feedItemId, ')
+          ..write('batchId: $batchId, ')
+          ..write('kind: $kind, ')
+          ..write('quantity: $quantity, ')
+          ..write('unitCost: $unitCost, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HealthRecordsTable extends HealthRecords
+    with TableInfo<$HealthRecordsTable, HealthRecordRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HealthRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _occurredOnMeta = const VerificationMeta(
+    'occurredOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> occurredOn = GeneratedColumn<DateTime>(
+    'occurred_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    occurredOn,
+    summary,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'health_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HealthRecordRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_batchIdMeta);
+    }
+    if (data.containsKey('occurred_on')) {
+      context.handle(
+        _occurredOnMeta,
+        occurredOn.isAcceptableOrUnknown(data['occurred_on']!, _occurredOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_occurredOnMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HealthRecordRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HealthRecordRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      )!,
+      occurredOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}occurred_on'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $HealthRecordsTable createAlias(String alias) {
+    return $HealthRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String batchId;
+  final DateTime occurredOn;
+  final String summary;
+  final String? notes;
+  const HealthRecordRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.batchId,
+    required this.occurredOn,
+    required this.summary,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['batch_id'] = Variable<String>(batchId);
+    map['occurred_on'] = Variable<DateTime>(occurredOn);
+    map['summary'] = Variable<String>(summary);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  HealthRecordsCompanion toCompanion(bool nullToAbsent) {
+    return HealthRecordsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      batchId: Value(batchId),
+      occurredOn: Value(occurredOn),
+      summary: Value(summary),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory HealthRecordRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HealthRecordRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      batchId: serializer.fromJson<String>(json['batchId']),
+      occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
+      summary: serializer.fromJson<String>(json['summary']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'batchId': serializer.toJson<String>(batchId),
+      'occurredOn': serializer.toJson<DateTime>(occurredOn),
+      'summary': serializer.toJson<String>(summary),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  HealthRecordRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? batchId,
+    DateTime? occurredOn,
+    String? summary,
+    Value<String?> notes = const Value.absent(),
+  }) => HealthRecordRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    batchId: batchId ?? this.batchId,
+    occurredOn: occurredOn ?? this.occurredOn,
+    summary: summary ?? this.summary,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  HealthRecordRow copyWithCompanion(HealthRecordsCompanion data) {
+    return HealthRecordRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      occurredOn: data.occurredOn.present
+          ? data.occurredOn.value
+          : this.occurredOn,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthRecordRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('summary: $summary, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    occurredOn,
+    summary,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HealthRecordRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.batchId == this.batchId &&
+          other.occurredOn == this.occurredOn &&
+          other.summary == this.summary &&
+          other.notes == this.notes);
+}
+
+class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> batchId;
+  final Value<DateTime> occurredOn;
+  final Value<String> summary;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const HealthRecordsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.occurredOn = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HealthRecordsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String batchId,
+    required DateTime occurredOn,
+    required String summary,
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       batchId = Value(batchId),
+       occurredOn = Value(occurredOn),
+       summary = Value(summary);
+  static Insertable<HealthRecordRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? batchId,
+    Expression<DateTime>? occurredOn,
+    Expression<String>? summary,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (batchId != null) 'batch_id': batchId,
+      if (occurredOn != null) 'occurred_on': occurredOn,
+      if (summary != null) 'summary': summary,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HealthRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? batchId,
+    Value<DateTime>? occurredOn,
+    Value<String>? summary,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return HealthRecordsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      batchId: batchId ?? this.batchId,
+      occurredOn: occurredOn ?? this.occurredOn,
+      summary: summary ?? this.summary,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (occurredOn.present) {
+      map['occurred_on'] = Variable<DateTime>(occurredOn.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('summary: $summary, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MortalityRecordsTable extends MortalityRecords
+    with TableInfo<$MortalityRecordsTable, MortalityRecordRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MortalityRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countMeta = const VerificationMeta('count');
+  @override
+  late final GeneratedColumn<int> count = GeneratedColumn<int>(
+    'count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _occurredOnMeta = const VerificationMeta(
+    'occurredOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> occurredOn = GeneratedColumn<DateTime>(
+    'occurred_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _causeMeta = const VerificationMeta('cause');
+  @override
+  late final GeneratedColumn<String> cause = GeneratedColumn<String>(
+    'cause',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    count,
+    occurredOn,
+    cause,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mortality_records';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MortalityRecordRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_batchIdMeta);
+    }
+    if (data.containsKey('count')) {
+      context.handle(
+        _countMeta,
+        count.isAcceptableOrUnknown(data['count']!, _countMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countMeta);
+    }
+    if (data.containsKey('occurred_on')) {
+      context.handle(
+        _occurredOnMeta,
+        occurredOn.isAcceptableOrUnknown(data['occurred_on']!, _occurredOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_occurredOnMeta);
+    }
+    if (data.containsKey('cause')) {
+      context.handle(
+        _causeMeta,
+        cause.isAcceptableOrUnknown(data['cause']!, _causeMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MortalityRecordRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MortalityRecordRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      )!,
+      count: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}count'],
+      )!,
+      occurredOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}occurred_on'],
+      )!,
+      cause: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cause'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $MortalityRecordsTable createAlias(String alias) {
+    return $MortalityRecordsTable(attachedDatabase, alias);
+  }
+}
+
+class MortalityRecordRow extends DataClass
+    implements Insertable<MortalityRecordRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String batchId;
+  final int count;
+  final DateTime occurredOn;
+  final String? cause;
+  final String? notes;
+  const MortalityRecordRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.batchId,
+    required this.count,
+    required this.occurredOn,
+    this.cause,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['batch_id'] = Variable<String>(batchId);
+    map['count'] = Variable<int>(count);
+    map['occurred_on'] = Variable<DateTime>(occurredOn);
+    if (!nullToAbsent || cause != null) {
+      map['cause'] = Variable<String>(cause);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  MortalityRecordsCompanion toCompanion(bool nullToAbsent) {
+    return MortalityRecordsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      batchId: Value(batchId),
+      count: Value(count),
+      occurredOn: Value(occurredOn),
+      cause: cause == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cause),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory MortalityRecordRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MortalityRecordRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      batchId: serializer.fromJson<String>(json['batchId']),
+      count: serializer.fromJson<int>(json['count']),
+      occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
+      cause: serializer.fromJson<String?>(json['cause']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'batchId': serializer.toJson<String>(batchId),
+      'count': serializer.toJson<int>(count),
+      'occurredOn': serializer.toJson<DateTime>(occurredOn),
+      'cause': serializer.toJson<String?>(cause),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  MortalityRecordRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? batchId,
+    int? count,
+    DateTime? occurredOn,
+    Value<String?> cause = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => MortalityRecordRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    batchId: batchId ?? this.batchId,
+    count: count ?? this.count,
+    occurredOn: occurredOn ?? this.occurredOn,
+    cause: cause.present ? cause.value : this.cause,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  MortalityRecordRow copyWithCompanion(MortalityRecordsCompanion data) {
+    return MortalityRecordRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      count: data.count.present ? data.count.value : this.count,
+      occurredOn: data.occurredOn.present
+          ? data.occurredOn.value
+          : this.occurredOn,
+      cause: data.cause.present ? data.cause.value : this.cause,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MortalityRecordRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('count: $count, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('cause: $cause, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    count,
+    occurredOn,
+    cause,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MortalityRecordRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.batchId == this.batchId &&
+          other.count == this.count &&
+          other.occurredOn == this.occurredOn &&
+          other.cause == this.cause &&
+          other.notes == this.notes);
+}
+
+class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> batchId;
+  final Value<int> count;
+  final Value<DateTime> occurredOn;
+  final Value<String?> cause;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const MortalityRecordsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.count = const Value.absent(),
+    this.occurredOn = const Value.absent(),
+    this.cause = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MortalityRecordsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String batchId,
+    required int count,
+    required DateTime occurredOn,
+    this.cause = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       batchId = Value(batchId),
+       count = Value(count),
+       occurredOn = Value(occurredOn);
+  static Insertable<MortalityRecordRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? batchId,
+    Expression<int>? count,
+    Expression<DateTime>? occurredOn,
+    Expression<String>? cause,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (batchId != null) 'batch_id': batchId,
+      if (count != null) 'count': count,
+      if (occurredOn != null) 'occurred_on': occurredOn,
+      if (cause != null) 'cause': cause,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MortalityRecordsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? batchId,
+    Value<int>? count,
+    Value<DateTime>? occurredOn,
+    Value<String?>? cause,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return MortalityRecordsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      batchId: batchId ?? this.batchId,
+      count: count ?? this.count,
+      occurredOn: occurredOn ?? this.occurredOn,
+      cause: cause ?? this.cause,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (count.present) {
+      map['count'] = Variable<int>(count.value);
+    }
+    if (occurredOn.present) {
+      map['occurred_on'] = Variable<DateTime>(occurredOn.value);
+    }
+    if (cause.present) {
+      map['cause'] = Variable<String>(cause.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MortalityRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('count: $count, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('cause: $cause, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FarmEventsTable extends FarmEvents
+    with TableInfo<$FarmEventsTable, FarmEventRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FarmEventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _eventTypeMeta = const VerificationMeta(
+    'eventType',
+  );
+  @override
+  late final GeneratedColumn<String> eventType = GeneratedColumn<String>(
+    'event_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _occurredOnMeta = const VerificationMeta(
+    'occurredOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> occurredOn = GeneratedColumn<DateTime>(
+    'occurred_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    eventType,
+    occurredOn,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'farm_events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FarmEventRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    }
+    if (data.containsKey('event_type')) {
+      context.handle(
+        _eventTypeMeta,
+        eventType.isAcceptableOrUnknown(data['event_type']!, _eventTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventTypeMeta);
+    }
+    if (data.containsKey('occurred_on')) {
+      context.handle(
+        _occurredOnMeta,
+        occurredOn.isAcceptableOrUnknown(data['occurred_on']!, _occurredOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_occurredOnMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FarmEventRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FarmEventRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      ),
+      eventType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_type'],
+      )!,
+      occurredOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}occurred_on'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $FarmEventsTable createAlias(String alias) {
+    return $FarmEventsTable(attachedDatabase, alias);
+  }
+}
+
+class FarmEventRow extends DataClass implements Insertable<FarmEventRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String? batchId;
+  final String eventType;
+  final DateTime occurredOn;
+  final String? notes;
+  const FarmEventRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    this.batchId,
+    required this.eventType,
+    required this.occurredOn,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    if (!nullToAbsent || batchId != null) {
+      map['batch_id'] = Variable<String>(batchId);
+    }
+    map['event_type'] = Variable<String>(eventType);
+    map['occurred_on'] = Variable<DateTime>(occurredOn);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  FarmEventsCompanion toCompanion(bool nullToAbsent) {
+    return FarmEventsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      batchId: batchId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(batchId),
+      eventType: Value(eventType),
+      occurredOn: Value(occurredOn),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory FarmEventRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FarmEventRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      batchId: serializer.fromJson<String?>(json['batchId']),
+      eventType: serializer.fromJson<String>(json['eventType']),
+      occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'batchId': serializer.toJson<String?>(batchId),
+      'eventType': serializer.toJson<String>(eventType),
+      'occurredOn': serializer.toJson<DateTime>(occurredOn),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  FarmEventRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    Value<String?> batchId = const Value.absent(),
+    String? eventType,
+    DateTime? occurredOn,
+    Value<String?> notes = const Value.absent(),
+  }) => FarmEventRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    batchId: batchId.present ? batchId.value : this.batchId,
+    eventType: eventType ?? this.eventType,
+    occurredOn: occurredOn ?? this.occurredOn,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  FarmEventRow copyWithCompanion(FarmEventsCompanion data) {
+    return FarmEventRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      eventType: data.eventType.present ? data.eventType.value : this.eventType,
+      occurredOn: data.occurredOn.present
+          ? data.occurredOn.value
+          : this.occurredOn,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmEventRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('eventType: $eventType, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    eventType,
+    occurredOn,
+    notes,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FarmEventRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.batchId == this.batchId &&
+          other.eventType == this.eventType &&
+          other.occurredOn == this.occurredOn &&
+          other.notes == this.notes);
+}
+
+class FarmEventsCompanion extends UpdateCompanion<FarmEventRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String?> batchId;
+  final Value<String> eventType;
+  final Value<DateTime> occurredOn;
+  final Value<String?> notes;
+  final Value<int> rowid;
+  const FarmEventsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.eventType = const Value.absent(),
+    this.occurredOn = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FarmEventsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    required String eventType,
+    required DateTime occurredOn,
+    this.notes = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       eventType = Value(eventType),
+       occurredOn = Value(occurredOn);
+  static Insertable<FarmEventRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? batchId,
+    Expression<String>? eventType,
+    Expression<DateTime>? occurredOn,
+    Expression<String>? notes,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (batchId != null) 'batch_id': batchId,
+      if (eventType != null) 'event_type': eventType,
+      if (occurredOn != null) 'occurred_on': occurredOn,
+      if (notes != null) 'notes': notes,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FarmEventsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String?>? batchId,
+    Value<String>? eventType,
+    Value<DateTime>? occurredOn,
+    Value<String?>? notes,
+    Value<int>? rowid,
+  }) {
+    return FarmEventsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      batchId: batchId ?? this.batchId,
+      eventType: eventType ?? this.eventType,
+      occurredOn: occurredOn ?? this.occurredOn,
+      notes: notes ?? this.notes,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (eventType.present) {
+      map['event_type'] = Variable<String>(eventType.value);
+    }
+    if (occurredOn.present) {
+      map['occurred_on'] = Variable<DateTime>(occurredOn.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FarmEventsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('eventType: $eventType, ')
+          ..write('occurredOn: $occurredOn, ')
+          ..write('notes: $notes, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EntitlementsTable extends Entitlements
+    with TableInfo<$EntitlementsTable, EntitlementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EntitlementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _planMeta = const VerificationMeta('plan');
+  @override
+  late final GeneratedColumn<String> plan = GeneratedColumn<String>(
+    'plan',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _validUntilMeta = const VerificationMeta(
+    'validUntil',
+  );
+  @override
+  late final GeneratedColumn<DateTime> validUntil = GeneratedColumn<DateTime>(
+    'valid_until',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastVerifiedAtMeta = const VerificationMeta(
+    'lastVerifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastVerifiedAt =
+      GeneratedColumn<DateTime>(
+        'last_verified_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    plan,
+    status,
+    validUntil,
+    lastVerifiedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'entitlements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EntitlementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('plan')) {
+      context.handle(
+        _planMeta,
+        plan.isAcceptableOrUnknown(data['plan']!, _planMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_planMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('valid_until')) {
+      context.handle(
+        _validUntilMeta,
+        validUntil.isAcceptableOrUnknown(data['valid_until']!, _validUntilMeta),
+      );
+    }
+    if (data.containsKey('last_verified_at')) {
+      context.handle(
+        _lastVerifiedAtMeta,
+        lastVerifiedAt.isAcceptableOrUnknown(
+          data['last_verified_at']!,
+          _lastVerifiedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EntitlementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EntitlementRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      plan: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      validUntil: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}valid_until'],
+      ),
+      lastVerifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_verified_at'],
+      ),
+    );
+  }
+
+  @override
+  $EntitlementsTable createAlias(String alias) {
+    return $EntitlementsTable(attachedDatabase, alias);
+  }
+}
+
+class EntitlementRow extends DataClass implements Insertable<EntitlementRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String plan;
+  final String status;
+  final DateTime? validUntil;
+  final DateTime? lastVerifiedAt;
+  const EntitlementRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.plan,
+    required this.status,
+    this.validUntil,
+    this.lastVerifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['plan'] = Variable<String>(plan);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || validUntil != null) {
+      map['valid_until'] = Variable<DateTime>(validUntil);
+    }
+    if (!nullToAbsent || lastVerifiedAt != null) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt);
+    }
+    return map;
+  }
+
+  EntitlementsCompanion toCompanion(bool nullToAbsent) {
+    return EntitlementsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      plan: Value(plan),
+      status: Value(status),
+      validUntil: validUntil == null && nullToAbsent
+          ? const Value.absent()
+          : Value(validUntil),
+      lastVerifiedAt: lastVerifiedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastVerifiedAt),
+    );
+  }
+
+  factory EntitlementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EntitlementRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      plan: serializer.fromJson<String>(json['plan']),
+      status: serializer.fromJson<String>(json['status']),
+      validUntil: serializer.fromJson<DateTime?>(json['validUntil']),
+      lastVerifiedAt: serializer.fromJson<DateTime?>(json['lastVerifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'plan': serializer.toJson<String>(plan),
+      'status': serializer.toJson<String>(status),
+      'validUntil': serializer.toJson<DateTime?>(validUntil),
+      'lastVerifiedAt': serializer.toJson<DateTime?>(lastVerifiedAt),
+    };
+  }
+
+  EntitlementRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? plan,
+    String? status,
+    Value<DateTime?> validUntil = const Value.absent(),
+    Value<DateTime?> lastVerifiedAt = const Value.absent(),
+  }) => EntitlementRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    plan: plan ?? this.plan,
+    status: status ?? this.status,
+    validUntil: validUntil.present ? validUntil.value : this.validUntil,
+    lastVerifiedAt: lastVerifiedAt.present
+        ? lastVerifiedAt.value
+        : this.lastVerifiedAt,
+  );
+  EntitlementRow copyWithCompanion(EntitlementsCompanion data) {
+    return EntitlementRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      plan: data.plan.present ? data.plan.value : this.plan,
+      status: data.status.present ? data.status.value : this.status,
+      validUntil: data.validUntil.present
+          ? data.validUntil.value
+          : this.validUntil,
+      lastVerifiedAt: data.lastVerifiedAt.present
+          ? data.lastVerifiedAt.value
+          : this.lastVerifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntitlementRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('plan: $plan, ')
+          ..write('status: $status, ')
+          ..write('validUntil: $validUntil, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    plan,
+    status,
+    validUntil,
+    lastVerifiedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EntitlementRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.plan == this.plan &&
+          other.status == this.status &&
+          other.validUntil == this.validUntil &&
+          other.lastVerifiedAt == this.lastVerifiedAt);
+}
+
+class EntitlementsCompanion extends UpdateCompanion<EntitlementRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> plan;
+  final Value<String> status;
+  final Value<DateTime?> validUntil;
+  final Value<DateTime?> lastVerifiedAt;
+  final Value<int> rowid;
+  const EntitlementsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.plan = const Value.absent(),
+    this.status = const Value.absent(),
+    this.validUntil = const Value.absent(),
+    this.lastVerifiedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EntitlementsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String plan,
+    required String status,
+    this.validUntil = const Value.absent(),
+    this.lastVerifiedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       plan = Value(plan),
+       status = Value(status);
+  static Insertable<EntitlementRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? plan,
+    Expression<String>? status,
+    Expression<DateTime>? validUntil,
+    Expression<DateTime>? lastVerifiedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (plan != null) 'plan': plan,
+      if (status != null) 'status': status,
+      if (validUntil != null) 'valid_until': validUntil,
+      if (lastVerifiedAt != null) 'last_verified_at': lastVerifiedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EntitlementsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? plan,
+    Value<String>? status,
+    Value<DateTime?>? validUntil,
+    Value<DateTime?>? lastVerifiedAt,
+    Value<int>? rowid,
+  }) {
+    return EntitlementsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      plan: plan ?? this.plan,
+      status: status ?? this.status,
+      validUntil: validUntil ?? this.validUntil,
+      lastVerifiedAt: lastVerifiedAt ?? this.lastVerifiedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (plan.present) {
+      map['plan'] = Variable<String>(plan.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (validUntil.present) {
+      map['valid_until'] = Variable<DateTime>(validUntil.value);
+    }
+    if (lastVerifiedAt.present) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntitlementsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('plan: $plan, ')
+          ..write('status: $status, ')
+          ..write('validUntil: $validUntil, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $OutboxTable extends Outbox with TableInfo<$OutboxTable, OutboxRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OutboxTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _opIdMeta = const VerificationMeta('opId');
+  @override
+  late final GeneratedColumn<String> opId = GeneratedColumn<String>(
+    'op_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetTableMeta = const VerificationMeta(
+    'targetTable',
+  );
+  @override
+  late final GeneratedColumn<String> targetTable = GeneratedColumn<String>(
+    'target_table',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rowIdMeta = const VerificationMeta('rowId');
+  @override
+  late final GeneratedColumn<String> rowId = GeneratedColumn<String>(
+    'row_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _opMeta = const VerificationMeta('op');
+  @override
+  late final GeneratedColumn<String> op = GeneratedColumn<String>(
+    'op',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    opId,
+    targetTable,
+    rowId,
+    op,
+    payload,
+    createdAt,
+    attempts,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'outbox';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OutboxRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('op_id')) {
+      context.handle(
+        _opIdMeta,
+        opId.isAcceptableOrUnknown(data['op_id']!, _opIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_opIdMeta);
+    }
+    if (data.containsKey('target_table')) {
+      context.handle(
+        _targetTableMeta,
+        targetTable.isAcceptableOrUnknown(
+          data['target_table']!,
+          _targetTableMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetTableMeta);
+    }
+    if (data.containsKey('row_id')) {
+      context.handle(
+        _rowIdMeta,
+        rowId.isAcceptableOrUnknown(data['row_id']!, _rowIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rowIdMeta);
+    }
+    if (data.containsKey('op')) {
+      context.handle(_opMeta, op.isAcceptableOrUnknown(data['op']!, _opMeta));
+    } else if (isInserting) {
+      context.missing(_opMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {opId};
+  @override
+  OutboxRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OutboxRow(
+      opId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}op_id'],
+      )!,
+      targetTable: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_table'],
+      )!,
+      rowId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}row_id'],
+      )!,
+      op: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}op'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $OutboxTable createAlias(String alias) {
+    return $OutboxTable(attachedDatabase, alias);
+  }
+}
+
+class OutboxRow extends DataClass implements Insertable<OutboxRow> {
+  final String opId;
+  final String targetTable;
+  final String rowId;
+  final String op;
+  final String payload;
+  final DateTime createdAt;
+  final int attempts;
+  final String? lastError;
+  const OutboxRow({
+    required this.opId,
+    required this.targetTable,
+    required this.rowId,
+    required this.op,
+    required this.payload,
+    required this.createdAt,
+    required this.attempts,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['op_id'] = Variable<String>(opId);
+    map['target_table'] = Variable<String>(targetTable);
+    map['row_id'] = Variable<String>(rowId);
+    map['op'] = Variable<String>(op);
+    map['payload'] = Variable<String>(payload);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  OutboxCompanion toCompanion(bool nullToAbsent) {
+    return OutboxCompanion(
+      opId: Value(opId),
+      targetTable: Value(targetTable),
+      rowId: Value(rowId),
+      op: Value(op),
+      payload: Value(payload),
+      createdAt: Value(createdAt),
+      attempts: Value(attempts),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory OutboxRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OutboxRow(
+      opId: serializer.fromJson<String>(json['opId']),
+      targetTable: serializer.fromJson<String>(json['targetTable']),
+      rowId: serializer.fromJson<String>(json['rowId']),
+      op: serializer.fromJson<String>(json['op']),
+      payload: serializer.fromJson<String>(json['payload']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'opId': serializer.toJson<String>(opId),
+      'targetTable': serializer.toJson<String>(targetTable),
+      'rowId': serializer.toJson<String>(rowId),
+      'op': serializer.toJson<String>(op),
+      'payload': serializer.toJson<String>(payload),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  OutboxRow copyWith({
+    String? opId,
+    String? targetTable,
+    String? rowId,
+    String? op,
+    String? payload,
+    DateTime? createdAt,
+    int? attempts,
+    Value<String?> lastError = const Value.absent(),
+  }) => OutboxRow(
+    opId: opId ?? this.opId,
+    targetTable: targetTable ?? this.targetTable,
+    rowId: rowId ?? this.rowId,
+    op: op ?? this.op,
+    payload: payload ?? this.payload,
+    createdAt: createdAt ?? this.createdAt,
+    attempts: attempts ?? this.attempts,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  OutboxRow copyWithCompanion(OutboxCompanion data) {
+    return OutboxRow(
+      opId: data.opId.present ? data.opId.value : this.opId,
+      targetTable: data.targetTable.present
+          ? data.targetTable.value
+          : this.targetTable,
+      rowId: data.rowId.present ? data.rowId.value : this.rowId,
+      op: data.op.present ? data.op.value : this.op,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OutboxRow(')
+          ..write('opId: $opId, ')
+          ..write('targetTable: $targetTable, ')
+          ..write('rowId: $rowId, ')
+          ..write('op: $op, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    opId,
+    targetTable,
+    rowId,
+    op,
+    payload,
+    createdAt,
+    attempts,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OutboxRow &&
+          other.opId == this.opId &&
+          other.targetTable == this.targetTable &&
+          other.rowId == this.rowId &&
+          other.op == this.op &&
+          other.payload == this.payload &&
+          other.createdAt == this.createdAt &&
+          other.attempts == this.attempts &&
+          other.lastError == this.lastError);
+}
+
+class OutboxCompanion extends UpdateCompanion<OutboxRow> {
+  final Value<String> opId;
+  final Value<String> targetTable;
+  final Value<String> rowId;
+  final Value<String> op;
+  final Value<String> payload;
+  final Value<DateTime> createdAt;
+  final Value<int> attempts;
+  final Value<String?> lastError;
+  final Value<int> rowid;
+  const OutboxCompanion({
+    this.opId = const Value.absent(),
+    this.targetTable = const Value.absent(),
+    this.rowId = const Value.absent(),
+    this.op = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OutboxCompanion.insert({
+    required String opId,
+    required String targetTable,
+    required String rowId,
+    required String op,
+    required String payload,
+    required DateTime createdAt,
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : opId = Value(opId),
+       targetTable = Value(targetTable),
+       rowId = Value(rowId),
+       op = Value(op),
+       payload = Value(payload),
+       createdAt = Value(createdAt);
+  static Insertable<OutboxRow> custom({
+    Expression<String>? opId,
+    Expression<String>? targetTable,
+    Expression<String>? rowId,
+    Expression<String>? op,
+    Expression<String>? payload,
+    Expression<DateTime>? createdAt,
+    Expression<int>? attempts,
+    Expression<String>? lastError,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (opId != null) 'op_id': opId,
+      if (targetTable != null) 'target_table': targetTable,
+      if (rowId != null) 'row_id': rowId,
+      if (op != null) 'op': op,
+      if (payload != null) 'payload': payload,
+      if (createdAt != null) 'created_at': createdAt,
+      if (attempts != null) 'attempts': attempts,
+      if (lastError != null) 'last_error': lastError,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OutboxCompanion copyWith({
+    Value<String>? opId,
+    Value<String>? targetTable,
+    Value<String>? rowId,
+    Value<String>? op,
+    Value<String>? payload,
+    Value<DateTime>? createdAt,
+    Value<int>? attempts,
+    Value<String?>? lastError,
+    Value<int>? rowid,
+  }) {
+    return OutboxCompanion(
+      opId: opId ?? this.opId,
+      targetTable: targetTable ?? this.targetTable,
+      rowId: rowId ?? this.rowId,
+      op: op ?? this.op,
+      payload: payload ?? this.payload,
+      createdAt: createdAt ?? this.createdAt,
+      attempts: attempts ?? this.attempts,
+      lastError: lastError ?? this.lastError,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (opId.present) {
+      map['op_id'] = Variable<String>(opId.value);
+    }
+    if (targetTable.present) {
+      map['target_table'] = Variable<String>(targetTable.value);
+    }
+    if (rowId.present) {
+      map['row_id'] = Variable<String>(rowId.value);
+    }
+    if (op.present) {
+      map['op'] = Variable<String>(op.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OutboxCompanion(')
+          ..write('opId: $opId, ')
+          ..write('targetTable: $targetTable, ')
+          ..write('rowId: $rowId, ')
+          ..write('op: $op, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SyncCursorsTable extends SyncCursors
+    with TableInfo<$SyncCursorsTable, SyncCursorRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SyncCursorsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _syncTableMeta = const VerificationMeta(
+    'syncTable',
+  );
+  @override
+  late final GeneratedColumn<String> syncTable = GeneratedColumn<String>(
+    'sync_table',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _cursorMeta = const VerificationMeta('cursor');
+  @override
+  late final GeneratedColumn<int> cursor = GeneratedColumn<int>(
+    'cursor',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [syncTable, cursor];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'sync_cursors';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SyncCursorRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('sync_table')) {
+      context.handle(
+        _syncTableMeta,
+        syncTable.isAcceptableOrUnknown(data['sync_table']!, _syncTableMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_syncTableMeta);
+    }
+    if (data.containsKey('cursor')) {
+      context.handle(
+        _cursorMeta,
+        cursor.isAcceptableOrUnknown(data['cursor']!, _cursorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {syncTable};
+  @override
+  SyncCursorRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SyncCursorRow(
+      syncTable: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_table'],
+      )!,
+      cursor: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cursor'],
+      )!,
+    );
+  }
+
+  @override
+  $SyncCursorsTable createAlias(String alias) {
+    return $SyncCursorsTable(attachedDatabase, alias);
+  }
+}
+
+class SyncCursorRow extends DataClass implements Insertable<SyncCursorRow> {
+  final String syncTable;
+  final int cursor;
+  const SyncCursorRow({required this.syncTable, required this.cursor});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['sync_table'] = Variable<String>(syncTable);
+    map['cursor'] = Variable<int>(cursor);
+    return map;
+  }
+
+  SyncCursorsCompanion toCompanion(bool nullToAbsent) {
+    return SyncCursorsCompanion(
+      syncTable: Value(syncTable),
+      cursor: Value(cursor),
+    );
+  }
+
+  factory SyncCursorRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SyncCursorRow(
+      syncTable: serializer.fromJson<String>(json['syncTable']),
+      cursor: serializer.fromJson<int>(json['cursor']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'syncTable': serializer.toJson<String>(syncTable),
+      'cursor': serializer.toJson<int>(cursor),
+    };
+  }
+
+  SyncCursorRow copyWith({String? syncTable, int? cursor}) => SyncCursorRow(
+    syncTable: syncTable ?? this.syncTable,
+    cursor: cursor ?? this.cursor,
+  );
+  SyncCursorRow copyWithCompanion(SyncCursorsCompanion data) {
+    return SyncCursorRow(
+      syncTable: data.syncTable.present ? data.syncTable.value : this.syncTable,
+      cursor: data.cursor.present ? data.cursor.value : this.cursor,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncCursorRow(')
+          ..write('syncTable: $syncTable, ')
+          ..write('cursor: $cursor')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(syncTable, cursor);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SyncCursorRow &&
+          other.syncTable == this.syncTable &&
+          other.cursor == this.cursor);
+}
+
+class SyncCursorsCompanion extends UpdateCompanion<SyncCursorRow> {
+  final Value<String> syncTable;
+  final Value<int> cursor;
+  final Value<int> rowid;
+  const SyncCursorsCompanion({
+    this.syncTable = const Value.absent(),
+    this.cursor = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SyncCursorsCompanion.insert({
+    required String syncTable,
+    this.cursor = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : syncTable = Value(syncTable);
+  static Insertable<SyncCursorRow> custom({
+    Expression<String>? syncTable,
+    Expression<int>? cursor,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (syncTable != null) 'sync_table': syncTable,
+      if (cursor != null) 'cursor': cursor,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SyncCursorsCompanion copyWith({
+    Value<String>? syncTable,
+    Value<int>? cursor,
+    Value<int>? rowid,
+  }) {
+    return SyncCursorsCompanion(
+      syncTable: syncTable ?? this.syncTable,
+      cursor: cursor ?? this.cursor,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (syncTable.present) {
+      map['sync_table'] = Variable<String>(syncTable.value);
+    }
+    if (cursor.present) {
+      map['cursor'] = Variable<int>(cursor.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SyncCursorsCompanion(')
+          ..write('syncTable: $syncTable, ')
+          ..write('cursor: $cursor, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AuthSnapshotTable extends AuthSnapshot
+    with TableInfo<$AuthSnapshotTable, AuthSnapshotRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AuthSnapshotTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _farmIdsJsonMeta = const VerificationMeta(
+    'farmIdsJson',
+  );
+  @override
+  late final GeneratedColumn<String> farmIdsJson = GeneratedColumn<String>(
+    'farm_ids_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastVerifiedAtMeta = const VerificationMeta(
+    'lastVerifiedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastVerifiedAt =
+      GeneratedColumn<DateTime>(
+        'last_verified_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userId,
+    email,
+    phone,
+    farmIdsJson,
+    lastVerifiedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'auth_snapshot';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AuthSnapshotRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('farm_ids_json')) {
+      context.handle(
+        _farmIdsJsonMeta,
+        farmIdsJson.isAcceptableOrUnknown(
+          data['farm_ids_json']!,
+          _farmIdsJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdsJsonMeta);
+    }
+    if (data.containsKey('last_verified_at')) {
+      context.handle(
+        _lastVerifiedAtMeta,
+        lastVerifiedAt.isAcceptableOrUnknown(
+          data['last_verified_at']!,
+          _lastVerifiedAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AuthSnapshotRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AuthSnapshotRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      farmIdsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_ids_json'],
+      )!,
+      lastVerifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_verified_at'],
+      ),
+    );
+  }
+
+  @override
+  $AuthSnapshotTable createAlias(String alias) {
+    return $AuthSnapshotTable(attachedDatabase, alias);
+  }
+}
+
+class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
+  final int id;
+  final String userId;
+  final String? email;
+  final String? phone;
+  final String farmIdsJson;
+  final DateTime? lastVerifiedAt;
+  const AuthSnapshotRow({
+    required this.id,
+    required this.userId,
+    this.email,
+    this.phone,
+    required this.farmIdsJson,
+    this.lastVerifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_id'] = Variable<String>(userId);
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    map['farm_ids_json'] = Variable<String>(farmIdsJson);
+    if (!nullToAbsent || lastVerifiedAt != null) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt);
+    }
+    return map;
+  }
+
+  AuthSnapshotCompanion toCompanion(bool nullToAbsent) {
+    return AuthSnapshotCompanion(
+      id: Value(id),
+      userId: Value(userId),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      farmIdsJson: Value(farmIdsJson),
+      lastVerifiedAt: lastVerifiedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastVerifiedAt),
+    );
+  }
+
+  factory AuthSnapshotRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AuthSnapshotRow(
+      id: serializer.fromJson<int>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      email: serializer.fromJson<String?>(json['email']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      farmIdsJson: serializer.fromJson<String>(json['farmIdsJson']),
+      lastVerifiedAt: serializer.fromJson<DateTime?>(json['lastVerifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'userId': serializer.toJson<String>(userId),
+      'email': serializer.toJson<String?>(email),
+      'phone': serializer.toJson<String?>(phone),
+      'farmIdsJson': serializer.toJson<String>(farmIdsJson),
+      'lastVerifiedAt': serializer.toJson<DateTime?>(lastVerifiedAt),
+    };
+  }
+
+  AuthSnapshotRow copyWith({
+    int? id,
+    String? userId,
+    Value<String?> email = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    String? farmIdsJson,
+    Value<DateTime?> lastVerifiedAt = const Value.absent(),
+  }) => AuthSnapshotRow(
+    id: id ?? this.id,
+    userId: userId ?? this.userId,
+    email: email.present ? email.value : this.email,
+    phone: phone.present ? phone.value : this.phone,
+    farmIdsJson: farmIdsJson ?? this.farmIdsJson,
+    lastVerifiedAt: lastVerifiedAt.present
+        ? lastVerifiedAt.value
+        : this.lastVerifiedAt,
+  );
+  AuthSnapshotRow copyWithCompanion(AuthSnapshotCompanion data) {
+    return AuthSnapshotRow(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      email: data.email.present ? data.email.value : this.email,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      farmIdsJson: data.farmIdsJson.present
+          ? data.farmIdsJson.value
+          : this.farmIdsJson,
+      lastVerifiedAt: data.lastVerifiedAt.present
+          ? data.lastVerifiedAt.value
+          : this.lastVerifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuthSnapshotRow(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('farmIdsJson: $farmIdsJson, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, userId, email, phone, farmIdsJson, lastVerifiedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AuthSnapshotRow &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.email == this.email &&
+          other.phone == this.phone &&
+          other.farmIdsJson == this.farmIdsJson &&
+          other.lastVerifiedAt == this.lastVerifiedAt);
+}
+
+class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
+  final Value<int> id;
+  final Value<String> userId;
+  final Value<String?> email;
+  final Value<String?> phone;
+  final Value<String> farmIdsJson;
+  final Value<DateTime?> lastVerifiedAt;
+  const AuthSnapshotCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.farmIdsJson = const Value.absent(),
+    this.lastVerifiedAt = const Value.absent(),
+  });
+  AuthSnapshotCompanion.insert({
+    this.id = const Value.absent(),
+    required String userId,
+    this.email = const Value.absent(),
+    this.phone = const Value.absent(),
+    required String farmIdsJson,
+    this.lastVerifiedAt = const Value.absent(),
+  }) : userId = Value(userId),
+       farmIdsJson = Value(farmIdsJson);
+  static Insertable<AuthSnapshotRow> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<String>? email,
+    Expression<String>? phone,
+    Expression<String>? farmIdsJson,
+    Expression<DateTime>? lastVerifiedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (farmIdsJson != null) 'farm_ids_json': farmIdsJson,
+      if (lastVerifiedAt != null) 'last_verified_at': lastVerifiedAt,
+    });
+  }
+
+  AuthSnapshotCompanion copyWith({
+    Value<int>? id,
+    Value<String>? userId,
+    Value<String?>? email,
+    Value<String?>? phone,
+    Value<String>? farmIdsJson,
+    Value<DateTime?>? lastVerifiedAt,
+  }) {
+    return AuthSnapshotCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      farmIdsJson: farmIdsJson ?? this.farmIdsJson,
+      lastVerifiedAt: lastVerifiedAt ?? this.lastVerifiedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (farmIdsJson.present) {
+      map['farm_ids_json'] = Variable<String>(farmIdsJson.value);
+    }
+    if (lastVerifiedAt.present) {
+      map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AuthSnapshotCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('email: $email, ')
+          ..write('phone: $phone, ')
+          ..write('farmIdsJson: $farmIdsJson, ')
+          ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $FarmsTable farms = $FarmsTable(this);
+  late final $FarmMembersTable farmMembers = $FarmMembersTable(this);
+  late final $BatchesTable batches = $BatchesTable(this);
+  late final $ProgrammesTable programmes = $ProgrammesTable(this);
+  late final $ProgrammeStepsTable programmeSteps = $ProgrammeStepsTable(this);
+  late final $VaccinationTasksTable vaccinationTasks = $VaccinationTasksTable(
+    this,
+  );
+  late final $FeedItemsTable feedItems = $FeedItemsTable(this);
+  late final $FeedTransactionsTable feedTransactions = $FeedTransactionsTable(
+    this,
+  );
+  late final $HealthRecordsTable healthRecords = $HealthRecordsTable(this);
+  late final $MortalityRecordsTable mortalityRecords = $MortalityRecordsTable(
+    this,
+  );
+  late final $FarmEventsTable farmEvents = $FarmEventsTable(this);
+  late final $EntitlementsTable entitlements = $EntitlementsTable(this);
+  late final $OutboxTable outbox = $OutboxTable(this);
+  late final $SyncCursorsTable syncCursors = $SyncCursorsTable(this);
+  late final $AuthSnapshotTable authSnapshot = $AuthSnapshotTable(this);
+  late final OutboxDao outboxDao = OutboxDao(this as AppDatabase);
+  late final SyncDao syncDao = SyncDao(this as AppDatabase);
+  @override
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    farms,
+    farmMembers,
+    batches,
+    programmes,
+    programmeSteps,
+    vaccinationTasks,
+    feedItems,
+    feedTransactions,
+    healthRecords,
+    mortalityRecords,
+    farmEvents,
+    entitlements,
+    outbox,
+    syncCursors,
+    authSnapshot,
+  ];
+}
+
+typedef $$FarmsTableCreateCompanionBuilder = FarmsCompanion Function({
+  required String id,
+  required String farmId,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  required String name,
+  Value<String?> location,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+typedef $$FarmsTableUpdateCompanionBuilder = FarmsCompanion Function({
+  Value<String> id,
+  Value<String> farmId,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String> name,
+  Value<String?> location,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+
+class $$FarmsTableFilterComposer extends Composer<_$AppDatabase, $FarmsTable> {
+  $$FarmsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FarmsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FarmsTable> {
+  $$FarmsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FarmsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FarmsTable> {
+  $$FarmsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get location =>
+      $composableBuilder(column: $table.location, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$FarmsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FarmsTable,
+          FarmRow,
+          $$FarmsTableFilterComposer,
+          $$FarmsTableOrderingComposer,
+          $$FarmsTableAnnotationComposer,
+          $$FarmsTableCreateCompanionBuilder,
+          $$FarmsTableUpdateCompanionBuilder,
+          (FarmRow, BaseReferences<_$AppDatabase, $FarmsTable, FarmRow>),
+          FarmRow,
+          PrefetchHooks Function()
+        > {
+  $$FarmsTableTableManager(_$AppDatabase db, $FarmsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FarmsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FarmsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FarmsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> location = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FarmsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                location: location,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String name,
+                Value<String?> location = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FarmsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                location: location,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FarmsTable, FarmRow>(table),
+                  BaseReferences<_$AppDatabase, $FarmsTable, FarmRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FarmsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FarmsTable,
+      FarmRow,
+      $$FarmsTableFilterComposer,
+      $$FarmsTableOrderingComposer,
+      $$FarmsTableAnnotationComposer,
+      $$FarmsTableCreateCompanionBuilder,
+      $$FarmsTableUpdateCompanionBuilder,
+      (FarmRow, BaseReferences<_$AppDatabase, $FarmsTable, FarmRow>),
+      FarmRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FarmMembersTableCreateCompanionBuilder =
+    FarmMembersCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String userId,
+      required String role,
+      Value<int> rowid,
+    });
+typedef $$FarmMembersTableUpdateCompanionBuilder =
+    FarmMembersCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> userId,
+      Value<String> role,
+      Value<int> rowid,
+    });
+
+class $$FarmMembersTableFilterComposer
+    extends Composer<_$AppDatabase, $FarmMembersTable> {
+  $$FarmMembersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FarmMembersTableOrderingComposer
+    extends Composer<_$AppDatabase, $FarmMembersTable> {
+  $$FarmMembersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FarmMembersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FarmMembersTable> {
+  $$FarmMembersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+}
+
+class $$FarmMembersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FarmMembersTable,
+          FarmMemberRow,
+          $$FarmMembersTableFilterComposer,
+          $$FarmMembersTableOrderingComposer,
+          $$FarmMembersTableAnnotationComposer,
+          $$FarmMembersTableCreateCompanionBuilder,
+          $$FarmMembersTableUpdateCompanionBuilder,
+          (
+            FarmMemberRow,
+            BaseReferences<_$AppDatabase, $FarmMembersTable, FarmMemberRow>,
+          ),
+          FarmMemberRow,
+          PrefetchHooks Function()
+        > {
+  $$FarmMembersTableTableManager(_$AppDatabase db, $FarmMembersTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FarmMembersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FarmMembersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FarmMembersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FarmMembersCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                userId: userId,
+                role: role,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String userId,
+                required String role,
+                Value<int> rowid = const Value.absent(),
+              }) => FarmMembersCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                userId: userId,
+                role: role,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FarmMembersTable, FarmMemberRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $FarmMembersTable,
+                    FarmMemberRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FarmMembersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FarmMembersTable,
+      FarmMemberRow,
+      $$FarmMembersTableFilterComposer,
+      $$FarmMembersTableOrderingComposer,
+      $$FarmMembersTableAnnotationComposer,
+      $$FarmMembersTableCreateCompanionBuilder,
+      $$FarmMembersTableUpdateCompanionBuilder,
+      (
+        FarmMemberRow,
+        BaseReferences<_$AppDatabase, $FarmMembersTable, FarmMemberRow>,
+      ),
+      FarmMemberRow,
+      PrefetchHooks Function()
+    >;
+typedef $$BatchesTableCreateCompanionBuilder = BatchesCompanion Function({
+  required String id,
+  required String farmId,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  required String name,
+  required String birdType,
+  required int initialCount,
+  required DateTime acquiredOn,
+  Value<int> ageAtAcquisitionDays,
+  Value<bool?> hatcheryVaccinated,
+  Value<String?> source,
+  required String status,
+  required String programmeId,
+  required int programmeVersion,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+typedef $$BatchesTableUpdateCompanionBuilder = BatchesCompanion Function({
+  Value<String> id,
+  Value<String> farmId,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String> name,
+  Value<String> birdType,
+  Value<int> initialCount,
+  Value<DateTime> acquiredOn,
+  Value<int> ageAtAcquisitionDays,
+  Value<bool?> hatcheryVaccinated,
+  Value<String?> source,
+  Value<String> status,
+  Value<String> programmeId,
+  Value<int> programmeVersion,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+
+class $$BatchesTableFilterComposer
+    extends Composer<_$AppDatabase, $BatchesTable> {
+  $$BatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get birdType => $composableBuilder(
+    column: $table.birdType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get initialCount => $composableBuilder(
+    column: $table.initialCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get acquiredOn => $composableBuilder(
+    column: $table.acquiredOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ageAtAcquisitionDays => $composableBuilder(
+    column: $table.ageAtAcquisitionDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hatcheryVaccinated => $composableBuilder(
+    column: $table.hatcheryVaccinated,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get programmeVersion => $composableBuilder(
+    column: $table.programmeVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BatchesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BatchesTable> {
+  $$BatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get birdType => $composableBuilder(
+    column: $table.birdType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get initialCount => $composableBuilder(
+    column: $table.initialCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get acquiredOn => $composableBuilder(
+    column: $table.acquiredOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ageAtAcquisitionDays => $composableBuilder(
+    column: $table.ageAtAcquisitionDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hatcheryVaccinated => $composableBuilder(
+    column: $table.hatcheryVaccinated,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get programmeVersion => $composableBuilder(
+    column: $table.programmeVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BatchesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BatchesTable> {
+  $$BatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get birdType =>
+      $composableBuilder(column: $table.birdType, builder: (column) => column);
+
+  GeneratedColumn<int> get initialCount => $composableBuilder(
+    column: $table.initialCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get acquiredOn => $composableBuilder(
+    column: $table.acquiredOn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ageAtAcquisitionDays => $composableBuilder(
+    column: $table.ageAtAcquisitionDays,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get hatcheryVaccinated => $composableBuilder(
+    column: $table.hatcheryVaccinated,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get programmeVersion => $composableBuilder(
+    column: $table.programmeVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$BatchesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BatchesTable,
+          BatchRow,
+          $$BatchesTableFilterComposer,
+          $$BatchesTableOrderingComposer,
+          $$BatchesTableAnnotationComposer,
+          $$BatchesTableCreateCompanionBuilder,
+          $$BatchesTableUpdateCompanionBuilder,
+          (BatchRow, BaseReferences<_$AppDatabase, $BatchesTable, BatchRow>),
+          BatchRow,
+          PrefetchHooks Function()
+        > {
+  $$BatchesTableTableManager(_$AppDatabase db, $BatchesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BatchesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BatchesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BatchesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> birdType = const Value.absent(),
+                Value<int> initialCount = const Value.absent(),
+                Value<DateTime> acquiredOn = const Value.absent(),
+                Value<int> ageAtAcquisitionDays = const Value.absent(),
+                Value<bool?> hatcheryVaccinated = const Value.absent(),
+                Value<String?> source = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> programmeId = const Value.absent(),
+                Value<int> programmeVersion = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BatchesCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                birdType: birdType,
+                initialCount: initialCount,
+                acquiredOn: acquiredOn,
+                ageAtAcquisitionDays: ageAtAcquisitionDays,
+                hatcheryVaccinated: hatcheryVaccinated,
+                source: source,
+                status: status,
+                programmeId: programmeId,
+                programmeVersion: programmeVersion,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String name,
+                required String birdType,
+                required int initialCount,
+                required DateTime acquiredOn,
+                Value<int> ageAtAcquisitionDays = const Value.absent(),
+                Value<bool?> hatcheryVaccinated = const Value.absent(),
+                Value<String?> source = const Value.absent(),
+                required String status,
+                required String programmeId,
+                required int programmeVersion,
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BatchesCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                birdType: birdType,
+                initialCount: initialCount,
+                acquiredOn: acquiredOn,
+                ageAtAcquisitionDays: ageAtAcquisitionDays,
+                hatcheryVaccinated: hatcheryVaccinated,
+                source: source,
+                status: status,
+                programmeId: programmeId,
+                programmeVersion: programmeVersion,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BatchesTable, BatchRow>(table),
+                  BaseReferences<_$AppDatabase, $BatchesTable, BatchRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BatchesTable,
+      BatchRow,
+      $$BatchesTableFilterComposer,
+      $$BatchesTableOrderingComposer,
+      $$BatchesTableAnnotationComposer,
+      $$BatchesTableCreateCompanionBuilder,
+      $$BatchesTableUpdateCompanionBuilder,
+      (BatchRow, BaseReferences<_$AppDatabase, $BatchesTable, BatchRow>),
+      BatchRow,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgrammesTableCreateCompanionBuilder = ProgrammesCompanion Function({
+  required String id,
+  required String farmId,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  required String name,
+  required int version,
+  required String birdTypesJson,
+  Value<int> rowid,
+});
+typedef $$ProgrammesTableUpdateCompanionBuilder = ProgrammesCompanion Function({
+  Value<String> id,
+  Value<String> farmId,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String> name,
+  Value<int> version,
+  Value<String> birdTypesJson,
+  Value<int> rowid,
+});
+
+class $$ProgrammesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgrammesTable> {
+  $$ProgrammesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get birdTypesJson => $composableBuilder(
+    column: $table.birdTypesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgrammesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgrammesTable> {
+  $$ProgrammesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get birdTypesJson => $composableBuilder(
+    column: $table.birdTypesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgrammesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgrammesTable> {
+  $$ProgrammesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get birdTypesJson => $composableBuilder(
+    column: $table.birdTypesJson,
+    builder: (column) => column,
+  );
+}
+
+class $$ProgrammesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgrammesTable,
+          ProgrammeRow,
+          $$ProgrammesTableFilterComposer,
+          $$ProgrammesTableOrderingComposer,
+          $$ProgrammesTableAnnotationComposer,
+          $$ProgrammesTableCreateCompanionBuilder,
+          $$ProgrammesTableUpdateCompanionBuilder,
+          (
+            ProgrammeRow,
+            BaseReferences<_$AppDatabase, $ProgrammesTable, ProgrammeRow>,
+          ),
+          ProgrammeRow,
+          PrefetchHooks Function()
+        > {
+  $$ProgrammesTableTableManager(_$AppDatabase db, $ProgrammesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgrammesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgrammesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgrammesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<String> birdTypesJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgrammesCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                version: version,
+                birdTypesJson: birdTypesJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String name,
+                required int version,
+                required String birdTypesJson,
+                Value<int> rowid = const Value.absent(),
+              }) => ProgrammesCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                version: version,
+                birdTypesJson: birdTypesJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ProgrammesTable, ProgrammeRow>(table),
+                  BaseReferences<_$AppDatabase, $ProgrammesTable, ProgrammeRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgrammesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgrammesTable,
+      ProgrammeRow,
+      $$ProgrammesTableFilterComposer,
+      $$ProgrammesTableOrderingComposer,
+      $$ProgrammesTableAnnotationComposer,
+      $$ProgrammesTableCreateCompanionBuilder,
+      $$ProgrammesTableUpdateCompanionBuilder,
+      (
+        ProgrammeRow,
+        BaseReferences<_$AppDatabase, $ProgrammesTable, ProgrammeRow>,
+      ),
+      ProgrammeRow,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgrammeStepsTableCreateCompanionBuilder =
+    ProgrammeStepsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String programmeId,
+      required String name,
+      required int ageDays,
+      required String location,
+      Value<bool> optional,
+      Value<int> dueWindowDaysBefore,
+      Value<int> dueWindowDaysAfter,
+      Value<String?> recurringJson,
+      Value<int> rowid,
+    });
+typedef $$ProgrammeStepsTableUpdateCompanionBuilder =
+    ProgrammeStepsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> programmeId,
+      Value<String> name,
+      Value<int> ageDays,
+      Value<String> location,
+      Value<bool> optional,
+      Value<int> dueWindowDaysBefore,
+      Value<int> dueWindowDaysAfter,
+      Value<String?> recurringJson,
+      Value<int> rowid,
+    });
+
+class $$ProgrammeStepsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgrammeStepsTable> {
+  $$ProgrammeStepsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ageDays => $composableBuilder(
+    column: $table.ageDays,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get optional => $composableBuilder(
+    column: $table.optional,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueWindowDaysBefore => $composableBuilder(
+    column: $table.dueWindowDaysBefore,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueWindowDaysAfter => $composableBuilder(
+    column: $table.dueWindowDaysAfter,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recurringJson => $composableBuilder(
+    column: $table.recurringJson,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgrammeStepsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgrammeStepsTable> {
+  $$ProgrammeStepsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ageDays => $composableBuilder(
+    column: $table.ageDays,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get location => $composableBuilder(
+    column: $table.location,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get optional => $composableBuilder(
+    column: $table.optional,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dueWindowDaysBefore => $composableBuilder(
+    column: $table.dueWindowDaysBefore,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dueWindowDaysAfter => $composableBuilder(
+    column: $table.dueWindowDaysAfter,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recurringJson => $composableBuilder(
+    column: $table.recurringJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgrammeStepsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgrammeStepsTable> {
+  $$ProgrammeStepsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get programmeId => $composableBuilder(
+    column: $table.programmeId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get ageDays =>
+      $composableBuilder(column: $table.ageDays, builder: (column) => column);
+
+  GeneratedColumn<String> get location =>
+      $composableBuilder(column: $table.location, builder: (column) => column);
+
+  GeneratedColumn<bool> get optional =>
+      $composableBuilder(column: $table.optional, builder: (column) => column);
+
+  GeneratedColumn<int> get dueWindowDaysBefore => $composableBuilder(
+    column: $table.dueWindowDaysBefore,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dueWindowDaysAfter => $composableBuilder(
+    column: $table.dueWindowDaysAfter,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get recurringJson => $composableBuilder(
+    column: $table.recurringJson,
+    builder: (column) => column,
+  );
+}
+
+class $$ProgrammeStepsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgrammeStepsTable,
+          ProgrammeStepRow,
+          $$ProgrammeStepsTableFilterComposer,
+          $$ProgrammeStepsTableOrderingComposer,
+          $$ProgrammeStepsTableAnnotationComposer,
+          $$ProgrammeStepsTableCreateCompanionBuilder,
+          $$ProgrammeStepsTableUpdateCompanionBuilder,
+          (
+            ProgrammeStepRow,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgrammeStepsTable,
+              ProgrammeStepRow
+            >,
+          ),
+          ProgrammeStepRow,
+          PrefetchHooks Function()
+        > {
+  $$ProgrammeStepsTableTableManager(
+    _$AppDatabase db,
+    $ProgrammeStepsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgrammeStepsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgrammeStepsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgrammeStepsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> programmeId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> ageDays = const Value.absent(),
+                Value<String> location = const Value.absent(),
+                Value<bool> optional = const Value.absent(),
+                Value<int> dueWindowDaysBefore = const Value.absent(),
+                Value<int> dueWindowDaysAfter = const Value.absent(),
+                Value<String?> recurringJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgrammeStepsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                programmeId: programmeId,
+                name: name,
+                ageDays: ageDays,
+                location: location,
+                optional: optional,
+                dueWindowDaysBefore: dueWindowDaysBefore,
+                dueWindowDaysAfter: dueWindowDaysAfter,
+                recurringJson: recurringJson,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String programmeId,
+                required String name,
+                required int ageDays,
+                required String location,
+                Value<bool> optional = const Value.absent(),
+                Value<int> dueWindowDaysBefore = const Value.absent(),
+                Value<int> dueWindowDaysAfter = const Value.absent(),
+                Value<String?> recurringJson = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgrammeStepsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                programmeId: programmeId,
+                name: name,
+                ageDays: ageDays,
+                location: location,
+                optional: optional,
+                dueWindowDaysBefore: dueWindowDaysBefore,
+                dueWindowDaysAfter: dueWindowDaysAfter,
+                recurringJson: recurringJson,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ProgrammeStepsTable, ProgrammeStepRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ProgrammeStepsTable,
+                    ProgrammeStepRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgrammeStepsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgrammeStepsTable,
+      ProgrammeStepRow,
+      $$ProgrammeStepsTableFilterComposer,
+      $$ProgrammeStepsTableOrderingComposer,
+      $$ProgrammeStepsTableAnnotationComposer,
+      $$ProgrammeStepsTableCreateCompanionBuilder,
+      $$ProgrammeStepsTableUpdateCompanionBuilder,
+      (
+        ProgrammeStepRow,
+        BaseReferences<_$AppDatabase, $ProgrammeStepsTable, ProgrammeStepRow>,
+      ),
+      ProgrammeStepRow,
+      PrefetchHooks Function()
+    >;
+typedef $$VaccinationTasksTableCreateCompanionBuilder =
+    VaccinationTasksCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String batchId,
+      required String stepId,
+      required DateTime dueOn,
+      required String status,
+      Value<DateTime?> doneOn,
+      Value<String?> productUsed,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$VaccinationTasksTableUpdateCompanionBuilder =
+    VaccinationTasksCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> batchId,
+      Value<String> stepId,
+      Value<DateTime> dueOn,
+      Value<String> status,
+      Value<DateTime?> doneOn,
+      Value<String?> productUsed,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$VaccinationTasksTableFilterComposer
+    extends Composer<_$AppDatabase, $VaccinationTasksTable> {
+  $$VaccinationTasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stepId => $composableBuilder(
+    column: $table.stepId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dueOn => $composableBuilder(
+    column: $table.dueOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get doneOn => $composableBuilder(
+    column: $table.doneOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productUsed => $composableBuilder(
+    column: $table.productUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VaccinationTasksTableOrderingComposer
+    extends Composer<_$AppDatabase, $VaccinationTasksTable> {
+  $$VaccinationTasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stepId => $composableBuilder(
+    column: $table.stepId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dueOn => $composableBuilder(
+    column: $table.dueOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get doneOn => $composableBuilder(
+    column: $table.doneOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get productUsed => $composableBuilder(
+    column: $table.productUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VaccinationTasksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VaccinationTasksTable> {
+  $$VaccinationTasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<String> get stepId =>
+      $composableBuilder(column: $table.stepId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueOn =>
+      $composableBuilder(column: $table.dueOn, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get doneOn =>
+      $composableBuilder(column: $table.doneOn, builder: (column) => column);
+
+  GeneratedColumn<String> get productUsed => $composableBuilder(
+    column: $table.productUsed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$VaccinationTasksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VaccinationTasksTable,
+          VaccinationTaskRow,
+          $$VaccinationTasksTableFilterComposer,
+          $$VaccinationTasksTableOrderingComposer,
+          $$VaccinationTasksTableAnnotationComposer,
+          $$VaccinationTasksTableCreateCompanionBuilder,
+          $$VaccinationTasksTableUpdateCompanionBuilder,
+          (
+            VaccinationTaskRow,
+            BaseReferences<
+              _$AppDatabase,
+              $VaccinationTasksTable,
+              VaccinationTaskRow
+            >,
+          ),
+          VaccinationTaskRow,
+          PrefetchHooks Function()
+        > {
+  $$VaccinationTasksTableTableManager(
+    _$AppDatabase db,
+    $VaccinationTasksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VaccinationTasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VaccinationTasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VaccinationTasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> batchId = const Value.absent(),
+                Value<String> stepId = const Value.absent(),
+                Value<DateTime> dueOn = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> doneOn = const Value.absent(),
+                Value<String?> productUsed = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VaccinationTasksCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                stepId: stepId,
+                dueOn: dueOn,
+                status: status,
+                doneOn: doneOn,
+                productUsed: productUsed,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String batchId,
+                required String stepId,
+                required DateTime dueOn,
+                required String status,
+                Value<DateTime?> doneOn = const Value.absent(),
+                Value<String?> productUsed = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VaccinationTasksCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                stepId: stepId,
+                dueOn: dueOn,
+                status: status,
+                doneOn: doneOn,
+                productUsed: productUsed,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$VaccinationTasksTable, VaccinationTaskRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $VaccinationTasksTable,
+                    VaccinationTaskRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VaccinationTasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VaccinationTasksTable,
+      VaccinationTaskRow,
+      $$VaccinationTasksTableFilterComposer,
+      $$VaccinationTasksTableOrderingComposer,
+      $$VaccinationTasksTableAnnotationComposer,
+      $$VaccinationTasksTableCreateCompanionBuilder,
+      $$VaccinationTasksTableUpdateCompanionBuilder,
+      (
+        VaccinationTaskRow,
+        BaseReferences<
+          _$AppDatabase,
+          $VaccinationTasksTable,
+          VaccinationTaskRow
+        >,
+      ),
+      VaccinationTaskRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FeedItemsTableCreateCompanionBuilder = FeedItemsCompanion Function({
+  required String id,
+  required String farmId,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  required String name,
+  required String feedType,
+  required String unit,
+  Value<double?> reorderLevel,
+  Value<int> rowid,
+});
+typedef $$FeedItemsTableUpdateCompanionBuilder = FeedItemsCompanion Function({
+  Value<String> id,
+  Value<String> farmId,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String> name,
+  Value<String> feedType,
+  Value<String> unit,
+  Value<double?> reorderLevel,
+  Value<int> rowid,
+});
+
+class $$FeedItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $FeedItemsTable> {
+  $$FeedItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get feedType => $composableBuilder(
+    column: $table.feedType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get reorderLevel => $composableBuilder(
+    column: $table.reorderLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FeedItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FeedItemsTable> {
+  $$FeedItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get feedType => $composableBuilder(
+    column: $table.feedType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get reorderLevel => $composableBuilder(
+    column: $table.reorderLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FeedItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FeedItemsTable> {
+  $$FeedItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get feedType =>
+      $composableBuilder(column: $table.feedType, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<double> get reorderLevel => $composableBuilder(
+    column: $table.reorderLevel,
+    builder: (column) => column,
+  );
+}
+
+class $$FeedItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FeedItemsTable,
+          FeedItemRow,
+          $$FeedItemsTableFilterComposer,
+          $$FeedItemsTableOrderingComposer,
+          $$FeedItemsTableAnnotationComposer,
+          $$FeedItemsTableCreateCompanionBuilder,
+          $$FeedItemsTableUpdateCompanionBuilder,
+          (
+            FeedItemRow,
+            BaseReferences<_$AppDatabase, $FeedItemsTable, FeedItemRow>,
+          ),
+          FeedItemRow,
+          PrefetchHooks Function()
+        > {
+  $$FeedItemsTableTableManager(_$AppDatabase db, $FeedItemsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FeedItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FeedItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FeedItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> feedType = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<double?> reorderLevel = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FeedItemsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                feedType: feedType,
+                unit: unit,
+                reorderLevel: reorderLevel,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String name,
+                required String feedType,
+                required String unit,
+                Value<double?> reorderLevel = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FeedItemsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                name: name,
+                feedType: feedType,
+                unit: unit,
+                reorderLevel: reorderLevel,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FeedItemsTable, FeedItemRow>(table),
+                  BaseReferences<_$AppDatabase, $FeedItemsTable, FeedItemRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FeedItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FeedItemsTable,
+      FeedItemRow,
+      $$FeedItemsTableFilterComposer,
+      $$FeedItemsTableOrderingComposer,
+      $$FeedItemsTableAnnotationComposer,
+      $$FeedItemsTableCreateCompanionBuilder,
+      $$FeedItemsTableUpdateCompanionBuilder,
+      (
+        FeedItemRow,
+        BaseReferences<_$AppDatabase, $FeedItemsTable, FeedItemRow>,
+      ),
+      FeedItemRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FeedTransactionsTableCreateCompanionBuilder =
+    FeedTransactionsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String feedItemId,
+      Value<String?> batchId,
+      required String kind,
+      required double quantity,
+      Value<double?> unitCost,
+      required DateTime occurredOn,
+      Value<int> rowid,
+    });
+typedef $$FeedTransactionsTableUpdateCompanionBuilder =
+    FeedTransactionsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> feedItemId,
+      Value<String?> batchId,
+      Value<String> kind,
+      Value<double> quantity,
+      Value<double?> unitCost,
+      Value<DateTime> occurredOn,
+      Value<int> rowid,
+    });
+
+class $$FeedTransactionsTableFilterComposer
+    extends Composer<_$AppDatabase, $FeedTransactionsTable> {
+  $$FeedTransactionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get feedItemId => $composableBuilder(
+    column: $table.feedItemId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get unitCost => $composableBuilder(
+    column: $table.unitCost,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FeedTransactionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FeedTransactionsTable> {
+  $$FeedTransactionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get feedItemId => $composableBuilder(
+    column: $table.feedItemId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get unitCost => $composableBuilder(
+    column: $table.unitCost,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FeedTransactionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FeedTransactionsTable> {
+  $$FeedTransactionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get feedItemId => $composableBuilder(
+    column: $table.feedItemId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<double> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<double> get unitCost =>
+      $composableBuilder(column: $table.unitCost, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => column,
+  );
+}
+
+class $$FeedTransactionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FeedTransactionsTable,
+          FeedTransactionRow,
+          $$FeedTransactionsTableFilterComposer,
+          $$FeedTransactionsTableOrderingComposer,
+          $$FeedTransactionsTableAnnotationComposer,
+          $$FeedTransactionsTableCreateCompanionBuilder,
+          $$FeedTransactionsTableUpdateCompanionBuilder,
+          (
+            FeedTransactionRow,
+            BaseReferences<
+              _$AppDatabase,
+              $FeedTransactionsTable,
+              FeedTransactionRow
+            >,
+          ),
+          FeedTransactionRow,
+          PrefetchHooks Function()
+        > {
+  $$FeedTransactionsTableTableManager(
+    _$AppDatabase db,
+    $FeedTransactionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FeedTransactionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FeedTransactionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FeedTransactionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> feedItemId = const Value.absent(),
+                Value<String?> batchId = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<double> quantity = const Value.absent(),
+                Value<double?> unitCost = const Value.absent(),
+                Value<DateTime> occurredOn = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FeedTransactionsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                feedItemId: feedItemId,
+                batchId: batchId,
+                kind: kind,
+                quantity: quantity,
+                unitCost: unitCost,
+                occurredOn: occurredOn,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String feedItemId,
+                Value<String?> batchId = const Value.absent(),
+                required String kind,
+                required double quantity,
+                Value<double?> unitCost = const Value.absent(),
+                required DateTime occurredOn,
+                Value<int> rowid = const Value.absent(),
+              }) => FeedTransactionsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                feedItemId: feedItemId,
+                batchId: batchId,
+                kind: kind,
+                quantity: quantity,
+                unitCost: unitCost,
+                occurredOn: occurredOn,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FeedTransactionsTable, FeedTransactionRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $FeedTransactionsTable,
+                    FeedTransactionRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FeedTransactionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FeedTransactionsTable,
+      FeedTransactionRow,
+      $$FeedTransactionsTableFilterComposer,
+      $$FeedTransactionsTableOrderingComposer,
+      $$FeedTransactionsTableAnnotationComposer,
+      $$FeedTransactionsTableCreateCompanionBuilder,
+      $$FeedTransactionsTableUpdateCompanionBuilder,
+      (
+        FeedTransactionRow,
+        BaseReferences<
+          _$AppDatabase,
+          $FeedTransactionsTable,
+          FeedTransactionRow
+        >,
+      ),
+      FeedTransactionRow,
+      PrefetchHooks Function()
+    >;
+typedef $$HealthRecordsTableCreateCompanionBuilder =
+    HealthRecordsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String batchId,
+      required DateTime occurredOn,
+      required String summary,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$HealthRecordsTableUpdateCompanionBuilder =
+    HealthRecordsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> batchId,
+      Value<DateTime> occurredOn,
+      Value<String> summary,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$HealthRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $HealthRecordsTable> {
+  $$HealthRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HealthRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $HealthRecordsTable> {
+  $$HealthRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HealthRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HealthRecordsTable> {
+  $$HealthRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$HealthRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HealthRecordsTable,
+          HealthRecordRow,
+          $$HealthRecordsTableFilterComposer,
+          $$HealthRecordsTableOrderingComposer,
+          $$HealthRecordsTableAnnotationComposer,
+          $$HealthRecordsTableCreateCompanionBuilder,
+          $$HealthRecordsTableUpdateCompanionBuilder,
+          (
+            HealthRecordRow,
+            BaseReferences<_$AppDatabase, $HealthRecordsTable, HealthRecordRow>,
+          ),
+          HealthRecordRow,
+          PrefetchHooks Function()
+        > {
+  $$HealthRecordsTableTableManager(_$AppDatabase db, $HealthRecordsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HealthRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HealthRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HealthRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> batchId = const Value.absent(),
+                Value<DateTime> occurredOn = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HealthRecordsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                occurredOn: occurredOn,
+                summary: summary,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String batchId,
+                required DateTime occurredOn,
+                required String summary,
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HealthRecordsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                occurredOn: occurredOn,
+                summary: summary,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$HealthRecordsTable, HealthRecordRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $HealthRecordsTable,
+                    HealthRecordRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HealthRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HealthRecordsTable,
+      HealthRecordRow,
+      $$HealthRecordsTableFilterComposer,
+      $$HealthRecordsTableOrderingComposer,
+      $$HealthRecordsTableAnnotationComposer,
+      $$HealthRecordsTableCreateCompanionBuilder,
+      $$HealthRecordsTableUpdateCompanionBuilder,
+      (
+        HealthRecordRow,
+        BaseReferences<_$AppDatabase, $HealthRecordsTable, HealthRecordRow>,
+      ),
+      HealthRecordRow,
+      PrefetchHooks Function()
+    >;
+typedef $$MortalityRecordsTableCreateCompanionBuilder =
+    MortalityRecordsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String batchId,
+      required int count,
+      required DateTime occurredOn,
+      Value<String?> cause,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+typedef $$MortalityRecordsTableUpdateCompanionBuilder =
+    MortalityRecordsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> batchId,
+      Value<int> count,
+      Value<DateTime> occurredOn,
+      Value<String?> cause,
+      Value<String?> notes,
+      Value<int> rowid,
+    });
+
+class $$MortalityRecordsTableFilterComposer
+    extends Composer<_$AppDatabase, $MortalityRecordsTable> {
+  $$MortalityRecordsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cause => $composableBuilder(
+    column: $table.cause,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MortalityRecordsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MortalityRecordsTable> {
+  $$MortalityRecordsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get count => $composableBuilder(
+    column: $table.count,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cause => $composableBuilder(
+    column: $table.cause,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MortalityRecordsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MortalityRecordsTable> {
+  $$MortalityRecordsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<int> get count =>
+      $composableBuilder(column: $table.count, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get cause =>
+      $composableBuilder(column: $table.cause, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$MortalityRecordsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MortalityRecordsTable,
+          MortalityRecordRow,
+          $$MortalityRecordsTableFilterComposer,
+          $$MortalityRecordsTableOrderingComposer,
+          $$MortalityRecordsTableAnnotationComposer,
+          $$MortalityRecordsTableCreateCompanionBuilder,
+          $$MortalityRecordsTableUpdateCompanionBuilder,
+          (
+            MortalityRecordRow,
+            BaseReferences<
+              _$AppDatabase,
+              $MortalityRecordsTable,
+              MortalityRecordRow
+            >,
+          ),
+          MortalityRecordRow,
+          PrefetchHooks Function()
+        > {
+  $$MortalityRecordsTableTableManager(
+    _$AppDatabase db,
+    $MortalityRecordsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MortalityRecordsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MortalityRecordsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MortalityRecordsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> batchId = const Value.absent(),
+                Value<int> count = const Value.absent(),
+                Value<DateTime> occurredOn = const Value.absent(),
+                Value<String?> cause = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MortalityRecordsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                count: count,
+                occurredOn: occurredOn,
+                cause: cause,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String batchId,
+                required int count,
+                required DateTime occurredOn,
+                Value<String?> cause = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MortalityRecordsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                count: count,
+                occurredOn: occurredOn,
+                cause: cause,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MortalityRecordsTable, MortalityRecordRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $MortalityRecordsTable,
+                    MortalityRecordRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MortalityRecordsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MortalityRecordsTable,
+      MortalityRecordRow,
+      $$MortalityRecordsTableFilterComposer,
+      $$MortalityRecordsTableOrderingComposer,
+      $$MortalityRecordsTableAnnotationComposer,
+      $$MortalityRecordsTableCreateCompanionBuilder,
+      $$MortalityRecordsTableUpdateCompanionBuilder,
+      (
+        MortalityRecordRow,
+        BaseReferences<
+          _$AppDatabase,
+          $MortalityRecordsTable,
+          MortalityRecordRow
+        >,
+      ),
+      MortalityRecordRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FarmEventsTableCreateCompanionBuilder = FarmEventsCompanion Function({
+  required String id,
+  required String farmId,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String?> batchId,
+  required String eventType,
+  required DateTime occurredOn,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+typedef $$FarmEventsTableUpdateCompanionBuilder = FarmEventsCompanion Function({
+  Value<String> id,
+  Value<String> farmId,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<int?> serverVersion,
+  Value<String?> batchId,
+  Value<String> eventType,
+  Value<DateTime> occurredOn,
+  Value<String?> notes,
+  Value<int> rowid,
+});
+
+class $$FarmEventsTableFilterComposer
+    extends Composer<_$AppDatabase, $FarmEventsTable> {
+  $$FarmEventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eventType => $composableBuilder(
+    column: $table.eventType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FarmEventsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FarmEventsTable> {
+  $$FarmEventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eventType => $composableBuilder(
+    column: $table.eventType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FarmEventsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FarmEventsTable> {
+  $$FarmEventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<String> get eventType =>
+      $composableBuilder(column: $table.eventType, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get occurredOn => $composableBuilder(
+    column: $table.occurredOn,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+}
+
+class $$FarmEventsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FarmEventsTable,
+          FarmEventRow,
+          $$FarmEventsTableFilterComposer,
+          $$FarmEventsTableOrderingComposer,
+          $$FarmEventsTableAnnotationComposer,
+          $$FarmEventsTableCreateCompanionBuilder,
+          $$FarmEventsTableUpdateCompanionBuilder,
+          (
+            FarmEventRow,
+            BaseReferences<_$AppDatabase, $FarmEventsTable, FarmEventRow>,
+          ),
+          FarmEventRow,
+          PrefetchHooks Function()
+        > {
+  $$FarmEventsTableTableManager(_$AppDatabase db, $FarmEventsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FarmEventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FarmEventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FarmEventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String?> batchId = const Value.absent(),
+                Value<String> eventType = const Value.absent(),
+                Value<DateTime> occurredOn = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FarmEventsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                eventType: eventType,
+                occurredOn: occurredOn,
+                notes: notes,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String?> batchId = const Value.absent(),
+                required String eventType,
+                required DateTime occurredOn,
+                Value<String?> notes = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FarmEventsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                eventType: eventType,
+                occurredOn: occurredOn,
+                notes: notes,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FarmEventsTable, FarmEventRow>(table),
+                  BaseReferences<_$AppDatabase, $FarmEventsTable, FarmEventRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FarmEventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FarmEventsTable,
+      FarmEventRow,
+      $$FarmEventsTableFilterComposer,
+      $$FarmEventsTableOrderingComposer,
+      $$FarmEventsTableAnnotationComposer,
+      $$FarmEventsTableCreateCompanionBuilder,
+      $$FarmEventsTableUpdateCompanionBuilder,
+      (
+        FarmEventRow,
+        BaseReferences<_$AppDatabase, $FarmEventsTable, FarmEventRow>,
+      ),
+      FarmEventRow,
+      PrefetchHooks Function()
+    >;
+typedef $$EntitlementsTableCreateCompanionBuilder =
+    EntitlementsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String plan,
+      required String status,
+      Value<DateTime?> validUntil,
+      Value<DateTime?> lastVerifiedAt,
+      Value<int> rowid,
+    });
+typedef $$EntitlementsTableUpdateCompanionBuilder =
+    EntitlementsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> plan,
+      Value<String> status,
+      Value<DateTime?> validUntil,
+      Value<DateTime?> lastVerifiedAt,
+      Value<int> rowid,
+    });
+
+class $$EntitlementsTableFilterComposer
+    extends Composer<_$AppDatabase, $EntitlementsTable> {
+  $$EntitlementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get plan => $composableBuilder(
+    column: $table.plan,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get validUntil => $composableBuilder(
+    column: $table.validUntil,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EntitlementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $EntitlementsTable> {
+  $$EntitlementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get plan => $composableBuilder(
+    column: $table.plan,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get validUntil => $composableBuilder(
+    column: $table.validUntil,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EntitlementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $EntitlementsTable> {
+  $$EntitlementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get plan =>
+      $composableBuilder(column: $table.plan, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get validUntil => $composableBuilder(
+    column: $table.validUntil,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$EntitlementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $EntitlementsTable,
+          EntitlementRow,
+          $$EntitlementsTableFilterComposer,
+          $$EntitlementsTableOrderingComposer,
+          $$EntitlementsTableAnnotationComposer,
+          $$EntitlementsTableCreateCompanionBuilder,
+          $$EntitlementsTableUpdateCompanionBuilder,
+          (
+            EntitlementRow,
+            BaseReferences<_$AppDatabase, $EntitlementsTable, EntitlementRow>,
+          ),
+          EntitlementRow,
+          PrefetchHooks Function()
+        > {
+  $$EntitlementsTableTableManager(_$AppDatabase db, $EntitlementsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EntitlementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EntitlementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EntitlementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> plan = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> validUntil = const Value.absent(),
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntitlementsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                plan: plan,
+                status: status,
+                validUntil: validUntil,
+                lastVerifiedAt: lastVerifiedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String plan,
+                required String status,
+                Value<DateTime?> validUntil = const Value.absent(),
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntitlementsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                plan: plan,
+                status: status,
+                validUntil: validUntil,
+                lastVerifiedAt: lastVerifiedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$EntitlementsTable, EntitlementRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $EntitlementsTable,
+                    EntitlementRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EntitlementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $EntitlementsTable,
+      EntitlementRow,
+      $$EntitlementsTableFilterComposer,
+      $$EntitlementsTableOrderingComposer,
+      $$EntitlementsTableAnnotationComposer,
+      $$EntitlementsTableCreateCompanionBuilder,
+      $$EntitlementsTableUpdateCompanionBuilder,
+      (
+        EntitlementRow,
+        BaseReferences<_$AppDatabase, $EntitlementsTable, EntitlementRow>,
+      ),
+      EntitlementRow,
+      PrefetchHooks Function()
+    >;
+typedef $$OutboxTableCreateCompanionBuilder = OutboxCompanion Function({
+  required String opId,
+  required String targetTable,
+  required String rowId,
+  required String op,
+  required String payload,
+  required DateTime createdAt,
+  Value<int> attempts,
+  Value<String?> lastError,
+  Value<int> rowid,
+});
+typedef $$OutboxTableUpdateCompanionBuilder = OutboxCompanion Function({
+  Value<String> opId,
+  Value<String> targetTable,
+  Value<String> rowId,
+  Value<String> op,
+  Value<String> payload,
+  Value<DateTime> createdAt,
+  Value<int> attempts,
+  Value<String?> lastError,
+  Value<int> rowid,
+});
+
+class $$OutboxTableFilterComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get opId => $composableBuilder(
+    column: $table.opId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetTable => $composableBuilder(
+    column: $table.targetTable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rowId => $composableBuilder(
+    column: $table.rowId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get op => $composableBuilder(
+    column: $table.op,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$OutboxTableOrderingComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get opId => $composableBuilder(
+    column: $table.opId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetTable => $composableBuilder(
+    column: $table.targetTable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rowId => $composableBuilder(
+    column: $table.rowId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get op => $composableBuilder(
+    column: $table.op,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OutboxTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get opId =>
+      $composableBuilder(column: $table.opId, builder: (column) => column);
+
+  GeneratedColumn<String> get targetTable => $composableBuilder(
+    column: $table.targetTable,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rowId =>
+      $composableBuilder(column: $table.rowId, builder: (column) => column);
+
+  GeneratedColumn<String> get op =>
+      $composableBuilder(column: $table.op, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$OutboxTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OutboxTable,
+          OutboxRow,
+          $$OutboxTableFilterComposer,
+          $$OutboxTableOrderingComposer,
+          $$OutboxTableAnnotationComposer,
+          $$OutboxTableCreateCompanionBuilder,
+          $$OutboxTableUpdateCompanionBuilder,
+          (OutboxRow, BaseReferences<_$AppDatabase, $OutboxTable, OutboxRow>),
+          OutboxRow,
+          PrefetchHooks Function()
+        > {
+  $$OutboxTableTableManager(_$AppDatabase db, $OutboxTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OutboxTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OutboxTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OutboxTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> opId = const Value.absent(),
+                Value<String> targetTable = const Value.absent(),
+                Value<String> rowId = const Value.absent(),
+                Value<String> op = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OutboxCompanion(
+                opId: opId,
+                targetTable: targetTable,
+                rowId: rowId,
+                op: op,
+                payload: payload,
+                createdAt: createdAt,
+                attempts: attempts,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String opId,
+                required String targetTable,
+                required String rowId,
+                required String op,
+                required String payload,
+                required DateTime createdAt,
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OutboxCompanion.insert(
+                opId: opId,
+                targetTable: targetTable,
+                rowId: rowId,
+                op: op,
+                payload: payload,
+                createdAt: createdAt,
+                attempts: attempts,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OutboxTable, OutboxRow>(table),
+                  BaseReferences<_$AppDatabase, $OutboxTable, OutboxRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$OutboxTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OutboxTable,
+      OutboxRow,
+      $$OutboxTableFilterComposer,
+      $$OutboxTableOrderingComposer,
+      $$OutboxTableAnnotationComposer,
+      $$OutboxTableCreateCompanionBuilder,
+      $$OutboxTableUpdateCompanionBuilder,
+      (OutboxRow, BaseReferences<_$AppDatabase, $OutboxTable, OutboxRow>),
+      OutboxRow,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncCursorsTableCreateCompanionBuilder =
+    SyncCursorsCompanion Function({
+      required String syncTable,
+      Value<int> cursor,
+      Value<int> rowid,
+    });
+typedef $$SyncCursorsTableUpdateCompanionBuilder =
+    SyncCursorsCompanion Function({
+      Value<String> syncTable,
+      Value<int> cursor,
+      Value<int> rowid,
+    });
+
+class $$SyncCursorsTableFilterComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get syncTable => $composableBuilder(
+    column: $table.syncTable,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get cursor => $composableBuilder(
+    column: $table.cursor,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SyncCursorsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get syncTable => $composableBuilder(
+    column: $table.syncTable,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get cursor => $composableBuilder(
+    column: $table.cursor,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SyncCursorsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SyncCursorsTable> {
+  $$SyncCursorsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get syncTable =>
+      $composableBuilder(column: $table.syncTable, builder: (column) => column);
+
+  GeneratedColumn<int> get cursor =>
+      $composableBuilder(column: $table.cursor, builder: (column) => column);
+}
+
+class $$SyncCursorsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncCursorsTable,
+          SyncCursorRow,
+          $$SyncCursorsTableFilterComposer,
+          $$SyncCursorsTableOrderingComposer,
+          $$SyncCursorsTableAnnotationComposer,
+          $$SyncCursorsTableCreateCompanionBuilder,
+          $$SyncCursorsTableUpdateCompanionBuilder,
+          (
+            SyncCursorRow,
+            BaseReferences<_$AppDatabase, $SyncCursorsTable, SyncCursorRow>,
+          ),
+          SyncCursorRow,
+          PrefetchHooks Function()
+        > {
+  $$SyncCursorsTableTableManager(_$AppDatabase db, $SyncCursorsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SyncCursorsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SyncCursorsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SyncCursorsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> syncTable = const Value.absent(),
+                Value<int> cursor = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncCursorsCompanion(
+                syncTable: syncTable,
+                cursor: cursor,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String syncTable,
+                Value<int> cursor = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SyncCursorsCompanion.insert(
+                syncTable: syncTable,
+                cursor: cursor,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$SyncCursorsTable, SyncCursorRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $SyncCursorsTable,
+                    SyncCursorRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SyncCursorsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncCursorsTable,
+      SyncCursorRow,
+      $$SyncCursorsTableFilterComposer,
+      $$SyncCursorsTableOrderingComposer,
+      $$SyncCursorsTableAnnotationComposer,
+      $$SyncCursorsTableCreateCompanionBuilder,
+      $$SyncCursorsTableUpdateCompanionBuilder,
+      (
+        SyncCursorRow,
+        BaseReferences<_$AppDatabase, $SyncCursorsTable, SyncCursorRow>,
+      ),
+      SyncCursorRow,
+      PrefetchHooks Function()
+    >;
+typedef $$AuthSnapshotTableCreateCompanionBuilder =
+    AuthSnapshotCompanion Function({
+      Value<int> id,
+      required String userId,
+      Value<String?> email,
+      Value<String?> phone,
+      required String farmIdsJson,
+      Value<DateTime?> lastVerifiedAt,
+    });
+typedef $$AuthSnapshotTableUpdateCompanionBuilder =
+    AuthSnapshotCompanion Function({
+      Value<int> id,
+      Value<String> userId,
+      Value<String?> email,
+      Value<String?> phone,
+      Value<String> farmIdsJson,
+      Value<DateTime?> lastVerifiedAt,
+    });
+
+class $$AuthSnapshotTableFilterComposer
+    extends Composer<_$AppDatabase, $AuthSnapshotTable> {
+  $$AuthSnapshotTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmIdsJson => $composableBuilder(
+    column: $table.farmIdsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AuthSnapshotTableOrderingComposer
+    extends Composer<_$AppDatabase, $AuthSnapshotTable> {
+  $$AuthSnapshotTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmIdsJson => $composableBuilder(
+    column: $table.farmIdsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AuthSnapshotTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AuthSnapshotTable> {
+  $$AuthSnapshotTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get farmIdsJson => $composableBuilder(
+    column: $table.farmIdsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastVerifiedAt => $composableBuilder(
+    column: $table.lastVerifiedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$AuthSnapshotTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AuthSnapshotTable,
+          AuthSnapshotRow,
+          $$AuthSnapshotTableFilterComposer,
+          $$AuthSnapshotTableOrderingComposer,
+          $$AuthSnapshotTableAnnotationComposer,
+          $$AuthSnapshotTableCreateCompanionBuilder,
+          $$AuthSnapshotTableUpdateCompanionBuilder,
+          (
+            AuthSnapshotRow,
+            BaseReferences<_$AppDatabase, $AuthSnapshotTable, AuthSnapshotRow>,
+          ),
+          AuthSnapshotRow,
+          PrefetchHooks Function()
+        > {
+  $$AuthSnapshotTableTableManager(_$AppDatabase db, $AuthSnapshotTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AuthSnapshotTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AuthSnapshotTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AuthSnapshotTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String> farmIdsJson = const Value.absent(),
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+              }) => AuthSnapshotCompanion(
+                id: id,
+                userId: userId,
+                email: email,
+                phone: phone,
+                farmIdsJson: farmIdsJson,
+                lastVerifiedAt: lastVerifiedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String userId,
+                Value<String?> email = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                required String farmIdsJson,
+                Value<DateTime?> lastVerifiedAt = const Value.absent(),
+              }) => AuthSnapshotCompanion.insert(
+                id: id,
+                userId: userId,
+                email: email,
+                phone: phone,
+                farmIdsJson: farmIdsJson,
+                lastVerifiedAt: lastVerifiedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AuthSnapshotTable, AuthSnapshotRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $AuthSnapshotTable,
+                    AuthSnapshotRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AuthSnapshotTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AuthSnapshotTable,
+      AuthSnapshotRow,
+      $$AuthSnapshotTableFilterComposer,
+      $$AuthSnapshotTableOrderingComposer,
+      $$AuthSnapshotTableAnnotationComposer,
+      $$AuthSnapshotTableCreateCompanionBuilder,
+      $$AuthSnapshotTableUpdateCompanionBuilder,
+      (
+        AuthSnapshotRow,
+        BaseReferences<_$AppDatabase, $AuthSnapshotTable, AuthSnapshotRow>,
+      ),
+      AuthSnapshotRow,
+      PrefetchHooks Function()
+    >;
+
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
+  $$FarmsTableTableManager get farms =>
+      $$FarmsTableTableManager(_db, _db.farms);
+  $$FarmMembersTableTableManager get farmMembers =>
+      $$FarmMembersTableTableManager(_db, _db.farmMembers);
+  $$BatchesTableTableManager get batches =>
+      $$BatchesTableTableManager(_db, _db.batches);
+  $$ProgrammesTableTableManager get programmes =>
+      $$ProgrammesTableTableManager(_db, _db.programmes);
+  $$ProgrammeStepsTableTableManager get programmeSteps =>
+      $$ProgrammeStepsTableTableManager(_db, _db.programmeSteps);
+  $$VaccinationTasksTableTableManager get vaccinationTasks =>
+      $$VaccinationTasksTableTableManager(_db, _db.vaccinationTasks);
+  $$FeedItemsTableTableManager get feedItems =>
+      $$FeedItemsTableTableManager(_db, _db.feedItems);
+  $$FeedTransactionsTableTableManager get feedTransactions =>
+      $$FeedTransactionsTableTableManager(_db, _db.feedTransactions);
+  $$HealthRecordsTableTableManager get healthRecords =>
+      $$HealthRecordsTableTableManager(_db, _db.healthRecords);
+  $$MortalityRecordsTableTableManager get mortalityRecords =>
+      $$MortalityRecordsTableTableManager(_db, _db.mortalityRecords);
+  $$FarmEventsTableTableManager get farmEvents =>
+      $$FarmEventsTableTableManager(_db, _db.farmEvents);
+  $$EntitlementsTableTableManager get entitlements =>
+      $$EntitlementsTableTableManager(_db, _db.entitlements);
+  $$OutboxTableTableManager get outbox =>
+      $$OutboxTableTableManager(_db, _db.outbox);
+  $$SyncCursorsTableTableManager get syncCursors =>
+      $$SyncCursorsTableTableManager(_db, _db.syncCursors);
+  $$AuthSnapshotTableTableManager get authSnapshot =>
+      $$AuthSnapshotTableTableManager(_db, _db.authSnapshot);
+}

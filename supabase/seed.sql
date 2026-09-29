@@ -1,0 +1,2 @@
+-- TODO: load programme reference data from assets/seed/uganda_poultry_vaccination_schedule.json
+-- Example: copy JSON into programmes / programme_steps via a small script or supabase db seed hook.

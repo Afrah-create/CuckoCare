@@ -1,0 +1,1 @@
+// CucoCare subscription / data scaffold

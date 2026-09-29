@@ -1,0 +1,1 @@
+// CucoCare mortality / domain scaffold
