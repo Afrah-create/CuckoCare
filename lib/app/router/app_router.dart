@@ -4,17 +4,17 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/auth_splash_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
+import '../../features/farms/presentation/farm_setup_screen.dart';
 import '../../features/home/presentation/home_shell.dart';
 import '../di/providers.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  // Re-run redirect when auth snapshot resolution changes (login / sign-out).
   final authAsync = ref.watch(hasAuthSnapshotProvider);
 
   return GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/splash',
     redirect: (context, state) {
       final location = state.matchedLocation;
@@ -51,6 +51,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (context, state) => const HomeShell(),
+        routes: [
+          GoRoute(
+            path: 'farm-profile',
+            builder: (context, state) => const FarmSetupScreen(),
+          ),
+        ],
       ),
     ],
   );

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../core/error/user_messages.dart';
 import '../domain/auth_repository.dart';
 import 'login_state.dart';
 
@@ -11,8 +12,8 @@ class LoginController extends Notifier<LoginUiState> {
   @override
   LoginUiState build() => const LoginUiState();
 
-  void setMethod(LoginMethod method) {
-    state = state.copyWith(method: method, clearError: true, status: LoginStatus.idle);
+  void setFormMode(AuthFormMode mode) {
+    state = state.copyWith(formMode: mode, clearError: true, status: LoginStatus.idle);
   }
 
   void togglePasswordVisibility() {
@@ -25,16 +26,16 @@ class LoginController extends Notifier<LoginUiState> {
     }
   }
 
-  Future<bool> signInWithEmail({
+  Future<AuthSessionResult?> signInWithEmail({
     required String email,
     required String password,
   }) async {
     if (!state.isOnline) {
       state = state.copyWith(
         status: LoginStatus.failure,
-        errorMessage: 'First sign-in needs internet. Connect and try again.',
+        errorMessage: 'Connect to the internet to sign in.',
       );
-      return false;
+      return null;
     }
 
     state = state.copyWith(status: LoginStatus.submitting, clearError: true);
@@ -45,18 +46,62 @@ class LoginController extends Notifier<LoginUiState> {
     );
 
     return result.when(
-      success: (_) {
+      success: (session) {
         state = state.copyWith(status: LoginStatus.success);
         ref.invalidate(hasAuthSnapshotProvider);
+        ref.invalidate(userProfileProvider);
+        ref.invalidate(farmProfileIncompleteProvider);
         ref.read(syncSchedulerProvider).onForeground();
-        return true;
+        return session;
       },
       failure: (failure) {
         state = state.copyWith(
           status: LoginStatus.failure,
-          errorMessage: failure.message,
+          errorMessage: userMessageForFailure(failure),
         );
-        return false;
+        return null;
+      },
+    );
+  }
+
+  Future<AuthSessionResult?> signUpWithEmail({
+    required String email,
+    required String password,
+    String? displayName,
+  }) async {
+    if (!state.isOnline) {
+      state = state.copyWith(
+        status: LoginStatus.failure,
+        errorMessage: 'Connect to the internet to create an account.',
+      );
+      return null;
+    }
+
+    state = state.copyWith(status: LoginStatus.submitting, clearError: true);
+
+    final auth = ref.read(authRepositoryProvider);
+    final result = await auth.signUpWithEmail(
+      SignUpRequest(
+        email: email,
+        password: password,
+        displayName: displayName,
+      ),
+    );
+
+    return result.when(
+      success: (session) {
+        state = state.copyWith(status: LoginStatus.success);
+        ref.invalidate(hasAuthSnapshotProvider);
+        ref.invalidate(userProfileProvider);
+        ref.invalidate(farmProfileIncompleteProvider);
+        return session;
+      },
+      failure: (failure) {
+        state = state.copyWith(
+          status: LoginStatus.failure,
+          errorMessage: userMessageForFailure(failure),
+        );
+        return null;
       },
     );
   }
@@ -66,5 +111,7 @@ class LoginController extends Notifier<LoginUiState> {
     await ref.read(authSnapshotRepositoryProvider).saveDemoSnapshot();
     state = state.copyWith(status: LoginStatus.success);
     ref.invalidate(hasAuthSnapshotProvider);
+    ref.invalidate(userProfileProvider);
+    ref.invalidate(farmProfileIncompleteProvider);
   }
 }

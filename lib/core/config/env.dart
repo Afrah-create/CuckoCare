@@ -1,4 +1,6 @@
-/// Runtime configuration from `--dart-define-from-file`.
+/// Runtime configuration from `--dart-define-from-file=env/<flavor>.json`.
+///
+/// Generate that file from root `.env`: `dart run tool/sync_env.dart dev`
 class Env {
   const Env({
     required this.supabaseUrl,
@@ -20,16 +22,47 @@ class Env {
     if (url.isEmpty || anon.isEmpty) {
       throw StateError(
         'Missing SUPABASE_URL or SUPABASE_ANON_KEY. '
-        'Run with --dart-define-from-file=env/dev.json',
+        'Fill .env then run: dart run tool/sync_env.dart dev '
+        'and flutter run --dart-define-from-file=env/dev.json',
       );
     }
+
+    final normalizedUrl = normalizeSupabaseUrl(url);
+    if (_looksLikePlaceholder(normalizedUrl, anon)) {
+      throw StateError(
+        'Supabase config is still a placeholder. '
+        'Fill .env then run: dart run tool/sync_env.dart dev',
+      );
+    }
+
     return Env(
-      supabaseUrl: url,
-      supabaseAnonKey: anon,
+      supabaseUrl: normalizedUrl,
+      supabaseAnonKey: anon.trim(),
       envName: name,
       offlineGraceDays: grace,
     );
   }
 
   bool get isDev => envName == 'dev';
+}
+
+/// Project URL only — not the REST or Auth path (strip `/rest/v1` if pasted).
+String normalizeSupabaseUrl(String raw) {
+  var u = raw.trim();
+  while (u.endsWith('/')) {
+    u = u.substring(0, u.length - 1);
+  }
+  const restSuffix = '/rest/v1';
+  if (u.endsWith(restSuffix)) {
+    u = u.substring(0, u.length - restSuffix.length);
+  }
+  return u;
+}
+
+bool _looksLikePlaceholder(String url, String anon) {
+  final lower = url.toLowerCase();
+  return lower.contains('placeholder') ||
+      lower.contains('your_project') ||
+      anon.toLowerCase().contains('placeholder') ||
+      anon == 'your-anon-key';
 }

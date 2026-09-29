@@ -48,6 +48,7 @@ app.*.map.json
 .widget_preview/
 
 # Local environment (commit *.example.json only)
+.env
 env/dev.json
 env/staging.json
 env/prod.json

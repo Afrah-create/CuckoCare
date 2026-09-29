@@ -90,6 +90,48 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _districtMeta = const VerificationMeta(
+    'district',
+  );
+  @override
+  late final GeneratedColumn<String> district = GeneratedColumn<String>(
+    'district',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _villageMeta = const VerificationMeta(
+    'village',
+  );
+  @override
+  late final GeneratedColumn<String> village = GeneratedColumn<String>(
+    'village',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _altPhoneMeta = const VerificationMeta(
+    'altPhone',
+  );
+  @override
+  late final GeneratedColumn<String> altPhone = GeneratedColumn<String>(
+    'alt_phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -99,6 +141,17 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _profileCompletedAtMeta =
+      const VerificationMeta('profileCompletedAt');
+  @override
+  late final GeneratedColumn<DateTime> profileCompletedAt =
+      GeneratedColumn<DateTime>(
+        'profile_completed_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -109,7 +162,12 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
     serverVersion,
     name,
     location,
+    district,
+    village,
+    phone,
+    altPhone,
     notes,
+    profileCompletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -181,10 +239,43 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
         location.isAcceptableOrUnknown(data['location']!, _locationMeta),
       );
     }
+    if (data.containsKey('district')) {
+      context.handle(
+        _districtMeta,
+        district.isAcceptableOrUnknown(data['district']!, _districtMeta),
+      );
+    }
+    if (data.containsKey('village')) {
+      context.handle(
+        _villageMeta,
+        village.isAcceptableOrUnknown(data['village']!, _villageMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('alt_phone')) {
+      context.handle(
+        _altPhoneMeta,
+        altPhone.isAcceptableOrUnknown(data['alt_phone']!, _altPhoneMeta),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('profile_completed_at')) {
+      context.handle(
+        _profileCompletedAtMeta,
+        profileCompletedAt.isAcceptableOrUnknown(
+          data['profile_completed_at']!,
+          _profileCompletedAtMeta,
+        ),
       );
     }
     return context;
@@ -228,9 +319,29 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
         DriftSqlType.string,
         data['${effectivePrefix}location'],
       ),
+      district: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}district'],
+      ),
+      village: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}village'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      altPhone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}alt_phone'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
+      ),
+      profileCompletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}profile_completed_at'],
       ),
     );
   }
@@ -250,7 +361,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
   final int? serverVersion;
   final String name;
   final String? location;
+  final String? district;
+  final String? village;
+  final String? phone;
+  final String? altPhone;
   final String? notes;
+  final DateTime? profileCompletedAt;
   const FarmRow({
     required this.id,
     required this.farmId,
@@ -260,7 +376,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     this.serverVersion,
     required this.name,
     this.location,
+    this.district,
+    this.village,
+    this.phone,
+    this.altPhone,
     this.notes,
+    this.profileCompletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -279,8 +400,23 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     if (!nullToAbsent || location != null) {
       map['location'] = Variable<String>(location);
     }
+    if (!nullToAbsent || district != null) {
+      map['district'] = Variable<String>(district);
+    }
+    if (!nullToAbsent || village != null) {
+      map['village'] = Variable<String>(village);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || altPhone != null) {
+      map['alt_phone'] = Variable<String>(altPhone);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || profileCompletedAt != null) {
+      map['profile_completed_at'] = Variable<DateTime>(profileCompletedAt);
     }
     return map;
   }
@@ -301,9 +437,24 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       location: location == null && nullToAbsent
           ? const Value.absent()
           : Value(location),
+      district: district == null && nullToAbsent
+          ? const Value.absent()
+          : Value(district),
+      village: village == null && nullToAbsent
+          ? const Value.absent()
+          : Value(village),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      altPhone: altPhone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(altPhone),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      profileCompletedAt: profileCompletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(profileCompletedAt),
     );
   }
 
@@ -321,7 +472,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       serverVersion: serializer.fromJson<int?>(json['serverVersion']),
       name: serializer.fromJson<String>(json['name']),
       location: serializer.fromJson<String?>(json['location']),
+      district: serializer.fromJson<String?>(json['district']),
+      village: serializer.fromJson<String?>(json['village']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      altPhone: serializer.fromJson<String?>(json['altPhone']),
       notes: serializer.fromJson<String?>(json['notes']),
+      profileCompletedAt: serializer.fromJson<DateTime?>(
+        json['profileCompletedAt'],
+      ),
     );
   }
   @override
@@ -336,7 +494,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       'serverVersion': serializer.toJson<int?>(serverVersion),
       'name': serializer.toJson<String>(name),
       'location': serializer.toJson<String?>(location),
+      'district': serializer.toJson<String?>(district),
+      'village': serializer.toJson<String?>(village),
+      'phone': serializer.toJson<String?>(phone),
+      'altPhone': serializer.toJson<String?>(altPhone),
       'notes': serializer.toJson<String?>(notes),
+      'profileCompletedAt': serializer.toJson<DateTime?>(profileCompletedAt),
     };
   }
 
@@ -349,7 +512,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     Value<int?> serverVersion = const Value.absent(),
     String? name,
     Value<String?> location = const Value.absent(),
+    Value<String?> district = const Value.absent(),
+    Value<String?> village = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> altPhone = const Value.absent(),
     Value<String?> notes = const Value.absent(),
+    Value<DateTime?> profileCompletedAt = const Value.absent(),
   }) => FarmRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -361,7 +529,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
         : this.serverVersion,
     name: name ?? this.name,
     location: location.present ? location.value : this.location,
+    district: district.present ? district.value : this.district,
+    village: village.present ? village.value : this.village,
+    phone: phone.present ? phone.value : this.phone,
+    altPhone: altPhone.present ? altPhone.value : this.altPhone,
     notes: notes.present ? notes.value : this.notes,
+    profileCompletedAt: profileCompletedAt.present
+        ? profileCompletedAt.value
+        : this.profileCompletedAt,
   );
   FarmRow copyWithCompanion(FarmsCompanion data) {
     return FarmRow(
@@ -375,7 +550,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
           : this.serverVersion,
       name: data.name.present ? data.name.value : this.name,
       location: data.location.present ? data.location.value : this.location,
+      district: data.district.present ? data.district.value : this.district,
+      village: data.village.present ? data.village.value : this.village,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      altPhone: data.altPhone.present ? data.altPhone.value : this.altPhone,
       notes: data.notes.present ? data.notes.value : this.notes,
+      profileCompletedAt: data.profileCompletedAt.present
+          ? data.profileCompletedAt.value
+          : this.profileCompletedAt,
     );
   }
 
@@ -390,7 +572,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
           ..write('serverVersion: $serverVersion, ')
           ..write('name: $name, ')
           ..write('location: $location, ')
-          ..write('notes: $notes')
+          ..write('district: $district, ')
+          ..write('village: $village, ')
+          ..write('phone: $phone, ')
+          ..write('altPhone: $altPhone, ')
+          ..write('notes: $notes, ')
+          ..write('profileCompletedAt: $profileCompletedAt')
           ..write(')'))
         .toString();
   }
@@ -405,7 +592,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     serverVersion,
     name,
     location,
+    district,
+    village,
+    phone,
+    altPhone,
     notes,
+    profileCompletedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -419,7 +611,12 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
           other.serverVersion == this.serverVersion &&
           other.name == this.name &&
           other.location == this.location &&
-          other.notes == this.notes);
+          other.district == this.district &&
+          other.village == this.village &&
+          other.phone == this.phone &&
+          other.altPhone == this.altPhone &&
+          other.notes == this.notes &&
+          other.profileCompletedAt == this.profileCompletedAt);
 }
 
 class FarmsCompanion extends UpdateCompanion<FarmRow> {
@@ -431,7 +628,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
   final Value<int?> serverVersion;
   final Value<String> name;
   final Value<String?> location;
+  final Value<String?> district;
+  final Value<String?> village;
+  final Value<String?> phone;
+  final Value<String?> altPhone;
   final Value<String?> notes;
+  final Value<DateTime?> profileCompletedAt;
   final Value<int> rowid;
   const FarmsCompanion({
     this.id = const Value.absent(),
@@ -442,7 +644,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     this.serverVersion = const Value.absent(),
     this.name = const Value.absent(),
     this.location = const Value.absent(),
+    this.district = const Value.absent(),
+    this.village = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.altPhone = const Value.absent(),
     this.notes = const Value.absent(),
+    this.profileCompletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FarmsCompanion.insert({
@@ -454,7 +661,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     this.serverVersion = const Value.absent(),
     required String name,
     this.location = const Value.absent(),
+    this.district = const Value.absent(),
+    this.village = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.altPhone = const Value.absent(),
     this.notes = const Value.absent(),
+    this.profileCompletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -470,7 +682,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     Expression<int>? serverVersion,
     Expression<String>? name,
     Expression<String>? location,
+    Expression<String>? district,
+    Expression<String>? village,
+    Expression<String>? phone,
+    Expression<String>? altPhone,
     Expression<String>? notes,
+    Expression<DateTime>? profileCompletedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -482,7 +699,13 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
       if (serverVersion != null) 'server_version': serverVersion,
       if (name != null) 'name': name,
       if (location != null) 'location': location,
+      if (district != null) 'district': district,
+      if (village != null) 'village': village,
+      if (phone != null) 'phone': phone,
+      if (altPhone != null) 'alt_phone': altPhone,
       if (notes != null) 'notes': notes,
+      if (profileCompletedAt != null)
+        'profile_completed_at': profileCompletedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -496,7 +719,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     Value<int?>? serverVersion,
     Value<String>? name,
     Value<String?>? location,
+    Value<String?>? district,
+    Value<String?>? village,
+    Value<String?>? phone,
+    Value<String?>? altPhone,
     Value<String?>? notes,
+    Value<DateTime?>? profileCompletedAt,
     Value<int>? rowid,
   }) {
     return FarmsCompanion(
@@ -508,7 +736,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
       serverVersion: serverVersion ?? this.serverVersion,
       name: name ?? this.name,
       location: location ?? this.location,
+      district: district ?? this.district,
+      village: village ?? this.village,
+      phone: phone ?? this.phone,
+      altPhone: altPhone ?? this.altPhone,
       notes: notes ?? this.notes,
+      profileCompletedAt: profileCompletedAt ?? this.profileCompletedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -540,8 +773,25 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     if (location.present) {
       map['location'] = Variable<String>(location.value);
     }
+    if (district.present) {
+      map['district'] = Variable<String>(district.value);
+    }
+    if (village.present) {
+      map['village'] = Variable<String>(village.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (altPhone.present) {
+      map['alt_phone'] = Variable<String>(altPhone.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
+    }
+    if (profileCompletedAt.present) {
+      map['profile_completed_at'] = Variable<DateTime>(
+        profileCompletedAt.value,
+      );
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -560,7 +810,12 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
           ..write('serverVersion: $serverVersion, ')
           ..write('name: $name, ')
           ..write('location: $location, ')
+          ..write('district: $district, ')
+          ..write('village: $village, ')
+          ..write('phone: $phone, ')
+          ..write('altPhone: $altPhone, ')
           ..write('notes: $notes, ')
+          ..write('profileCompletedAt: $profileCompletedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10276,7 +10531,12 @@ typedef $$FarmsTableCreateCompanionBuilder = FarmsCompanion Function({
   Value<int?> serverVersion,
   required String name,
   Value<String?> location,
+  Value<String?> district,
+  Value<String?> village,
+  Value<String?> phone,
+  Value<String?> altPhone,
   Value<String?> notes,
+  Value<DateTime?> profileCompletedAt,
   Value<int> rowid,
 });
 typedef $$FarmsTableUpdateCompanionBuilder = FarmsCompanion Function({
@@ -10288,7 +10548,12 @@ typedef $$FarmsTableUpdateCompanionBuilder = FarmsCompanion Function({
   Value<int?> serverVersion,
   Value<String> name,
   Value<String?> location,
+  Value<String?> district,
+  Value<String?> village,
+  Value<String?> phone,
+  Value<String?> altPhone,
   Value<String?> notes,
+  Value<DateTime?> profileCompletedAt,
   Value<int> rowid,
 });
 
@@ -10340,8 +10605,33 @@ class $$FarmsTableFilterComposer extends Composer<_$AppDatabase, $FarmsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get district => $composableBuilder(
+    column: $table.district,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get village => $composableBuilder(
+    column: $table.village,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get altPhone => $composableBuilder(
+    column: $table.altPhone,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get profileCompletedAt => $composableBuilder(
+    column: $table.profileCompletedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -10395,8 +10685,33 @@ class $$FarmsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get district => $composableBuilder(
+    column: $table.district,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get village => $composableBuilder(
+    column: $table.village,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get altPhone => $composableBuilder(
+    column: $table.altPhone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get profileCompletedAt => $composableBuilder(
+    column: $table.profileCompletedAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -10436,8 +10751,25 @@ class $$FarmsTableAnnotationComposer
   GeneratedColumn<String> get location =>
       $composableBuilder(column: $table.location, builder: (column) => column);
 
+  GeneratedColumn<String> get district =>
+      $composableBuilder(column: $table.district, builder: (column) => column);
+
+  GeneratedColumn<String> get village =>
+      $composableBuilder(column: $table.village, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get altPhone =>
+      $composableBuilder(column: $table.altPhone, builder: (column) => column);
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get profileCompletedAt => $composableBuilder(
+    column: $table.profileCompletedAt,
+    builder: (column) => column,
+  );
 }
 
 class $$FarmsTableTableManager
@@ -10476,7 +10808,12 @@ class $$FarmsTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> location = const Value.absent(),
+                Value<String?> district = const Value.absent(),
+                Value<String?> village = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> altPhone = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> profileCompletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FarmsCompanion(
                 id: id,
@@ -10487,7 +10824,12 @@ class $$FarmsTableTableManager
                 serverVersion: serverVersion,
                 name: name,
                 location: location,
+                district: district,
+                village: village,
+                phone: phone,
+                altPhone: altPhone,
                 notes: notes,
+                profileCompletedAt: profileCompletedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -10500,7 +10842,12 @@ class $$FarmsTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 required String name,
                 Value<String?> location = const Value.absent(),
+                Value<String?> district = const Value.absent(),
+                Value<String?> village = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> altPhone = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> profileCompletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FarmsCompanion.insert(
                 id: id,
@@ -10511,7 +10858,12 @@ class $$FarmsTableTableManager
                 serverVersion: serverVersion,
                 name: name,
                 location: location,
+                district: district,
+                village: village,
+                phone: phone,
+                altPhone: altPhone,
                 notes: notes,
+                profileCompletedAt: profileCompletedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

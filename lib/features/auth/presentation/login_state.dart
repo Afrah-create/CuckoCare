@@ -1,3 +1,5 @@
+enum AuthFormMode { signIn, signUp }
+
 enum LoginMethod { email, phone }
 
 enum LoginStatus { idle, submitting, success, failure }
@@ -5,6 +7,7 @@ enum LoginStatus { idle, submitting, success, failure }
 class LoginUiState {
   const LoginUiState({
     this.status = LoginStatus.idle,
+    this.formMode = AuthFormMode.signIn,
     this.method = LoginMethod.email,
     this.errorMessage,
     this.obscurePassword = true,
@@ -12,6 +15,7 @@ class LoginUiState {
   });
 
   final LoginStatus status;
+  final AuthFormMode formMode;
   final LoginMethod method;
   final String? errorMessage;
   final bool obscurePassword;
@@ -21,6 +25,7 @@ class LoginUiState {
 
   LoginUiState copyWith({
     LoginStatus? status,
+    AuthFormMode? formMode,
     LoginMethod? method,
     String? errorMessage,
     bool clearError = false,
@@ -29,6 +34,7 @@ class LoginUiState {
   }) {
     return LoginUiState(
       status: status ?? this.status,
+      formMode: formMode ?? this.formMode,
       method: method ?? this.method,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       obscurePassword: obscurePassword ?? this.obscurePassword,

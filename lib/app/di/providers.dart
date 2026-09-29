@@ -13,6 +13,9 @@ import '../../data_platform/sync/sync_scheduler.dart';
 import '../../features/auth/data/auth_snapshot_repository.dart';
 import '../../features/auth/data/supabase_auth_repository.dart';
 import '../../features/auth/domain/auth_repository.dart';
+import '../../features/auth/domain/user_profile.dart';
+import '../../features/farms/data/farm_repository.dart';
+import '../../features/farms/domain/farm_profile.dart';
 
 final envProvider = Provider<Env>((ref) => Env.fromEnvironment());
 
@@ -66,9 +69,18 @@ final authSnapshotRepositoryProvider = Provider<AuthSnapshotRepository>(
   (ref) => AuthSnapshotRepository(ref.watch(appDatabaseProvider)),
 );
 
+final farmRepositoryProvider = Provider<FarmRepository>((ref) {
+  return FarmRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(authSnapshotRepositoryProvider),
+  );
+});
+
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return SupabaseAuthRepository(
     snapshotRepository: ref.watch(authSnapshotRepositoryProvider),
+    farmRepository: ref.watch(farmRepositoryProvider),
+    remoteSyncApi: ref.watch(remoteSyncApiProvider),
   );
 });
 
@@ -79,4 +91,19 @@ final connectivityOnlineProvider = StreamProvider<bool>((ref) {
 final hasAuthSnapshotProvider = FutureProvider<bool>((ref) async {
   final repo = ref.watch(authSnapshotRepositoryProvider);
   return repo.hasSnapshot();
+});
+
+final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
+  final repo = ref.watch(authSnapshotRepositoryProvider);
+  return repo.loadProfile();
+});
+
+/// True when the user should see the farm profile banner (non-blocking).
+final farmProfileIncompleteProvider = FutureProvider<bool>((ref) async {
+  final profile = await ref.watch(userProfileProvider.future);
+  if (profile?.isDemo ?? false) {
+    return false;
+  }
+  final farm = await ref.watch(farmRepositoryProvider).primaryLocalFarm();
+  return !isFarmProfileComplete(farm);
 });

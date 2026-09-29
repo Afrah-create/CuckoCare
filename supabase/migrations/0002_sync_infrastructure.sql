@@ -122,6 +122,17 @@ alter table public.farm_members drop constraint if exists farm_members_role_chec
 alter table public.farm_members add constraint farm_members_role_check
   check (role in ('owner', 'manager', 'worker', 'viewer'));
 
+-- Replace legacy is_farm_member(uuid) if 0001 was applied before the 2-arg definition.
+-- RLS policies must be dropped first (2BP01 otherwise).
+drop policy if exists farms_member_select on public.farms;
+drop policy if exists farms_member_write on public.farms;
+drop policy if exists farm_members_select on public.farm_members;
+drop policy if exists batches_member on public.batches;
+drop policy if exists vaccination_tasks_member on public.vaccination_tasks;
+drop policy if exists entitlements_read on public.entitlements;
+
+drop function if exists public.is_farm_member(uuid);
+
 create or replace function public.is_farm_member(
   p_farm_id uuid,
   p_roles text[] default array['owner', 'manager', 'worker', 'viewer']
@@ -140,6 +151,26 @@ as $$
       and fm.role = any (p_roles)
   );
 $$;
+
+create policy farms_member_select on public.farms for select
+  using (public.is_farm_member(farm_id));
+create policy farms_member_write on public.farms for all
+  using (public.is_farm_member(farm_id))
+  with check (public.is_farm_member(farm_id));
+
+create policy farm_members_select on public.farm_members for select
+  using (public.is_farm_member(farm_id));
+
+create policy batches_member on public.batches for all
+  using (public.is_farm_member(farm_id))
+  with check (public.is_farm_member(farm_id));
+
+create policy vaccination_tasks_member on public.vaccination_tasks for all
+  using (public.is_farm_member(farm_id))
+  with check (public.is_farm_member(farm_id));
+
+create policy entitlements_read on public.entitlements for select
+  using (public.is_farm_member(farm_id));
 
 create or replace function public.can_farm_push(p_farm_id uuid)
 returns boolean

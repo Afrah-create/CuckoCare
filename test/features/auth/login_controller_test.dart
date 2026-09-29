@@ -8,8 +8,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 class _FakeAuthRepository implements AuthRepository {
   @override
-  Future<Result<void>> signInWithEmail(SignInRequest request) async {
-    return const Success(null);
+  Future<Result<AuthSessionResult>> signInWithEmail(SignInRequest request) async {
+    return const Success(AuthSessionResult(needsFarmSetup: false));
+  }
+
+  @override
+  Future<Result<AuthSessionResult>> signUpWithEmail(SignUpRequest request) async {
+    return const Success(AuthSessionResult(needsFarmSetup: true));
+  }
+
+  @override
+  Future<Result<AuthSessionResult>> refreshMembershipFromServer() async {
+    return const Success(AuthSessionResult(needsFarmSetup: false));
   }
 
   @override
@@ -28,12 +38,12 @@ void main() {
     final notifier = container.read(loginControllerProvider.notifier);
     notifier.setOnline(false);
 
-    final ok = await notifier.signInWithEmail(
+    final session = await notifier.signInWithEmail(
       email: 'a@b.com',
       password: 'secret1',
     );
 
-    expect(ok, isFalse);
+    expect(session, isNull);
     expect(container.read(loginControllerProvider).status, LoginStatus.failure);
   });
 }

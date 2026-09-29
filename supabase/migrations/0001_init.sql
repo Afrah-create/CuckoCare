@@ -67,8 +67,11 @@ for each row execute function public.set_server_version();
 
 create index farm_members_farm_version_idx on public.farm_members (farm_id, server_version);
 
--- Helper: membership check (evaluated once per query via scalar subselect in policies)
-create or replace function public.is_farm_member(p_farm_id uuid)
+-- Helper: membership check (optional role filter; default matches legacy member roles)
+create or replace function public.is_farm_member(
+  p_farm_id uuid,
+  p_roles text[] default array['owner', 'manager', 'worker']
+)
 returns boolean
 language sql
 stable
@@ -81,6 +84,7 @@ as $$
     where fm.farm_id = p_farm_id
       and fm.user_id = (select auth.uid())
       and fm.deleted_at is null
+      and fm.role = any (p_roles)
   );
 $$;
 

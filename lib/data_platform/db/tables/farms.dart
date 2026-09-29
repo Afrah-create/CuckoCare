@@ -11,7 +11,12 @@ class Farms extends Table {
 
   TextColumn get name => text()();
   TextColumn get location => text().nullable()();
+  TextColumn get district => text().nullable()();
+  TextColumn get village => text().nullable()();
+  TextColumn get phone => text().nullable()();
+  TextColumn get altPhone => text().nullable()();
   TextColumn get notes => text().nullable()();
+  DateTimeColumn get profileCompletedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

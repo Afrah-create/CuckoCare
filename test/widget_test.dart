@@ -1,14 +1,14 @@
-import 'package:cucocare/features/home/presentation/home_shell.dart';
+import 'package:cucocare/app/widgets/sync_status_badge.dart';
 import 'package:cucocare/data_platform/sync/sync_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('SyncStatusChip renders offline state', (tester) async {
+  testWidgets('SyncStatusBadge renders offline state', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: SyncStatusChip(
+          body: SyncStatusBadge(
             status: SyncStatus(
               phase: SyncPhase.offline,
               pendingOutboxCount: 2,

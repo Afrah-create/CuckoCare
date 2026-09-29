@@ -12,8 +12,10 @@ Offline-first Android poultry farm management for smallholder farmers in Uganda 
 ## Setup
 
 ```bash
-cp env/dev.example.json env/dev.json
-# Edit env/dev.json with your SUPABASE_URL and SUPABASE_ANON_KEY
+cp .env.example .env
+# Edit .env with Supabase URL, anon key, and service role (server-only)
+
+dart run tool/sync_env.dart dev   # writes env/dev.json for Flutter (no service role)
 
 flutter pub get
 dart run build_runner build
@@ -22,7 +24,11 @@ dart run build_runner build
 ## Run (flavors)
 
 ```bash
-# Dev
+# Dev (syncs .env → env/dev.json first)
+./scripts/run_dev.sh
+
+# Or manually after editing .env:
+dart run tool/sync_env.dart dev
 flutter run --flavor dev --dart-define-from-file=env/dev.json
 
 # Staging
