@@ -16,8 +16,8 @@ class SeedProgrammeLoader {
   static const _referenceFarmId = 'global';
 
   Future<void> loadIfEmpty() async {
-    final existing = await _db.select(_db.programmes).getSingleOrNull();
-    if (existing != null) {
+    final existing = await _db.select(_db.programmes).get();
+    if (existing.isNotEmpty) {
       return;
     }
 

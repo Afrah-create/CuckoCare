@@ -5,6 +5,7 @@ Offline-first Android poultry farm management for smallholder farmers in Uganda 
 ## Prerequisites
 
 - Flutter stable (Dart 3)
+- **JDK 17** with `javac` (Ubuntu: `sudo apt install openjdk-17-jdk`). A JRE-only Java 25 install will fail Gradle with `JAVA_COMPILER`.
 - Android SDK (minSdk 24)
 - Optional: [Supabase CLI](https://supabase.com/docs/guides/cli) for local backend
 

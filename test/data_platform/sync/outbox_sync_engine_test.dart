@@ -1,139 +1,132 @@
-import 'dart:convert';
-
 import 'package:cucocare/core/error/result.dart';
+import 'package:cucocare/core/time/clock.dart';
 import 'package:cucocare/data_platform/db/app_database.dart';
-import 'package:cucocare/data_platform/sync/outbox_sync_engine.dart';
+import 'package:cucocare/data_platform/db/synced_write.dart';
+import 'package:cucocare/data_platform/sync/cuco_care_sync_engine.dart';
 import 'package:cucocare/data_platform/sync/remote_sync_api.dart';
+import 'package:cucocare/core/error/failure.dart';
+import 'package:cucocare/features/batches/data/batch_repository.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'fake_remote_sync_api.dart';
+import 'memory_remote_sync_api.dart';
 
 void main() {
   late AppDatabase db;
-  late FakeRemoteSyncApi remote;
+  late MemoryRemoteSyncApi remote;
 
-  setUp(() {
+  setUp(() async {
     db = AppDatabase.forTesting(NativeDatabase.memory());
-    remote = FakeRemoteSyncApi(online: true);
+    remote = MemoryRemoteSyncApi(online: true);
+    await db.syncDao.ensureScope('farm-1');
+    await db.syncMetaDao.setValue('hydrated', 'true');
   });
 
   tearDown(() async {
     await db.close();
   });
 
-  Future<void> enqueue(String opId) async {
-    await db.into(db.outbox).insert(
-          OutboxCompanion.insert(
-            opId: opId,
-            targetTable: 'batches',
-            rowId: 'row-1',
-            op: 'upsert',
-            payload: jsonEncode({'id': 'row-1'}),
-            createdAt: DateTime.utc(2026, 1, 1),
-          ),
-        );
-  }
-
-  test('push retries after failure then succeeds', () async {
-    remote.failNextPush = true;
-    await enqueue('op-1');
-    final engine = OutboxSyncEngine(db: db, remote: remote, isOnline: () async => true);
-
-    final first = await engine.syncOnce();
-    expect(first, isA<Error<void>>());
-    expect(await db.outboxDao.pendingCount(), 1);
-
-    remote.failNextPush = false;
-    final second = await engine.syncOnce();
-    expect(second, isA<Success<void>>());
-    expect(await db.outboxDao.pendingCount(), 0);
-    expect(remote.pushedOps.length, 1);
-  });
-
-  test('duplicate delivery is idempotent by op_id', () async {
-    await enqueue('op-dup');
-    remote.acknowledged.add('op-dup');
-    final engine = OutboxSyncEngine(db: db, remote: remote, isOnline: () async => true);
-
-    await engine.syncOnce();
+  test('writeSynced rolls back outbox when row write fails', () async {
+    final write = SyncedWrite(db);
+    await expectLater(
+      write.writeSynced(
+        writeRow: () async {
+          throw StateError('boom');
+        },
+        table: 'batches',
+        rowId: 'x',
+        op: 'upsert',
+        payload: const {'id': 'x'},
+      ),
+      throwsStateError,
+    );
     expect(await db.outboxDao.pendingCount(), 0);
   });
 
-  test('offline then online transitions status', () async {
-    await enqueue('op-2');
-    remote.online = false;
-    final engine = OutboxSyncEngine(db: db, remote: remote, isOnline: () async => remote.online);
-
-    final offline = await engine.syncOnce();
-    expect(offline, isA<Error<void>>());
-
-    remote.online = true;
-    final online = await engine.syncOnce();
-    expect(online, isA<Success<void>>());
-  });
-
-  test('pull pagination advances cursor', () async {
-    remote.pullData['batches'] = [
-      SyncPullRow(
-        tableName: 'batches',
-        rowId: 'b1',
-        serverVersion: 1,
-        payload: {'id': 'b1'},
-        deleted: false,
-      ),
-      SyncPullRow(
-        tableName: 'batches',
-        rowId: 'b2',
-        serverVersion: 2,
-        payload: {'id': 'b2'},
-        deleted: false,
-      ),
-    ];
-    final engine = OutboxSyncEngine(
-      db: db,
-      remote: _PagingRemote(remote),
-      isOnline: () async => true,
-    );
-
-    await engine.syncOnce();
-    expect(await db.syncDao.cursorFor('batches'), 2);
-  });
-}
-
-class _PagingRemote implements RemoteSyncApi {
-  _PagingRemote(this._inner);
-
-  final FakeRemoteSyncApi _inner;
-
-  @override
-  Future<Result<bool>> ping() => _inner.ping();
-
-  @override
-  Future<Result<SyncPushResult>> push(List<SyncPushOp> ops) => _inner.push(ops);
-
-  @override
-  Future<Result<SyncPullPage>> pull({
-    required String tableName,
-    required int cursor,
-    required int pageSize,
-  }) async {
-    final all = _inner.pullData[tableName] ?? [];
-    final slice = all.where((r) => r.serverVersion > cursor).take(1).toList();
-    return Success(
-      SyncPullPage(
-        rows: slice,
-        hasMore: all.any((r) => r.serverVersion > (slice.lastOrNull?.serverVersion ?? cursor)),
-      ),
-    );
-  }
-}
-
-extension _ListLastOrNull<E> on List<E> {
-  E? get lastOrNull {
-    if (length == 0) {
-      return null;
+  test('coalesces consecutive pending upserts for same row', () async {
+    final write = SyncedWrite(db);
+    for (var i = 0; i < 3; i++) {
+      await write.writeSynced(
+        writeRow: () async {},
+        table: 'batches',
+        rowId: 'row-1',
+        op: 'upsert',
+        payload: {'v': i},
+      );
     }
-    return last;
-  }
+    final rows = await db.select(db.outbox).get();
+    expect(rows.length, 1);
+  });
+
+  test('engine push clears outbox and updates server_version', () async {
+    final repo = BatchRepository(db, FixedClock(DateTime.utc(2026, 1, 1)));
+    await repo.createBatch(
+      farmId: 'farm-1',
+      name: 'Batch A',
+      birdType: 'broiler',
+      initialCount: 100,
+      acquiredOn: DateTime.utc(2026, 1, 1),
+      programmeId: 'p1',
+      programmeVersion: 1,
+    );
+
+    final engine = CucoCareSyncEngine(
+      db: db,
+      remote: remote,
+      hasRealSession: () async => true,
+    );
+
+    final result = await engine.syncOnce();
+    expect(result, isA<Success<void>>());
+    expect(await db.outboxDao.pendingCount(), 0);
+
+    final batch = await (db.select(db.batches)).getSingle();
+    expect(batch.serverVersion, isNot(null));
+  });
+
+  test('demo session no-ops sync', () async {
+    final engine = CucoCareSyncEngine(
+      db: db,
+      remote: remote,
+      hasRealSession: () async => false,
+    );
+    final result = await engine.syncOnce();
+    expect(result, isA<Error<void>>());
+    expect((result as Error<void>).failure, isA<SyncSignedOutDemo>());
+  });
+
+  test('pull pagination hydrates remote rows', () async {
+    remote.streams['farm-1'] = [
+      for (var i = 1; i <= 3; i++)
+        SyncPullRow(
+          table: 'batches',
+          serverVersion: i,
+          row: {
+            'id': 'remote-$i',
+            'farm_id': 'farm-1',
+            'name': 'R$i',
+            'bird_type': 'broiler',
+            'initial_count': 10,
+            'acquired_on': '2026-01-01',
+            'age_at_acquisition_days': 0,
+            'status': 'active',
+            'programme_id': 'p',
+            'programme_version': 1,
+            'created_at': '2026-01-01T00:00:00Z',
+            'updated_at': '2026-01-01T00:00:00Z',
+            'deleted_at': null,
+            'server_version': i,
+          },
+        ),
+    ];
+    remote.heads['farm-1'] = 3;
+
+    final engine = CucoCareSyncEngine(
+      db: db,
+      remote: remote,
+      hasRealSession: () async => true,
+    );
+    await engine.syncOnce();
+    expect(await db.syncDao.cursorFor('farm-1'), 3);
+  });
 }

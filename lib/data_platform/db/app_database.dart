@@ -3,6 +3,7 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 import 'daos/outbox_dao.dart';
 import 'daos/sync_dao.dart';
+import 'daos/sync_meta_dao.dart';
 import 'tables/auth_snapshot.dart';
 import 'tables/batches.dart';
 import 'tables/entitlements.dart';
@@ -17,6 +18,9 @@ import 'tables/outbox.dart';
 import 'tables/programme_steps.dart';
 import 'tables/programmes.dart';
 import 'tables/sync_cursors.dart';
+import 'tables/sync_events.dart';
+import 'tables/sync_lock.dart';
+import 'tables/sync_meta.dart';
 import 'tables/vaccination_tasks.dart';
 
 part 'app_database.g.dart';
@@ -37,9 +41,12 @@ part 'app_database.g.dart';
     Entitlements,
     Outbox,
     SyncCursors,
+    SyncMeta,
+    SyncEvents,
+    SyncLock,
     AuthSnapshot,
   ],
-  daos: [OutboxDao, SyncDao],
+  daos: [OutboxDao, SyncDao, SyncMetaDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
@@ -47,7 +54,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -55,7 +62,16 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
         },
         onUpgrade: (m, from, to) async {
-          // Future migrations: use drift_dev schema export + migration tests.
+          if (from < 2) {
+            await m.addColumn(outbox, outbox.state);
+            await m.addColumn(outbox, outbox.leaseUntil);
+            await m.addColumn(outbox, outbox.retryable);
+            await m.addColumn(outbox, outbox.errorCode);
+            await m.addColumn(outbox, outbox.nextAttemptAt);
+            await m.createTable(syncMeta);
+            await m.createTable(syncEvents);
+            await m.createTable(syncLock);
+          }
         },
       );
 

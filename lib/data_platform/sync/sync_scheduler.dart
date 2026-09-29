@@ -18,7 +18,8 @@ class SyncScheduler {
   Timer? _debounce;
 
   Future<void> start() async {
-    await _engine.syncOnce();
+    // Do not block app launch on first sync (network may be slow offline).
+    unawaited(_engine.syncOnce());
     _connectivitySub = _connectivityHints.listen((online) {
       if (online) {
         unawaited(_engine.syncOnce());

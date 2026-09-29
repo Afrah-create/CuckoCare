@@ -29,10 +29,39 @@ Repositories persist to Drift only. Mutations on synced tables enqueue an **outb
 
 ## Sync
 
-- **Push:** pending outbox → `sync_push(ops jsonb)` (idempotent by `op_id`).
-- **Pull:** per-table cursors on `server_version` → `sync_pull(cursors, page_size)`.
-- Triggers: foreground, connectivity hint + successful ping, debounced after writes, best-effort Workmanager periodic task.
-- Conflicts: last-write-wins by `server_version` for mutable rows; vaccination `done` is monotonic over `pending`.
+Server versions are **per scope** (farm id or `reference`), commit-ordered via `sync_counters` (see ADR 006). Clients store one cursor per scope in Drift.
+
+- **Bootstrap:** `sync_bootstrap()` → memberships, farms, scope heads, epoch.
+- **Reachability:** `sync_head(scopes)` (not `connectivity_plus` alone).
+- **Push:** leased outbox batch → `sync_push(p_ops)` → per-op results with authoritative rows.
+- **Pull:** `sync_pull(scope, since, limit)` → single version-ordered stream across tables; skip pull when head == cursor.
+- **Outbox:** `SyncedWrite` + coalescing, leases, dead-letter (`failed`), epoch reset without dropping unsynced ops.
+- **Triggers:** foreground, connectivity regained, debounced writes, Workmanager (best effort).
+
+```mermaid
+sequenceDiagram
+  participant UI
+  participant Drift
+  participant Engine
+  participant Supabase
+  UI->>Drift: writeSynced(row + outbox)
+  Engine->>Supabase: sync_head
+  alt head > cursor
+    Engine->>Supabase: sync_pull(scope)
+    Supabase-->>Engine: rows by server_version
+    Engine->>Drift: apply page (respect pending edits)
+  end
+  Engine->>Supabase: sync_push(ops)
+  Supabase-->>Engine: applied + server_version
+  Engine->>Drift: ack outbox / update local version
+```
+
+| Kind | Conflict policy |
+|------|-----------------|
+| `mutable` | Server LWW by commit-ordered version; `farm_id` immutable after insert |
+| `append_only` | Insert only; duplicate id is no-op |
+| `vaccination_tasks.status` | Monotonic rank (done beats pending) |
+| Pending local edit | Pull does not overwrite; push ack wins |
 
 ## Running locally
 

@@ -32,6 +32,7 @@ Future<void> bootstrap({
   required SyncScheduler syncScheduler,
   required LocalReminderScheduler reminders,
   Clock? clock,
+  bool initializeSupabase = true,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,7 +44,9 @@ Future<void> bootstrap({
     tz.setLocalLocation(KampalaTime.location);
   }
 
-  await bootstrapSupabase(env);
+  if (initializeSupabase) {
+    await bootstrapSupabase(env);
+  }
   await reminders.initialize();
 
   await SeedProgrammeLoader(db, clock ?? SystemClock()).loadIfEmpty();

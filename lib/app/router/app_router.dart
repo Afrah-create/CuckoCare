@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/auth_splash_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/home/presentation/home_shell.dart';
 import '../di/providers.dart';
@@ -9,28 +10,40 @@ import '../di/providers.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  // Re-run redirect when auth snapshot resolution changes (login / sign-out).
   final authAsync = ref.watch(hasAuthSnapshotProvider);
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/home',
+    initialLocation: '/splash',
     redirect: (context, state) {
+      final location = state.matchedLocation;
       final loading = authAsync.isLoading;
+
       if (loading) {
-        return null;
+        return location == '/splash' ? null : '/splash';
       }
+
+      if (authAsync.hasError) {
+        return location == '/login' ? null : '/login';
+      }
+
       final authed = authAsync.value ?? false;
-      final onLogin = state.matchedLocation == '/login';
-      if (!authed && !onLogin) {
-        return '/login';
+      if (!authed) {
+        return location == '/login' ? null : '/login';
       }
-      if (authed && onLogin) {
+
+      if (location == '/login' || location == '/splash') {
         return '/home';
       }
+
       return null;
     },
-    refreshListenable: _GoRouterRefresh(ref),
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const AuthSplashScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -42,11 +55,3 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
-
-class _GoRouterRefresh extends ChangeNotifier {
-  _GoRouterRefresh(this._ref) {
-    _ref.listen(hasAuthSnapshotProvider, (_, _) => notifyListeners());
-  }
-
-  final Ref _ref;
-}

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../data_platform/sync/sync_engine.dart';
+import '../../settings/presentation/sync_diagnostics_screen.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
@@ -76,9 +77,15 @@ class SyncStatusChip extends StatelessWidget {
       SyncPhase.syncing => ('Syncing…', Colors.blue),
       SyncPhase.offline => ('Offline', Colors.orange),
       SyncPhase.error => ('Sync error', Colors.red),
+      SyncPhase.authRequired => ('Sign in', Colors.red),
+      SyncPhase.signedOutDemo => ('Demo', Colors.grey),
     };
     final pending = status.pendingOutboxCount;
-    final text = pending > 0 ? '$label ($pending)' : label;
+    final failed = status.failedOutboxCount;
+    var text = pending > 0 ? '$label ($pending)' : label;
+    if (failed > 0) {
+      text = '$text · $failed failed';
+    }
     return Chip(
       label: Text(text, style: TextStyle(color: color.shade900)),
       backgroundColor: color.withValues(alpha: 0.15),
@@ -120,6 +127,30 @@ class _PlaceholderTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (title == 'Settings') {
+      return const _SettingsTab();
+    }
     return Center(child: Text('$title — coming soon'));
+  }
+}
+
+class _SettingsTab extends StatelessWidget {
+  const _SettingsTab();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        ListTile(
+          title: const Text('Sync diagnostics'),
+          subtitle: const Text('Status, cursors, failed ops'),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const SyncDiagnosticsScreen(),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

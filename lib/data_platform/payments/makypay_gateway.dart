@@ -12,7 +12,7 @@ class MakyPayGateway implements PaymentGateway {
         body: {'plan_id': planId},
       );
       // TODO(MakyPay docs): parse checkout URL / reference from response.
-      return const Error(SyncFailure('MakyPay checkout response not implemented'));
+      return const Error(SyncRejected('MakyPay checkout response not implemented'));
     } catch (e) {
       return Error(UnexpectedFailure('$e'));
     }

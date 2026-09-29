@@ -29,4 +29,22 @@ class SyncDao extends DatabaseAccessor<AppDatabase> with _$SyncDaoMixin {
     final rows = await select(syncCursors).get();
     return {for (final r in rows) r.syncTable: r.cursor};
   }
+
+  Future<List<String>> allScopes() async {
+    final rows = await select(syncCursors).get();
+    return rows.map((r) => r.syncTable).toList();
+  }
+
+  Future<void> resetAllCursors() async {
+    await customStatement('UPDATE sync_cursors SET cursor = 0');
+  }
+
+  Future<void> ensureScope(String scope) async {
+    await into(syncCursors).insertOnConflictUpdate(
+      SyncCursorsCompanion.insert(
+        syncTable: scope,
+        cursor: const Value(0),
+      ),
+    );
+  }
 }

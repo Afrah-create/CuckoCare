@@ -27,16 +27,13 @@ android {
         create("dev") {
             dimension = "env"
             applicationIdSuffix = ".dev"
-            resValue("string", "app_name", "CucoCare Dev")
         }
         create("staging") {
             dimension = "env"
             applicationIdSuffix = ".staging"
-            resValue("string", "app_name", "CucoCare Staging")
         }
         create("prod") {
             dimension = "env"
-            resValue("string", "app_name", "CucoCare")
         }
     }
 
@@ -48,6 +45,7 @@ android {
 }
 
 kotlin {
+    jvmToolchain(17)
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
