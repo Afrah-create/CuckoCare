@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
 
 /// Shown while local session state is resolved (cold start).
 class AuthSplashScreen extends ConsumerStatefulWidget {
@@ -87,10 +86,10 @@ class _AuthSplashScreenState extends ConsumerState<AuthSplashScreen> {
       }
       _navigated = true;
       if (authAsync.hasError || !(authAsync.value ?? false)) {
-        context.go('/login');
+        const LoginRoute().go(context);
         return;
       }
-      context.go('/home');
+      const TodayRoute().go(context);
     });
   }
 }

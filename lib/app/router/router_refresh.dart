@@ -1,0 +1,15 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../di/providers.dart';
+
+/// Bridges Riverpod auth loading to go_router without recreating [GoRouter].
+class RouterRefresh extends ChangeNotifier {
+  void notifyRouter() => notifyListeners();
+}
+
+final routerRefreshProvider = Provider<RouterRefresh>((ref) {
+  final refresh = RouterRefresh();
+  ref.listen(hasAuthSnapshotProvider, (_, _) => refresh.notifyRouter());
+  return refresh;
+});

@@ -79,6 +79,41 @@ supabase start
 supabase db reset   # applies migrations + seed
 ```
 
+## Navigation
+
+Five-tab `StatefulShellRoute` (Today, Batches, Feed, Records, More). Auth lives outside the shell (`/splash`, `/auth/*`). Drill-down routes use the root navigator and hide the bottom bar.
+
+```mermaid
+flowchart TB
+  subgraph auth [Auth]
+    splash["/splash"]
+    login["/auth/login"]
+  end
+  subgraph shell [StatefulShellRoute]
+    today["/today"]
+    batches["/batches"]
+    feed["/feed"]
+    records["/records"]
+    more["/more"]
+  end
+  batches --> detail["/batches/:id"]
+  detail --> vax[".../vaccinations/:taskId"]
+  more --> farm["/more/farm"]
+  login --> today
+  splash --> login
+  splash --> today
+```
+
+| Action | API |
+|--------|-----|
+| Drill-down / create | `TypedRoute(...).push(context)` |
+| Auth, tab root, deep link | `TypedRoute(...).go(context)` or `router.go` |
+| Return | `context.pop()` |
+
+**Back (Android):** pop stack → non-Today tab root goes to Today → Today root exits. Router is created once; auth updates use `refreshListenable` (ADR 010).
+
+Deep links and notification paths are handled by `DeepLinkHandler` after `hasAuthSnapshotProvider` resolves. Register `cucocare://app` on Android; unsigned users get `/auth/login?from=`.
+
 ## Vaccination
 
 Programmes are seeded from `assets/seed/uganda_poultry_vaccination_schedule.json` on first launch. Domain rules:

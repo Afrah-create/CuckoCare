@@ -1,0 +1,13 @@
+---
+description: go_router navigation conventions for CucoCare
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Navigation
+
+- Use typed routes from `lib/app/router/routes/typed_routes.dart` (`.push` / `.go` on `GoRouteData`). Do not build path strings in features.
+- **`push`**: drill-down, create/edit, anything that needs a Back target.
+- **`go`**: auth boundaries, tab switches, deep links after gate resolves. Never `go` from a list to its own detail.
+- No `Navigator.push`, `MaterialPageRoute`, or `WillPopScope` under `lib/features/`. Use `PopScope` for dirty forms (`DiscardChangesScope`).
+- Detail routes that hide the bottom bar must use `$parentNavigatorKey => rootNavigatorKey` on the route class.

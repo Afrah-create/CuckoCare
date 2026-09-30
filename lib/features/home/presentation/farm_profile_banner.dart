@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import '../../../app/router/routes/typed_routes.dart';
 
 class FarmProfileBanner extends StatelessWidget {
   const FarmProfileBanner({super.key});
@@ -23,7 +23,7 @@ class FarmProfileBanner extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () => context.push('/home/farm-profile'),
+              onPressed: () => const MoreFarmRoute().push(context),
               child: const Text('Complete'),
             ),
           ],

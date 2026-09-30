@@ -68,5 +68,14 @@ ThemeData buildAppTheme() {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     ),
+    navigationRailTheme: NavigationRailThemeData(
+      indicatorColor: scheme.primaryContainer,
+      labelType: NavigationRailLabelType.all,
+    ),
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
+      },
+    ),
   );
 }

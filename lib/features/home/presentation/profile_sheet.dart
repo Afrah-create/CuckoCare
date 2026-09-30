@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../../app/di/providers.dart';
 
 void showProfileSheet(
@@ -107,7 +109,7 @@ class _ProfileSheet extends ConsumerWidget {
                   icon: Icons.settings_outlined,
                   label: 'Settings',
                   onTap: () {
-                    Navigator.pop(context);
+                    context.pop();
                     onOpenSettings?.call();
                   },
                 ),
@@ -131,7 +133,7 @@ class _ProfileSheet extends ConsumerWidget {
   }
 
   Future<void> _signOut(BuildContext context) async {
-    Navigator.pop(context);
+    context.pop();
     await onSignOut?.call();
   }
 }

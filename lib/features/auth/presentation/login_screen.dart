@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../domain/auth_repository.dart';
 import 'login_controller.dart';
 import 'login_state.dart';
@@ -71,14 +72,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   void _goAfterAuth(AuthSessionResult session) {
     ref.invalidate(farmProfileIncompleteProvider);
-    context.go('/home');
+    final from = GoRouterState.of(context).uri.queryParameters['from'];
+    if (from != null &&
+        from.isNotEmpty &&
+        !from.startsWith('/auth') &&
+        from != '/splash') {
+      context.go(from);
+      return;
+    }
+    const TodayRoute().go(context);
   }
 
   Future<void> _demoSession() async {
     await ref.read(loginControllerProvider.notifier).continueWithDemoSession();
     ref.invalidate(userProfileProvider);
     if (mounted) {
-      context.go('/home');
+      const TodayRoute().go(context);
     }
   }
 

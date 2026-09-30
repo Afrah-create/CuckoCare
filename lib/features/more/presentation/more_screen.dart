@@ -1,0 +1,84 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
+
+class MoreScreen extends ConsumerWidget {
+  const MoreScreen({super.key});
+
+  Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+    await ref.read(authRepositoryProvider).signOut();
+    ref.invalidate(hasAuthSnapshotProvider);
+    ref.invalidate(userProfileProvider);
+    ref.invalidate(farmProfileIncompleteProvider);
+    if (context.mounted) {
+      const LoginRoute().go(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Text(
+          'Farm & account',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.agriculture_outlined),
+                title: const Text('Farm profile'),
+                subtitle: const Text('Name, location, phone numbers'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => const MoreFarmRoute().push(context),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: const Icon(Icons.sync_problem_outlined),
+                title: const Text('Sync diagnostics'),
+                subtitle: const Text('Cursors, queue, failed ops'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => const MoreSyncRoute().push(context),
+              ),
+              const Divider(height: 1, indent: 56),
+              ListTile(
+                leading: const Icon(Icons.workspace_premium_outlined),
+                title: const Text('Subscription'),
+                subtitle: const Text('Coming soon'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Session',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.logout, color: theme.colorScheme.error),
+            title: Text(
+              'Sign out',
+              style: TextStyle(color: theme.colorScheme.error),
+            ),
+            onTap: () => _signOut(context, ref),
+          ),
+        ),
+      ],
+    );
+  }
+}
