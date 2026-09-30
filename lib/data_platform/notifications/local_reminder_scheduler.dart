@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -19,7 +20,7 @@ class LocalReminderScheduler implements ReminderScheduler {
   );
 
   Future<void> initialize() async {
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('@drawable/ic_stat_hen');
     await _plugin.initialize(
       settings: const InitializationSettings(android: android),
     );
@@ -58,6 +59,8 @@ class LocalReminderScheduler implements ReminderScheduler {
           _channel.id,
           _channel.name,
           channelDescription: _channel.description,
+          icon: 'ic_stat_hen',
+          color: const Color(0xFF622347),
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

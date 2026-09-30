@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
 
@@ -19,6 +21,7 @@ class MoreScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final env = ref.watch(envProvider);
     final theme = Theme.of(context);
 
     return ListView(
@@ -57,6 +60,16 @@ class MoreScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
+              if (env.isDev) ...[
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: const Icon(Icons.animation_outlined),
+                  title: const Text('Splash preview'),
+                  subtitle: const Text('Developer'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/more/splash-preview'),
+                ),
+              ],
             ],
           ),
         ),

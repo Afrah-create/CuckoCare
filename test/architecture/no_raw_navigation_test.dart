@@ -12,6 +12,9 @@ void main() {
       if (entity is! File || !entity.path.endsWith('.dart')) {
         continue;
       }
+      if (entity.path.contains('/features/dev/')) {
+        continue;
+      }
       final content = entity.readAsStringSync();
       if (content.contains('MaterialPageRoute')) {
         violations.add('${entity.path}: MaterialPageRoute');

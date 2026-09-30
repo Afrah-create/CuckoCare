@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 
-ThemeData buildAppTheme() {
-  const seed = Color(0xFF2E7D32);
+import 'brand_tokens.dart';
+
+ThemeData buildAppTheme({Brightness brightness = Brightness.light}) {
+  const brand = BrandTokens.defaults;
+  final seed = brand.brandInk;
   final scheme = ColorScheme.fromSeed(
     seedColor: seed,
-    brightness: Brightness.light,
+    brightness: brightness,
+    surface: brightness == Brightness.light
+        ? brand.brandCream
+        : brand.splashBackgroundDark,
   );
 
   return ThemeData(
     colorScheme: scheme,
     useMaterial3: true,
-    scaffoldBackgroundColor: scheme.surfaceContainerLowest,
+    brightness: brightness,
+    scaffoldBackgroundColor: brightness == Brightness.light
+        ? scheme.surfaceContainerLowest
+        : brand.splashBackgroundDark,
+    extensions: const [brand],
     appBarTheme: AppBarTheme(
       centerTitle: false,
       elevation: 0,

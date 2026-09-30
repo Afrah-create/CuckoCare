@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../features/auth/presentation/auth_splash_screen.dart';
+import '../../../features/splash/presentation/splash_screen.dart';
 import '../../../features/auth/presentation/forgot_password_screen.dart';
 import '../../../features/auth/presentation/login_screen.dart';
 import '../../../features/auth/presentation/sign_up_screen.dart';
@@ -21,7 +21,7 @@ class SplashRoute extends GoRouteData with $SplashRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
-      const AuthSplashScreen();
+      const SplashScreen();
 }
 
 @TypedGoRoute<LoginRoute>(path: '/auth/login')

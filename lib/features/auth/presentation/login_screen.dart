@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/widgets/app_logo.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../domain/auth_repository.dart';
 import 'login_controller.dart';
@@ -117,13 +118,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               ),
               child: Column(
                 children: [
-                  Icon(Icons.egg_alt_outlined, size: 44, color: scheme.primary),
-                  const SizedBox(height: 8),
-                  Text(
-                    'CucoCare',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  AppLogo(
+                    size: AppLogoSize.medium,
+                    showWordmark: true,
+                    heroTag: kEnableLogoHero ? 'app-logo' : null,
                   ),
                 ],
               ),

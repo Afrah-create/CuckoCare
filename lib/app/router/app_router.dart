@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/batches/presentation/batches_list_screen.dart';
+import '../../features/dev/presentation/splash_preview_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/records/presentation/records_screen.dart';
+import '../../features/splash/splash_controller.dart';
 import '../di/providers.dart';
 import '../shell/app_shell.dart';
 import '../widgets/not_found_screen.dart';
@@ -27,6 +29,11 @@ String? _authRedirect(Ref ref, GoRouterState state) {
 
   if (location == '/login') {
     return '/auth/login${state.uri.hasQuery ? '?${state.uri.query}' : ''}';
+  }
+
+  final introDone = ref.read(splashIntroCompleteProvider);
+  if (location == '/splash' && (!introDone || authAsync.isLoading)) {
+    return null;
   }
 
   if (authAsync.isLoading) {
@@ -138,6 +145,13 @@ List<RouteBase> _shellRoutes() {
                   return FadeTransition(opacity: animation, child: child);
                 },
               ),
+              routes: [
+                GoRoute(
+                  path: 'splash-preview',
+                  parentNavigatorKey: rootNavigatorKey,
+                  builder: (context, state) => const SplashPreviewScreen(),
+                ),
+              ],
             ),
           ],
         ),

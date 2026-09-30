@@ -1,0 +1,30 @@
+{
+  "width": 346,
+  "height": 410,
+  "layers": {
+    "hen": {
+      "x": 0,
+      "y": 0,
+      "width": 346,
+      "height": 410
+    },
+    "egg_left": {
+      "x": 0,
+      "y": 0,
+      "width": 346,
+      "height": 410
+    },
+    "egg_mid": {
+      "x": 0,
+      "y": 0,
+      "width": 346,
+      "height": 410
+    },
+    "egg_right": {
+      "x": 0,
+      "y": 0,
+      "width": 346,
+      "height": 410
+    }
+  }
+}
