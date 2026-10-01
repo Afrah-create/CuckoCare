@@ -51,7 +51,6 @@ Future<void> main() async {
   // Resolve auth before first frame so routing is not stuck on splash.
   try {
     await container.read(hasAuthSnapshotProvider.future);
-    await container.read(farmProfileIncompleteProvider.future);
   } catch (_) {
     // Router sends users to login when snapshot read fails.
   }

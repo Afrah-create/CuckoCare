@@ -1510,6 +1510,28 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _productionTypeMeta = const VerificationMeta(
+    'productionType',
+  );
+  @override
+  late final GeneratedColumn<String> productionType = GeneratedColumn<String>(
+    'production_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _programmeContentHashMeta =
+      const VerificationMeta('programmeContentHash');
+  @override
+  late final GeneratedColumn<String> programmeContentHash =
+      GeneratedColumn<String>(
+        'programme_content_hash',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -1537,6 +1559,8 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
     status,
     programmeId,
     programmeVersion,
+    productionType,
+    programmeContentHash,
     notes,
   ];
   @override
@@ -1684,6 +1708,24 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
     } else if (isInserting) {
       context.missing(_programmeVersionMeta);
     }
+    if (data.containsKey('production_type')) {
+      context.handle(
+        _productionTypeMeta,
+        productionType.isAcceptableOrUnknown(
+          data['production_type']!,
+          _productionTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('programme_content_hash')) {
+      context.handle(
+        _programmeContentHashMeta,
+        programmeContentHash.isAcceptableOrUnknown(
+          data['programme_content_hash']!,
+          _programmeContentHashMeta,
+        ),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -1763,6 +1805,14 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
         DriftSqlType.int,
         data['${effectivePrefix}programme_version'],
       )!,
+      productionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}production_type'],
+      ),
+      programmeContentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}programme_content_hash'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -1793,6 +1843,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
   final String status;
   final String programmeId;
   final int programmeVersion;
+  final String? productionType;
+  final String? programmeContentHash;
   final String? notes;
   const BatchRow({
     required this.id,
@@ -1811,6 +1863,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     required this.status,
     required this.programmeId,
     required this.programmeVersion,
+    this.productionType,
+    this.programmeContentHash,
     this.notes,
   });
   @override
@@ -1840,6 +1894,12 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     map['status'] = Variable<String>(status);
     map['programme_id'] = Variable<String>(programmeId);
     map['programme_version'] = Variable<int>(programmeVersion);
+    if (!nullToAbsent || productionType != null) {
+      map['production_type'] = Variable<String>(productionType);
+    }
+    if (!nullToAbsent || programmeContentHash != null) {
+      map['programme_content_hash'] = Variable<String>(programmeContentHash);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -1872,6 +1932,12 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       status: Value(status),
       programmeId: Value(programmeId),
       programmeVersion: Value(programmeVersion),
+      productionType: productionType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(productionType),
+      programmeContentHash: programmeContentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programmeContentHash),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -1904,6 +1970,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       status: serializer.fromJson<String>(json['status']),
       programmeId: serializer.fromJson<String>(json['programmeId']),
       programmeVersion: serializer.fromJson<int>(json['programmeVersion']),
+      productionType: serializer.fromJson<String?>(json['productionType']),
+      programmeContentHash: serializer.fromJson<String?>(
+        json['programmeContentHash'],
+      ),
       notes: serializer.fromJson<String?>(json['notes']),
     );
   }
@@ -1927,6 +1997,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       'status': serializer.toJson<String>(status),
       'programmeId': serializer.toJson<String>(programmeId),
       'programmeVersion': serializer.toJson<int>(programmeVersion),
+      'productionType': serializer.toJson<String?>(productionType),
+      'programmeContentHash': serializer.toJson<String?>(programmeContentHash),
       'notes': serializer.toJson<String?>(notes),
     };
   }
@@ -1948,6 +2020,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     String? status,
     String? programmeId,
     int? programmeVersion,
+    Value<String?> productionType = const Value.absent(),
+    Value<String?> programmeContentHash = const Value.absent(),
     Value<String?> notes = const Value.absent(),
   }) => BatchRow(
     id: id ?? this.id,
@@ -1970,6 +2044,12 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     status: status ?? this.status,
     programmeId: programmeId ?? this.programmeId,
     programmeVersion: programmeVersion ?? this.programmeVersion,
+    productionType: productionType.present
+        ? productionType.value
+        : this.productionType,
+    programmeContentHash: programmeContentHash.present
+        ? programmeContentHash.value
+        : this.programmeContentHash,
     notes: notes.present ? notes.value : this.notes,
   );
   BatchRow copyWithCompanion(BatchesCompanion data) {
@@ -2004,6 +2084,12 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       programmeVersion: data.programmeVersion.present
           ? data.programmeVersion.value
           : this.programmeVersion,
+      productionType: data.productionType.present
+          ? data.productionType.value
+          : this.productionType,
+      programmeContentHash: data.programmeContentHash.present
+          ? data.programmeContentHash.value
+          : this.programmeContentHash,
       notes: data.notes.present ? data.notes.value : this.notes,
     );
   }
@@ -2027,6 +2113,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
           ..write('status: $status, ')
           ..write('programmeId: $programmeId, ')
           ..write('programmeVersion: $programmeVersion, ')
+          ..write('productionType: $productionType, ')
+          ..write('programmeContentHash: $programmeContentHash, ')
           ..write('notes: $notes')
           ..write(')'))
         .toString();
@@ -2050,6 +2138,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     status,
     programmeId,
     programmeVersion,
+    productionType,
+    programmeContentHash,
     notes,
   );
   @override
@@ -2072,6 +2162,8 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
           other.status == this.status &&
           other.programmeId == this.programmeId &&
           other.programmeVersion == this.programmeVersion &&
+          other.productionType == this.productionType &&
+          other.programmeContentHash == this.programmeContentHash &&
           other.notes == this.notes);
 }
 
@@ -2092,6 +2184,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
   final Value<String> status;
   final Value<String> programmeId;
   final Value<int> programmeVersion;
+  final Value<String?> productionType;
+  final Value<String?> programmeContentHash;
   final Value<String?> notes;
   final Value<int> rowid;
   const BatchesCompanion({
@@ -2111,6 +2205,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     this.status = const Value.absent(),
     this.programmeId = const Value.absent(),
     this.programmeVersion = const Value.absent(),
+    this.productionType = const Value.absent(),
+    this.programmeContentHash = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2131,6 +2227,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     required String status,
     required String programmeId,
     required int programmeVersion,
+    this.productionType = const Value.absent(),
+    this.programmeContentHash = const Value.absent(),
     this.notes = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -2161,6 +2259,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     Expression<String>? status,
     Expression<String>? programmeId,
     Expression<int>? programmeVersion,
+    Expression<String>? productionType,
+    Expression<String>? programmeContentHash,
     Expression<String>? notes,
     Expression<int>? rowid,
   }) {
@@ -2182,6 +2282,9 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
       if (status != null) 'status': status,
       if (programmeId != null) 'programme_id': programmeId,
       if (programmeVersion != null) 'programme_version': programmeVersion,
+      if (productionType != null) 'production_type': productionType,
+      if (programmeContentHash != null)
+        'programme_content_hash': programmeContentHash,
       if (notes != null) 'notes': notes,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2204,6 +2307,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     Value<String>? status,
     Value<String>? programmeId,
     Value<int>? programmeVersion,
+    Value<String?>? productionType,
+    Value<String?>? programmeContentHash,
     Value<String?>? notes,
     Value<int>? rowid,
   }) {
@@ -2224,6 +2329,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
       status: status ?? this.status,
       programmeId: programmeId ?? this.programmeId,
       programmeVersion: programmeVersion ?? this.programmeVersion,
+      productionType: productionType ?? this.productionType,
+      programmeContentHash: programmeContentHash ?? this.programmeContentHash,
       notes: notes ?? this.notes,
       rowid: rowid ?? this.rowid,
     );
@@ -2282,6 +2389,14 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     if (programmeVersion.present) {
       map['programme_version'] = Variable<int>(programmeVersion.value);
     }
+    if (productionType.present) {
+      map['production_type'] = Variable<String>(productionType.value);
+    }
+    if (programmeContentHash.present) {
+      map['programme_content_hash'] = Variable<String>(
+        programmeContentHash.value,
+      );
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -2310,6 +2425,8 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
           ..write('status: $status, ')
           ..write('programmeId: $programmeId, ')
           ..write('programmeVersion: $programmeVersion, ')
+          ..write('productionType: $productionType, ')
+          ..write('programmeContentHash: $programmeContentHash, ')
           ..write('notes: $notes, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3803,6 +3920,18 @@ class $VaccinationTasksTable extends VaccinationTasks
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _occurrenceMeta = const VerificationMeta(
+    'occurrence',
+  );
+  @override
+  late final GeneratedColumn<int> occurrence = GeneratedColumn<int>(
+    'occurrence',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _dueOnMeta = const VerificationMeta('dueOn');
   @override
   late final GeneratedColumn<DateTime> dueOn = GeneratedColumn<DateTime>(
@@ -3811,6 +3940,21 @@ class $VaccinationTasksTable extends VaccinationTasks
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _enabledMeta = const VerificationMeta(
+    'enabled',
+  );
+  @override
+  late final GeneratedColumn<bool> enabled = GeneratedColumn<bool>(
+    'enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
   );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
@@ -3828,6 +3972,15 @@ class $VaccinationTasksTable extends VaccinationTasks
     aliasedName,
     true,
     type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _doneByMeta = const VerificationMeta('doneBy');
+  @override
+  late final GeneratedColumn<String> doneBy = GeneratedColumn<String>(
+    'done_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _productUsedMeta = const VerificationMeta(
@@ -3850,6 +4003,39 @@ class $VaccinationTasksTable extends VaccinationTasks
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _stepSnapshotMeta = const VerificationMeta(
+    'stepSnapshot',
+  );
+  @override
+  late final GeneratedColumn<String> stepSnapshot = GeneratedColumn<String>(
+    'step_snapshot',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _programmeContentHashMeta =
+      const VerificationMeta('programmeContentHash');
+  @override
+  late final GeneratedColumn<String> programmeContentHash =
+      GeneratedColumn<String>(
+        'programme_content_hash',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _shiftedFromMeta = const VerificationMeta(
+    'shiftedFrom',
+  );
+  @override
+  late final GeneratedColumn<DateTime> shiftedFrom = GeneratedColumn<DateTime>(
+    'shifted_from',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3860,11 +4046,17 @@ class $VaccinationTasksTable extends VaccinationTasks
     serverVersion,
     batchId,
     stepId,
+    occurrence,
     dueOn,
+    enabled,
     status,
     doneOn,
+    doneBy,
     productUsed,
     notes,
+    stepSnapshot,
+    programmeContentHash,
+    shiftedFrom,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3938,6 +4130,12 @@ class $VaccinationTasksTable extends VaccinationTasks
     } else if (isInserting) {
       context.missing(_stepIdMeta);
     }
+    if (data.containsKey('occurrence')) {
+      context.handle(
+        _occurrenceMeta,
+        occurrence.isAcceptableOrUnknown(data['occurrence']!, _occurrenceMeta),
+      );
+    }
     if (data.containsKey('due_on')) {
       context.handle(
         _dueOnMeta,
@@ -3945,6 +4143,12 @@ class $VaccinationTasksTable extends VaccinationTasks
       );
     } else if (isInserting) {
       context.missing(_dueOnMeta);
+    }
+    if (data.containsKey('enabled')) {
+      context.handle(
+        _enabledMeta,
+        enabled.isAcceptableOrUnknown(data['enabled']!, _enabledMeta),
+      );
     }
     if (data.containsKey('status')) {
       context.handle(
@@ -3960,6 +4164,12 @@ class $VaccinationTasksTable extends VaccinationTasks
         doneOn.isAcceptableOrUnknown(data['done_on']!, _doneOnMeta),
       );
     }
+    if (data.containsKey('done_by')) {
+      context.handle(
+        _doneByMeta,
+        doneBy.isAcceptableOrUnknown(data['done_by']!, _doneByMeta),
+      );
+    }
     if (data.containsKey('product_used')) {
       context.handle(
         _productUsedMeta,
@@ -3973,6 +4183,33 @@ class $VaccinationTasksTable extends VaccinationTasks
       context.handle(
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('step_snapshot')) {
+      context.handle(
+        _stepSnapshotMeta,
+        stepSnapshot.isAcceptableOrUnknown(
+          data['step_snapshot']!,
+          _stepSnapshotMeta,
+        ),
+      );
+    }
+    if (data.containsKey('programme_content_hash')) {
+      context.handle(
+        _programmeContentHashMeta,
+        programmeContentHash.isAcceptableOrUnknown(
+          data['programme_content_hash']!,
+          _programmeContentHashMeta,
+        ),
+      );
+    }
+    if (data.containsKey('shifted_from')) {
+      context.handle(
+        _shiftedFromMeta,
+        shiftedFrom.isAcceptableOrUnknown(
+          data['shifted_from']!,
+          _shiftedFromMeta,
+        ),
       );
     }
     return context;
@@ -4016,9 +4253,17 @@ class $VaccinationTasksTable extends VaccinationTasks
         DriftSqlType.string,
         data['${effectivePrefix}step_id'],
       )!,
+      occurrence: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}occurrence'],
+      )!,
       dueOn: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}due_on'],
+      )!,
+      enabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}enabled'],
       )!,
       status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -4028,6 +4273,10 @@ class $VaccinationTasksTable extends VaccinationTasks
         DriftSqlType.dateTime,
         data['${effectivePrefix}done_on'],
       ),
+      doneBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}done_by'],
+      ),
       productUsed: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}product_used'],
@@ -4035,6 +4284,18 @@ class $VaccinationTasksTable extends VaccinationTasks
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
+      ),
+      stepSnapshot: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}step_snapshot'],
+      ),
+      programmeContentHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}programme_content_hash'],
+      ),
+      shiftedFrom: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}shifted_from'],
       ),
     );
   }
@@ -4055,11 +4316,17 @@ class VaccinationTaskRow extends DataClass
   final int? serverVersion;
   final String batchId;
   final String stepId;
+  final int occurrence;
   final DateTime dueOn;
+  final bool enabled;
   final String status;
   final DateTime? doneOn;
+  final String? doneBy;
   final String? productUsed;
   final String? notes;
+  final String? stepSnapshot;
+  final String? programmeContentHash;
+  final DateTime? shiftedFrom;
   const VaccinationTaskRow({
     required this.id,
     required this.farmId,
@@ -4069,11 +4336,17 @@ class VaccinationTaskRow extends DataClass
     this.serverVersion,
     required this.batchId,
     required this.stepId,
+    required this.occurrence,
     required this.dueOn,
+    required this.enabled,
     required this.status,
     this.doneOn,
+    this.doneBy,
     this.productUsed,
     this.notes,
+    this.stepSnapshot,
+    this.programmeContentHash,
+    this.shiftedFrom,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4090,16 +4363,30 @@ class VaccinationTaskRow extends DataClass
     }
     map['batch_id'] = Variable<String>(batchId);
     map['step_id'] = Variable<String>(stepId);
+    map['occurrence'] = Variable<int>(occurrence);
     map['due_on'] = Variable<DateTime>(dueOn);
+    map['enabled'] = Variable<bool>(enabled);
     map['status'] = Variable<String>(status);
     if (!nullToAbsent || doneOn != null) {
       map['done_on'] = Variable<DateTime>(doneOn);
+    }
+    if (!nullToAbsent || doneBy != null) {
+      map['done_by'] = Variable<String>(doneBy);
     }
     if (!nullToAbsent || productUsed != null) {
       map['product_used'] = Variable<String>(productUsed);
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || stepSnapshot != null) {
+      map['step_snapshot'] = Variable<String>(stepSnapshot);
+    }
+    if (!nullToAbsent || programmeContentHash != null) {
+      map['programme_content_hash'] = Variable<String>(programmeContentHash);
+    }
+    if (!nullToAbsent || shiftedFrom != null) {
+      map['shifted_from'] = Variable<DateTime>(shiftedFrom);
     }
     return map;
   }
@@ -4118,17 +4405,31 @@ class VaccinationTaskRow extends DataClass
           : Value(serverVersion),
       batchId: Value(batchId),
       stepId: Value(stepId),
+      occurrence: Value(occurrence),
       dueOn: Value(dueOn),
+      enabled: Value(enabled),
       status: Value(status),
       doneOn: doneOn == null && nullToAbsent
           ? const Value.absent()
           : Value(doneOn),
+      doneBy: doneBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(doneBy),
       productUsed: productUsed == null && nullToAbsent
           ? const Value.absent()
           : Value(productUsed),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      stepSnapshot: stepSnapshot == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stepSnapshot),
+      programmeContentHash: programmeContentHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(programmeContentHash),
+      shiftedFrom: shiftedFrom == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shiftedFrom),
     );
   }
 
@@ -4146,11 +4447,19 @@ class VaccinationTaskRow extends DataClass
       serverVersion: serializer.fromJson<int?>(json['serverVersion']),
       batchId: serializer.fromJson<String>(json['batchId']),
       stepId: serializer.fromJson<String>(json['stepId']),
+      occurrence: serializer.fromJson<int>(json['occurrence']),
       dueOn: serializer.fromJson<DateTime>(json['dueOn']),
+      enabled: serializer.fromJson<bool>(json['enabled']),
       status: serializer.fromJson<String>(json['status']),
       doneOn: serializer.fromJson<DateTime?>(json['doneOn']),
+      doneBy: serializer.fromJson<String?>(json['doneBy']),
       productUsed: serializer.fromJson<String?>(json['productUsed']),
       notes: serializer.fromJson<String?>(json['notes']),
+      stepSnapshot: serializer.fromJson<String?>(json['stepSnapshot']),
+      programmeContentHash: serializer.fromJson<String?>(
+        json['programmeContentHash'],
+      ),
+      shiftedFrom: serializer.fromJson<DateTime?>(json['shiftedFrom']),
     );
   }
   @override
@@ -4165,11 +4474,17 @@ class VaccinationTaskRow extends DataClass
       'serverVersion': serializer.toJson<int?>(serverVersion),
       'batchId': serializer.toJson<String>(batchId),
       'stepId': serializer.toJson<String>(stepId),
+      'occurrence': serializer.toJson<int>(occurrence),
       'dueOn': serializer.toJson<DateTime>(dueOn),
+      'enabled': serializer.toJson<bool>(enabled),
       'status': serializer.toJson<String>(status),
       'doneOn': serializer.toJson<DateTime?>(doneOn),
+      'doneBy': serializer.toJson<String?>(doneBy),
       'productUsed': serializer.toJson<String?>(productUsed),
       'notes': serializer.toJson<String?>(notes),
+      'stepSnapshot': serializer.toJson<String?>(stepSnapshot),
+      'programmeContentHash': serializer.toJson<String?>(programmeContentHash),
+      'shiftedFrom': serializer.toJson<DateTime?>(shiftedFrom),
     };
   }
 
@@ -4182,11 +4497,17 @@ class VaccinationTaskRow extends DataClass
     Value<int?> serverVersion = const Value.absent(),
     String? batchId,
     String? stepId,
+    int? occurrence,
     DateTime? dueOn,
+    bool? enabled,
     String? status,
     Value<DateTime?> doneOn = const Value.absent(),
+    Value<String?> doneBy = const Value.absent(),
     Value<String?> productUsed = const Value.absent(),
     Value<String?> notes = const Value.absent(),
+    Value<String?> stepSnapshot = const Value.absent(),
+    Value<String?> programmeContentHash = const Value.absent(),
+    Value<DateTime?> shiftedFrom = const Value.absent(),
   }) => VaccinationTaskRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -4198,11 +4519,19 @@ class VaccinationTaskRow extends DataClass
         : this.serverVersion,
     batchId: batchId ?? this.batchId,
     stepId: stepId ?? this.stepId,
+    occurrence: occurrence ?? this.occurrence,
     dueOn: dueOn ?? this.dueOn,
+    enabled: enabled ?? this.enabled,
     status: status ?? this.status,
     doneOn: doneOn.present ? doneOn.value : this.doneOn,
+    doneBy: doneBy.present ? doneBy.value : this.doneBy,
     productUsed: productUsed.present ? productUsed.value : this.productUsed,
     notes: notes.present ? notes.value : this.notes,
+    stepSnapshot: stepSnapshot.present ? stepSnapshot.value : this.stepSnapshot,
+    programmeContentHash: programmeContentHash.present
+        ? programmeContentHash.value
+        : this.programmeContentHash,
+    shiftedFrom: shiftedFrom.present ? shiftedFrom.value : this.shiftedFrom,
   );
   VaccinationTaskRow copyWithCompanion(VaccinationTasksCompanion data) {
     return VaccinationTaskRow(
@@ -4216,13 +4545,27 @@ class VaccinationTaskRow extends DataClass
           : this.serverVersion,
       batchId: data.batchId.present ? data.batchId.value : this.batchId,
       stepId: data.stepId.present ? data.stepId.value : this.stepId,
+      occurrence: data.occurrence.present
+          ? data.occurrence.value
+          : this.occurrence,
       dueOn: data.dueOn.present ? data.dueOn.value : this.dueOn,
+      enabled: data.enabled.present ? data.enabled.value : this.enabled,
       status: data.status.present ? data.status.value : this.status,
       doneOn: data.doneOn.present ? data.doneOn.value : this.doneOn,
+      doneBy: data.doneBy.present ? data.doneBy.value : this.doneBy,
       productUsed: data.productUsed.present
           ? data.productUsed.value
           : this.productUsed,
       notes: data.notes.present ? data.notes.value : this.notes,
+      stepSnapshot: data.stepSnapshot.present
+          ? data.stepSnapshot.value
+          : this.stepSnapshot,
+      programmeContentHash: data.programmeContentHash.present
+          ? data.programmeContentHash.value
+          : this.programmeContentHash,
+      shiftedFrom: data.shiftedFrom.present
+          ? data.shiftedFrom.value
+          : this.shiftedFrom,
     );
   }
 
@@ -4237,11 +4580,17 @@ class VaccinationTaskRow extends DataClass
           ..write('serverVersion: $serverVersion, ')
           ..write('batchId: $batchId, ')
           ..write('stepId: $stepId, ')
+          ..write('occurrence: $occurrence, ')
           ..write('dueOn: $dueOn, ')
+          ..write('enabled: $enabled, ')
           ..write('status: $status, ')
           ..write('doneOn: $doneOn, ')
+          ..write('doneBy: $doneBy, ')
           ..write('productUsed: $productUsed, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('stepSnapshot: $stepSnapshot, ')
+          ..write('programmeContentHash: $programmeContentHash, ')
+          ..write('shiftedFrom: $shiftedFrom')
           ..write(')'))
         .toString();
   }
@@ -4256,11 +4605,17 @@ class VaccinationTaskRow extends DataClass
     serverVersion,
     batchId,
     stepId,
+    occurrence,
     dueOn,
+    enabled,
     status,
     doneOn,
+    doneBy,
     productUsed,
     notes,
+    stepSnapshot,
+    programmeContentHash,
+    shiftedFrom,
   );
   @override
   bool operator ==(Object other) =>
@@ -4274,11 +4629,17 @@ class VaccinationTaskRow extends DataClass
           other.serverVersion == this.serverVersion &&
           other.batchId == this.batchId &&
           other.stepId == this.stepId &&
+          other.occurrence == this.occurrence &&
           other.dueOn == this.dueOn &&
+          other.enabled == this.enabled &&
           other.status == this.status &&
           other.doneOn == this.doneOn &&
+          other.doneBy == this.doneBy &&
           other.productUsed == this.productUsed &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.stepSnapshot == this.stepSnapshot &&
+          other.programmeContentHash == this.programmeContentHash &&
+          other.shiftedFrom == this.shiftedFrom);
 }
 
 class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
@@ -4290,11 +4651,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
   final Value<int?> serverVersion;
   final Value<String> batchId;
   final Value<String> stepId;
+  final Value<int> occurrence;
   final Value<DateTime> dueOn;
+  final Value<bool> enabled;
   final Value<String> status;
   final Value<DateTime?> doneOn;
+  final Value<String?> doneBy;
   final Value<String?> productUsed;
   final Value<String?> notes;
+  final Value<String?> stepSnapshot;
+  final Value<String?> programmeContentHash;
+  final Value<DateTime?> shiftedFrom;
   final Value<int> rowid;
   const VaccinationTasksCompanion({
     this.id = const Value.absent(),
@@ -4305,11 +4672,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     this.serverVersion = const Value.absent(),
     this.batchId = const Value.absent(),
     this.stepId = const Value.absent(),
+    this.occurrence = const Value.absent(),
     this.dueOn = const Value.absent(),
+    this.enabled = const Value.absent(),
     this.status = const Value.absent(),
     this.doneOn = const Value.absent(),
+    this.doneBy = const Value.absent(),
     this.productUsed = const Value.absent(),
     this.notes = const Value.absent(),
+    this.stepSnapshot = const Value.absent(),
+    this.programmeContentHash = const Value.absent(),
+    this.shiftedFrom = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   VaccinationTasksCompanion.insert({
@@ -4321,11 +4694,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     this.serverVersion = const Value.absent(),
     required String batchId,
     required String stepId,
+    this.occurrence = const Value.absent(),
     required DateTime dueOn,
+    this.enabled = const Value.absent(),
     required String status,
     this.doneOn = const Value.absent(),
+    this.doneBy = const Value.absent(),
     this.productUsed = const Value.absent(),
     this.notes = const Value.absent(),
+    this.stepSnapshot = const Value.absent(),
+    this.programmeContentHash = const Value.absent(),
+    this.shiftedFrom = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -4344,11 +4723,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     Expression<int>? serverVersion,
     Expression<String>? batchId,
     Expression<String>? stepId,
+    Expression<int>? occurrence,
     Expression<DateTime>? dueOn,
+    Expression<bool>? enabled,
     Expression<String>? status,
     Expression<DateTime>? doneOn,
+    Expression<String>? doneBy,
     Expression<String>? productUsed,
     Expression<String>? notes,
+    Expression<String>? stepSnapshot,
+    Expression<String>? programmeContentHash,
+    Expression<DateTime>? shiftedFrom,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4360,11 +4745,18 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
       if (serverVersion != null) 'server_version': serverVersion,
       if (batchId != null) 'batch_id': batchId,
       if (stepId != null) 'step_id': stepId,
+      if (occurrence != null) 'occurrence': occurrence,
       if (dueOn != null) 'due_on': dueOn,
+      if (enabled != null) 'enabled': enabled,
       if (status != null) 'status': status,
       if (doneOn != null) 'done_on': doneOn,
+      if (doneBy != null) 'done_by': doneBy,
       if (productUsed != null) 'product_used': productUsed,
       if (notes != null) 'notes': notes,
+      if (stepSnapshot != null) 'step_snapshot': stepSnapshot,
+      if (programmeContentHash != null)
+        'programme_content_hash': programmeContentHash,
+      if (shiftedFrom != null) 'shifted_from': shiftedFrom,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4378,11 +4770,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     Value<int?>? serverVersion,
     Value<String>? batchId,
     Value<String>? stepId,
+    Value<int>? occurrence,
     Value<DateTime>? dueOn,
+    Value<bool>? enabled,
     Value<String>? status,
     Value<DateTime?>? doneOn,
+    Value<String?>? doneBy,
     Value<String?>? productUsed,
     Value<String?>? notes,
+    Value<String?>? stepSnapshot,
+    Value<String?>? programmeContentHash,
+    Value<DateTime?>? shiftedFrom,
     Value<int>? rowid,
   }) {
     return VaccinationTasksCompanion(
@@ -4394,11 +4792,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
       serverVersion: serverVersion ?? this.serverVersion,
       batchId: batchId ?? this.batchId,
       stepId: stepId ?? this.stepId,
+      occurrence: occurrence ?? this.occurrence,
       dueOn: dueOn ?? this.dueOn,
+      enabled: enabled ?? this.enabled,
       status: status ?? this.status,
       doneOn: doneOn ?? this.doneOn,
+      doneBy: doneBy ?? this.doneBy,
       productUsed: productUsed ?? this.productUsed,
       notes: notes ?? this.notes,
+      stepSnapshot: stepSnapshot ?? this.stepSnapshot,
+      programmeContentHash: programmeContentHash ?? this.programmeContentHash,
+      shiftedFrom: shiftedFrom ?? this.shiftedFrom,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -4430,8 +4834,14 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     if (stepId.present) {
       map['step_id'] = Variable<String>(stepId.value);
     }
+    if (occurrence.present) {
+      map['occurrence'] = Variable<int>(occurrence.value);
+    }
     if (dueOn.present) {
       map['due_on'] = Variable<DateTime>(dueOn.value);
+    }
+    if (enabled.present) {
+      map['enabled'] = Variable<bool>(enabled.value);
     }
     if (status.present) {
       map['status'] = Variable<String>(status.value);
@@ -4439,11 +4849,25 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     if (doneOn.present) {
       map['done_on'] = Variable<DateTime>(doneOn.value);
     }
+    if (doneBy.present) {
+      map['done_by'] = Variable<String>(doneBy.value);
+    }
     if (productUsed.present) {
       map['product_used'] = Variable<String>(productUsed.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
+    }
+    if (stepSnapshot.present) {
+      map['step_snapshot'] = Variable<String>(stepSnapshot.value);
+    }
+    if (programmeContentHash.present) {
+      map['programme_content_hash'] = Variable<String>(
+        programmeContentHash.value,
+      );
+    }
+    if (shiftedFrom.present) {
+      map['shifted_from'] = Variable<DateTime>(shiftedFrom.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -4462,11 +4886,17 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
           ..write('serverVersion: $serverVersion, ')
           ..write('batchId: $batchId, ')
           ..write('stepId: $stepId, ')
+          ..write('occurrence: $occurrence, ')
           ..write('dueOn: $dueOn, ')
+          ..write('enabled: $enabled, ')
           ..write('status: $status, ')
           ..write('doneOn: $doneOn, ')
+          ..write('doneBy: $doneBy, ')
           ..write('productUsed: $productUsed, ')
           ..write('notes: $notes, ')
+          ..write('stepSnapshot: $stepSnapshot, ')
+          ..write('programmeContentHash: $programmeContentHash, ')
+          ..write('shiftedFrom: $shiftedFrom, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11182,6 +11612,8 @@ typedef $$BatchesTableCreateCompanionBuilder = BatchesCompanion Function({
   required String status,
   required String programmeId,
   required int programmeVersion,
+  Value<String?> productionType,
+  Value<String?> programmeContentHash,
   Value<String?> notes,
   Value<int> rowid,
 });
@@ -11202,6 +11634,8 @@ typedef $$BatchesTableUpdateCompanionBuilder = BatchesCompanion Function({
   Value<String> status,
   Value<String> programmeId,
   Value<int> programmeVersion,
+  Value<String?> productionType,
+  Value<String?> programmeContentHash,
   Value<String?> notes,
   Value<int> rowid,
 });
@@ -11292,6 +11726,16 @@ class $$BatchesTableFilterComposer
 
   ColumnFilters<int> get programmeVersion => $composableBuilder(
     column: $table.programmeVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get productionType => $composableBuilder(
+    column: $table.productionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11390,6 +11834,16 @@ class $$BatchesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get productionType => $composableBuilder(
+    column: $table.productionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -11467,6 +11921,16 @@ class $$BatchesTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get productionType => $composableBuilder(
+    column: $table.productionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
 }
@@ -11515,6 +11979,8 @@ class $$BatchesTableTableManager
                 Value<String> status = const Value.absent(),
                 Value<String> programmeId = const Value.absent(),
                 Value<int> programmeVersion = const Value.absent(),
+                Value<String?> productionType = const Value.absent(),
+                Value<String?> programmeContentHash = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BatchesCompanion(
@@ -11534,6 +12000,8 @@ class $$BatchesTableTableManager
                 status: status,
                 programmeId: programmeId,
                 programmeVersion: programmeVersion,
+                productionType: productionType,
+                programmeContentHash: programmeContentHash,
                 notes: notes,
                 rowid: rowid,
               ),
@@ -11555,6 +12023,8 @@ class $$BatchesTableTableManager
                 required String status,
                 required String programmeId,
                 required int programmeVersion,
+                Value<String?> productionType = const Value.absent(),
+                Value<String?> programmeContentHash = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BatchesCompanion.insert(
@@ -11574,6 +12044,8 @@ class $$BatchesTableTableManager
                 status: status,
                 programmeId: programmeId,
                 programmeVersion: programmeVersion,
+                productionType: productionType,
+                programmeContentHash: programmeContentHash,
                 notes: notes,
                 rowid: rowid,
               ),
@@ -12301,11 +12773,17 @@ typedef $$VaccinationTasksTableCreateCompanionBuilder =
       Value<int?> serverVersion,
       required String batchId,
       required String stepId,
+      Value<int> occurrence,
       required DateTime dueOn,
+      Value<bool> enabled,
       required String status,
       Value<DateTime?> doneOn,
+      Value<String?> doneBy,
       Value<String?> productUsed,
       Value<String?> notes,
+      Value<String?> stepSnapshot,
+      Value<String?> programmeContentHash,
+      Value<DateTime?> shiftedFrom,
       Value<int> rowid,
     });
 typedef $$VaccinationTasksTableUpdateCompanionBuilder =
@@ -12318,11 +12796,17 @@ typedef $$VaccinationTasksTableUpdateCompanionBuilder =
       Value<int?> serverVersion,
       Value<String> batchId,
       Value<String> stepId,
+      Value<int> occurrence,
       Value<DateTime> dueOn,
+      Value<bool> enabled,
       Value<String> status,
       Value<DateTime?> doneOn,
+      Value<String?> doneBy,
       Value<String?> productUsed,
       Value<String?> notes,
+      Value<String?> stepSnapshot,
+      Value<String?> programmeContentHash,
+      Value<DateTime?> shiftedFrom,
       Value<int> rowid,
     });
 
@@ -12375,8 +12859,18 @@ class $$VaccinationTasksTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get occurrence => $composableBuilder(
+    column: $table.occurrence,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get dueOn => $composableBuilder(
     column: $table.dueOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -12390,6 +12884,11 @@ class $$VaccinationTasksTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get doneBy => $composableBuilder(
+    column: $table.doneBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get productUsed => $composableBuilder(
     column: $table.productUsed,
     builder: (column) => ColumnFilters(column),
@@ -12397,6 +12896,21 @@ class $$VaccinationTasksTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stepSnapshot => $composableBuilder(
+    column: $table.stepSnapshot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get shiftedFrom => $composableBuilder(
+    column: $table.shiftedFrom,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -12450,8 +12964,18 @@ class $$VaccinationTasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get occurrence => $composableBuilder(
+    column: $table.occurrence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get dueOn => $composableBuilder(
     column: $table.dueOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get enabled => $composableBuilder(
+    column: $table.enabled,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -12465,6 +12989,11 @@ class $$VaccinationTasksTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get doneBy => $composableBuilder(
+    column: $table.doneBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get productUsed => $composableBuilder(
     column: $table.productUsed,
     builder: (column) => ColumnOrderings(column),
@@ -12472,6 +13001,21 @@ class $$VaccinationTasksTableOrderingComposer
 
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stepSnapshot => $composableBuilder(
+    column: $table.stepSnapshot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get shiftedFrom => $composableBuilder(
+    column: $table.shiftedFrom,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -12511,14 +13055,25 @@ class $$VaccinationTasksTableAnnotationComposer
   GeneratedColumn<String> get stepId =>
       $composableBuilder(column: $table.stepId, builder: (column) => column);
 
+  GeneratedColumn<int> get occurrence => $composableBuilder(
+    column: $table.occurrence,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get dueOn =>
       $composableBuilder(column: $table.dueOn, builder: (column) => column);
+
+  GeneratedColumn<bool> get enabled =>
+      $composableBuilder(column: $table.enabled, builder: (column) => column);
 
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
   GeneratedColumn<DateTime> get doneOn =>
       $composableBuilder(column: $table.doneOn, builder: (column) => column);
+
+  GeneratedColumn<String> get doneBy =>
+      $composableBuilder(column: $table.doneBy, builder: (column) => column);
 
   GeneratedColumn<String> get productUsed => $composableBuilder(
     column: $table.productUsed,
@@ -12527,6 +13082,21 @@ class $$VaccinationTasksTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get stepSnapshot => $composableBuilder(
+    column: $table.stepSnapshot,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get programmeContentHash => $composableBuilder(
+    column: $table.programmeContentHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get shiftedFrom => $composableBuilder(
+    column: $table.shiftedFrom,
+    builder: (column) => column,
+  );
 }
 
 class $$VaccinationTasksTableTableManager
@@ -12574,11 +13144,17 @@ class $$VaccinationTasksTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 Value<String> batchId = const Value.absent(),
                 Value<String> stepId = const Value.absent(),
+                Value<int> occurrence = const Value.absent(),
                 Value<DateTime> dueOn = const Value.absent(),
+                Value<bool> enabled = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<DateTime?> doneOn = const Value.absent(),
+                Value<String?> doneBy = const Value.absent(),
                 Value<String?> productUsed = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> stepSnapshot = const Value.absent(),
+                Value<String?> programmeContentHash = const Value.absent(),
+                Value<DateTime?> shiftedFrom = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VaccinationTasksCompanion(
                 id: id,
@@ -12589,11 +13165,17 @@ class $$VaccinationTasksTableTableManager
                 serverVersion: serverVersion,
                 batchId: batchId,
                 stepId: stepId,
+                occurrence: occurrence,
                 dueOn: dueOn,
+                enabled: enabled,
                 status: status,
                 doneOn: doneOn,
+                doneBy: doneBy,
                 productUsed: productUsed,
                 notes: notes,
+                stepSnapshot: stepSnapshot,
+                programmeContentHash: programmeContentHash,
+                shiftedFrom: shiftedFrom,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -12606,11 +13188,17 @@ class $$VaccinationTasksTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 required String batchId,
                 required String stepId,
+                Value<int> occurrence = const Value.absent(),
                 required DateTime dueOn,
+                Value<bool> enabled = const Value.absent(),
                 required String status,
                 Value<DateTime?> doneOn = const Value.absent(),
+                Value<String?> doneBy = const Value.absent(),
                 Value<String?> productUsed = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<String?> stepSnapshot = const Value.absent(),
+                Value<String?> programmeContentHash = const Value.absent(),
+                Value<DateTime?> shiftedFrom = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VaccinationTasksCompanion.insert(
                 id: id,
@@ -12621,11 +13209,17 @@ class $$VaccinationTasksTableTableManager
                 serverVersion: serverVersion,
                 batchId: batchId,
                 stepId: stepId,
+                occurrence: occurrence,
                 dueOn: dueOn,
+                enabled: enabled,
                 status: status,
                 doneOn: doneOn,
+                doneBy: doneBy,
                 productUsed: productUsed,
                 notes: notes,
+                stepSnapshot: stepSnapshot,
+                programmeContentHash: programmeContentHash,
+                shiftedFrom: shiftedFrom,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

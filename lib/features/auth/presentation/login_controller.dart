@@ -31,6 +31,10 @@ class LoginController extends Notifier<LoginUiState> {
     }
   }
 
+  void resetForSignOut() {
+    state = const LoginUiState();
+  }
+
   Future<AuthSessionResult?> signInWithEmail({
     required String email,
     required String password,
@@ -107,12 +111,6 @@ class LoginController extends Notifier<LoginUiState> {
     );
   }
 
-  Future<void> continueWithDemoSession() async {
-    state = state.copyWith(status: LoginStatus.submitting, clearError: true);
-    await ref.read(authSnapshotRepositoryProvider).saveDemoSnapshot();
-    state = state.copyWith(status: LoginStatus.success);
-    _afterLocalAuthWrite(ref);
-  }
 }
 
 void _afterLocalAuthWrite(Ref ref) {

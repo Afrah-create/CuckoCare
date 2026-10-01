@@ -89,16 +89,6 @@ class _ProfileSheet extends ConsumerWidget {
                                 color: scheme.onSurfaceVariant,
                               ),
                             ),
-                          if (profile.isDemo)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                'Demo session',
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                  color: scheme.primary,
-                                ),
-                              ),
-                            ),
                         ],
                       ),
                     ),

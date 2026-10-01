@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../../../core/time/clock.dart';
-import '../../../core/utils/uuid_v7.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data_platform/db/app_database.dart';
@@ -74,35 +73,21 @@ class AuthSnapshotRepository {
 
   Future<void> persistFromSupabaseUser(User user) async {
     final now = _clock.now();
+    final prior = await (_db.select(_db.authSnapshot)).getSingleOrNull();
+    final farmIdsJson = prior != null && prior.userId == user.id
+        ? prior.farmIdsJson
+        : jsonEncode(<String>[]);
     await _db.into(_db.authSnapshot).insertOnConflictUpdate(
           AuthSnapshotCompanion.insert(
             id: const Value(_singletonId),
             userId: user.id,
             email: Value(user.email),
             phone: Value(user.phone),
-            farmIdsJson: jsonEncode(<String>[]),
+            farmIdsJson: farmIdsJson,
             lastVerifiedAt: Value(now),
           ),
         );
     await _db.syncDao.ensureScope('reference');
-  }
-
-  Future<void> saveDemoSnapshot() async {
-    final now = _clock.now();
-    final demoUserId = newId();
-    await _db.into(_db.authSnapshot).insertOnConflictUpdate(
-          AuthSnapshotCompanion.insert(
-            id: const Value(_singletonId),
-            userId: demoUserId,
-            email: const Value('demo@cucocare.local'),
-            farmIdsJson: jsonEncode(<String>['demo-farm']),
-            lastVerifiedAt: Value(now),
-          ),
-        );
-    await SyncSessionCoordinator(_db).alignWithAccount(
-      userId: demoUserId,
-      farmScopeIds: const ['demo-farm'],
-    );
   }
 
   Future<void> alignSyncScopesForUser({

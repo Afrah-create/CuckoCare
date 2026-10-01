@@ -1,0 +1,19 @@
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../app/di/providers.dart';
+import 'auth_form_state.dart';
+import 'login_controller.dart';
+
+Future<void> signOutFromApp(WidgetRef ref) async {
+  try {
+    await ref.read(authRepositoryProvider).signOut();
+  } finally {
+    ref.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
+    ref.read(loginControllerProvider.notifier).resetForSignOut();
+    bumpAuthFormGeneration(ref);
+    ref.invalidate(userProfileProvider);
+    ref.invalidate(farmProfileIncompleteProvider);
+    TextInput.finishAutofillContext(shouldSave: false);
+  }
+}

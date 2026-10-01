@@ -23,6 +23,11 @@ class SeedProgrammeLoader {
 
     final raw = await rootBundle.loadString(_assetPath);
     final json = jsonDecode(raw) as Map<String, dynamic>;
+    // Unified vet schedule (schema_version + programs.*) is loaded via
+    // [ProgrammeCatalogLoader]; legacy Drift seed rows are not used in v1.
+    if (json.containsKey('schema_version') || !json.containsKey('programmes')) {
+      return;
+    }
     final programmes = (json['programmes'] as List<dynamic>).cast<Map>();
 
     final now = _clock.now();

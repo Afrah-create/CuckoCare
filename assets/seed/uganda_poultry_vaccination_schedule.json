@@ -1,115 +1,616 @@
 {
   "schema_version": 1,
-  "programmes": [
-    {
-      "id": "ug-broiler-standard-v1",
-      "version": 1,
-      "name": "Uganda Broiler Standard",
-      "bird_types": ["broiler"],
-      "steps": [
-        {
-          "id": "broiler-marek-hatchery",
-          "name": "Marek's (HVT)",
-          "age_days": 1,
-          "location": "hatchery",
-          "optional": false,
-          "due_window_days_before": 0,
-          "due_window_days_after": 0
-        },
-        {
-          "id": "broiler-newcastle-day7",
-          "name": "Newcastle (LaSota) - 1st",
-          "age_days": 7,
-          "location": "farm",
-          "optional": false,
-          "due_window_days_before": 1,
-          "due_window_days_after": 2
-        },
-        {
-          "id": "broiler-gumboro-day14",
-          "name": "Gumboro (IBD) - 1st",
-          "age_days": 14,
-          "location": "farm",
-          "optional": false,
-          "due_window_days_before": 1,
-          "due_window_days_after": 2
-        },
-        {
-          "id": "broiler-newcastle-day21",
-          "name": "Newcastle (LaSota) - 2nd",
-          "age_days": 21,
-          "location": "farm",
-          "optional": false,
-          "due_window_days_before": 1,
-          "due_window_days_after": 2
-        },
-        {
-          "id": "broiler-gumboro-day28",
-          "name": "Gumboro (IBD) - 2nd",
-          "age_days": 28,
-          "location": "farm",
-          "optional": true,
-          "due_window_days_before": 1,
-          "due_window_days_after": 3
-        }
-      ]
+  "name": "Uganda unified poultry health schedule, DRAFT v0.1",
+  "status": "DRAFT. Must be reviewed and signed off by a licensed Ugandan veterinarian or poultry health specialist before release to farmers.",
+  "conventions": {
+    "age_days": "Day 1 is hatch day. 'Week N' in source charts is mapped to day 7*N (end of week N).",
+    "priority_levels": {
+      "core": "Present in most sources; do not skip.",
+      "recommended": "In at least one Ugandan source; default ON.",
+      "optional": "Depends on region, vet choice, or farm history; default OFF, farmer or vet toggles."
     },
-    {
-      "id": "ug-layer-standard-v1",
-      "version": 1,
-      "name": "Uganda Layer Standard",
-      "bird_types": ["layer", "dual_purpose"],
+    "due_window": {
+      "default_days_before": 1,
+      "default_days_after_overdue": 3,
+      "note": "Configurable per step. Reminder fires the day before and on the due day."
+    },
+    "hatchery_steps": "Steps with location=hatchery are shown as 'confirm done at hatchery', not as reminders.",
+    "catch_up_rule": "On batch registration at age A: steps with age_days < A become 'assumed done at source, please confirm'. Steps due but not confirmed show as overdue. Do not back-fill silently.",
+    "sources": {
+      "UPBL": "Ugachick Poultry Breeders, broiler and layer vaccination programs (ugachickpoultrybreeders.com)",
+      "MAAIF": "MAAIF Poultry Training Manual for Extension Workers in Uganda, Aug 2019 (Table 29 layers, Table 30 broilers, sections 4.6.1 and 4.7.3)",
+      "AARON": "Aaron Vet Farms Ltd, vaccine guide for Uganda"
+    }
+  },
+  "handling_rules": [
+    "Keep vaccine water below 20 C and vaccinate in the morning.",
+    "Thirst birds for 1-2 hours before drinking-water vaccination; all vaccine water should be consumed within 1-2 hours.",
+    "Use non-chlorinated water for drinking-water vaccines and do not disinfect drinkers after washing them on vaccination day (MAAIF).",
+    "Avoid antibiotics on vaccination days. Only multivitamins are recommended.",
+    "Vaccination does not guarantee protection. It must be combined with nutrition, biosecurity, and stockmanship.",
+    "Schedule changes only after consulting a vet who knows the local disease situation."
+  ],
+  "programs": {
+    "broiler": {
       "steps": [
         {
-          "id": "layer-marek-hatchery",
-          "name": "Marek's (HVT)",
+          "id": "BR-D01",
           "age_days": 1,
+          "label": "Day-old hatchery vaccination (ND, IB, IBD)",
+          "category": "vaccination",
+          "priority": "core",
           "location": "hatchery",
-          "optional": false,
-          "due_window_days_before": 0,
-          "due_window_days_after": 0
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)",
+            "Gumboro (IBD)"
+          ],
+          "vaccine_options": [
+            "Innovax ND-IBD (vector, SC)",
+            "Univax BD (coarse spray)",
+            "ND Clone 30 + Ma5, or ND C2 + IB 4/91 (coarse spray)"
+          ],
+          "routes": [
+            "SC injection",
+            "Coarse spray"
+          ],
+          "sources": [
+            "UPBL"
+          ],
+          "notes": "Given at hatchery. App should ask the farmer to confirm it was done and record what the hatchery used."
         },
         {
-          "id": "layer-newcastle-day7",
-          "name": "Newcastle (LaSota) - 1st",
+          "id": "BR-D07",
           "age_days": 7,
+          "label": "ND + IB (first farm dose)",
+          "category": "vaccination",
+          "priority": "recommended",
           "location": "farm",
-          "optional": false,
-          "due_window_days_before": 1,
-          "due_window_days_after": 2
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Hitchner B1 or Lasota (ND)",
+            "IB H120 or Ma5"
+          ],
+          "routes": [
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": "UPBL's broiler chart relies on the day-1 hatchery combination and has no day-7 dose. If the hatchery already gave ND+IB, the vet may adjust. Vet decision."
         },
         {
-          "id": "layer-gumboro-day14",
-          "name": "Gumboro (IBD)",
+          "id": "BR-D14",
           "age_days": 14,
+          "label": "Gumboro (IBD) dose 1",
+          "category": "vaccination",
+          "priority": "core",
           "location": "farm",
-          "optional": false,
-          "due_window_days_before": 1,
-          "due_window_days_after": 2
+          "diseases": [
+            "Gumboro (IBD)"
+          ],
+          "vaccine_options": [
+            "Intermediate or intermediate-plus IBD vaccine"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": ""
         },
         {
-          "id": "layer-fowl-pox-day42",
-          "name": "Fowl Pox",
-          "age_days": 42,
+          "id": "BR-D21",
+          "age_days": 21,
+          "label": "Gumboro (IBD) booster",
+          "category": "vaccination",
+          "priority": "recommended",
           "location": "farm",
-          "optional": false,
-          "due_window_days_before": 2,
-          "due_window_days_after": 3
+          "diseases": [
+            "Gumboro (IBD)"
+          ],
+          "vaccine_options": [
+            "Intermediate IBD vaccine"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "MAAIF broiler card lists a second Gumboro dose at day 21. Whether it is still needed after a vector IBD vaccine at the hatchery is a vet decision."
         },
         {
-          "id": "layer-newcastle-boost-recurring",
-          "name": "Newcastle booster",
-          "age_days": 56,
+          "id": "BR-D28",
+          "age_days": 28,
+          "label": "ND + IB booster",
+          "category": "vaccination",
+          "priority": "recommended",
           "location": "farm",
-          "optional": false,
-          "due_window_days_before": 2,
-          "due_window_days_after": 7,
-          "recurring": {
-            "interval_days": 84,
-            "horizon_days": 365
-          }
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "ND Clone 30 or Lasota",
+            "Ma5 (IB)"
+          ],
+          "routes": [
+            "Coarse spray",
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF",
+            "UPBL"
+          ],
+          "notes": "MAAIF lists it as routine. UPBL lists it as optional, for birds kept beyond 42 days. Treat as high priority if the batch will be kept past about 35 days."
         }
-      ]
+      ],
+      "typical_cycle_days": "35-42"
+    },
+    "layer": {
+      "steps": [
+        {
+          "id": "LY-D01",
+          "age_days": 1,
+          "label": "Day-old hatchery vaccination (Marek's, ND, IBD, IB)",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "hatchery",
+          "diseases": [
+            "Marek's",
+            "Newcastle (ND)",
+            "Gumboro (IBD)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Rismavac (HVT + Rispens, SC)",
+            "Innovax ND-IBD (SC)",
+            "Univax BD (spray)",
+            "Ma5 + Clone 30 and IB 4/91 (spray)"
+          ],
+          "routes": [
+            "SC injection",
+            "Coarse spray"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": "Given at hatchery. Marek's must be given at day 1. App should ask the farmer to confirm."
+        },
+        {
+          "id": "LY-D07",
+          "age_days": 7,
+          "label": "ND + IB (first farm dose)",
+          "category": "vaccination",
+          "priority": "recommended",
+          "location": "farm",
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Hitchner B1 or Lasota (ND)",
+            "IB H120 or Ma5"
+          ],
+          "routes": [
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": "Not in UPBL's chart, which relies on the day-1 combination. Vet decision."
+        },
+        {
+          "id": "LY-D14",
+          "age_days": 14,
+          "label": "Gumboro (IBD) dose 1",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Gumboro (IBD)"
+          ],
+          "vaccine_options": [
+            "IBD vaccine (intermediate strain)"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-D21",
+          "age_days": 21,
+          "label": "Gumboro (IBD) booster",
+          "category": "vaccination",
+          "priority": "recommended",
+          "location": "farm",
+          "diseases": [
+            "Gumboro (IBD)"
+          ],
+          "vaccine_options": [
+            "IBD vaccine (intermediate strain)"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "Only MAAIF lists a week-3 Gumboro dose. UPBL gives one farm dose at week 2. Vet decision."
+        },
+        {
+          "id": "LY-D28",
+          "age_days": 28,
+          "label": "ND + IB",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Ma5 + ND Clone 30",
+            "IB 4/91"
+          ],
+          "routes": [
+            "Coarse spray",
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-D42",
+          "age_days": 42,
+          "label": "Fowl pox",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Fowl pox"
+          ],
+          "vaccine_options": [
+            "Fowl pox vaccine"
+          ],
+          "routes": [
+            "Wing web stab"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": "Check for a 'take' (small scab at the site) about a week later."
+        },
+        {
+          "id": "LY-D56",
+          "age_days": 56,
+          "label": "Fowl typhoid dose 1",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Fowl typhoid (Salmonella)"
+          ],
+          "vaccine_options": [
+            "Inactivated Salmonella vaccine (SE + ST + SG strains)"
+          ],
+          "routes": [
+            "Intramuscular injection"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": "Aaron lists SC. UPBL and MAAIF list IM. Follow the product label."
+        },
+        {
+          "id": "LY-D63",
+          "age_days": 63,
+          "label": "ND + IB",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Ma5 + ND Clone 30",
+            "IB 4/91"
+          ],
+          "routes": [
+            "Coarse spray",
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-D98",
+          "age_days": 98,
+          "label": "Fowl typhoid dose 2",
+          "category": "vaccination",
+          "priority": "recommended",
+          "location": "farm",
+          "diseases": [
+            "Fowl typhoid (Salmonella)"
+          ],
+          "vaccine_options": [
+            "Inactivated Salmonella vaccine (SE + ST + SG strains)"
+          ],
+          "routes": [
+            "Intramuscular injection"
+          ],
+          "sources": [
+            "UPBL"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-D105",
+          "age_days": 105,
+          "label": "ND + IB pre-lay",
+          "category": "vaccination",
+          "priority": "core",
+          "location": "farm",
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "ND Clone 30 + Ma5"
+          ],
+          "routes": [
+            "Coarse spray",
+            "Eye drop",
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-D119",
+          "age_days": 119,
+          "label": "Inactivated ND + IB pre-lay booster (optional)",
+          "category": "vaccination",
+          "priority": "optional",
+          "location": "farm",
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "vaccine_options": [
+            "Inactivated ND+IB (some vets add EDS)"
+          ],
+          "routes": [
+            "Injection"
+          ],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "MAAIF says killed vaccine may be used at weeks 16-18 and ND+IB repeated after about 6 months. Only if the vet chooses the killed-vaccine route instead of the 6-weekly live booster."
+        },
+        {
+          "id": "LY-C77",
+          "age_days": 77,
+          "label": "Fowl cholera dose 1 (outbreak areas only)",
+          "category": "vaccination",
+          "priority": "optional",
+          "location": "farm",
+          "diseases": [
+            "Fowl cholera"
+          ],
+          "vaccine_options": [
+            "Fowl cholera vaccine"
+          ],
+          "routes": [
+            "Subcutaneous injection"
+          ],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "Only for farms or areas with previous outbreaks. Offer as a toggle. MAAIF lists week 11 and week 18."
+        },
+        {
+          "id": "LY-C126",
+          "age_days": 126,
+          "label": "Fowl cholera dose 2 (outbreak areas only)",
+          "category": "vaccination",
+          "priority": "optional",
+          "location": "farm",
+          "diseases": [
+            "Fowl cholera"
+          ],
+          "vaccine_options": [
+            "Fowl cholera vaccine"
+          ],
+          "routes": [
+            "Subcutaneous injection"
+          ],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "See LY-C77."
+        },
+        {
+          "id": "LY-W63",
+          "age_days": 63,
+          "label": "Deworm",
+          "category": "deworming",
+          "priority": "recommended",
+          "location": "farm",
+          "diseases": [
+            "Intestinal worms"
+          ],
+          "vaccine_options": [
+            "Poultry dewormer"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": "UPBL: weeks 9 and 15. MAAIF: weeks 8 and 16. Follow the product label."
+        },
+        {
+          "id": "LY-W105",
+          "age_days": 105,
+          "label": "Deworm",
+          "category": "deworming",
+          "priority": "recommended",
+          "location": "farm",
+          "diseases": [
+            "Intestinal worms"
+          ],
+          "vaccine_options": [
+            "Poultry dewormer"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF"
+          ],
+          "notes": ""
+        },
+        {
+          "id": "LY-M15",
+          "age_days": 15,
+          "label": "First beak trim (precision)",
+          "category": "management",
+          "priority": "optional",
+          "location": "farm",
+          "diseases": [],
+          "vaccine_options": [],
+          "routes": [],
+          "sources": [
+            "MAAIF"
+          ],
+          "notes": "Often done at the hatchery. Do not schedule close to a vaccination day. Give vitamin K in water around trimming, per MAAIF."
+        },
+        {
+          "id": "LY-M70",
+          "age_days": 70,
+          "label": "Second beak trim",
+          "category": "management",
+          "priority": "optional",
+          "location": "farm",
+          "diseases": [],
+          "vaccine_options": [],
+          "routes": [],
+          "sources": [
+            "MAAIF",
+            "UPBL"
+          ],
+          "notes": "MAAIF says 8-10 weeks. UPBL says week 10. Birds should be healthy and not recently vaccinated."
+        }
+      ],
+      "recurring": [
+        {
+          "id": "LY-R-NDIB",
+          "label": "ND + IB live booster (lay phase)",
+          "category": "vaccination",
+          "priority": "core",
+          "start_age_days": 147,
+          "interval_days": 42,
+          "end_age_days": 560,
+          "diseases": [
+            "Newcastle (ND)",
+            "Infectious Bronchitis (IB)"
+          ],
+          "alternate_ib_strain": [
+            "Ma5 (classic IB)",
+            "IB 4/91 (variant)"
+          ],
+          "routes": [
+            "Drinking water",
+            "Coarse spray",
+            "Eye drop"
+          ],
+          "sources": [
+            "UPBL",
+            "MAAIF",
+            "AARON"
+          ],
+          "notes": "UPBL: repeat IB every 4-6 weeks, alternating Ma5 and 4/91. MAAIF: live ND+IB about every 6 weeks. Aaron: ND booster about every 6 weeks. Default 6 weeks, editable by the vet. Ends at off-lay (weeks 72-80)."
+        },
+        {
+          "id": "LY-R-DEWORM",
+          "label": "Deworm (lay phase)",
+          "category": "deworming",
+          "priority": "recommended",
+          "start_age_days": 161,
+          "interval_days": 56,
+          "end_age_days": 560,
+          "diseases": [
+            "Intestinal worms"
+          ],
+          "routes": [
+            "Drinking water"
+          ],
+          "sources": [
+            "UPBL"
+          ],
+          "notes": "UPBL: repeat every 6-8 weeks. Default 8 weeks. Do not schedule on the same day as a vaccination."
+        }
+      ],
+      "off_lay_age_days": "504-560"
     }
+  },
+  "dual_purpose_and_local": {
+    "note": "Not yet modelled as programs. MAAIF guidance for later phases.",
+    "improved_breeds": [
+      "Egg strain: use the layer program.",
+      "Meat strain: use the broiler-style program; MAAIF says vaccination stops at 4 weeks."
+    ],
+    "local_chicken": [
+      "ND in week 1, at 6 weeks, at 3 months, then adults twice a year.",
+      "Fowl pox, Marek's and IB also advised.",
+      "Deworm monthly after 2 months of age.",
+      "Thermostable ND strains (I-2, V4) are used for village flocks in hot conditions."
+    ]
+  },
+  "open_questions_for_vet": [
+    "Broiler day 7 ND+IB and day 21 Gumboro: needed when the hatchery gives the day-1 combination including a vector IBD vaccine?",
+    "Broiler day 28 ND+IB: routine (MAAIF) or only if kept beyond 42 days (UPBL)?",
+    "Layer pre-lay: 6-weekly live ND+IB or inactivated ND+IB(+EDS) at weeks 16-18?",
+    "Fowl pox second dose (MAAIF shows week 10 as well as week 6): include?",
+    "Avian encephalomyelitis (AE) and EDS: not in the Ugandan sources reviewed, but common in international layer programs. Include as optional?",
+    "Coccidiosis prevention (a program vs. vaccine vs. anticoccidials) is not covered here."
   ]
 }

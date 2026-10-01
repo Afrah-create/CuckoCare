@@ -54,7 +54,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -78,6 +78,19 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(farms, farms.phone);
             await m.addColumn(farms, farms.altPhone);
             await m.addColumn(farms, farms.profileCompletedAt);
+          }
+          if (from < 4) {
+            await m.addColumn(batches, batches.productionType);
+            await m.addColumn(batches, batches.programmeContentHash);
+            await m.addColumn(vaccinationTasks, vaccinationTasks.occurrence);
+            await m.addColumn(vaccinationTasks, vaccinationTasks.enabled);
+            await m.addColumn(vaccinationTasks, vaccinationTasks.doneBy);
+            await m.addColumn(vaccinationTasks, vaccinationTasks.stepSnapshot);
+            await m.addColumn(
+              vaccinationTasks,
+              vaccinationTasks.programmeContentHash,
+            );
+            await m.addColumn(vaccinationTasks, vaccinationTasks.shiftedFrom);
           }
         },
       );

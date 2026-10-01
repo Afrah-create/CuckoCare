@@ -81,7 +81,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       return;
     }
     if (auth.value ?? false) {
-      // Authed splash → /today is handled by go_router redirect only.
+      _navigated = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          const TodayRoute().go(context);
+        }
+      });
       return;
     }
     _navigated = true;

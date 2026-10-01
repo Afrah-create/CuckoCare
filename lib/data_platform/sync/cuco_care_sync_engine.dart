@@ -13,14 +13,17 @@ class CucoCareSyncEngine implements SyncEngine {
     required AppDatabase db,
     required RemoteSyncApi remote,
     required Future<bool> Function() hasRealSession,
+    Future<void> Function()? onSuccessfulSync,
   })  : _db = db,
         _remote = remote,
         _hasRealSession = hasRealSession,
+        _onSuccessfulSync = onSuccessfulSync,
         _apply = SyncApply(db);
 
   final AppDatabase _db;
   final RemoteSyncApi _remote;
   final Future<bool> Function() _hasRealSession;
+  final Future<void> Function()? _onSuccessfulSync;
   final SyncApply _apply;
 
   final _statusController = StreamController<SyncStatus>.broadcast();
@@ -121,6 +124,10 @@ class CucoCareSyncEngine implements SyncEngine {
         lastSyncedAt: DateTime.now().toUtc(),
       ),
     );
+    final after = _onSuccessfulSync;
+    if (after != null) {
+      await after();
+    }
     return const Success(null);
   }
 

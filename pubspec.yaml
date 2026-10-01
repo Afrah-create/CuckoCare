@@ -49,6 +49,7 @@ dependencies:
   flutter_timezone: ^5.1.0
   workmanager: ^0.10.10
   uuid: ^4.6.0
+  crypto: ^3.0.6
   intl: ^0.20.3
   logger: ^2.8.0
   collection: ^1.19.1

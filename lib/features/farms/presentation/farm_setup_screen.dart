@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../data_platform/db/app_database.dart';
 import 'farm_setup_controller.dart';
 
 class FarmSetupScreen extends ConsumerStatefulWidget {
@@ -21,24 +22,33 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
   final _phoneController = TextEditingController();
   final _altPhoneController = TextEditingController();
   final _notesController = TextEditingController();
+  var _userEdited = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _prefill());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _userEdited) {
+        return;
+      }
+      final farm = ref.read(primaryFarmProvider).value;
+      if (farm != null) {
+        _fillFromFarm(farm);
+      }
+    });
   }
 
-  Future<void> _prefill() async {
-    final farm = await ref.read(farmRepositoryProvider).primaryLocalFarm();
-    if (farm == null || !mounted) {
-      return;
-    }
+  void _fillFromFarm(FarmRow farm) {
     _nameController.text = farm.name;
     _districtController.text = farm.district ?? '';
     _villageController.text = farm.village ?? '';
     _phoneController.text = farm.phone ?? '';
     _altPhoneController.text = farm.altPhone ?? '';
     _notesController.text = farm.notes ?? '';
+  }
+
+  void _markEdited() {
+    _userEdited = true;
   }
 
   @override
@@ -71,6 +81,13 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(primaryFarmProvider, (previous, next) {
+      final farm = next.value;
+      if (farm != null && !_userEdited && mounted) {
+        _fillFromFarm(farm);
+      }
+    });
+
     final setup = ref.watch(farmSetupControllerProvider);
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
@@ -107,6 +124,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: 24),
                 TextFormField(
                   controller: _nameController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(labelText: 'Farm name'),

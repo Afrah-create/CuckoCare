@@ -13,6 +13,8 @@ import '../../features/auth/data/auth_snapshot_repository.dart';
 import '../../features/auth/data/supabase_auth_repository.dart';
 import '../../features/auth/domain/auth_repository.dart';
 import '../../features/auth/domain/user_profile.dart';
+import '../../core/time/kampala_today.dart';
+import '../../features/batches/data/batch_repository.dart';
 import '../../features/farms/data/farm_repository.dart';
 import '../../features/farms/domain/farm_profile.dart';
 
@@ -34,10 +36,24 @@ final remoteSyncApiProvider = Provider<RemoteSyncApi>(
   (ref) => SupabaseRemoteSyncApi(),
 );
 
+final authSnapshotRepositoryProvider = Provider<AuthSnapshotRepository>(
+  (ref) => AuthSnapshotRepository(ref.watch(appDatabaseProvider)),
+);
+
+final farmRepositoryProvider = Provider<FarmRepository>((ref) {
+  return FarmRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(authSnapshotRepositoryProvider),
+    connectivity: ref.watch(connectivityMonitorProvider),
+    remoteSyncApi: ref.watch(remoteSyncApiProvider),
+  );
+});
+
 final syncEngineProvider = Provider<SyncEngine>((ref) {
   final db = ref.watch(appDatabaseProvider);
   final remote = ref.watch(remoteSyncApiProvider);
   final snapshots = ref.watch(authSnapshotRepositoryProvider);
+  final farms = ref.watch(farmRepositoryProvider);
   final engine = CucoCareSyncEngine(
     db: db,
     remote: remote,
@@ -48,6 +64,7 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
       }
       return !profile.isDemo;
     },
+    onSuccessfulSync: () => farms.refreshBootstrapFromServer(),
   );
   ref.onDispose(engine.dispose);
   return engine;
@@ -65,23 +82,13 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
   final scheduler = SyncScheduler(
     engine: engine,
     connectivity: connectivity,
-    beforeNetworkSync: farms.pushPendingFarmProfileToServer,
+    beforeNetworkSync: () async {
+      await farms.ensureSyncScopesAligned();
+      await farms.pushPendingFarmProfileToServer();
+    },
   );
   ref.onDispose(scheduler.dispose);
   return scheduler;
-});
-
-final authSnapshotRepositoryProvider = Provider<AuthSnapshotRepository>(
-  (ref) => AuthSnapshotRepository(ref.watch(appDatabaseProvider)),
-);
-
-final farmRepositoryProvider = Provider<FarmRepository>((ref) {
-  return FarmRepository(
-    ref.watch(appDatabaseProvider),
-    ref.watch(authSnapshotRepositoryProvider),
-    connectivity: ref.watch(connectivityMonitorProvider),
-    remoteSyncApi: ref.watch(remoteSyncApiProvider),
-  );
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
@@ -131,12 +138,58 @@ final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   return repo.loadProfile();
 });
 
+/// Primary farm from Drift — updates when local rows change or sync applies data.
+final primaryFarmProvider = StreamProvider<FarmRow?>((ref) {
+  return ref.watch(farmRepositoryProvider).watchPrimaryFarm();
+});
+
 /// True when the user should see the farm profile banner (non-blocking).
-final farmProfileIncompleteProvider = FutureProvider<bool>((ref) async {
-  final profile = await ref.watch(userProfileProvider.future);
+final farmProfileIncompleteProvider = Provider<bool>((ref) {
+  final profile = ref.watch(userProfileProvider).value;
   if (profile?.isDemo ?? false) {
     return false;
   }
-  final farm = await ref.watch(farmRepositoryProvider).primaryLocalFarm();
+  final farm = ref.watch(primaryFarmProvider).value;
   return !isFarmProfileComplete(farm);
+});
+
+final batchRepositoryProvider = Provider<BatchRepository>((ref) {
+  return BatchRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(clockProvider),
+  );
+});
+
+final activeBatchCountProvider = StreamProvider<int>((ref) {
+  final farmId = ref.watch(primaryFarmProvider).value?.id;
+  if (farmId == null) {
+    return Stream.value(0);
+  }
+  return ref.watch(batchRepositoryProvider).watchActiveBatchCount(farmId);
+});
+
+final dueThisWeekCountProvider = StreamProvider<int>((ref) {
+  final farmId = ref.watch(primaryFarmProvider).value?.id;
+  if (farmId == null) {
+    return Stream.value(0);
+  }
+  final today = ref.watch(kampalaTodayProvider);
+  final start = DateTime.utc(today.year, today.month, today.day);
+  return ref
+      .watch(batchRepositoryProvider)
+      .watchDueThisWeekCount(farmId, start);
+});
+
+final needsAttentionTasksProvider =
+    StreamProvider<List<VaccinationTaskRow>>((ref) {
+  final farmId = ref.watch(primaryFarmProvider).value?.id;
+  if (farmId == null) {
+    return Stream.value(const []);
+  }
+  final today = ref.watch(kampalaTodayProvider);
+  final start = DateTime.utc(today.year, today.month, today.day);
+  final end = start.add(const Duration(hours: 23, minutes: 59, seconds: 59));
+  return ref
+      .watch(batchRepositoryProvider)
+      .watchNeedsAttention(farmId, start, end);
 });

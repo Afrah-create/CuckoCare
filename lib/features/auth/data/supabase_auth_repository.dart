@@ -96,30 +96,32 @@ class SupabaseAuthRepository implements AuthRepository {
           farms: data.farms,
           memberships: data.memberships,
         );
-        final farmIds = data.farms
+        final serverFarmIds = data.farms
             .map((f) => f['id'])
             .whereType<String>()
             .toList();
-        await _snapshots.setFarmIds(farmIds);
+        final scopeIds = await _farms.mergeFarmScopeIds(serverFarmIds);
+        await _snapshots.setFarmIds(scopeIds);
         final userId = _client.auth.currentUser?.id;
         if (userId != null) {
           await _snapshots.alignSyncScopesForUser(
             userId: userId,
-            farmScopeIds: farmIds,
+            farmScopeIds: scopeIds,
           );
         }
-        return Success(AuthSessionResult(needsFarmSetup: farmIds.isEmpty));
+        return Success(AuthSessionResult(needsFarmSetup: scopeIds.isEmpty));
       },
       failure: (_) async {
-        await _snapshots.setFarmIds([]);
+        final scopeIds = await _farms.mergeFarmScopeIds(const []);
+        await _snapshots.setFarmIds(scopeIds);
         final userId = _client.auth.currentUser?.id;
         if (userId != null) {
           await _snapshots.alignSyncScopesForUser(
             userId: userId,
-            farmScopeIds: const [],
+            farmScopeIds: scopeIds,
           );
         }
-        return const Success(AuthSessionResult(needsFarmSetup: true));
+        return Success(AuthSessionResult(needsFarmSetup: scopeIds.isEmpty));
       },
     );
   }

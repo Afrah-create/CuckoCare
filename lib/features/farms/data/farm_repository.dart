@@ -9,6 +9,7 @@ import '../../../core/utils/uuid_v7.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
 import '../../../data_platform/sync/remote_sync_api.dart';
+import '../../../data_platform/sync/sync_json.dart';
 import '../../auth/data/auth_snapshot_repository.dart';
 
 class FarmRepository {
@@ -31,12 +32,72 @@ class FarmRepository {
   final ConnectivityMonitor _connectivity;
   final RemoteSyncApi? _remote;
 
+  /// Reactive read path — UI should watch this; sync/bootstrap updates Drift.
+  Stream<FarmRow?> watchPrimaryFarm() {
+    final query = _db.select(_db.farms)..where((f) => f.deletedAt.isNull());
+    return query.watch().asyncMap(_pickPrimaryFarm);
+  }
+
   Future<FarmRow?> primaryLocalFarm() async {
     final rows = await (_db.select(_db.farms)
-          ..where((f) => f.deletedAt.isNull())
-          ..limit(1))
+          ..where((f) => f.deletedAt.isNull()))
         .get();
-    return rows.isEmpty ? null : rows.first;
+    return _pickPrimaryFarm(rows);
+  }
+
+  /// Farm ids for sync pull scopes: snapshot + any local-only farms (offline-first).
+  Future<List<String>> mergeFarmScopeIds(List<String> serverFarmIds) async {
+    final localIds = await allLocalFarmIds();
+    final snapshotIds = await _snapshots.loadFarmIds();
+    return {
+      ...snapshotIds,
+      ...serverFarmIds,
+      ...localIds,
+    }.toList();
+  }
+
+  Future<List<String>> allLocalFarmIds() async {
+    final rows = await (_db.select(_db.farms)
+          ..where((f) => f.deletedAt.isNull()))
+        .get();
+    return rows.map((r) => r.id).toList();
+  }
+
+  /// Keeps sync pull scopes aligned with Drift before push/pull (offline-created farms).
+  Future<void> ensureSyncScopesAligned() async {
+    final userId = await _snapshots.loadUserId();
+    if (userId == null) {
+      return;
+    }
+    final scopeIds = await mergeFarmScopeIds(const []);
+    await _snapshots.setFarmIds(scopeIds);
+    await _snapshots.alignSyncScopesForUser(
+      userId: userId,
+      farmScopeIds: scopeIds,
+    );
+  }
+
+  Future<FarmRow?> _pickPrimaryFarm(List<FarmRow> rows) async {
+    if (rows.isEmpty) {
+      return null;
+    }
+    final ids = await _snapshots.loadFarmIds();
+    for (final id in ids) {
+      for (final row in rows) {
+        if (row.id == id && row.serverVersion != null) {
+          return row;
+        }
+      }
+    }
+    for (final id in ids) {
+      for (final row in rows) {
+        if (row.id == id) {
+          return row;
+        }
+      }
+    }
+    rows.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return rows.first;
   }
 
   Future<void> cacheBootstrapData({
@@ -54,7 +115,7 @@ class FarmRepository {
                 createdAt: _parseTime(f['created_at']) ?? now,
                 updatedAt: _parseTime(f['updated_at']) ?? now,
                 deletedAt: Value(_parseTime(f['deleted_at'])),
-                serverVersion: Value((f['server_version'] as num?)?.toInt()),
+                serverVersion: Value(syncJsonInt(f['server_version'])),
                 name: f['name'] as String,
                 location: Value(f['location'] as String?),
                 district: Value(f['district'] as String?),
@@ -75,7 +136,7 @@ class FarmRepository {
                 createdAt: _parseTime(m['created_at']) ?? now,
                 updatedAt: _parseTime(m['updated_at']) ?? now,
                 deletedAt: Value(_parseTime(m['deleted_at'])),
-                serverVersion: Value((m['server_version'] as num?)?.toInt()),
+                serverVersion: Value(syncJsonInt(m['server_version'])),
                 userId: m['user_id'] as String,
                 role: m['role'] as String,
               ),
@@ -103,20 +164,54 @@ class FarmRepository {
     }
 
     try {
-      await _rpcSaveFarmProfile(
-        name: farm.name,
-        district: farm.district ?? '',
-        village: farm.village ?? '',
-        phone: farm.phone ?? '',
-        altPhone: farm.altPhone,
-        notes: farm.notes,
-      );
-      await _refreshFarmsFromServerBootstrap();
+      await _syncLocalProfileToServer(farm);
     } catch (_) {
       // Sync will retry on next foreground/connectivity event.
     }
   }
 
+  /// Creates a local-only farm row when the user has none yet (batch wizard).
+  Future<String> ensureFarmNamed(String name) async {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) {
+      throw ArgumentError.value(name, 'name');
+    }
+    final existing = await primaryLocalFarm();
+    if (existing != null) {
+      return existing.id;
+    }
+    final farmId = newId();
+    final now = _clock.now();
+    await _db.into(_db.farms).insert(
+          FarmsCompanion.insert(
+            id: farmId,
+            farmId: farmId,
+            createdAt: now,
+            updatedAt: now,
+            name: trimmed,
+          ),
+        );
+
+    final userId =
+        _client.auth.currentUser?.id ?? await _snapshots.loadUserId();
+    if (userId != null) {
+      await _db.into(_db.farmMembers).insert(
+            FarmMembersCompanion.insert(
+              id: newId(),
+              farmId: farmId,
+              createdAt: now,
+              updatedAt: now,
+              userId: userId,
+              role: 'owner',
+            ),
+          );
+    }
+    await _db.syncDao.ensureScope(farmId);
+    await _snapshots.addFarmId(farmId);
+    return farmId;
+  }
+
+  /// Local-first write, then best-effort cloud RPC (offline-first).
   Future<String> saveFarmProfile({
     required String name,
     required String district,
@@ -130,28 +225,27 @@ class FarmRepository {
     final trimmedVillage = village.trim();
     final trimmedPhone = phone.trim();
 
+    final existing = await primaryLocalFarm();
+    final localFarmId = existing?.id ?? newId();
+
+    await _writeLocalFarmProfile(
+      farmId: localFarmId,
+      name: trimmedName,
+      district: trimmedDistrict,
+      village: trimmedVillage,
+      phone: trimmedPhone,
+      altPhone: altPhone,
+      notes: notes,
+      syncedToServer: false,
+    );
+
     final online = await _connectivity.hasConnectivityHint();
     if (online && await ensureSupabaseSessionForNetwork()) {
       try {
-        final farmId = await _rpcSaveFarmProfile(
-          name: trimmedName,
-          district: trimmedDistrict,
-          village: trimmedVillage,
-          phone: trimmedPhone,
-          altPhone: altPhone,
-          notes: notes,
-        );
-        await _writeLocalFarmProfile(
-          farmId: farmId,
-          name: trimmedName,
-          district: trimmedDistrict,
-          village: trimmedVillage,
-          phone: trimmedPhone,
-          altPhone: altPhone,
-          notes: notes,
-          syncedToServer: true,
-        );
-        return farmId;
+        final farm = await primaryLocalFarm();
+        if (farm != null) {
+          await _syncLocalProfileToServer(farm);
+        }
       } on AuthException {
         rethrow;
       } catch (e) {
@@ -161,19 +255,76 @@ class FarmRepository {
       }
     }
 
-    final existing = await primaryLocalFarm();
-    final farmId = existing?.id ?? newId();
-    await _writeLocalFarmProfile(
-      farmId: farmId,
-      name: trimmedName,
-      district: trimmedDistrict,
-      village: trimmedVillage,
-      phone: trimmedPhone,
-      altPhone: altPhone,
-      notes: notes,
-      syncedToServer: false,
+    return (await primaryLocalFarm())?.id ?? localFarmId;
+  }
+
+  Future<void> _syncLocalProfileToServer(FarmRow farm) async {
+    final serverFarmId = await _rpcSaveFarmProfile(
+      name: farm.name,
+      district: farm.district ?? '',
+      village: farm.village ?? '',
+      phone: farm.phone ?? '',
+      altPhone: farm.altPhone,
+      notes: farm.notes,
     );
-    return farmId;
+    await _applyServerFarmId(localFarmId: farm.id, serverFarmId: serverFarmId);
+    await (_db.update(_db.farms)..where((f) => f.id.equals(serverFarmId))).write(
+      FarmsCompanion(
+        serverVersion: const Value(1),
+        updatedAt: Value(_clock.now()),
+      ),
+    );
+    await _refreshFarmsFromServerBootstrap();
+  }
+
+  Future<void> _applyServerFarmId({
+    required String localFarmId,
+    required String serverFarmId,
+  }) async {
+    if (localFarmId == serverFarmId) {
+      await _snapshots.addFarmId(serverFarmId);
+      return;
+    }
+
+    final row = await (_db.select(_db.farms)
+          ..where((f) => f.id.equals(localFarmId)))
+        .getSingleOrNull();
+    if (row == null) {
+      await _snapshots.addFarmId(serverFarmId);
+      return;
+    }
+
+    await _db.transaction(() async {
+      await _db.into(_db.farms).insertOnConflictUpdate(
+            FarmsCompanion.insert(
+              id: serverFarmId,
+              farmId: serverFarmId,
+              createdAt: row.createdAt,
+              updatedAt: _clock.now(),
+              name: row.name,
+              location: Value(row.location),
+              district: Value(row.district),
+              village: Value(row.village),
+              phone: Value(row.phone),
+              altPhone: Value(row.altPhone),
+              notes: Value(row.notes),
+              profileCompletedAt: Value(row.profileCompletedAt),
+              serverVersion: const Value(1),
+            ),
+          );
+      await _rekeyFarmId(localFarmId, serverFarmId);
+      await (_db.delete(_db.farms)..where((f) => f.id.equals(localFarmId))).go();
+    });
+
+    await _migrateSyncScope(localFarmId, serverFarmId);
+    await _db.syncDao.ensureScope(serverFarmId);
+    final ids = await _snapshots.loadFarmIds();
+    final withoutLocal = ids.where((id) => id != localFarmId).toList();
+    if (!withoutLocal.contains(serverFarmId)) {
+      await _snapshots.setFarmIds([...withoutLocal, serverFarmId]);
+    } else {
+      await _snapshots.setFarmIds(withoutLocal);
+    }
   }
 
   Future<String> _rpcSaveFarmProfile({
@@ -200,6 +351,52 @@ class FarmRepository {
     return raw.toString();
   }
 
+  Future<void> _rekeyFarmId(String fromFarmId, String toFarmId) async {
+    if (fromFarmId == toFarmId) {
+      return;
+    }
+    await (_db.update(_db.batches)..where((t) => t.farmId.equals(fromFarmId)))
+        .write(BatchesCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.vaccinationTasks)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(VaccinationTasksCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.feedItems)..where((t) => t.farmId.equals(fromFarmId)))
+        .write(FeedItemsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.feedTransactions)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(FeedTransactionsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.healthRecords)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(HealthRecordsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.mortalityRecords)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(MortalityRecordsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.farmEvents)..where((t) => t.farmId.equals(fromFarmId)))
+        .write(FarmEventsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.farmMembers)
+          ..where((m) => m.farmId.equals(fromFarmId)))
+        .write(FarmMembersCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.entitlements)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(EntitlementsCompanion(farmId: Value(toFarmId)));
+  }
+
+  Future<void> _migrateSyncScope(String fromScope, String toScope) async {
+    if (fromScope == toScope) {
+      return;
+    }
+    final cursor = await _db.syncDao.cursorFor(fromScope);
+    if (cursor > 0) {
+      final existing = await _db.syncDao.cursorFor(toScope);
+      if (cursor > existing) {
+        await _db.syncDao.setCursor(toScope, cursor);
+      }
+    }
+    await (_db.delete(_db.syncCursors)
+          ..where((t) => t.syncTable.equals(fromScope)))
+        .go();
+  }
+
   Future<void> _writeLocalFarmProfile({
     required String farmId,
     required String name,
@@ -213,11 +410,15 @@ class FarmRepository {
     final now = _clock.now();
     final location = '$district, $village';
 
+    final existing = await (_db.select(_db.farms)
+          ..where((f) => f.id.equals(farmId)))
+        .getSingleOrNull();
+
     await _db.into(_db.farms).insertOnConflictUpdate(
           FarmsCompanion.insert(
             id: farmId,
             farmId: farmId,
-            createdAt: now,
+            createdAt: existing?.createdAt ?? now,
             updatedAt: now,
             name: name,
             location: Value(location),
@@ -234,11 +435,20 @@ class FarmRepository {
     final userId =
         _client.auth.currentUser?.id ?? await _snapshots.loadUserId();
     if (userId != null) {
+      final member = await (_db.select(_db.farmMembers)
+            ..where(
+              (m) =>
+                  m.farmId.equals(farmId) &
+                  m.userId.equals(userId) &
+                  m.deletedAt.isNull(),
+            ))
+          .getSingleOrNull();
+      final memberId = member?.id ?? newId();
       await _db.into(_db.farmMembers).insertOnConflictUpdate(
             FarmMembersCompanion.insert(
-              id: newId(),
+              id: memberId,
               farmId: farmId,
-              createdAt: now,
+              createdAt: member?.createdAt ?? now,
               updatedAt: now,
               userId: userId,
               role: 'owner',
@@ -248,6 +458,11 @@ class FarmRepository {
 
     await _db.syncDao.ensureScope(farmId);
     await _snapshots.addFarmId(farmId);
+  }
+
+  /// Refreshes farm rows and memberships from `sync_bootstrap` (profile lives here, not pull).
+  Future<void> refreshBootstrapFromServer() async {
+    await _refreshFarmsFromServerBootstrap();
   }
 
   Future<void> _refreshFarmsFromServerBootstrap() async {
@@ -262,11 +477,13 @@ class FarmRepository {
           farms: data.farms,
           memberships: data.memberships,
         );
-        final farmIds = data.farms
+        final serverIds = data.farms
             .map((f) => f['id'])
             .whereType<String>()
             .toList();
-        await _snapshots.setFarmIds(farmIds);
+        final localIds = await _snapshots.loadFarmIds();
+        final merged = {...localIds, ...serverIds}.toList();
+        await _snapshots.setFarmIds(merged);
       },
       failure: (_) async {},
     );

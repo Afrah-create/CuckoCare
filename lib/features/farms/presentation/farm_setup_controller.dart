@@ -56,8 +56,7 @@ class FarmSetupController extends Notifier<FarmSetupState> {
             altPhone: altPhone,
             notes: notes,
           );
-      ref.invalidate(farmProfileIncompleteProvider);
-      ref.read(syncSchedulerProvider).onForeground();
+      ref.read(syncSchedulerProvider).notifyLocalWrite();
       state = state.copyWith(status: FarmSetupStatus.success);
       return true;
     } catch (e) {

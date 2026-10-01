@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/layout/layout_scope.dart';
 import '../../../app/layout/two_pane.dart';
@@ -63,25 +67,21 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   Widget build(BuildContext context) {
     final profile = ref.watch(userProfileProvider).value;
     final greeting = _greeting(profile);
-    final profileIncomplete = ref.watch(farmProfileIncompleteProvider);
+    final showFarmProfileBanner = ref.watch(farmProfileIncompleteProvider);
     final layout = context.layout;
     final bottomInset = ContentFrame.scrollBottomInset(context);
     final horizontal = layout.margin;
     final topInset = MediaQuery.viewPaddingOf(context).top;
     final useTwoPane = layout.useTwoPane;
 
-    final banner = profileIncomplete.when(
-      data: (incomplete) => incomplete
-          ? const Column(
-              children: [
-                FarmProfileBanner(),
-                SizedBox(height: AppSpacing.sm),
-              ],
-            )
-          : const SizedBox.shrink(),
-      loading: () => const SizedBox.shrink(),
-      error: (_, _) => const SizedBox.shrink(),
-    );
+    final banner = showFarmProfileBanner
+        ? const Column(
+            children: [
+              FarmProfileBanner(),
+              SizedBox(height: AppSpacing.sm),
+            ],
+          )
+        : const SizedBox.shrink();
 
     final needsAttention = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,7 +92,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
           subtitle: 'Overdue and due-today tasks',
         ),
         const SizedBox(height: AppSpacing.sm),
-        const _TasksEmptyState(),
+        const _NeedsAttentionList(),
       ],
     );
 
@@ -276,13 +276,15 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-class _MetricGrid extends StatelessWidget {
+class _MetricGrid extends ConsumerWidget {
   const _MetricGrid();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final layout = context.layout;
     final cols = layout.statColumns;
+    final active = ref.watch(activeBatchCountProvider).value ?? 0;
+    final dueWeek = ref.watch(dueThisWeekCountProvider).value ?? 0;
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = AppSpacing.sm * (cols - 1);
@@ -296,13 +298,13 @@ class _MetricGrid extends StatelessWidget {
               width: tileWidth,
               icon: Icons.view_module_outlined,
               label: 'Active batches',
-              value: '—',
+              value: '$active',
             ),
             _MetricTile(
               width: tileWidth,
               icon: Icons.vaccines_outlined,
               label: 'Due this week',
-              value: '—',
+              value: '$dueWeek',
             ),
             _MetricTile(
               width: tileWidth,
@@ -395,6 +397,54 @@ class _MetricTile extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _NeedsAttentionList extends ConsumerWidget {
+  const _NeedsAttentionList();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tasksAsync = ref.watch(needsAttentionTasksProvider);
+    return tasksAsync.when(
+      loading: () => const LinearProgressIndicator(),
+      error: (_, __) => const _TasksEmptyState(),
+      data: (tasks) {
+        if (tasks.isEmpty) {
+          return const _TasksEmptyState();
+        }
+        return Column(
+          children: tasks.take(8).map((task) {
+            final label = _taskLabel(task.stepSnapshot, task.stepId);
+            return Card(
+              margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+              child: ListTile(
+                leading: Icon(
+                  Icons.vaccines_outlined,
+                  color: context.colors.logoTint,
+                ),
+                title: Text(label),
+                subtitle: Text(DateFormat.yMMMd().format(task.dueOn.toUtc())),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => BatchDetailRoute(batchId: task.batchId).push(context),
+              ),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  String _taskLabel(String? snapshot, String fallback) {
+    if (snapshot == null) {
+      return fallback;
+    }
+    try {
+      final map = jsonDecode(snapshot) as Map<String, dynamic>;
+      return map['label'] as String? ?? fallback;
+    } catch (_) {
+      return fallback;
+    }
   }
 }
 

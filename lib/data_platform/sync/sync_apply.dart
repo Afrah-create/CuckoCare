@@ -14,6 +14,7 @@ int taskStatusRank(String status) => switch (status) {
       _ => -1,
     };
 
+/// Applies server pull rows into Drift (offline-first merge rules).
 class SyncApply {
   SyncApply(this._db);
 
@@ -39,11 +40,12 @@ class SyncApply {
       return;
     }
 
+    final rowId = remote.row['id'] as String;
     final localPending = await (_db.select(_db.outbox)
           ..where(
             (o) =>
                 o.targetTable.equals(table) &
-                o.rowId.equals(remote.row['id'] as String) &
+                o.rowId.equals(rowId) &
                 (o.state.equals('pending') | o.state.equals('in_flight')),
           ))
         .getSingleOrNull();
@@ -60,6 +62,27 @@ class SyncApply {
         _ => null,
       };
 
+  /// Server wins only when [serverVersion] is ahead, or same version with newer `updated_at`.
+  /// Unsynced local rows (`serverVersion == null`) are never replaced by pull.
+  static bool shouldApplyRemoteVersion({
+    required int? localServerVersion,
+    required DateTime localUpdatedAt,
+    required int incomingServerVersion,
+    required DateTime incomingUpdatedAt,
+  }) {
+    if (localServerVersion == null) {
+      return false;
+    }
+    final localVer = localServerVersion;
+    if (incomingServerVersion < localVer) {
+      return false;
+    }
+    if (incomingServerVersion > localVer) {
+      return true;
+    }
+    return incomingUpdatedAt.isAfter(localUpdatedAt);
+  }
+
   Future<void> _applyRow(SyncedTable<dynamic> mapper, SyncPullRow remote) async {
     final incoming = mapper.fromRemote(remote.row);
     final id = remote.row['id'] as String;
@@ -69,31 +92,47 @@ class SyncApply {
       final local = await (_db.select(_db.batches)
             ..where((b) => b.id.equals(id)))
           .getSingleOrNull();
-      if (local != null &&
-          (local.serverVersion ?? 0) >= incomingVersion &&
-          local.deletedAt == null) {
-        return;
+      final row = incoming as BatchRow;
+      if (local != null) {
+        if (local.deletedAt == null &&
+            !shouldApplyRemoteVersion(
+              localServerVersion: local.serverVersion,
+              localUpdatedAt: local.updatedAt,
+              incomingServerVersion: incomingVersion,
+              incomingUpdatedAt: row.updatedAt,
+            )) {
+          return;
+        }
       }
-      final row = incoming as dynamic;
       await _db.into(_db.batches).insertOnConflictUpdate(
             BatchesCompanion(
-              id: Value(row.id as String),
-              farmId: Value(row.farmId as String),
-              createdAt: Value(row.createdAt as DateTime),
-              updatedAt: Value(row.updatedAt as DateTime),
-              deletedAt: Value(row.deletedAt as DateTime?),
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(row.updatedAt),
+              deletedAt: Value(row.deletedAt),
               serverVersion: Value(incomingVersion),
-              name: Value(row.name as String),
-              birdType: Value(row.birdType as String),
-              initialCount: Value(row.initialCount as int),
-              acquiredOn: Value(row.acquiredOn as DateTime),
-              ageAtAcquisitionDays: Value(row.ageAtAcquisitionDays as int),
-              hatcheryVaccinated: Value(row.hatcheryVaccinated as bool?),
-              source: Value(row.source as String?),
-              status: Value(row.status as String),
-              programmeId: Value(row.programmeId as String),
-              programmeVersion: Value(row.programmeVersion as int),
-              notes: Value(row.notes as String?),
+              name: Value(row.name),
+              birdType: Value(row.birdType),
+              initialCount: Value(row.initialCount),
+              acquiredOn: Value(row.acquiredOn),
+              ageAtAcquisitionDays: Value(row.ageAtAcquisitionDays),
+              hatcheryVaccinated: Value(row.hatcheryVaccinated),
+              source: Value(row.source),
+              status: Value(row.status),
+              programmeId: Value(row.programmeId),
+              programmeVersion: Value(row.programmeVersion),
+              productionType: Value(
+                remote.row.containsKey('production_type')
+                    ? row.productionType
+                    : local?.productionType,
+              ),
+              programmeContentHash: Value(
+                remote.row.containsKey('programme_content_hash')
+                    ? row.programmeContentHash
+                    : local?.programmeContentHash,
+              ),
+              notes: Value(row.notes),
             ),
           );
       return;
@@ -103,35 +142,69 @@ class SyncApply {
       final local = await (_db.select(_db.vaccinationTasks)
             ..where((b) => b.id.equals(id)))
           .getSingleOrNull();
-      if (local != null && (local.serverVersion ?? 0) >= incomingVersion) {
+      final row = incoming as VaccinationTaskRow;
+      if (local != null &&
+          !shouldApplyRemoteVersion(
+            localServerVersion: local.serverVersion,
+            localUpdatedAt: local.updatedAt,
+            incomingServerVersion: incomingVersion,
+            incomingUpdatedAt: row.updatedAt,
+          )) {
         return;
       }
-      final row = incoming as dynamic;
       final mergedStatus = local == null
-          ? row.status as String
-          : taskStatusRank(row.status as String) >=
-                  taskStatusRank(local.status)
-              ? row.status as String
+          ? row.status
+          : taskStatusRank(row.status) >= taskStatusRank(local.status)
+              ? row.status
               : local.status;
 
       await _db.into(_db.vaccinationTasks).insertOnConflictUpdate(
             VaccinationTasksCompanion(
-              id: Value(row.id as String),
-              farmId: Value(row.farmId as String),
-              createdAt: Value(row.createdAt as DateTime),
-              updatedAt: Value(row.updatedAt as DateTime),
-              deletedAt: Value(row.deletedAt as DateTime?),
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(row.updatedAt),
+              deletedAt: Value(row.deletedAt),
               serverVersion: Value(incomingVersion),
-              batchId: Value(row.batchId as String),
-              stepId: Value(row.stepId as String),
-              dueOn: Value(row.dueOn as DateTime),
+              batchId: Value(row.batchId),
+              stepId: Value(row.stepId),
+              occurrence: Value(
+                remote.row.containsKey('occurrence')
+                    ? row.occurrence
+                    : (local?.occurrence ?? row.occurrence),
+              ),
+              dueOn: Value(row.dueOn),
+              enabled: Value(
+                remote.row.containsKey('enabled')
+                    ? row.enabled
+                    : (local?.enabled ?? row.enabled),
+              ),
               status: Value(mergedStatus),
-              doneOn: Value(row.doneOn as DateTime?),
-              productUsed: Value(row.productUsed as String?),
-              notes: Value(row.notes as String?),
+              doneOn: Value(row.doneOn ?? local?.doneOn),
+              doneBy: Value(row.doneBy ?? local?.doneBy),
+              productUsed: Value(row.productUsed ?? local?.productUsed),
+              notes: Value(row.notes ?? local?.notes),
+              stepSnapshot: Value(
+                remote.row.containsKey('step_snapshot')
+                    ? _nonEmpty(row.stepSnapshot)
+                    : local?.stepSnapshot,
+              ),
+              programmeContentHash: Value(
+                remote.row.containsKey('programme_content_hash')
+                    ? row.programmeContentHash
+                    : local?.programmeContentHash,
+              ),
+              shiftedFrom: Value(row.shiftedFrom ?? local?.shiftedFrom),
             ),
           );
     }
+  }
+
+  static String? _nonEmpty(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
+    return value;
   }
 
   Future<void> applyPushAck({

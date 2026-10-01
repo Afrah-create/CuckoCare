@@ -55,15 +55,9 @@ class _AuthShellState extends ConsumerState<AuthShell> {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  Future<void> _demoSession() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    await ref.read(loginControllerProvider.notifier).continueWithDemoSession();
-  }
-
   @override
   Widget build(BuildContext context) {
     final bg = context.colors.authBackground;
-    final env = ref.watch(envProvider);
     final reduceMotion = MediaQuery.disableAnimationsOf(context);
 
     return ColoredBox(
@@ -112,13 +106,6 @@ class _AuthShellState extends ConsumerState<AuthShell> {
                         ),
                       ),
                     ),
-                    if (env.showDeveloperDemo) ...[
-                      const SizedBox(height: 16),
-                      TextButton(
-                        onPressed: _demoSession,
-                        child: const Text('Developer: demo session'),
-                      ),
-                    ],
                     SizedBox(height: constraints.maxHeight * 0.06),
                   ],
                 ),

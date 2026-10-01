@@ -1,4 +1,5 @@
 import '../../../data_platform/db/app_database.dart';
+import '../../../data_platform/sync/sync_json.dart';
 import '../../../data_platform/sync/synced_table.dart';
 
 class BatchSyncedTable implements SyncedTable<BatchRow> {
@@ -21,17 +22,22 @@ class BatchSyncedTable implements SyncedTable<BatchRow> {
       deletedAt: json['deleted_at'] == null
           ? null
           : DateTime.parse(json['deleted_at'] as String),
-      serverVersion: json['server_version'] as int?,
+      serverVersion: syncJsonInt(json['server_version']),
       name: json['name'] as String,
       birdType: json['bird_type'] as String,
-      initialCount: json['initial_count'] as int,
+      initialCount: syncJsonInt(json['initial_count']) ?? 0,
       acquiredOn: DateTime.parse(json['acquired_on'] as String),
-      ageAtAcquisitionDays: json['age_at_acquisition_days'] as int? ?? 0,
-      hatcheryVaccinated: json['hatchery_vaccinated'] as bool?,
+      ageAtAcquisitionDays:
+          syncJsonInt(json['age_at_acquisition_days']) ?? 1,
+      hatcheryVaccinated: json['hatchery_vaccinated'] == null
+          ? null
+          : syncJsonBool(json['hatchery_vaccinated']),
       source: json['source'] as String?,
       status: json['status'] as String,
       programmeId: json['programme_id'] as String,
-      programmeVersion: json['programme_version'] as int,
+      programmeVersion: syncJsonInt(json['programme_version']) ?? 1,
+      productionType: json['production_type'] as String?,
+      programmeContentHash: json['programme_content_hash'] as String?,
       notes: json['notes'] as String?,
     );
   }
@@ -51,6 +57,9 @@ class BatchSyncedTable implements SyncedTable<BatchRow> {
       'status': row.status,
       'programme_id': row.programmeId,
       'programme_version': row.programmeVersion,
+      if (row.productionType != null) 'production_type': row.productionType,
+      if (row.programmeContentHash != null)
+        'programme_content_hash': row.programmeContentHash,
       'notes': row.notes,
       'created_at': row.createdAt.toIso8601String(),
     };

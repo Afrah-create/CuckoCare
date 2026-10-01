@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../auth/presentation/sign_out.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../settings/presentation/appearance_section.dart';
 
@@ -9,13 +10,7 @@ class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    try {
-      await ref.read(authRepositoryProvider).signOut();
-    } finally {
-      ref.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
-      ref.invalidate(userProfileProvider);
-      ref.invalidate(farmProfileIncompleteProvider);
-    }
+    await signOutFromApp(ref);
   }
 
   @override

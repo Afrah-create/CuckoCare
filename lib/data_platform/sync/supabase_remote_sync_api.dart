@@ -6,6 +6,7 @@ import '../../core/error/result.dart';
 import '../supabase/supabase_bootstrap.dart';
 import 'remote_sync_api.dart';
 import '../../core/error/failure.dart';
+import 'sync_json.dart';
 
 class SupabaseRemoteSyncApi implements RemoteSyncApi {
   SupabaseRemoteSyncApi({SupabaseClient? client}) : _client = client ?? supabaseClient;
@@ -56,7 +57,7 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
       final map = Map<String, dynamic>.from(raw as Map);
       return Success({
         for (final e in map.entries)
-          if (e.value is num) e.key: (e.value as num).toInt(),
+          e.key: syncJsonIntOrZero(e.value),
       });
     } on AuthException {
       return const Error(SyncAuthRequired());
@@ -126,9 +127,9 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
           .cast<Map<String, dynamic>>(),
       farms: (raw['farms'] as List? ?? []).cast<Map<String, dynamic>>(),
       heads: {
-        for (final e in headsRaw.entries) e.key: (e.value as num).toInt(),
+        for (final e in headsRaw.entries) e.key: syncJsonIntOrZero(e.value),
       },
-      epoch: (raw['epoch'] as num?)?.toInt() ?? 1,
+      epoch: syncJsonInt(raw['epoch']) ?? 1,
     );
   }
 
@@ -138,16 +139,16 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
         .map(
           (r) => SyncPullRow(
             table: r['table'] as String,
-            serverVersion: (r['server_version'] as num).toInt(),
+            serverVersion: syncJsonIntOrZero(r['server_version']),
             row: Map<String, dynamic>.from(r['row'] as Map),
           ),
         )
         .toList();
     return SyncPullPage(
       rows: rows,
-      nextCursor: (raw['next_cursor'] as num?)?.toInt() ?? 0,
+      nextCursor: syncJsonInt(raw['next_cursor']) ?? 0,
       hasMore: raw['has_more'] as bool? ?? false,
-      epoch: (raw['epoch'] as num?)?.toInt() ?? 1,
+      epoch: syncJsonInt(raw['epoch']) ?? 1,
     );
   }
 
@@ -161,7 +162,7 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
           (r) => SyncPushOpResult(
             opId: r['op_id'] as String,
             status: r['status'] as String,
-            serverVersion: (r['server_version'] as num?)?.toInt(),
+            serverVersion: syncJsonInt(r['server_version']),
             row: r['row'] == null
                 ? null
                 : Map<String, dynamic>.from(r['row'] as Map),
@@ -172,7 +173,7 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
         .toList();
     return SyncPushResponse(
       results: results,
-      epoch: (raw['epoch'] as num?)?.toInt() ?? 1,
+      epoch: syncJsonInt(raw['epoch']) ?? 1,
     );
   }
 }

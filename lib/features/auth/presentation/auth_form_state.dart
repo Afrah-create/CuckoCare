@@ -1,34 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Persisted email and display name across auth mode switches (never password).
-class AuthFormPersisted {
-  const AuthFormPersisted({this.email = '', this.displayName = ''});
-
-  final String email;
-  final String displayName;
-
-  AuthFormPersisted copyWith({String? email, String? displayName}) {
-    return AuthFormPersisted(
-      email: email ?? this.email,
-      displayName: displayName ?? this.displayName,
-    );
-  }
-}
-
-class AuthFormStateNotifier extends Notifier<AuthFormPersisted> {
+/// Bumped on sign-out so login fields and autofill state reset.
+class AuthFormGenerationNotifier extends Notifier<int> {
   @override
-  AuthFormPersisted build() => const AuthFormPersisted();
+  int build() => 0;
 
-  void updateEmail(String email) {
-    state = state.copyWith(email: email);
-  }
-
-  void updateDisplayName(String name) {
-    state = state.copyWith(displayName: name);
-  }
+  void bump() => state++;
 }
 
-final authFormStateProvider =
-    NotifierProvider<AuthFormStateNotifier, AuthFormPersisted>(
-  AuthFormStateNotifier.new,
+final authFormGenerationProvider =
+    NotifierProvider<AuthFormGenerationNotifier, int>(
+  AuthFormGenerationNotifier.new,
 );
+
+void bumpAuthFormGeneration(WidgetRef ref) {
+  ref.read(authFormGenerationProvider.notifier).bump();
+}

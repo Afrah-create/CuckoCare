@@ -10,7 +10,6 @@ import '../../../app/widgets/inline_banner.dart';
 import '../../../app/widgets/requirement_chips.dart';
 import '../domain/auth_repository.dart';
 import 'auth_card.dart';
-import 'auth_form_state.dart';
 import 'auth_mode_switch.dart';
 import 'login_controller.dart';
 import 'login_state.dart';
@@ -33,11 +32,6 @@ class _LoginFormState extends ConsumerState<LoginForm> {
   @override
   void initState() {
     super.initState();
-    final saved = ref.read(authFormStateProvider);
-    _emailController.text = saved.email;
-    _displayNameController.text = saved.displayName;
-    _emailController.addListener(_persistEmail);
-    _displayNameController.addListener(_persistName);
     _passwordController.addListener(() {
       if (mounted) {
         setState(() {});
@@ -47,22 +41,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
 
   @override
   void dispose() {
-    _emailController.removeListener(_persistEmail);
-    _displayNameController.removeListener(_persistName);
     _displayNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _persistEmail() {
-    ref.read(authFormStateProvider.notifier).updateEmail(_emailController.text);
-  }
-
-  void _persistName() {
-    ref
-        .read(authFormStateProvider.notifier)
-        .updateDisplayName(_displayNameController.text);
   }
 
   Future<void> _submit() async {
@@ -170,10 +152,7 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                 enabled: !login.isSubmitting,
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
-                autofillHints: const [
-                  AutofillHints.email,
-                  AutofillHints.username,
-                ],
+                autofillHints: const [AutofillHints.email],
                 autocorrect: false,
                 validator: (value) {
                   final v = value?.trim() ?? '';

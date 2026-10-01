@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data_platform/sync/sync_engine.dart';
+import '../../features/auth/presentation/sign_out.dart';
 import '../../features/home/presentation/profile_sheet.dart';
 import '../di/providers.dart';
 import '../layout/breakpoints.dart';
@@ -30,13 +31,7 @@ class AppShell extends ConsumerStatefulWidget {
 
 class _AppShellState extends ConsumerState<AppShell> {
   Future<void> _signOut() async {
-    try {
-      await ref.read(authRepositoryProvider).signOut();
-    } finally {
-      ref.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
-      ref.invalidate(userProfileProvider);
-      ref.invalidate(farmProfileIncompleteProvider);
-    }
+    await signOutFromApp(ref);
   }
 
   void _openSettings() {

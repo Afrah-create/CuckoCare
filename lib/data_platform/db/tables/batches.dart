@@ -19,6 +19,8 @@ class Batches extends Table {
   TextColumn get status => text()();
   TextColumn get programmeId => text()();
   IntColumn get programmeVersion => integer()();
+  TextColumn get productionType => text().nullable()();
+  TextColumn get programmeContentHash => text().nullable()();
   TextColumn get notes => text().nullable()();
 
   @override
