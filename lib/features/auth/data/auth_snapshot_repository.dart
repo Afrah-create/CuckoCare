@@ -7,6 +7,7 @@ import '../../../core/utils/uuid_v7.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data_platform/db/app_database.dart';
+import '../../../data_platform/sync/sync_session_coordinator.dart';
 import '../domain/user_profile.dart';
 
 class AuthSnapshotRepository {
@@ -51,6 +52,11 @@ class AuthSnapshotRepository {
     await setFarmIds([...ids, farmId]);
   }
 
+  Future<String?> loadUserId() async {
+    final row = await (_db.select(_db.authSnapshot)).getSingleOrNull();
+    return row?.userId;
+  }
+
   Future<UserProfile?> loadProfile() async {
     final row = await (_db.select(_db.authSnapshot)).getSingleOrNull();
     if (row == null) {
@@ -83,20 +89,34 @@ class AuthSnapshotRepository {
 
   Future<void> saveDemoSnapshot() async {
     final now = _clock.now();
+    final demoUserId = newId();
     await _db.into(_db.authSnapshot).insertOnConflictUpdate(
           AuthSnapshotCompanion.insert(
             id: const Value(_singletonId),
-            userId: newId(),
+            userId: demoUserId,
             email: const Value('demo@cucocare.local'),
             farmIdsJson: jsonEncode(<String>['demo-farm']),
             lastVerifiedAt: Value(now),
           ),
         );
-    await _db.syncDao.ensureScope('demo-farm');
-    await _db.syncDao.ensureScope('reference');
+    await SyncSessionCoordinator(_db).alignWithAccount(
+      userId: demoUserId,
+      farmScopeIds: const ['demo-farm'],
+    );
+  }
+
+  Future<void> alignSyncScopesForUser({
+    required String userId,
+    required List<String> farmScopeIds,
+  }) {
+    return SyncSessionCoordinator(_db).alignWithAccount(
+      userId: userId,
+      farmScopeIds: farmScopeIds,
+    );
   }
 
   Future<void> clear() async {
+    await SyncSessionCoordinator(_db).clearOnSignOut();
     await _db.delete(_db.authSnapshot).go();
   }
 }

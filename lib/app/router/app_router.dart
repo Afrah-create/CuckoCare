@@ -3,11 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/batches/presentation/batches_list_screen.dart';
-import '../../features/dev/presentation/splash_preview_screen.dart';
 import '../../features/feed/presentation/feed_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/records/presentation/records_screen.dart';
+import '../../features/auth/presentation/auth_shell.dart';
+import '../../features/auth/presentation/forgot_password_screen.dart';
+import '../../features/auth/presentation/login_screen.dart';
 import '../../features/splash/splash_controller.dart';
+import '../../features/today/presentation/today_screen.dart';
 import '../di/providers.dart';
 import '../shell/app_shell.dart';
 import '../widgets/not_found_screen.dart';
@@ -37,7 +40,13 @@ String? _authRedirect(Ref ref, GoRouterState state) {
   }
 
   if (authAsync.isLoading) {
-    return location == '/splash' ? null : '/splash';
+    if (location == '/splash') {
+      return null;
+    }
+    if (location.startsWith('/auth/') || location == '/login') {
+      return null;
+    }
+    return '/splash';
   }
 
   if (authAsync.hasError) {
@@ -57,13 +66,16 @@ String? _authRedirect(Ref ref, GoRouterState state) {
 
   if (_isAuthLocation(location)) {
     final from = state.uri.queryParameters['from'];
-    if (from != null &&
-        from.isNotEmpty &&
-        !from.startsWith('/auth') &&
-        from != '/splash') {
-      return from;
+    final destination = from != null &&
+            from.isNotEmpty &&
+            !from.startsWith('/auth') &&
+            from != '/splash'
+        ? from
+        : '/today';
+    if (state.uri.path == destination) {
+      return null;
     }
-    return '/today';
+    return destination;
   }
 
   return null;
@@ -83,23 +95,57 @@ GoRoute _fadeTabRoot(String path, Widget child) {
   );
 }
 
+List<RouteBase> _authRoutes() {
+  return [
+    ShellRoute(
+      builder: (context, state, child) => AuthShell(child: child),
+      routes: [
+        GoRoute(
+          path: '/auth/login',
+          pageBuilder: (context, state) => const NoTransitionPage<void>(
+            child: LoginScreen(),
+          ),
+        ),
+        GoRoute(
+          path: '/auth/signup',
+          redirect: (context, state) => '/auth/login',
+        ),
+        GoRoute(
+          path: '/auth/forgot-password',
+          pageBuilder: (context, state) => const NoTransitionPage<void>(
+            child: ForgotPasswordScreen(),
+          ),
+        ),
+      ],
+    ),
+  ];
+}
+
 List<RouteBase> _shellRoutes() {
   return [
     StatefulShellRoute.indexedStack(
-      restorationScopeId: 'appShell',
       builder: (context, state, navigationShell) {
         return AppShell(navigationShell: navigationShell);
       },
       branches: [
         StatefulShellBranch(
-          restorationScopeId: 'todayBranch',
           navigatorKey: todayNavigatorKey,
           routes: [
-            $todayRoute,
+            GoRoute(
+              path: '/today',
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const TodayScreen(),
+                transitionDuration: const Duration(milliseconds: 200),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            ),
           ],
         ),
         StatefulShellBranch(
-          restorationScopeId: 'batchesBranch',
           navigatorKey: batchesNavigatorKey,
           routes: [
             GoRoute(
@@ -117,21 +163,18 @@ List<RouteBase> _shellRoutes() {
           ],
         ),
         StatefulShellBranch(
-          restorationScopeId: 'feedBranch',
           navigatorKey: feedNavigatorKey,
           routes: [
             _fadeTabRoot('/feed', const FeedScreen()),
           ],
         ),
         StatefulShellBranch(
-          restorationScopeId: 'recordsBranch',
           navigatorKey: recordsNavigatorKey,
           routes: [
             _fadeTabRoot('/records', const RecordsScreen()),
           ],
         ),
         StatefulShellBranch(
-          restorationScopeId: 'moreBranch',
           navigatorKey: moreNavigatorKey,
           routes: [
             GoRoute(
@@ -145,13 +188,6 @@ List<RouteBase> _shellRoutes() {
                   return FadeTransition(opacity: animation, child: child);
                 },
               ),
-              routes: [
-                GoRoute(
-                  path: 'splash-preview',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const SplashPreviewScreen(),
-                ),
-              ],
             ),
           ],
         ),
@@ -161,20 +197,18 @@ List<RouteBase> _shellRoutes() {
 }
 
 final appRouterProvider = Provider<GoRouter>((ref) {
+  ref.keepAlive();
   final refresh = ref.watch(routerRefreshProvider);
 
   final router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    restorationScopeId: 'router',
     initialLocation: '/splash',
     refreshListenable: refresh,
     redirect: (context, state) => _authRedirect(ref, state),
     errorBuilder: (context, state) => const NotFoundScreen(),
     routes: [
       $splashRoute,
-      $loginRoute,
-      $signUpRoute,
-      $forgotPasswordRoute,
+      ..._authRoutes(),
       $batchNewRoute,
       $batchDetailRoute,
       $moreFarmRoute,

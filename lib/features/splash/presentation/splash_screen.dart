@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
-import '../../../app/theme/brand_tokens.dart';
+import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/app_logo.dart';
 import '../splash_controller.dart';
 import '../splash_mark.dart';
@@ -17,7 +17,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   static const _hen = AssetImage('assets/brand/layers/hen_mask.png');
   static const _eggL = AssetImage('assets/brand/layers/egg_left_mask.png');
   static const _eggM = AssetImage('assets/brand/layers/egg_mid_mask.png');
@@ -25,6 +25,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   bool _started = false;
   bool _navigated = false;
+  bool _postFrameScheduled = false;
+  SplashController? _splashController;
   late AnimationController _breath;
 
   @override
@@ -40,7 +42,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   void dispose() {
-    ref.read(splashControllerProvider.notifier).disposeAnim();
+    _splashController?.disposeAnim();
     _breath.dispose();
     super.dispose();
   }
@@ -50,36 +52,51 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       return;
     }
     _started = true;
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
-    await ref.read(splashControllerProvider.notifier).initialize(
-          vsync: this,
-          reduceMotion: reduceMotion,
-          providers: const [_hen, _eggL, _eggM, _eggR],
-          context: context,
-        );
+    final controller = _splashController!;
+    try {
+      final reduceMotion = MediaQuery.disableAnimationsOf(context);
+      await controller.initialize(
+        vsync: this,
+        reduceMotion: reduceMotion,
+        providers: const [_hen, _eggL, _eggM, _eggR],
+        context: context,
+      );
+    } catch (e, st) {
+      debugPrint('Splash intro failed: $e\n$st');
+      if (mounted) {
+        controller.skipIntroAfterFailure();
+      }
+    }
   }
 
   void _maybeNavigate() {
-    if (_navigated) {
+    if (_navigated || !mounted) {
       return;
     }
     if (!ref.read(splashGateReadyProvider)) {
       return;
     }
-    _navigated = true;
     final auth = ref.read(hasAuthSnapshotProvider);
-    if (auth.hasError || !(auth.value ?? false)) {
-      const LoginRoute().go(context);
+    if (auth.isLoading || auth.hasError) {
       return;
     }
-    const TodayRoute().go(context);
+    if (auth.value ?? false) {
+      // Authed splash → /today is handled by go_router redirect only.
+      return;
+    }
+    _navigated = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        const LoginRoute().go(context);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    _splashController ??= ref.read(splashControllerProvider.notifier);
     final splash = ref.watch(splashControllerProvider);
-    final brand = brandTokensOf(context);
-    final bg = brand.splashBackgroundFor(Theme.of(context).brightness);
+    final bg = context.colors.splashBackground;
 
     ref.listen(hasAuthSnapshotProvider, (_, next) {
       if (next.hasError) {
@@ -88,15 +105,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     });
 
     ref.listen(splashGateReadyProvider, (_, ready) {
-      if (ready) {
-        _maybeNavigate();
+      if (!ready) {
+        return;
       }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _maybeNavigate();
+        }
+      });
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startIntro();
-      _maybeNavigate();
-    });
+    if (!_postFrameScheduled) {
+      _postFrameScheduled = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _startIntro();
+        _maybeNavigate();
+      });
+    }
 
     final waitingBootstrap =
         splash.introDone && ref.watch(hasAuthSnapshotProvider).isLoading;
@@ -126,10 +154,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             ),
                           )
                         : splash.mode == SplashIntroMode.reducedMotion
-                            ? AppLogo(
+                            ? const AppLogo(
                                 size: AppLogoSize.large,
                                 showWordmark: true,
-                                heroTag: kEnableLogoHero ? 'app-logo' : null,
                               )
                             : SplashMark(
                                 progress: splash.progress,

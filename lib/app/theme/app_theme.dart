@@ -1,91 +1,56 @@
 import 'package:flutter/material.dart';
 
-import 'brand_tokens.dart';
+import 'app_colors.dart';
+import 'app_typography.dart';
+import 'brand_palette.dart';
+import 'component_themes.dart';
 
-ThemeData buildAppTheme({Brightness brightness = Brightness.light}) {
-  const brand = BrandTokens.defaults;
-  final seed = brand.brandInk;
-  final scheme = ColorScheme.fromSeed(
-    seedColor: seed,
-    brightness: brightness,
-    surface: brightness == Brightness.light
-        ? brand.brandCream
-        : brand.splashBackgroundDark,
-  );
+/// Cached [ThemeData] for light and dark — built once.
+abstract final class AppTheme {
+  static final ThemeData light = _build(Brightness.light, AppColors.light);
+  static final ThemeData dark = _build(Brightness.dark, AppColors.dark);
 
-  return ThemeData(
-    colorScheme: scheme,
-    useMaterial3: true,
-    brightness: brightness,
-    scaffoldBackgroundColor: brightness == Brightness.light
-        ? scheme.surfaceContainerLowest
-        : brand.splashBackgroundDark,
-    extensions: const [brand],
-    appBarTheme: AppBarTheme(
-      centerTitle: false,
-      elevation: 0,
-      scrolledUnderElevation: 1,
-      backgroundColor: scheme.surface,
-      foregroundColor: scheme.onSurface,
-      titleTextStyle: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w600,
-        color: scheme.onSurface,
-      ),
-    ),
-    navigationBarTheme: NavigationBarThemeData(
-      elevation: 0,
-      height: 72,
-      indicatorColor: scheme.primaryContainer,
-      labelTextStyle: WidgetStateProperty.resolveWith((states) {
-        final selected = states.contains(WidgetState.selected);
-        return TextStyle(
-          fontSize: 12,
-          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-        );
-      }),
-    ),
-    cardTheme: CardThemeData(
-      elevation: 0,
-      color: scheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
-      ),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      filled: true,
-      fillColor: scheme.surface,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: scheme.outlineVariant),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: scheme.primary, width: 2),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    ),
-    filledButtonTheme: FilledButtonThemeData(
-      style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(48),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: const TextStyle(fontWeight: FontWeight.w600),
-      ),
-    ),
-    listTileTheme: ListTileThemeData(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-    ),
-    navigationRailTheme: NavigationRailThemeData(
-      indicatorColor: scheme.primaryContainer,
-      labelType: NavigationRailLabelType.all,
-    ),
-    pageTransitionsTheme: const PageTransitionsTheme(
-      builders: {
-        TargetPlatform.android: PredictiveBackPageTransitionsBuilder(),
-      },
-    ),
-  );
+  static ThemeData _build(Brightness brightness, AppColors colors) {
+    final scheme = brightness == Brightness.light
+        ? ColorScheme.fromSeed(
+            seedColor: BrandPalette.seedLight,
+            brightness: Brightness.light,
+            surface: BrandPalette.brandCream,
+          )
+        : ColorScheme.fromSeed(
+            seedColor: BrandPalette.seedDark,
+            brightness: Brightness.dark,
+            surface: BrandPalette.splashDark,
+            onSurface: const Color(0xFFE8E0DA),
+          );
+
+    return ThemeData(
+      colorScheme: scheme,
+      useMaterial3: true,
+      brightness: brightness,
+      scaffoldBackgroundColor: brightness == Brightness.light
+          ? scheme.surfaceContainerLowest
+          : BrandPalette.splashDark,
+      textTheme: AppTypography.textTheme(brightness),
+      extensions: [colors],
+      appBarTheme: ComponentThemes.appBar(scheme),
+      navigationBarTheme: ComponentThemes.navigationBar(scheme),
+      navigationRailTheme: ComponentThemes.navigationRail(scheme),
+      cardTheme: ComponentThemes.card(scheme),
+      inputDecorationTheme: ComponentThemes.inputDecoration(scheme),
+      filledButtonTheme: ComponentThemes.filledButton(scheme),
+      listTileTheme: ComponentThemes.listTile(),
+      dialogTheme: ComponentThemes.dialog(scheme),
+      bottomSheetTheme: ComponentThemes.bottomSheet(scheme),
+      snackBarTheme: ComponentThemes.snackBar(scheme),
+      chipTheme: ComponentThemes.chip(scheme),
+      dividerTheme: ComponentThemes.divider(scheme),
+      progressIndicatorTheme: ComponentThemes.progress(scheme),
+      pageTransitionsTheme: ComponentThemes.pageTransitions(),
+    );
+  }
 }
+
+/// @deprecated Use [AppTheme.light] / [AppTheme.dark].
+ThemeData buildAppTheme({Brightness brightness = Brightness.light}) =>
+    brightness == Brightness.dark ? AppTheme.dark : AppTheme.light;

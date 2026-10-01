@@ -173,7 +173,10 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                   const SizedBox(height: 12),
                   Text(
                     setup.errorMessage!,
-                    style: TextStyle(color: scheme.error),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: scheme.error),
                   ),
                 ],
                 const SizedBox(height: 28),

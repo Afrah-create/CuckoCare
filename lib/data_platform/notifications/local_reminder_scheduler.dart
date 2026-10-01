@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../../app/theme/brand_palette.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../../core/time/kampala_time.dart';
@@ -60,7 +61,7 @@ class LocalReminderScheduler implements ReminderScheduler {
           _channel.name,
           channelDescription: _channel.description,
           icon: 'ic_stat_hen',
-          color: const Color(0xFF622347),
+          color: BrandPalette.brandInk,
         ),
       ),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,

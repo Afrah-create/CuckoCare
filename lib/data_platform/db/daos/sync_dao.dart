@@ -47,4 +47,17 @@ class SyncDao extends DatabaseAccessor<AppDatabase> with _$SyncDaoMixin {
       ),
     );
   }
+
+  Future<void> removeScopesNotIn(Set<String> allowed) async {
+    final scopes = await allScopes();
+    for (final scope in scopes) {
+      if (!allowed.contains(scope)) {
+        await (delete(syncCursors)..where((t) => t.syncTable.equals(scope))).go();
+      }
+    }
+  }
+
+  Future<void> deleteAllScopes() async {
+    await delete(syncCursors).go();
+  }
 }

@@ -51,4 +51,7 @@ abstract class SyncEngine {
   Future<Result<void>> syncOnce({bool force = false});
 
   Future<void> fullResync();
+
+  /// Updates status when connectivity is unavailable (no remote calls).
+  Future<void> noteConnectivityOffline();
 }

@@ -1,4 +1,6 @@
 import 'package:cucocare/app/theme/app_theme.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:cucocare/app/l10n/app_localizations.dart';
 import 'package:cucocare/app/widgets/app_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,7 +11,9 @@ void main() {
   testWidgets('AppLogo exposes CucoCare semantics', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
-        theme: buildAppTheme(),
+        theme: AppTheme.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: const Scaffold(body: AppLogo()),
       ),
     );

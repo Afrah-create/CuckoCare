@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/layout_scope.dart';
+import '../../../app/layout/two_pane.dart';
 import '../../../app/shell/tab_scroll_registry.dart';
+import '../../../app/theme/app_spacing.dart';
+import '../../../app/theme/theme_context.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../home/presentation/farm_profile_banner.dart';
+import 'today_greeting_card.dart';
 
 class TodayScreen extends ConsumerStatefulWidget {
   const TodayScreen({super.key});
@@ -17,120 +23,181 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   static const _tabIndex = 0;
 
   final _scrollController = ScrollController();
+  TabScrollRegistry? _tabScrollRegistryNotifier;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(tabScrollRegistryProvider.notifier).register(
-            _tabIndex,
-            () {
-              if (_scrollController.hasClients) {
-                _scrollController.animateTo(
-                  0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              }
-            },
-          );
+      if (!mounted) {
+        return;
+      }
+      _tabScrollRegistryNotifier = ref.read(tabScrollRegistryProvider.notifier);
+      _tabScrollRegistryNotifier!.register(
+        _tabIndex,
+        () {
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          }
+        },
+      );
     });
   }
 
   @override
   void dispose() {
-    ref.read(tabScrollRegistryProvider.notifier).unregister(_tabIndex);
+    _tabScrollRegistryNotifier?.unregister(_tabIndex);
     _scrollController.dispose();
     super.dispose();
   }
 
+  Future<void> _onRefresh() async {
+    await ref.read(syncEngineProvider).syncOnce(force: true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
     final profile = ref.watch(userProfileProvider).value;
     final greeting = _greeting(profile);
     final profileIncomplete = ref.watch(farmProfileIncompleteProvider);
+    final layout = context.layout;
+    final bottomInset = ContentFrame.scrollBottomInset(context);
+    final horizontal = layout.margin;
+    final topInset = MediaQuery.viewPaddingOf(context).top;
+    final useTwoPane = layout.useTwoPane;
 
-    return ListView(
-      controller: _scrollController,
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+    final banner = profileIncomplete.when(
+      data: (incomplete) => incomplete
+          ? const Column(
+              children: [
+                FarmProfileBanner(),
+                SizedBox(height: AppSpacing.sm),
+              ],
+            )
+          : const SizedBox.shrink(),
+      loading: () => const SizedBox.shrink(),
+      error: (_, _) => const SizedBox.shrink(),
+    );
+
+    final needsAttention = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        profileIncomplete.when(
-          data: (incomplete) =>
-              incomplete ? const FarmProfileBanner() : const SizedBox.shrink(),
-          loading: () => const SizedBox.shrink(),
-          error: (_, _) => const SizedBox.shrink(),
+        const _SectionHeader(
+          title: 'Needs attention',
+          subtitle: 'Overdue and due-today tasks',
         ),
-        if (profileIncomplete.value == true) const SizedBox(height: 12),
-        Text(
-          greeting,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Due and overdue tasks',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: _MetricCard(
-                icon: Icons.egg_outlined,
-                label: 'Active batches',
-                value: '—',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _MetricCard(
-                icon: Icons.vaccines_outlined,
-                label: 'Due this week',
-                value: '—',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _MetricCard(
-                icon: Icons.restaurant_outlined,
-                label: 'Feed stock',
-                value: '—',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _MetricCard(
-                icon: Icons.favorite_outline,
-                label: 'Health alerts',
-                value: '—',
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Quick actions',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 12),
-        _ActionTile(
-          icon: Icons.sync,
-          title: 'Sync now',
-          subtitle: 'Upload pending changes',
-          onTap: () => ref.read(syncEngineProvider).syncOnce(force: true),
-        ),
+        const SizedBox(height: AppSpacing.sm),
+        const _TasksEmptyState(),
       ],
+    );
+
+    final atAGlance = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const _SectionHeader(
+          title: 'At a glance',
+          subtitle: 'Live counts will appear as you add data.',
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        const _MetricGrid(),
+      ],
+    );
+
+    if (useTwoPane) {
+      return RefreshIndicator(
+        onRefresh: _onRefresh,
+        edgeOffset: 8,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    horizontal,
+                    layout.hideTabRootAppBar ? topInset + AppSpacing.xs : AppSpacing.xs,
+                    horizontal,
+                    0,
+                  ),
+                  child: banner,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: horizontal),
+                  child: _InlineGreetingLine(greeting: greeting),
+                ),
+                SizedBox(height: layout.gutter),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: horizontal),
+                    child: TwoPane(
+                      primary: SingleChildScrollView(
+                        padding: EdgeInsets.only(bottom: bottomInset),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
+                        child: needsAttention,
+                      ),
+                      secondary: SingleChildScrollView(
+                        padding: EdgeInsets.only(bottom: bottomInset),
+                        child: atAGlance,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      edgeOffset: 8,
+      child: CustomScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              horizontal,
+              AppSpacing.xs,
+              horizontal,
+              bottomInset,
+            ),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                banner,
+                TodayGreetingCard(
+                  greeting: greeting,
+                  subtitle:
+                      "Here's what needs attention on your farm today.",
+                  compact: true,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                needsAttention,
+                const SizedBox(height: AppSpacing.lg),
+                atAGlance,
+                const SizedBox(height: AppSpacing.lg),
+                const _SectionHeader(title: 'Quick actions'),
+                const SizedBox(height: AppSpacing.sm),
+                _QuickActions(
+                  onSync: () =>
+                      ref.read(syncEngineProvider).syncOnce(force: true),
+                ),
+              ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -148,41 +215,240 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
   }
 }
 
-class _MetricCard extends StatelessWidget {
-  const _MetricCard({
+class _InlineGreetingLine extends StatelessWidget {
+  const _InlineGreetingLine({required this.greeting});
+
+  final String greeting;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(
+          Icons.waving_hand_rounded,
+          size: 20,
+          color: context.colors.logoTint,
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: Text(
+            greeting,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.text.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.title, this.subtitle});
+
+  final String title;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: context.text.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: AppSpacing.xxs),
+          Text(
+            subtitle!,
+            style: context.text.bodySmall?.copyWith(
+              color: context.scheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _MetricGrid extends StatelessWidget {
+  const _MetricGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    final layout = context.layout;
+    final cols = layout.statColumns;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final gap = AppSpacing.sm * (cols - 1);
+        final tileWidth = (constraints.maxWidth - gap) / cols;
+
+        return Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            _MetricTile(
+              width: tileWidth,
+              icon: Icons.view_module_outlined,
+              label: 'Active batches',
+              value: '—',
+            ),
+            _MetricTile(
+              width: tileWidth,
+              icon: Icons.vaccines_outlined,
+              label: 'Due this week',
+              value: '—',
+            ),
+            _MetricTile(
+              width: tileWidth,
+              icon: Icons.restaurant_outlined,
+              label: 'Feed stock',
+              value: '—',
+            ),
+            _MetricTile(
+              width: tileWidth,
+              icon: Icons.favorite_outline,
+              label: 'Health alerts',
+              value: '—',
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _MetricTile extends StatelessWidget {
+  const _MetricTile({
+    required this.width,
     required this.icon,
     required this.label,
     required this.value,
   });
 
+  final double width;
   final IconData icon;
   final String label;
   final String value;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
+    final scheme = context.scheme;
+    final maxH = context.layout.statCardMaxHeight;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: scheme.primary, size: 22),
-            const SizedBox(height: 12),
-            Text(
-              value,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
+    return Semantics(
+      label: '$label, $value',
+      child: SizedBox(
+        width: width,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxH),
+          child: Card(
+            elevation: 0,
+            color: scheme.surfaceContainerLow,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: scheme.primary.withValues(alpha: 0.12),
+                          borderRadius:
+                              BorderRadius.circular(AppSpacing.radiusSm),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.xxs),
+                          child: Icon(icon, color: scheme.primary, size: 20),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Text(
+                        value,
+                        style: context.text.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          height: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.xxs),
+                  Text(
+                    label,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.labelLarge?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: scheme.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TasksEmptyState extends StatelessWidget {
+  const _TasksEmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = context.scheme;
+    final colors = context.colors;
+
+    return Card(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.md,
+        ),
+        child: Row(
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.successContainer.withValues(alpha: 0.35),
+                shape: BoxShape.circle,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.sm),
+                child: Icon(
+                  Icons.task_alt_rounded,
+                  color: colors.onSuccessContainer,
+                  size: 28,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Nothing due today',
+                    style: context.text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xxs),
+                  Text(
+                    'When vaccinations or chores are scheduled, they will show up here.',
+                    style: context.text.bodySmall?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -192,36 +458,23 @@ class _MetricCard extends StatelessWidget {
   }
 }
 
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
+class _QuickActions extends StatelessWidget {
+  const _QuickActions({required this.onSync});
 
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final VoidCallback? onTap;
+  final VoidCallback onSync;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: scheme.primaryContainer.withValues(alpha: 0.5),
-          foregroundColor: scheme.primary,
-          child: Icon(icon, size: 22),
+    return Row(
+      children: [
+        Expanded(
+          child: FilledButton.tonalIcon(
+            onPressed: onSync,
+            icon: const Icon(Icons.sync_rounded),
+            label: const Text('Sync now'),
+          ),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
-      ),
+      ],
     );
   }
 }

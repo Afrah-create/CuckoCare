@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../core/config/env.dart';
 import '../../core/network/connectivity_monitor.dart';
@@ -38,11 +37,16 @@ final remoteSyncApiProvider = Provider<RemoteSyncApi>(
 final syncEngineProvider = Provider<SyncEngine>((ref) {
   final db = ref.watch(appDatabaseProvider);
   final remote = ref.watch(remoteSyncApiProvider);
+  final snapshots = ref.watch(authSnapshotRepositoryProvider);
   final engine = CucoCareSyncEngine(
     db: db,
     remote: remote,
     hasRealSession: () async {
-      return Supabase.instance.client.auth.currentSession != null;
+      final profile = await snapshots.loadProfile();
+      if (profile == null) {
+        return false;
+      }
+      return !profile.isDemo;
     },
   );
   ref.onDispose(engine.dispose);
@@ -57,9 +61,11 @@ final syncStatusProvider = StreamProvider<SyncStatus>((ref) {
 final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
   final engine = ref.watch(syncEngineProvider);
   final connectivity = ref.watch(connectivityMonitorProvider);
+  final farms = ref.watch(farmRepositoryProvider);
   final scheduler = SyncScheduler(
     engine: engine,
-    connectivityHints: connectivity.onConnectivityHintChanged,
+    connectivity: connectivity,
+    beforeNetworkSync: farms.pushPendingFarmProfileToServer,
   );
   ref.onDispose(scheduler.dispose);
   return scheduler;
@@ -73,6 +79,8 @@ final farmRepositoryProvider = Provider<FarmRepository>((ref) {
   return FarmRepository(
     ref.watch(appDatabaseProvider),
     ref.watch(authSnapshotRepositoryProvider),
+    connectivity: ref.watch(connectivityMonitorProvider),
+    remoteSyncApi: ref.watch(remoteSyncApiProvider),
   );
 });
 
@@ -88,10 +96,35 @@ final connectivityOnlineProvider = StreamProvider<bool>((ref) {
   return ref.watch(connectivityMonitorProvider).onConnectivityHintChanged;
 });
 
-final hasAuthSnapshotProvider = FutureProvider<bool>((ref) async {
-  final repo = ref.watch(authSnapshotRepositoryProvider);
-  return repo.hasSnapshot();
-});
+/// Local auth gate for routing. Use [HasAuthSnapshotNotifier.adoptAuthenticated]
+/// after Drift writes to avoid a loading gap that can re-enter redirect twice.
+class HasAuthSnapshotNotifier extends AsyncNotifier<bool> {
+  @override
+  Future<bool> build() async {
+    ref.watch(authSnapshotRepositoryProvider);
+    return ref.read(authSnapshotRepositoryProvider).hasSnapshot();
+  }
+
+  Future<void> refreshFromDisk() async {
+    state = const AsyncLoading();
+    state = AsyncData(
+      await ref.read(authSnapshotRepositoryProvider).hasSnapshot(),
+    );
+  }
+
+  void adoptAuthenticated() {
+    state = const AsyncData(true);
+  }
+
+  void adoptSignedOut() {
+    state = const AsyncData(false);
+  }
+}
+
+final hasAuthSnapshotProvider =
+    AsyncNotifierProvider<HasAuthSnapshotNotifier, bool>(
+  HasAuthSnapshotNotifier.new,
+);
 
 final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   final repo = ref.watch(authSnapshotRepositoryProvider);

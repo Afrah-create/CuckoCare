@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../app/theme/brand_tokens.dart';
+import '../../app/theme/theme_context.dart';
 import 'splash_timing.dart';
 
 /// Deterministic splash logo composer (opacity + transforms only).
@@ -26,8 +26,7 @@ class SplashMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brand = brandTokensOf(context);
-    final ink = brand.logoInkFor(Theme.of(context).brightness);
+    final ink = context.colors.logoTint;
     final t = progress.clamp(0.0, 1.0);
 
     double eggPhase(int index) {
@@ -35,16 +34,19 @@ class SplashMark extends StatelessWidget {
           (index * SplashTiming.eggStaggerMs / SplashTiming.fullIntroMs);
       final local = ((t - start) / (SplashTiming.eggsEnd - SplashTiming.eggsStart))
           .clamp(0.0, 1.0);
-      return Curves.easeOutBack.transform(local);
+      return Curves.easeOutBack.transform(local).clamp(0.0, 1.0);
     }
 
     final henLocal = SplashTiming.interval(SplashTiming.henStart, SplashTiming.henEnd)
-        .transform(t);
+        .transform(t)
+        .clamp(0.0, 1.0);
 
     final wordLocal = SplashTiming.interval(
       SplashTiming.wordmarkStart,
       SplashTiming.wordmarkEnd,
-    ).transform(t);
+    )
+        .transform(t)
+        .clamp(0.0, 1.0);
 
     Widget tinted(ImageProvider provider, {required double opacity, required double scale, double dy = 0}) {
       return Opacity(

@@ -10,7 +10,7 @@ void main() {
     addTearDown(container.dispose);
 
     final first = container.read(appRouterProvider);
-    container.invalidate(hasAuthSnapshotProvider);
+    container.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
     final second = container.read(appRouterProvider);
 
     expect(identical(first, second), isTrue);

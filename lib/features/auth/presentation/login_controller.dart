@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
@@ -14,6 +15,10 @@ class LoginController extends Notifier<LoginUiState> {
 
   void setFormMode(AuthFormMode mode) {
     state = state.copyWith(formMode: mode, clearError: true, status: LoginStatus.idle);
+  }
+
+  void clearError() {
+    state = state.copyWith(clearError: true);
   }
 
   void togglePasswordVisibility() {
@@ -48,9 +53,7 @@ class LoginController extends Notifier<LoginUiState> {
     return result.when(
       success: (session) {
         state = state.copyWith(status: LoginStatus.success);
-        ref.invalidate(hasAuthSnapshotProvider);
-        ref.invalidate(userProfileProvider);
-        ref.invalidate(farmProfileIncompleteProvider);
+        _afterLocalAuthWrite(ref);
         ref.read(syncSchedulerProvider).onForeground();
         return session;
       },
@@ -91,9 +94,7 @@ class LoginController extends Notifier<LoginUiState> {
     return result.when(
       success: (session) {
         state = state.copyWith(status: LoginStatus.success);
-        ref.invalidate(hasAuthSnapshotProvider);
-        ref.invalidate(userProfileProvider);
-        ref.invalidate(farmProfileIncompleteProvider);
+        _afterLocalAuthWrite(ref);
         return session;
       },
       failure: (failure) {
@@ -110,8 +111,14 @@ class LoginController extends Notifier<LoginUiState> {
     state = state.copyWith(status: LoginStatus.submitting, clearError: true);
     await ref.read(authSnapshotRepositoryProvider).saveDemoSnapshot();
     state = state.copyWith(status: LoginStatus.success);
-    ref.invalidate(hasAuthSnapshotProvider);
+    _afterLocalAuthWrite(ref);
+  }
+}
+
+void _afterLocalAuthWrite(Ref ref) {
+  ref.read(hasAuthSnapshotProvider.notifier).adoptAuthenticated();
+  SchedulerBinding.instance.scheduleFrameCallback((_) {
     ref.invalidate(userProfileProvider);
     ref.invalidate(farmProfileIncompleteProvider);
-  }
+  });
 }

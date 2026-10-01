@@ -3,5 +3,11 @@
   "appTitle": "CucoCare",
   "@appTitle": {
     "description": "Application title"
-  }
+  },
+  "appearance": "Appearance",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystemHelperLight": "Following your phone's setting (currently Light)",
+  "themeSystemHelperDark": "Following your phone's setting (currently Dark)"
 }

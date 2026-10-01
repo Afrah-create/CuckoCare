@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:go_router/go_router.dart';
-
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
+import '../../settings/presentation/appearance_section.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
-    await ref.read(authRepositoryProvider).signOut();
-    ref.invalidate(hasAuthSnapshotProvider);
-    ref.invalidate(userProfileProvider);
-    ref.invalidate(farmProfileIncompleteProvider);
-    if (context.mounted) {
-      const LoginRoute().go(context);
+    try {
+      await ref.read(authRepositoryProvider).signOut();
+    } finally {
+      ref.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
+      ref.invalidate(userProfileProvider);
+      ref.invalidate(farmProfileIncompleteProvider);
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final env = ref.watch(envProvider);
     final theme = Theme.of(context);
 
     return ListView(
@@ -60,19 +58,11 @@ class MoreScreen extends ConsumerWidget {
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () {},
               ),
-              if (env.isDev) ...[
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.animation_outlined),
-                  title: const Text('Splash preview'),
-                  subtitle: const Text('Developer'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/more/splash-preview'),
-                ),
-              ],
             ],
           ),
         ),
+        const SizedBox(height: 24),
+        const AppearanceSection(),
         const SizedBox(height: 24),
         Text(
           'Session',
@@ -86,7 +76,8 @@ class MoreScreen extends ConsumerWidget {
             leading: Icon(Icons.logout, color: theme.colorScheme.error),
             title: Text(
               'Sign out',
-              style: TextStyle(color: theme.colorScheme.error),
+              style: theme.textTheme.bodyLarge
+                  ?.copyWith(color: theme.colorScheme.error),
             ),
             onTap: () => _signOut(context, ref),
           ),

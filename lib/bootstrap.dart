@@ -1,4 +1,7 @@
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+import 'core/platform/supported_orientations.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -35,6 +38,7 @@ Future<void> bootstrap({
   bool initializeSupabase = true,
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(kSupportedOrientations);
 
   KampalaTime.ensureInitialized();
   try {

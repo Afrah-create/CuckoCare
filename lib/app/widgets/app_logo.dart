@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../theme/brand_tokens.dart';
+import '../theme/app_spacing.dart';
+import '../theme/theme_context.dart';
 
-/// When true, splash and login share a [Hero] on `app-logo`.
-const kEnableLogoHero = true;
+/// Hero disabled — avoids duplicate keys during splash/auth/shell transitions.
+const kEnableLogoHero = false;
 
-enum AppLogoSize { small, medium, large }
+enum AppLogoSize { compact, small, medium, large }
 
 class AppLogo extends StatelessWidget {
   const AppLogo({
@@ -20,6 +21,7 @@ class AppLogo extends StatelessWidget {
   final Object? heroTag;
 
   double get _markSize => switch (size) {
+        AppLogoSize.compact => 36,
         AppLogoSize.small => 48,
         AppLogoSize.medium => 96,
         AppLogoSize.large => 160,
@@ -27,9 +29,7 @@ class AppLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brand = brandTokensOf(context);
-    final brightness = Theme.of(context).brightness;
-    final ink = brand.logoInkFor(brightness);
+    final ink = context.colors.logoTint;
 
     final mark = ColorFiltered(
       colorFilter: ColorFilter.mode(ink, BlendMode.srcIn),
@@ -47,13 +47,13 @@ class AppLogo extends StatelessWidget {
       children: [
         mark,
         if (showWordmark) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.sm),
           Text(
             'CucoCare',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.2,
-                ),
+            style: context.text.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.2,
+            ),
           ),
         ],
       ],

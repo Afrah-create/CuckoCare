@@ -9,6 +9,8 @@ Future<void> bootstrapSupabase(Env env) async {
     publishableKey: env.supabaseAnonKey,
     authOptions: FlutterAuthClientOptions(
       localStorage: SecureLocalStorage(),
+      // Refresh only before sync when online — not on a timer while offline.
+      autoRefreshToken: false,
     ),
   );
 }

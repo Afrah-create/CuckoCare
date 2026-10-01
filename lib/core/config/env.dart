@@ -44,6 +44,13 @@ class Env {
   }
 
   bool get isDev => envName == 'dev';
+
+  bool get isStaging => envName == 'staging';
+
+  bool get isProd => envName == 'prod';
+
+  /// Demo session entry — dev and staging only.
+  bool get showDeveloperDemo => isDev || isStaging;
 }
 
 /// Project URL only — not the REST or Auth path (strip `/rest/v1` if pasted).

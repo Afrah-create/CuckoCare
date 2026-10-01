@@ -101,10 +101,24 @@ class SupabaseAuthRepository implements AuthRepository {
             .whereType<String>()
             .toList();
         await _snapshots.setFarmIds(farmIds);
+        final userId = _client.auth.currentUser?.id;
+        if (userId != null) {
+          await _snapshots.alignSyncScopesForUser(
+            userId: userId,
+            farmScopeIds: farmIds,
+          );
+        }
         return Success(AuthSessionResult(needsFarmSetup: farmIds.isEmpty));
       },
       failure: (_) async {
         await _snapshots.setFarmIds([]);
+        final userId = _client.auth.currentUser?.id;
+        if (userId != null) {
+          await _snapshots.alignSyncScopesForUser(
+            userId: userId,
+            farmScopeIds: const [],
+          );
+        }
         return const Success(AuthSessionResult(needsFarmSetup: true));
       },
     );
@@ -112,7 +126,12 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() async {
-    await _client.auth.signOut();
+    try {
+      await _client.auth.signOut();
+    } catch (_) {
+      // Offline or server unreachable — still clear the device session.
+      await _client.auth.signOut(scope: SignOutScope.local);
+    }
     await _snapshots.clear();
   }
 }

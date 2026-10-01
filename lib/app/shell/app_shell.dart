@@ -5,7 +5,12 @@ import 'package:go_router/go_router.dart';
 import '../../data_platform/sync/sync_engine.dart';
 import '../../features/home/presentation/profile_sheet.dart';
 import '../di/providers.dart';
-import '../router/routes/typed_routes.dart';
+import '../layout/breakpoints.dart';
+import '../layout/layout_profile.dart';
+import '../layout/layout_scope.dart';
+import '../layout/shell_chrome.dart';
+import 'shell_destinations.dart';
+import '../theme/app_spacing.dart';
 import '../widgets/cuco_app_bar.dart';
 import 'back_behavior.dart';
 import 'tab_scroll_registry.dart';
@@ -17,23 +22,34 @@ class AppShell extends ConsumerStatefulWidget {
 
   static const _titles = ['Today', 'Batches', 'Feed', 'Records', 'More'];
 
+  static const shellBodyKey = ValueKey<String>('app-shell-body');
+
   @override
   ConsumerState<AppShell> createState() => _AppShellState();
 }
 
 class _AppShellState extends ConsumerState<AppShell> {
   Future<void> _signOut() async {
-    await ref.read(authRepositoryProvider).signOut();
-    ref.invalidate(hasAuthSnapshotProvider);
-    ref.invalidate(userProfileProvider);
-    ref.invalidate(farmProfileIncompleteProvider);
-    if (mounted) {
-      const LoginRoute().go(context);
+    try {
+      await ref.read(authRepositoryProvider).signOut();
+    } finally {
+      ref.read(hasAuthSnapshotProvider.notifier).adoptSignedOut();
+      ref.invalidate(userProfileProvider);
+      ref.invalidate(farmProfileIncompleteProvider);
     }
   }
 
+  void _openSettings() {
+    widget.navigationShell.goBranch(4, initialLocation: false);
+  }
+
   void _openProfile() {
-    showProfileSheet(context, ref, onSignOut: _signOut);
+    showProfileSheet(
+      context,
+      ref,
+      onOpenSettings: _openSettings,
+      onSignOut: _signOut,
+    );
   }
 
   void _onDestinationSelected(int index) {
@@ -49,6 +65,14 @@ class _AppShellState extends ConsumerState<AppShell> {
     shell.goBranch(index, initialLocation: false);
   }
 
+  NavigationRailLabelType _railLabelType(LayoutProfile profile) {
+    return switch (profile) {
+      LayoutProfile.tablet => NavigationRailLabelType.all,
+      LayoutProfile.phoneLandscape => NavigationRailLabelType.selected,
+      _ => NavigationRailLabelType.none,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final shell = widget.navigationShell;
@@ -58,70 +82,42 @@ class _AppShellState extends ConsumerState<AppShell> {
     final status = sync.value ??
         const SyncStatus(phase: SyncPhase.idle, pendingOutboxCount: 0);
     final initials = profile.value?.initials ?? '?';
-    final useRail = MediaQuery.sizeOf(context).width >= 600;
+    final layout = context.layout;
+    final useRail = layout.useRail;
+    final hideTopBar = layout.hideTabRootAppBar;
+    final railExtended = layout.size.width >= Breakpoints.railExtendedMinWidth;
+
+    final rail = NavigationRail(
+      extended: railExtended,
+      selectedIndex: index,
+      onDestinationSelected: _onDestinationSelected,
+      labelType: _railLabelType(layout.profile),
+      leading: const ShellRailLeading(),
+      trailing: ShellRailTrailing(
+        syncStatus: status,
+        profileInitials: initials,
+        onProfileTap: _openProfile,
+      ),
+      destinations: [
+        for (final d in ShellDestinations.tabs)
+          NavigationRailDestination(
+            icon: Icon(d.outlined),
+            selectedIcon: Icon(d.filled),
+            label: Text(d.label),
+          ),
+      ],
+    );
 
     final navBar = NavigationBar(
       selectedIndex: index,
       onDestinationSelected: _onDestinationSelected,
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.today_outlined),
-          selectedIcon: Icon(Icons.today),
-          label: 'Today',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.egg_outlined),
-          selectedIcon: Icon(Icons.egg),
-          label: 'Batches',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.restaurant_outlined),
-          selectedIcon: Icon(Icons.restaurant),
-          label: 'Feed',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.note_alt_outlined),
-          selectedIcon: Icon(Icons.note_alt),
-          label: 'Records',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.more_horiz),
-          selectedIcon: Icon(Icons.more_horiz),
-          label: 'More',
-        ),
-      ],
-    );
-
-    final rail = NavigationRail(
-      selectedIndex: index,
-      onDestinationSelected: _onDestinationSelected,
-      labelType: NavigationRailLabelType.all,
-      destinations: const [
-        NavigationRailDestination(
-          icon: Icon(Icons.today_outlined),
-          selectedIcon: Icon(Icons.today),
-          label: Text('Today'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.egg_outlined),
-          selectedIcon: Icon(Icons.egg),
-          label: Text('Batches'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.restaurant_outlined),
-          selectedIcon: Icon(Icons.restaurant),
-          label: Text('Feed'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.note_alt_outlined),
-          selectedIcon: Icon(Icons.note_alt),
-          label: Text('Records'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.more_horiz),
-          selectedIcon: Icon(Icons.more_horiz),
-          label: Text('More'),
-        ),
+      destinations: [
+        for (final d in ShellDestinations.tabs)
+          NavigationDestination(
+            icon: Icon(d.outlined),
+            selectedIcon: Icon(d.filled),
+            label: d.label,
+          ),
       ],
     );
 
@@ -138,19 +134,49 @@ class _AppShellState extends ConsumerState<AppShell> {
         );
       },
       child: Scaffold(
-        appBar: CucoAppBar(
-          title: AppShell._titles[index],
-          profileInitials: initials,
-          onProfileTap: _openProfile,
-          syncStatus: status,
-        ),
+        appBar: hideTopBar
+            ? null
+            : CucoAppBar(
+                title: AppShell._titles[index],
+                profileInitials: initials,
+                onProfileTap: _openProfile,
+                syncStatus: status,
+                compact: layout.isCompactHeight,
+              ),
         body: Row(
+          key: AppShell.shellBodyKey,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (useRail) rail,
-            Expanded(child: shell),
+            Offstage(
+              offstage: !useRail,
+              child: SizedBox(
+                width: railExtended ? 256 : 80,
+                child: rail,
+              ),
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: layout.maxContentWidth,
+                  ),
+                  child: shell,
+                ),
+              ),
+            ),
           ],
         ),
-        bottomNavigationBar: useRail ? null : navBar,
+        bottomNavigationBar: useRail
+            ? null
+            : Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.viewPaddingOf(context).bottom > 0
+                      ? 0
+                      : AppSpacing.xxs,
+                ),
+                child: navBar,
+              ),
       ),
     );
   }

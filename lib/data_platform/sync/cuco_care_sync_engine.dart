@@ -45,6 +45,20 @@ class CucoCareSyncEngine implements SyncEngine {
   }
 
   @override
+  Future<void> noteConnectivityOffline() async {
+    final pending = await _db.outboxDao.pendingCount();
+    final failed = await _db.outboxDao.failedCount();
+    _emit(
+      _status.copyWith(
+        phase: SyncPhase.offline,
+        pendingOutboxCount: pending,
+        failedOutboxCount: failed,
+        message: 'Offline',
+      ),
+    );
+  }
+
+  @override
   Future<Result<void>> syncOnce({bool force = false}) async {
     if (_running) {
       _runAgain = true;
