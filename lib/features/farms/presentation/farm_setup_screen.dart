@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/content_frame.dart';
+import '../../../app/theme/app_spacing.dart';
+import '../../../app/theme/theme_context.dart';
 import '../../../data_platform/db/app_database.dart';
+import 'farm_gps_capture_card.dart';
 import 'farm_setup_controller.dart';
 
 class FarmSetupScreen extends ConsumerStatefulWidget {
@@ -89,8 +93,6 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
     });
 
     final setup = ref.watch(farmSetupControllerProvider);
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -101,27 +103,39 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Complete your farm details',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
+        child: ContentFrame(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              bottom: ContentFrame.scrollBottomInset(context),
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Complete your farm details',
+                    style: context.text.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Required for sync and support. You can update this anytime.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    'Required for sync and support. You can update this anytime.',
+                    style: context.text.bodyMedium?.copyWith(
+                      color: context.scheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.lg),
+                  const FarmGpsCaptureCard(),
+                  const SizedBox(height: AppSpacing.lg),
+                  Text(
+                    'Contact & location',
+                    style: context.text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _nameController,
                   onChanged: (_) => _markEdited(),
@@ -131,7 +145,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _districtController,
                   enabled: !setup.isSubmitting,
@@ -140,7 +154,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _villageController,
                   enabled: !setup.isSubmitting,
@@ -149,7 +163,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _phoneController,
                   enabled: !setup.isSubmitting,
@@ -167,7 +181,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _altPhoneController,
                   enabled: !setup.isSubmitting,
@@ -178,7 +192,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                     prefixText: '+256 ',
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _notesController,
                   enabled: !setup.isSubmitting,
@@ -188,16 +202,15 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                   ),
                 ),
                 if (setup.errorMessage != null) ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.sm),
                   Text(
                     setup.errorMessage!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(color: scheme.error),
+                    style: context.text.bodyMedium?.copyWith(
+                      color: context.scheme.error,
+                    ),
                   ),
                 ],
-                const SizedBox(height: 28),
+                const SizedBox(height: AppSpacing.lg),
                 FilledButton(
                   onPressed: setup.isSubmitting ? null : _submit,
                   child: setup.isSubmitting
@@ -208,7 +221,8 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                         )
                       : const Text('Save farm profile'),
                 ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

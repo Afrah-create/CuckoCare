@@ -115,4 +115,6 @@ class OutboxDao extends DatabaseAccessor<AppDatabase> with _$OutboxDaoMixin {
           ..limit(limit))
         .get();
   }
+
+  Future<void> deleteAllRows() => delete(outbox).go();
 }

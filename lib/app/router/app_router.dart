@@ -11,10 +11,16 @@ import '../../features/auth/presentation/forgot_password_screen.dart';
 import '../../features/auth/presentation/login_screen.dart';
 import '../../features/splash/splash_controller.dart';
 import '../../features/today/presentation/today_screen.dart';
+import '../../features/auth/domain/app_role.dart';
 import '../di/providers.dart';
 import '../shell/app_shell.dart';
+import '../shell/vet_shell.dart';
+import '../../features/vet/presentation/vet_active_screen.dart';
+import '../../features/vet/presentation/vet_more_screen.dart';
+import '../../features/vet/presentation/vet_requests_screen.dart';
 import '../widgets/not_found_screen.dart';
 import 'navigator_keys.dart';
+import 'role_redirect.dart';
 import 'router_refresh.dart';
 import 'routes/typed_routes.dart';
 
@@ -64,14 +70,25 @@ String? _authRedirect(Ref ref, GoRouterState state) {
     return '/auth/login?from=$from';
   }
 
+  final roleGuard = roleBasedRedirect(ref, state, authed: authed);
+  if (roleGuard != null) {
+    return roleGuard;
+  }
+
   if (_isAuthLocation(location)) {
+    final roleAsync = ref.read(appRoleProvider);
+    if (roleAsync.isLoading) {
+      return '/splash';
+    }
     final from = state.uri.queryParameters['from'];
+    final role = roleAsync.value ?? AppRole.farmer;
+    final home = defaultHomeForRole(role);
     final destination = from != null &&
             from.isNotEmpty &&
             !from.startsWith('/auth') &&
             from != '/splash'
         ? from
-        : '/today';
+        : home;
     if (state.uri.path == destination) {
       return null;
     }
@@ -115,6 +132,47 @@ List<RouteBase> _authRoutes() {
           pageBuilder: (context, state) => const NoTransitionPage<void>(
             child: ForgotPasswordScreen(),
           ),
+        ),
+      ],
+    ),
+  ];
+}
+
+List<RouteBase> _vetShellRoutes() {
+  return [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        return VetShell(navigationShell: navigationShell);
+      },
+      branches: [
+        StatefulShellBranch(
+          navigatorKey: vetRequestsNavigatorKey,
+          routes: [
+            GoRoute(
+              path: '/vet',
+              pageBuilder: (context, state) => CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: const VetRequestsScreen(),
+                transitionDuration: const Duration(milliseconds: 200),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: vetActiveNavigatorKey,
+          routes: [
+            _fadeTabRoot('/vet/active', const VetActiveScreen()),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: vetMoreNavigatorKey,
+          routes: [
+            _fadeTabRoot('/vet/more', const VetMoreScreen()),
+          ],
         ),
       ],
     ),
@@ -213,6 +271,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       $batchDetailRoute,
       $moreFarmRoute,
       $moreSyncRoute,
+      ..._vetShellRoutes(),
       ..._shellRoutes(),
     ],
   );

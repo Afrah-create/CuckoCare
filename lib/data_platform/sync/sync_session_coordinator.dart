@@ -17,6 +17,7 @@ class SyncSessionCoordinator {
     if (lastUser != userId) {
       await _db.syncMetaDao.setValue('hydrated', 'false');
       await _db.syncDao.deleteAllScopes();
+      await _db.outboxDao.deleteAllRows();
     }
 
     final allowed = {'reference', ...farmScopeIds};
@@ -31,6 +32,7 @@ class SyncSessionCoordinator {
   Future<void> clearOnSignOut() async {
     await _db.syncMetaDao.setValue('hydrated', 'false');
     await _db.syncDao.deleteAllScopes();
+    await _db.outboxDao.deleteAllRows();
     await _db.syncMetaDao.setValue(_userIdMetaKey, '');
   }
 }

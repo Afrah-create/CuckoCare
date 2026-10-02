@@ -13,7 +13,10 @@ Future<void> signOutFromApp(WidgetRef ref) async {
     ref.read(loginControllerProvider.notifier).resetForSignOut();
     bumpAuthFormGeneration(ref);
     ref.invalidate(userProfileProvider);
+    ref.invalidate(appRoleProvider);
     ref.invalidate(farmProfileIncompleteProvider);
+    ref.invalidate(primaryFarmProvider);
+    ref.invalidate(syncStatusProvider);
     TextInput.finishAutofillContext(shouldSave: false);
   }
 }

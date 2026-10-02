@@ -8,3 +8,7 @@ final batchesNavigatorKey = GlobalKey<NavigatorState>();
 final feedNavigatorKey = GlobalKey<NavigatorState>();
 final recordsNavigatorKey = GlobalKey<NavigatorState>();
 final moreNavigatorKey = GlobalKey<NavigatorState>();
+
+final vetRequestsNavigatorKey = GlobalKey<NavigatorState>();
+final vetActiveNavigatorKey = GlobalKey<NavigatorState>();
+final vetMoreNavigatorKey = GlobalKey<NavigatorState>();

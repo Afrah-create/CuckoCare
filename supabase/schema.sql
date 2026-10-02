@@ -5,10 +5,23 @@ CREATE TABLE public.profiles (
   user_id uuid NOT NULL,
   display_name text,
   phone text,
+  app_role text NOT NULL DEFAULT 'farmer'::text CHECK (app_role = ANY (ARRAY['farmer'::text, 'vet'::text])),
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   updated_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT profiles_pkey PRIMARY KEY (user_id),
   CONSTRAINT profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
+CREATE TABLE public.vet_profiles (
+  user_id uuid NOT NULL,
+  display_name text,
+  organization text,
+  offers_consultation boolean NOT NULL DEFAULT true,
+  offers_farm_visit boolean NOT NULL DEFAULT true,
+  poultry_specialist boolean NOT NULL DEFAULT true,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT vet_profiles_pkey PRIMARY KEY (user_id),
+  CONSTRAINT vet_profiles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
 );
 CREATE TABLE public.farms (
   id uuid NOT NULL DEFAULT gen_random_uuid(),

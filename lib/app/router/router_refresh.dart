@@ -37,5 +37,16 @@ final routerRefreshProvider = Provider<RouterRefresh>((ref) {
     refresh.notifyRouter();
   });
   ref.listen(splashIntroCompleteProvider, (_, _) => refresh.notifyRouter());
+  ref.listen(appRoleProvider, (previous, next) {
+    if (next.isLoading) {
+      return;
+    }
+    if (previous?.hasValue == true &&
+        next.hasValue &&
+        previous!.requireValue == next.requireValue) {
+      return;
+    }
+    refresh.notifyRouter();
+  });
   return refresh;
 });

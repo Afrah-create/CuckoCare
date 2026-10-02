@@ -13,6 +13,7 @@ import 'auth_card.dart';
 import 'auth_mode_switch.dart';
 import 'login_controller.dart';
 import 'login_state.dart';
+import 'sign_up_role_picker.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -101,6 +102,15 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           )
         : null;
 
+    final infoBanner = login.infoMessage != null
+        ? InlineBanner(
+            message: login.infoMessage!,
+            icon: Icons.mark_email_read_outlined,
+            onDismiss: () =>
+                ref.read(loginControllerProvider.notifier).clearInfo(),
+          )
+        : null;
+
     final formBody = Form(
       key: _formKey,
       child: AutofillGroup(
@@ -125,6 +135,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (isSignUp) ...[
+                SignUpRolePicker(
+                  selected: login.signUpRole,
+                  enabled: !login.isSubmitting,
+                  onSelected: ref
+                      .read(loginControllerProvider.notifier)
+                      .setSignUpRole,
+                ),
+                const SizedBox(height: AppSpacing.lg),
                 AppTextField(
                   controller: _displayNameController,
                   label: 'Your name (optional)',
@@ -211,6 +229,10 @@ class _LoginFormState extends ConsumerState<LoginForm> {
               if (offlineBanner != null) ...[
                 const SizedBox(height: AppSpacing.sm),
                 offlineBanner,
+              ],
+              if (infoBanner != null) ...[
+                const SizedBox(height: AppSpacing.sm),
+                infoBanner,
               ],
               if (errorBanner != null) ...[
                 const SizedBox(height: AppSpacing.sm),

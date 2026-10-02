@@ -17,6 +17,14 @@ String userMessageForFailure(Failure failure) {
     SyncSchemaMismatch() =>
       'This app version needs an update to sync with the server.',
     SyncSignedOutDemo() => 'Demo mode — cloud sync is disabled.',
+    LocationPermissionDenied() =>
+      'Allow location access when prompted so we can save your farm coordinates.',
+    LocationPermissionPermanentlyDenied() =>
+      'Location is blocked for CucoCare. Open Settings and allow location, then try again.',
+    LocationServiceDisabled() =>
+      'Turn on location (GPS) in your device settings, then try again.',
+    LocationCaptureTimeout() =>
+      'GPS took too long. Stand in an open area and try again.',
   };
 }
 
@@ -59,7 +67,7 @@ String mapSupabaseAuthMessage(String message) {
     return 'Use a stronger password (at least 6 characters).';
   }
   if (lower.contains('email not confirmed')) {
-    return 'This account is not active yet. Try signing in, or contact support.';
+    return 'Confirm your email using the link Supabase sent, then sign in here.';
   }
   if (lower.contains('signup') && lower.contains('disabled')) {
     return 'New sign-ups are not available right now.';
@@ -89,6 +97,9 @@ String _mapPostgrest(PostgrestException error) {
   }
   if (msg.contains('farm name is required') || msg.contains('location is required')) {
     return 'Enter a farm name and location.';
+  }
+  if (msg.contains('only farmers can save')) {
+    return 'Farm profiles are for farmer accounts only.';
   }
   return 'Could not save your farm. Try again.';
 }

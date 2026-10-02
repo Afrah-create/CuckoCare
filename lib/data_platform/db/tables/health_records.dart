@@ -13,6 +13,10 @@ class HealthRecords extends Table {
   DateTimeColumn get occurredOn => dateTime()();
   TextColumn get summary => text()();
   TextColumn get notes => text().nullable()();
+  IntColumn get affectedBirdCount => integer().nullable()();
+  TextColumn get symptomsJson => text().withDefault(const Constant('[]'))();
+  TextColumn get recordKind =>
+      text().withDefault(const Constant('observation'))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

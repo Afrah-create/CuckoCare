@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
+import 'local_database_identity.dart';
+
 import 'daos/outbox_dao.dart';
 import 'daos/sync_dao.dart';
 import 'daos/sync_meta_dao.dart';
@@ -22,6 +24,7 @@ import 'tables/sync_events.dart';
 import 'tables/sync_lock.dart';
 import 'tables/sync_meta.dart';
 import 'tables/vaccination_tasks.dart';
+import 'tables/vet_assistance_requests.dart';
 
 part 'app_database.g.dart';
 
@@ -45,16 +48,20 @@ part 'app_database.g.dart';
     SyncEvents,
     SyncLock,
     AuthSnapshot,
+    VetAssistanceRequests,
   ],
   daos: [OutboxDao, SyncDao, SyncMetaDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
+  AppDatabase.forAccount(String? userId, [QueryExecutor? executor])
+      : super(executor ?? _openConnectionForAccount(userId));
+
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -92,10 +99,27 @@ class AppDatabase extends _$AppDatabase {
             );
             await m.addColumn(vaccinationTasks, vaccinationTasks.shiftedFrom);
           }
+          if (from < 5) {
+            await m.addColumn(authSnapshot, authSnapshot.appRole);
+          }
+          if (from < 6) {
+            await m.addColumn(healthRecords, healthRecords.affectedBirdCount);
+            await m.addColumn(healthRecords, healthRecords.symptomsJson);
+            await m.addColumn(healthRecords, healthRecords.recordKind);
+            await m.addColumn(farms, farms.latitude);
+            await m.addColumn(farms, farms.longitude);
+            await m.addColumn(farms, farms.locationAccuracyM);
+            await m.addColumn(farms, farms.locationCapturedAt);
+            await m.createTable(vetAssistanceRequests);
+          }
         },
       );
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'cucocare_v1');
+    return _openConnectionForAccount(null);
+  }
+
+  static QueryExecutor _openConnectionForAccount(String? userId) {
+    return driftDatabase(name: localDatabaseNameForAccount(userId));
   }
 }

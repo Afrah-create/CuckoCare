@@ -152,6 +152,51 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
         type: DriftSqlType.dateTime,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locationAccuracyMMeta = const VerificationMeta(
+    'locationAccuracyM',
+  );
+  @override
+  late final GeneratedColumn<double> locationAccuracyM =
+      GeneratedColumn<double>(
+        'location_accuracy_m',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _locationCapturedAtMeta =
+      const VerificationMeta('locationCapturedAt');
+  @override
+  late final GeneratedColumn<DateTime> locationCapturedAt =
+      GeneratedColumn<DateTime>(
+        'location_captured_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -168,6 +213,10 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
     altPhone,
     notes,
     profileCompletedAt,
+    latitude,
+    longitude,
+    locationAccuracyM,
+    locationCapturedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -278,6 +327,36 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
         ),
       );
     }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('location_accuracy_m')) {
+      context.handle(
+        _locationAccuracyMMeta,
+        locationAccuracyM.isAcceptableOrUnknown(
+          data['location_accuracy_m']!,
+          _locationAccuracyMMeta,
+        ),
+      );
+    }
+    if (data.containsKey('location_captured_at')) {
+      context.handle(
+        _locationCapturedAtMeta,
+        locationCapturedAt.isAcceptableOrUnknown(
+          data['location_captured_at']!,
+          _locationCapturedAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -343,6 +422,22 @@ class $FarmsTable extends Farms with TableInfo<$FarmsTable, FarmRow> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}profile_completed_at'],
       ),
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      locationAccuracyM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}location_accuracy_m'],
+      ),
+      locationCapturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}location_captured_at'],
+      ),
     );
   }
 
@@ -367,6 +462,10 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
   final String? altPhone;
   final String? notes;
   final DateTime? profileCompletedAt;
+  final double? latitude;
+  final double? longitude;
+  final double? locationAccuracyM;
+  final DateTime? locationCapturedAt;
   const FarmRow({
     required this.id,
     required this.farmId,
@@ -382,6 +481,10 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     this.altPhone,
     this.notes,
     this.profileCompletedAt,
+    this.latitude,
+    this.longitude,
+    this.locationAccuracyM,
+    this.locationCapturedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -417,6 +520,18 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     }
     if (!nullToAbsent || profileCompletedAt != null) {
       map['profile_completed_at'] = Variable<DateTime>(profileCompletedAt);
+    }
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || locationAccuracyM != null) {
+      map['location_accuracy_m'] = Variable<double>(locationAccuracyM);
+    }
+    if (!nullToAbsent || locationCapturedAt != null) {
+      map['location_captured_at'] = Variable<DateTime>(locationCapturedAt);
     }
     return map;
   }
@@ -455,6 +570,18 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       profileCompletedAt: profileCompletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(profileCompletedAt),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      locationAccuracyM: locationAccuracyM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationAccuracyM),
+      locationCapturedAt: locationCapturedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationCapturedAt),
     );
   }
 
@@ -480,6 +607,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       profileCompletedAt: serializer.fromJson<DateTime?>(
         json['profileCompletedAt'],
       ),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      locationAccuracyM: serializer.fromJson<double?>(
+        json['locationAccuracyM'],
+      ),
+      locationCapturedAt: serializer.fromJson<DateTime?>(
+        json['locationCapturedAt'],
+      ),
     );
   }
   @override
@@ -500,6 +635,10 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       'altPhone': serializer.toJson<String?>(altPhone),
       'notes': serializer.toJson<String?>(notes),
       'profileCompletedAt': serializer.toJson<DateTime?>(profileCompletedAt),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'locationAccuracyM': serializer.toJson<double?>(locationAccuracyM),
+      'locationCapturedAt': serializer.toJson<DateTime?>(locationCapturedAt),
     };
   }
 
@@ -518,6 +657,10 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     Value<String?> altPhone = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     Value<DateTime?> profileCompletedAt = const Value.absent(),
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    Value<double?> locationAccuracyM = const Value.absent(),
+    Value<DateTime?> locationCapturedAt = const Value.absent(),
   }) => FarmRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -537,6 +680,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     profileCompletedAt: profileCompletedAt.present
         ? profileCompletedAt.value
         : this.profileCompletedAt,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    locationAccuracyM: locationAccuracyM.present
+        ? locationAccuracyM.value
+        : this.locationAccuracyM,
+    locationCapturedAt: locationCapturedAt.present
+        ? locationCapturedAt.value
+        : this.locationCapturedAt,
   );
   FarmRow copyWithCompanion(FarmsCompanion data) {
     return FarmRow(
@@ -558,6 +709,14 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
       profileCompletedAt: data.profileCompletedAt.present
           ? data.profileCompletedAt.value
           : this.profileCompletedAt,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      locationAccuracyM: data.locationAccuracyM.present
+          ? data.locationAccuracyM.value
+          : this.locationAccuracyM,
+      locationCapturedAt: data.locationCapturedAt.present
+          ? data.locationCapturedAt.value
+          : this.locationCapturedAt,
     );
   }
 
@@ -577,7 +736,11 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
           ..write('phone: $phone, ')
           ..write('altPhone: $altPhone, ')
           ..write('notes: $notes, ')
-          ..write('profileCompletedAt: $profileCompletedAt')
+          ..write('profileCompletedAt: $profileCompletedAt, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('locationAccuracyM: $locationAccuracyM, ')
+          ..write('locationCapturedAt: $locationCapturedAt')
           ..write(')'))
         .toString();
   }
@@ -598,6 +761,10 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
     altPhone,
     notes,
     profileCompletedAt,
+    latitude,
+    longitude,
+    locationAccuracyM,
+    locationCapturedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -616,7 +783,11 @@ class FarmRow extends DataClass implements Insertable<FarmRow> {
           other.phone == this.phone &&
           other.altPhone == this.altPhone &&
           other.notes == this.notes &&
-          other.profileCompletedAt == this.profileCompletedAt);
+          other.profileCompletedAt == this.profileCompletedAt &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.locationAccuracyM == this.locationAccuracyM &&
+          other.locationCapturedAt == this.locationCapturedAt);
 }
 
 class FarmsCompanion extends UpdateCompanion<FarmRow> {
@@ -634,6 +805,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
   final Value<String?> altPhone;
   final Value<String?> notes;
   final Value<DateTime?> profileCompletedAt;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<double?> locationAccuracyM;
+  final Value<DateTime?> locationCapturedAt;
   final Value<int> rowid;
   const FarmsCompanion({
     this.id = const Value.absent(),
@@ -650,6 +825,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     this.altPhone = const Value.absent(),
     this.notes = const Value.absent(),
     this.profileCompletedAt = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.locationAccuracyM = const Value.absent(),
+    this.locationCapturedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   FarmsCompanion.insert({
@@ -667,6 +846,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     this.altPhone = const Value.absent(),
     this.notes = const Value.absent(),
     this.profileCompletedAt = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.locationAccuracyM = const Value.absent(),
+    this.locationCapturedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -688,6 +871,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     Expression<String>? altPhone,
     Expression<String>? notes,
     Expression<DateTime>? profileCompletedAt,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<double>? locationAccuracyM,
+    Expression<DateTime>? locationCapturedAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -706,6 +893,11 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
       if (notes != null) 'notes': notes,
       if (profileCompletedAt != null)
         'profile_completed_at': profileCompletedAt,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (locationAccuracyM != null) 'location_accuracy_m': locationAccuracyM,
+      if (locationCapturedAt != null)
+        'location_captured_at': locationCapturedAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -725,6 +917,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
     Value<String?>? altPhone,
     Value<String?>? notes,
     Value<DateTime?>? profileCompletedAt,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<double?>? locationAccuracyM,
+    Value<DateTime?>? locationCapturedAt,
     Value<int>? rowid,
   }) {
     return FarmsCompanion(
@@ -742,6 +938,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
       altPhone: altPhone ?? this.altPhone,
       notes: notes ?? this.notes,
       profileCompletedAt: profileCompletedAt ?? this.profileCompletedAt,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      locationAccuracyM: locationAccuracyM ?? this.locationAccuracyM,
+      locationCapturedAt: locationCapturedAt ?? this.locationCapturedAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -793,6 +993,20 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
         profileCompletedAt.value,
       );
     }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (locationAccuracyM.present) {
+      map['location_accuracy_m'] = Variable<double>(locationAccuracyM.value);
+    }
+    if (locationCapturedAt.present) {
+      map['location_captured_at'] = Variable<DateTime>(
+        locationCapturedAt.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -816,6 +1030,10 @@ class FarmsCompanion extends UpdateCompanion<FarmRow> {
           ..write('altPhone: $altPhone, ')
           ..write('notes: $notes, ')
           ..write('profileCompletedAt: $profileCompletedAt, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('locationAccuracyM: $locationAccuracyM, ')
+          ..write('locationCapturedAt: $locationCapturedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6349,6 +6567,41 @@ class $HealthRecordsTable extends HealthRecords
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _affectedBirdCountMeta = const VerificationMeta(
+    'affectedBirdCount',
+  );
+  @override
+  late final GeneratedColumn<int> affectedBirdCount = GeneratedColumn<int>(
+    'affected_bird_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _symptomsJsonMeta = const VerificationMeta(
+    'symptomsJson',
+  );
+  @override
+  late final GeneratedColumn<String> symptomsJson = GeneratedColumn<String>(
+    'symptoms_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('[]'),
+  );
+  static const VerificationMeta _recordKindMeta = const VerificationMeta(
+    'recordKind',
+  );
+  @override
+  late final GeneratedColumn<String> recordKind = GeneratedColumn<String>(
+    'record_kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('observation'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6361,6 +6614,9 @@ class $HealthRecordsTable extends HealthRecords
     occurredOn,
     summary,
     notes,
+    affectedBirdCount,
+    symptomsJson,
+    recordKind,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6448,6 +6704,30 @@ class $HealthRecordsTable extends HealthRecords
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('affected_bird_count')) {
+      context.handle(
+        _affectedBirdCountMeta,
+        affectedBirdCount.isAcceptableOrUnknown(
+          data['affected_bird_count']!,
+          _affectedBirdCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('symptoms_json')) {
+      context.handle(
+        _symptomsJsonMeta,
+        symptomsJson.isAcceptableOrUnknown(
+          data['symptoms_json']!,
+          _symptomsJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('record_kind')) {
+      context.handle(
+        _recordKindMeta,
+        recordKind.isAcceptableOrUnknown(data['record_kind']!, _recordKindMeta),
+      );
+    }
     return context;
   }
 
@@ -6497,6 +6777,18 @@ class $HealthRecordsTable extends HealthRecords
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      affectedBirdCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}affected_bird_count'],
+      ),
+      symptomsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}symptoms_json'],
+      )!,
+      recordKind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}record_kind'],
+      )!,
     );
   }
 
@@ -6517,6 +6809,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
   final DateTime occurredOn;
   final String summary;
   final String? notes;
+  final int? affectedBirdCount;
+  final String symptomsJson;
+  final String recordKind;
   const HealthRecordRow({
     required this.id,
     required this.farmId,
@@ -6528,6 +6823,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     required this.occurredOn,
     required this.summary,
     this.notes,
+    this.affectedBirdCount,
+    required this.symptomsJson,
+    required this.recordKind,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6548,6 +6846,11 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
+    if (!nullToAbsent || affectedBirdCount != null) {
+      map['affected_bird_count'] = Variable<int>(affectedBirdCount);
+    }
+    map['symptoms_json'] = Variable<String>(symptomsJson);
+    map['record_kind'] = Variable<String>(recordKind);
     return map;
   }
 
@@ -6569,6 +6872,11 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      affectedBirdCount: affectedBirdCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(affectedBirdCount),
+      symptomsJson: Value(symptomsJson),
+      recordKind: Value(recordKind),
     );
   }
 
@@ -6588,6 +6896,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
       summary: serializer.fromJson<String>(json['summary']),
       notes: serializer.fromJson<String?>(json['notes']),
+      affectedBirdCount: serializer.fromJson<int?>(json['affectedBirdCount']),
+      symptomsJson: serializer.fromJson<String>(json['symptomsJson']),
+      recordKind: serializer.fromJson<String>(json['recordKind']),
     );
   }
   @override
@@ -6604,6 +6915,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       'occurredOn': serializer.toJson<DateTime>(occurredOn),
       'summary': serializer.toJson<String>(summary),
       'notes': serializer.toJson<String?>(notes),
+      'affectedBirdCount': serializer.toJson<int?>(affectedBirdCount),
+      'symptomsJson': serializer.toJson<String>(symptomsJson),
+      'recordKind': serializer.toJson<String>(recordKind),
     };
   }
 
@@ -6618,6 +6932,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     DateTime? occurredOn,
     String? summary,
     Value<String?> notes = const Value.absent(),
+    Value<int?> affectedBirdCount = const Value.absent(),
+    String? symptomsJson,
+    String? recordKind,
   }) => HealthRecordRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -6631,6 +6948,11 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     occurredOn: occurredOn ?? this.occurredOn,
     summary: summary ?? this.summary,
     notes: notes.present ? notes.value : this.notes,
+    affectedBirdCount: affectedBirdCount.present
+        ? affectedBirdCount.value
+        : this.affectedBirdCount,
+    symptomsJson: symptomsJson ?? this.symptomsJson,
+    recordKind: recordKind ?? this.recordKind,
   );
   HealthRecordRow copyWithCompanion(HealthRecordsCompanion data) {
     return HealthRecordRow(
@@ -6648,6 +6970,15 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           : this.occurredOn,
       summary: data.summary.present ? data.summary.value : this.summary,
       notes: data.notes.present ? data.notes.value : this.notes,
+      affectedBirdCount: data.affectedBirdCount.present
+          ? data.affectedBirdCount.value
+          : this.affectedBirdCount,
+      symptomsJson: data.symptomsJson.present
+          ? data.symptomsJson.value
+          : this.symptomsJson,
+      recordKind: data.recordKind.present
+          ? data.recordKind.value
+          : this.recordKind,
     );
   }
 
@@ -6663,7 +6994,10 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           ..write('batchId: $batchId, ')
           ..write('occurredOn: $occurredOn, ')
           ..write('summary: $summary, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('affectedBirdCount: $affectedBirdCount, ')
+          ..write('symptomsJson: $symptomsJson, ')
+          ..write('recordKind: $recordKind')
           ..write(')'))
         .toString();
   }
@@ -6680,6 +7014,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     occurredOn,
     summary,
     notes,
+    affectedBirdCount,
+    symptomsJson,
+    recordKind,
   );
   @override
   bool operator ==(Object other) =>
@@ -6694,7 +7031,10 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           other.batchId == this.batchId &&
           other.occurredOn == this.occurredOn &&
           other.summary == this.summary &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.affectedBirdCount == this.affectedBirdCount &&
+          other.symptomsJson == this.symptomsJson &&
+          other.recordKind == this.recordKind);
 }
 
 class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
@@ -6708,6 +7048,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
   final Value<DateTime> occurredOn;
   final Value<String> summary;
   final Value<String?> notes;
+  final Value<int?> affectedBirdCount;
+  final Value<String> symptomsJson;
+  final Value<String> recordKind;
   final Value<int> rowid;
   const HealthRecordsCompanion({
     this.id = const Value.absent(),
@@ -6720,6 +7063,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     this.occurredOn = const Value.absent(),
     this.summary = const Value.absent(),
     this.notes = const Value.absent(),
+    this.affectedBirdCount = const Value.absent(),
+    this.symptomsJson = const Value.absent(),
+    this.recordKind = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HealthRecordsCompanion.insert({
@@ -6733,6 +7079,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     required DateTime occurredOn,
     required String summary,
     this.notes = const Value.absent(),
+    this.affectedBirdCount = const Value.absent(),
+    this.symptomsJson = const Value.absent(),
+    this.recordKind = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -6752,6 +7101,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     Expression<DateTime>? occurredOn,
     Expression<String>? summary,
     Expression<String>? notes,
+    Expression<int>? affectedBirdCount,
+    Expression<String>? symptomsJson,
+    Expression<String>? recordKind,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -6765,6 +7117,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
       if (occurredOn != null) 'occurred_on': occurredOn,
       if (summary != null) 'summary': summary,
       if (notes != null) 'notes': notes,
+      if (affectedBirdCount != null) 'affected_bird_count': affectedBirdCount,
+      if (symptomsJson != null) 'symptoms_json': symptomsJson,
+      if (recordKind != null) 'record_kind': recordKind,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -6780,6 +7135,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     Value<DateTime>? occurredOn,
     Value<String>? summary,
     Value<String?>? notes,
+    Value<int?>? affectedBirdCount,
+    Value<String>? symptomsJson,
+    Value<String>? recordKind,
     Value<int>? rowid,
   }) {
     return HealthRecordsCompanion(
@@ -6793,6 +7151,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
       occurredOn: occurredOn ?? this.occurredOn,
       summary: summary ?? this.summary,
       notes: notes ?? this.notes,
+      affectedBirdCount: affectedBirdCount ?? this.affectedBirdCount,
+      symptomsJson: symptomsJson ?? this.symptomsJson,
+      recordKind: recordKind ?? this.recordKind,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -6830,6 +7191,15 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (affectedBirdCount.present) {
+      map['affected_bird_count'] = Variable<int>(affectedBirdCount.value);
+    }
+    if (symptomsJson.present) {
+      map['symptoms_json'] = Variable<String>(symptomsJson.value);
+    }
+    if (recordKind.present) {
+      map['record_kind'] = Variable<String>(recordKind.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -6849,6 +7219,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
           ..write('occurredOn: $occurredOn, ')
           ..write('summary: $summary, ')
           ..write('notes: $notes, ')
+          ..write('affectedBirdCount: $affectedBirdCount, ')
+          ..write('symptomsJson: $symptomsJson, ')
+          ..write('recordKind: $recordKind, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -10543,6 +10916,18 @@ class $AuthSnapshotTable extends AuthSnapshot
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _appRoleMeta = const VerificationMeta(
+    'appRole',
+  );
+  @override
+  late final GeneratedColumn<String> appRole = GeneratedColumn<String>(
+    'app_role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('farmer'),
+  );
   static const VerificationMeta _lastVerifiedAtMeta = const VerificationMeta(
     'lastVerifiedAt',
   );
@@ -10562,6 +10947,7 @@ class $AuthSnapshotTable extends AuthSnapshot
     email,
     phone,
     farmIdsJson,
+    appRole,
     lastVerifiedAt,
   ];
   @override
@@ -10610,6 +10996,12 @@ class $AuthSnapshotTable extends AuthSnapshot
     } else if (isInserting) {
       context.missing(_farmIdsJsonMeta);
     }
+    if (data.containsKey('app_role')) {
+      context.handle(
+        _appRoleMeta,
+        appRole.isAcceptableOrUnknown(data['app_role']!, _appRoleMeta),
+      );
+    }
     if (data.containsKey('last_verified_at')) {
       context.handle(
         _lastVerifiedAtMeta,
@@ -10648,6 +11040,10 @@ class $AuthSnapshotTable extends AuthSnapshot
         DriftSqlType.string,
         data['${effectivePrefix}farm_ids_json'],
       )!,
+      appRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}app_role'],
+      )!,
       lastVerifiedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}last_verified_at'],
@@ -10667,6 +11063,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
   final String? email;
   final String? phone;
   final String farmIdsJson;
+  final String appRole;
   final DateTime? lastVerifiedAt;
   const AuthSnapshotRow({
     required this.id,
@@ -10674,6 +11071,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
     this.email,
     this.phone,
     required this.farmIdsJson,
+    required this.appRole,
     this.lastVerifiedAt,
   });
   @override
@@ -10688,6 +11086,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
       map['phone'] = Variable<String>(phone);
     }
     map['farm_ids_json'] = Variable<String>(farmIdsJson);
+    map['app_role'] = Variable<String>(appRole);
     if (!nullToAbsent || lastVerifiedAt != null) {
       map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt);
     }
@@ -10705,6 +11104,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
           ? const Value.absent()
           : Value(phone),
       farmIdsJson: Value(farmIdsJson),
+      appRole: Value(appRole),
       lastVerifiedAt: lastVerifiedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(lastVerifiedAt),
@@ -10722,6 +11122,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
       email: serializer.fromJson<String?>(json['email']),
       phone: serializer.fromJson<String?>(json['phone']),
       farmIdsJson: serializer.fromJson<String>(json['farmIdsJson']),
+      appRole: serializer.fromJson<String>(json['appRole']),
       lastVerifiedAt: serializer.fromJson<DateTime?>(json['lastVerifiedAt']),
     );
   }
@@ -10734,6 +11135,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
       'email': serializer.toJson<String?>(email),
       'phone': serializer.toJson<String?>(phone),
       'farmIdsJson': serializer.toJson<String>(farmIdsJson),
+      'appRole': serializer.toJson<String>(appRole),
       'lastVerifiedAt': serializer.toJson<DateTime?>(lastVerifiedAt),
     };
   }
@@ -10744,6 +11146,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
     Value<String?> email = const Value.absent(),
     Value<String?> phone = const Value.absent(),
     String? farmIdsJson,
+    String? appRole,
     Value<DateTime?> lastVerifiedAt = const Value.absent(),
   }) => AuthSnapshotRow(
     id: id ?? this.id,
@@ -10751,6 +11154,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
     email: email.present ? email.value : this.email,
     phone: phone.present ? phone.value : this.phone,
     farmIdsJson: farmIdsJson ?? this.farmIdsJson,
+    appRole: appRole ?? this.appRole,
     lastVerifiedAt: lastVerifiedAt.present
         ? lastVerifiedAt.value
         : this.lastVerifiedAt,
@@ -10764,6 +11168,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
       farmIdsJson: data.farmIdsJson.present
           ? data.farmIdsJson.value
           : this.farmIdsJson,
+      appRole: data.appRole.present ? data.appRole.value : this.appRole,
       lastVerifiedAt: data.lastVerifiedAt.present
           ? data.lastVerifiedAt.value
           : this.lastVerifiedAt,
@@ -10778,14 +11183,22 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
           ..write('email: $email, ')
           ..write('phone: $phone, ')
           ..write('farmIdsJson: $farmIdsJson, ')
+          ..write('appRole: $appRole, ')
           ..write('lastVerifiedAt: $lastVerifiedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, userId, email, phone, farmIdsJson, lastVerifiedAt);
+  int get hashCode => Object.hash(
+    id,
+    userId,
+    email,
+    phone,
+    farmIdsJson,
+    appRole,
+    lastVerifiedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -10795,6 +11208,7 @@ class AuthSnapshotRow extends DataClass implements Insertable<AuthSnapshotRow> {
           other.email == this.email &&
           other.phone == this.phone &&
           other.farmIdsJson == this.farmIdsJson &&
+          other.appRole == this.appRole &&
           other.lastVerifiedAt == this.lastVerifiedAt);
 }
 
@@ -10804,6 +11218,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
   final Value<String?> email;
   final Value<String?> phone;
   final Value<String> farmIdsJson;
+  final Value<String> appRole;
   final Value<DateTime?> lastVerifiedAt;
   const AuthSnapshotCompanion({
     this.id = const Value.absent(),
@@ -10811,6 +11226,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
     this.email = const Value.absent(),
     this.phone = const Value.absent(),
     this.farmIdsJson = const Value.absent(),
+    this.appRole = const Value.absent(),
     this.lastVerifiedAt = const Value.absent(),
   });
   AuthSnapshotCompanion.insert({
@@ -10819,6 +11235,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
     this.email = const Value.absent(),
     this.phone = const Value.absent(),
     required String farmIdsJson,
+    this.appRole = const Value.absent(),
     this.lastVerifiedAt = const Value.absent(),
   }) : userId = Value(userId),
        farmIdsJson = Value(farmIdsJson);
@@ -10828,6 +11245,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
     Expression<String>? email,
     Expression<String>? phone,
     Expression<String>? farmIdsJson,
+    Expression<String>? appRole,
     Expression<DateTime>? lastVerifiedAt,
   }) {
     return RawValuesInsertable({
@@ -10836,6 +11254,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
       if (email != null) 'email': email,
       if (phone != null) 'phone': phone,
       if (farmIdsJson != null) 'farm_ids_json': farmIdsJson,
+      if (appRole != null) 'app_role': appRole,
       if (lastVerifiedAt != null) 'last_verified_at': lastVerifiedAt,
     });
   }
@@ -10846,6 +11265,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
     Value<String?>? email,
     Value<String?>? phone,
     Value<String>? farmIdsJson,
+    Value<String>? appRole,
     Value<DateTime?>? lastVerifiedAt,
   }) {
     return AuthSnapshotCompanion(
@@ -10854,6 +11274,7 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       farmIdsJson: farmIdsJson ?? this.farmIdsJson,
+      appRole: appRole ?? this.appRole,
       lastVerifiedAt: lastVerifiedAt ?? this.lastVerifiedAt,
     );
   }
@@ -10876,6 +11297,9 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
     if (farmIdsJson.present) {
       map['farm_ids_json'] = Variable<String>(farmIdsJson.value);
     }
+    if (appRole.present) {
+      map['app_role'] = Variable<String>(appRole.value);
+    }
     if (lastVerifiedAt.present) {
       map['last_verified_at'] = Variable<DateTime>(lastVerifiedAt.value);
     }
@@ -10890,7 +11314,851 @@ class AuthSnapshotCompanion extends UpdateCompanion<AuthSnapshotRow> {
           ..write('email: $email, ')
           ..write('phone: $phone, ')
           ..write('farmIdsJson: $farmIdsJson, ')
+          ..write('appRole: $appRole, ')
           ..write('lastVerifiedAt: $lastVerifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VetAssistanceRequestsTable extends VetAssistanceRequests
+    with TableInfo<$VetAssistanceRequestsTable, VetAssistanceRequestRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VetAssistanceRequestsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _batchIdMeta = const VerificationMeta(
+    'batchId',
+  );
+  @override
+  late final GeneratedColumn<String> batchId = GeneratedColumn<String>(
+    'batch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _healthRecordIdMeta = const VerificationMeta(
+    'healthRecordId',
+  );
+  @override
+  late final GeneratedColumn<String> healthRecordId = GeneratedColumn<String>(
+    'health_record_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _serviceTypeMeta = const VerificationMeta(
+    'serviceType',
+  );
+  @override
+  late final GeneratedColumn<String> serviceType = GeneratedColumn<String>(
+    'service_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shareLocationMeta = const VerificationMeta(
+    'shareLocation',
+  );
+  @override
+  late final GeneratedColumn<bool> shareLocation = GeneratedColumn<bool>(
+    'share_location',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("share_location" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<String> priority = GeneratedColumn<String>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('normal'),
+  );
+  static const VerificationMeta _farmerNotesMeta = const VerificationMeta(
+    'farmerNotes',
+  );
+  @override
+  late final GeneratedColumn<String> farmerNotes = GeneratedColumn<String>(
+    'farmer_notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _assignedVetUserIdMeta = const VerificationMeta(
+    'assignedVetUserId',
+  );
+  @override
+  late final GeneratedColumn<String> assignedVetUserId =
+      GeneratedColumn<String>(
+        'assigned_vet_user_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    healthRecordId,
+    serviceType,
+    status,
+    shareLocation,
+    priority,
+    farmerNotes,
+    assignedVetUserId,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'vet_assistance_requests';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VetAssistanceRequestRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('batch_id')) {
+      context.handle(
+        _batchIdMeta,
+        batchId.isAcceptableOrUnknown(data['batch_id']!, _batchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_batchIdMeta);
+    }
+    if (data.containsKey('health_record_id')) {
+      context.handle(
+        _healthRecordIdMeta,
+        healthRecordId.isAcceptableOrUnknown(
+          data['health_record_id']!,
+          _healthRecordIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_healthRecordIdMeta);
+    }
+    if (data.containsKey('service_type')) {
+      context.handle(
+        _serviceTypeMeta,
+        serviceType.isAcceptableOrUnknown(
+          data['service_type']!,
+          _serviceTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_serviceTypeMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('share_location')) {
+      context.handle(
+        _shareLocationMeta,
+        shareLocation.isAcceptableOrUnknown(
+          data['share_location']!,
+          _shareLocationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('farmer_notes')) {
+      context.handle(
+        _farmerNotesMeta,
+        farmerNotes.isAcceptableOrUnknown(
+          data['farmer_notes']!,
+          _farmerNotesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('assigned_vet_user_id')) {
+      context.handle(
+        _assignedVetUserIdMeta,
+        assignedVetUserId.isAcceptableOrUnknown(
+          data['assigned_vet_user_id']!,
+          _assignedVetUserIdMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VetAssistanceRequestRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VetAssistanceRequestRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      batchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}batch_id'],
+      )!,
+      healthRecordId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}health_record_id'],
+      )!,
+      serviceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}service_type'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      shareLocation: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}share_location'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}priority'],
+      )!,
+      farmerNotes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farmer_notes'],
+      ),
+      assignedVetUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}assigned_vet_user_id'],
+      ),
+    );
+  }
+
+  @override
+  $VetAssistanceRequestsTable createAlias(String alias) {
+    return $VetAssistanceRequestsTable(attachedDatabase, alias);
+  }
+}
+
+class VetAssistanceRequestRow extends DataClass
+    implements Insertable<VetAssistanceRequestRow> {
+  final String id;
+  final String farmId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String batchId;
+  final String healthRecordId;
+  final String serviceType;
+  final String status;
+  final bool shareLocation;
+  final String priority;
+  final String? farmerNotes;
+  final String? assignedVetUserId;
+  const VetAssistanceRequestRow({
+    required this.id,
+    required this.farmId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.batchId,
+    required this.healthRecordId,
+    required this.serviceType,
+    required this.status,
+    required this.shareLocation,
+    required this.priority,
+    this.farmerNotes,
+    this.assignedVetUserId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['batch_id'] = Variable<String>(batchId);
+    map['health_record_id'] = Variable<String>(healthRecordId);
+    map['service_type'] = Variable<String>(serviceType);
+    map['status'] = Variable<String>(status);
+    map['share_location'] = Variable<bool>(shareLocation);
+    map['priority'] = Variable<String>(priority);
+    if (!nullToAbsent || farmerNotes != null) {
+      map['farmer_notes'] = Variable<String>(farmerNotes);
+    }
+    if (!nullToAbsent || assignedVetUserId != null) {
+      map['assigned_vet_user_id'] = Variable<String>(assignedVetUserId);
+    }
+    return map;
+  }
+
+  VetAssistanceRequestsCompanion toCompanion(bool nullToAbsent) {
+    return VetAssistanceRequestsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      batchId: Value(batchId),
+      healthRecordId: Value(healthRecordId),
+      serviceType: Value(serviceType),
+      status: Value(status),
+      shareLocation: Value(shareLocation),
+      priority: Value(priority),
+      farmerNotes: farmerNotes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(farmerNotes),
+      assignedVetUserId: assignedVetUserId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(assignedVetUserId),
+    );
+  }
+
+  factory VetAssistanceRequestRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VetAssistanceRequestRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      batchId: serializer.fromJson<String>(json['batchId']),
+      healthRecordId: serializer.fromJson<String>(json['healthRecordId']),
+      serviceType: serializer.fromJson<String>(json['serviceType']),
+      status: serializer.fromJson<String>(json['status']),
+      shareLocation: serializer.fromJson<bool>(json['shareLocation']),
+      priority: serializer.fromJson<String>(json['priority']),
+      farmerNotes: serializer.fromJson<String?>(json['farmerNotes']),
+      assignedVetUserId: serializer.fromJson<String?>(
+        json['assignedVetUserId'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'batchId': serializer.toJson<String>(batchId),
+      'healthRecordId': serializer.toJson<String>(healthRecordId),
+      'serviceType': serializer.toJson<String>(serviceType),
+      'status': serializer.toJson<String>(status),
+      'shareLocation': serializer.toJson<bool>(shareLocation),
+      'priority': serializer.toJson<String>(priority),
+      'farmerNotes': serializer.toJson<String?>(farmerNotes),
+      'assignedVetUserId': serializer.toJson<String?>(assignedVetUserId),
+    };
+  }
+
+  VetAssistanceRequestRow copyWith({
+    String? id,
+    String? farmId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? batchId,
+    String? healthRecordId,
+    String? serviceType,
+    String? status,
+    bool? shareLocation,
+    String? priority,
+    Value<String?> farmerNotes = const Value.absent(),
+    Value<String?> assignedVetUserId = const Value.absent(),
+  }) => VetAssistanceRequestRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    batchId: batchId ?? this.batchId,
+    healthRecordId: healthRecordId ?? this.healthRecordId,
+    serviceType: serviceType ?? this.serviceType,
+    status: status ?? this.status,
+    shareLocation: shareLocation ?? this.shareLocation,
+    priority: priority ?? this.priority,
+    farmerNotes: farmerNotes.present ? farmerNotes.value : this.farmerNotes,
+    assignedVetUserId: assignedVetUserId.present
+        ? assignedVetUserId.value
+        : this.assignedVetUserId,
+  );
+  VetAssistanceRequestRow copyWithCompanion(
+    VetAssistanceRequestsCompanion data,
+  ) {
+    return VetAssistanceRequestRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      batchId: data.batchId.present ? data.batchId.value : this.batchId,
+      healthRecordId: data.healthRecordId.present
+          ? data.healthRecordId.value
+          : this.healthRecordId,
+      serviceType: data.serviceType.present
+          ? data.serviceType.value
+          : this.serviceType,
+      status: data.status.present ? data.status.value : this.status,
+      shareLocation: data.shareLocation.present
+          ? data.shareLocation.value
+          : this.shareLocation,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      farmerNotes: data.farmerNotes.present
+          ? data.farmerNotes.value
+          : this.farmerNotes,
+      assignedVetUserId: data.assignedVetUserId.present
+          ? data.assignedVetUserId.value
+          : this.assignedVetUserId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetAssistanceRequestRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('healthRecordId: $healthRecordId, ')
+          ..write('serviceType: $serviceType, ')
+          ..write('status: $status, ')
+          ..write('shareLocation: $shareLocation, ')
+          ..write('priority: $priority, ')
+          ..write('farmerNotes: $farmerNotes, ')
+          ..write('assignedVetUserId: $assignedVetUserId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    batchId,
+    healthRecordId,
+    serviceType,
+    status,
+    shareLocation,
+    priority,
+    farmerNotes,
+    assignedVetUserId,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VetAssistanceRequestRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.batchId == this.batchId &&
+          other.healthRecordId == this.healthRecordId &&
+          other.serviceType == this.serviceType &&
+          other.status == this.status &&
+          other.shareLocation == this.shareLocation &&
+          other.priority == this.priority &&
+          other.farmerNotes == this.farmerNotes &&
+          other.assignedVetUserId == this.assignedVetUserId);
+}
+
+class VetAssistanceRequestsCompanion
+    extends UpdateCompanion<VetAssistanceRequestRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> batchId;
+  final Value<String> healthRecordId;
+  final Value<String> serviceType;
+  final Value<String> status;
+  final Value<bool> shareLocation;
+  final Value<String> priority;
+  final Value<String?> farmerNotes;
+  final Value<String?> assignedVetUserId;
+  final Value<int> rowid;
+  const VetAssistanceRequestsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.batchId = const Value.absent(),
+    this.healthRecordId = const Value.absent(),
+    this.serviceType = const Value.absent(),
+    this.status = const Value.absent(),
+    this.shareLocation = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.farmerNotes = const Value.absent(),
+    this.assignedVetUserId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VetAssistanceRequestsCompanion.insert({
+    required String id,
+    required String farmId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String batchId,
+    required String healthRecordId,
+    required String serviceType,
+    required String status,
+    this.shareLocation = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.farmerNotes = const Value.absent(),
+    this.assignedVetUserId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       batchId = Value(batchId),
+       healthRecordId = Value(healthRecordId),
+       serviceType = Value(serviceType),
+       status = Value(status);
+  static Insertable<VetAssistanceRequestRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? batchId,
+    Expression<String>? healthRecordId,
+    Expression<String>? serviceType,
+    Expression<String>? status,
+    Expression<bool>? shareLocation,
+    Expression<String>? priority,
+    Expression<String>? farmerNotes,
+    Expression<String>? assignedVetUserId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (batchId != null) 'batch_id': batchId,
+      if (healthRecordId != null) 'health_record_id': healthRecordId,
+      if (serviceType != null) 'service_type': serviceType,
+      if (status != null) 'status': status,
+      if (shareLocation != null) 'share_location': shareLocation,
+      if (priority != null) 'priority': priority,
+      if (farmerNotes != null) 'farmer_notes': farmerNotes,
+      if (assignedVetUserId != null) 'assigned_vet_user_id': assignedVetUserId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VetAssistanceRequestsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? batchId,
+    Value<String>? healthRecordId,
+    Value<String>? serviceType,
+    Value<String>? status,
+    Value<bool>? shareLocation,
+    Value<String>? priority,
+    Value<String?>? farmerNotes,
+    Value<String?>? assignedVetUserId,
+    Value<int>? rowid,
+  }) {
+    return VetAssistanceRequestsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      batchId: batchId ?? this.batchId,
+      healthRecordId: healthRecordId ?? this.healthRecordId,
+      serviceType: serviceType ?? this.serviceType,
+      status: status ?? this.status,
+      shareLocation: shareLocation ?? this.shareLocation,
+      priority: priority ?? this.priority,
+      farmerNotes: farmerNotes ?? this.farmerNotes,
+      assignedVetUserId: assignedVetUserId ?? this.assignedVetUserId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (batchId.present) {
+      map['batch_id'] = Variable<String>(batchId.value);
+    }
+    if (healthRecordId.present) {
+      map['health_record_id'] = Variable<String>(healthRecordId.value);
+    }
+    if (serviceType.present) {
+      map['service_type'] = Variable<String>(serviceType.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (shareLocation.present) {
+      map['share_location'] = Variable<bool>(shareLocation.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<String>(priority.value);
+    }
+    if (farmerNotes.present) {
+      map['farmer_notes'] = Variable<String>(farmerNotes.value);
+    }
+    if (assignedVetUserId.present) {
+      map['assigned_vet_user_id'] = Variable<String>(assignedVetUserId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VetAssistanceRequestsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('batchId: $batchId, ')
+          ..write('healthRecordId: $healthRecordId, ')
+          ..write('serviceType: $serviceType, ')
+          ..write('status: $status, ')
+          ..write('shareLocation: $shareLocation, ')
+          ..write('priority: $priority, ')
+          ..write('farmerNotes: $farmerNotes, ')
+          ..write('assignedVetUserId: $assignedVetUserId, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -10923,6 +12191,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SyncEventsTable syncEvents = $SyncEventsTable(this);
   late final $SyncLockTable syncLock = $SyncLockTable(this);
   late final $AuthSnapshotTable authSnapshot = $AuthSnapshotTable(this);
+  late final $VetAssistanceRequestsTable vetAssistanceRequests =
+      $VetAssistanceRequestsTable(this);
   late final OutboxDao outboxDao = OutboxDao(this as AppDatabase);
   late final SyncDao syncDao = SyncDao(this as AppDatabase);
   late final SyncMetaDao syncMetaDao = SyncMetaDao(this as AppDatabase);
@@ -10949,6 +12219,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncEvents,
     syncLock,
     authSnapshot,
+    vetAssistanceRequests,
   ];
 }
 
@@ -10967,6 +12238,10 @@ typedef $$FarmsTableCreateCompanionBuilder = FarmsCompanion Function({
   Value<String?> altPhone,
   Value<String?> notes,
   Value<DateTime?> profileCompletedAt,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<double?> locationAccuracyM,
+  Value<DateTime?> locationCapturedAt,
   Value<int> rowid,
 });
 typedef $$FarmsTableUpdateCompanionBuilder = FarmsCompanion Function({
@@ -10984,6 +12259,10 @@ typedef $$FarmsTableUpdateCompanionBuilder = FarmsCompanion Function({
   Value<String?> altPhone,
   Value<String?> notes,
   Value<DateTime?> profileCompletedAt,
+  Value<double?> latitude,
+  Value<double?> longitude,
+  Value<double?> locationAccuracyM,
+  Value<DateTime?> locationCapturedAt,
   Value<int> rowid,
 });
 
@@ -11062,6 +12341,26 @@ class $$FarmsTableFilterComposer extends Composer<_$AppDatabase, $FarmsTable> {
 
   ColumnFilters<DateTime> get profileCompletedAt => $composableBuilder(
     column: $table.profileCompletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get locationAccuracyM => $composableBuilder(
+    column: $table.locationAccuracyM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get locationCapturedAt => $composableBuilder(
+    column: $table.locationCapturedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11144,6 +12443,26 @@ class $$FarmsTableOrderingComposer
     column: $table.profileCompletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get locationAccuracyM => $composableBuilder(
+    column: $table.locationAccuracyM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get locationCapturedAt => $composableBuilder(
+    column: $table.locationCapturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$FarmsTableAnnotationComposer
@@ -11200,6 +12519,22 @@ class $$FarmsTableAnnotationComposer
     column: $table.profileCompletedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<double> get locationAccuracyM => $composableBuilder(
+    column: $table.locationAccuracyM,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get locationCapturedAt => $composableBuilder(
+    column: $table.locationCapturedAt,
+    builder: (column) => column,
+  );
 }
 
 class $$FarmsTableTableManager
@@ -11244,6 +12579,10 @@ class $$FarmsTableTableManager
                 Value<String?> altPhone = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> profileCompletedAt = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<double?> locationAccuracyM = const Value.absent(),
+                Value<DateTime?> locationCapturedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FarmsCompanion(
                 id: id,
@@ -11260,6 +12599,10 @@ class $$FarmsTableTableManager
                 altPhone: altPhone,
                 notes: notes,
                 profileCompletedAt: profileCompletedAt,
+                latitude: latitude,
+                longitude: longitude,
+                locationAccuracyM: locationAccuracyM,
+                locationCapturedAt: locationCapturedAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11278,6 +12621,10 @@ class $$FarmsTableTableManager
                 Value<String?> altPhone = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime?> profileCompletedAt = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<double?> locationAccuracyM = const Value.absent(),
+                Value<DateTime?> locationCapturedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => FarmsCompanion.insert(
                 id: id,
@@ -11294,6 +12641,10 @@ class $$FarmsTableTableManager
                 altPhone: altPhone,
                 notes: notes,
                 profileCompletedAt: profileCompletedAt,
+                latitude: latitude,
+                longitude: longitude,
+                locationAccuracyM: locationAccuracyM,
+                locationCapturedAt: locationCapturedAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -13940,6 +15291,9 @@ typedef $$HealthRecordsTableCreateCompanionBuilder =
       required DateTime occurredOn,
       required String summary,
       Value<String?> notes,
+      Value<int?> affectedBirdCount,
+      Value<String> symptomsJson,
+      Value<String> recordKind,
       Value<int> rowid,
     });
 typedef $$HealthRecordsTableUpdateCompanionBuilder =
@@ -13954,6 +15308,9 @@ typedef $$HealthRecordsTableUpdateCompanionBuilder =
       Value<DateTime> occurredOn,
       Value<String> summary,
       Value<String?> notes,
+      Value<int?> affectedBirdCount,
+      Value<String> symptomsJson,
+      Value<String> recordKind,
       Value<int> rowid,
     });
 
@@ -14013,6 +15370,21 @@ class $$HealthRecordsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get affectedBirdCount => $composableBuilder(
+    column: $table.affectedBirdCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get symptomsJson => $composableBuilder(
+    column: $table.symptomsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recordKind => $composableBuilder(
+    column: $table.recordKind,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14075,6 +15447,21 @@ class $$HealthRecordsTableOrderingComposer
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get affectedBirdCount => $composableBuilder(
+    column: $table.affectedBirdCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get symptomsJson => $composableBuilder(
+    column: $table.symptomsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recordKind => $composableBuilder(
+    column: $table.recordKind,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$HealthRecordsTableAnnotationComposer
@@ -14119,6 +15506,21 @@ class $$HealthRecordsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<int> get affectedBirdCount => $composableBuilder(
+    column: $table.affectedBirdCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get symptomsJson => $composableBuilder(
+    column: $table.symptomsJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get recordKind => $composableBuilder(
+    column: $table.recordKind,
+    builder: (column) => column,
+  );
 }
 
 class $$HealthRecordsTableTableManager
@@ -14162,6 +15564,9 @@ class $$HealthRecordsTableTableManager
                 Value<DateTime> occurredOn = const Value.absent(),
                 Value<String> summary = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<int?> affectedBirdCount = const Value.absent(),
+                Value<String> symptomsJson = const Value.absent(),
+                Value<String> recordKind = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HealthRecordsCompanion(
                 id: id,
@@ -14174,6 +15579,9 @@ class $$HealthRecordsTableTableManager
                 occurredOn: occurredOn,
                 summary: summary,
                 notes: notes,
+                affectedBirdCount: affectedBirdCount,
+                symptomsJson: symptomsJson,
+                recordKind: recordKind,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -14188,6 +15596,9 @@ class $$HealthRecordsTableTableManager
                 required DateTime occurredOn,
                 required String summary,
                 Value<String?> notes = const Value.absent(),
+                Value<int?> affectedBirdCount = const Value.absent(),
+                Value<String> symptomsJson = const Value.absent(),
+                Value<String> recordKind = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HealthRecordsCompanion.insert(
                 id: id,
@@ -14200,6 +15611,9 @@ class $$HealthRecordsTableTableManager
                 occurredOn: occurredOn,
                 summary: summary,
                 notes: notes,
+                affectedBirdCount: affectedBirdCount,
+                symptomsJson: symptomsJson,
+                recordKind: recordKind,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -16192,6 +17606,7 @@ typedef $$AuthSnapshotTableCreateCompanionBuilder =
       Value<String?> email,
       Value<String?> phone,
       required String farmIdsJson,
+      Value<String> appRole,
       Value<DateTime?> lastVerifiedAt,
     });
 typedef $$AuthSnapshotTableUpdateCompanionBuilder =
@@ -16201,6 +17616,7 @@ typedef $$AuthSnapshotTableUpdateCompanionBuilder =
       Value<String?> email,
       Value<String?> phone,
       Value<String> farmIdsJson,
+      Value<String> appRole,
       Value<DateTime?> lastVerifiedAt,
     });
 
@@ -16235,6 +17651,11 @@ class $$AuthSnapshotTableFilterComposer
 
   ColumnFilters<String> get farmIdsJson => $composableBuilder(
     column: $table.farmIdsJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get appRole => $composableBuilder(
+    column: $table.appRole,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16278,6 +17699,11 @@ class $$AuthSnapshotTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get appRole => $composableBuilder(
+    column: $table.appRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get lastVerifiedAt => $composableBuilder(
     column: $table.lastVerifiedAt,
     builder: (column) => ColumnOrderings(column),
@@ -16309,6 +17735,9 @@ class $$AuthSnapshotTableAnnotationComposer
     column: $table.farmIdsJson,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get appRole =>
+      $composableBuilder(column: $table.appRole, builder: (column) => column);
 
   GeneratedColumn<DateTime> get lastVerifiedAt => $composableBuilder(
     column: $table.lastVerifiedAt,
@@ -16352,6 +17781,7 @@ class $$AuthSnapshotTableTableManager
                 Value<String?> email = const Value.absent(),
                 Value<String?> phone = const Value.absent(),
                 Value<String> farmIdsJson = const Value.absent(),
+                Value<String> appRole = const Value.absent(),
                 Value<DateTime?> lastVerifiedAt = const Value.absent(),
               }) => AuthSnapshotCompanion(
                 id: id,
@@ -16359,6 +17789,7 @@ class $$AuthSnapshotTableTableManager
                 email: email,
                 phone: phone,
                 farmIdsJson: farmIdsJson,
+                appRole: appRole,
                 lastVerifiedAt: lastVerifiedAt,
               ),
           createCompanionCallback:
@@ -16368,6 +17799,7 @@ class $$AuthSnapshotTableTableManager
                 Value<String?> email = const Value.absent(),
                 Value<String?> phone = const Value.absent(),
                 required String farmIdsJson,
+                Value<String> appRole = const Value.absent(),
                 Value<DateTime?> lastVerifiedAt = const Value.absent(),
               }) => AuthSnapshotCompanion.insert(
                 id: id,
@@ -16375,6 +17807,7 @@ class $$AuthSnapshotTableTableManager
                 email: email,
                 phone: phone,
                 farmIdsJson: farmIdsJson,
+                appRole: appRole,
                 lastVerifiedAt: lastVerifiedAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -16409,6 +17842,420 @@ typedef $$AuthSnapshotTableProcessedTableManager =
         BaseReferences<_$AppDatabase, $AuthSnapshotTable, AuthSnapshotRow>,
       ),
       AuthSnapshotRow,
+      PrefetchHooks Function()
+    >;
+typedef $$VetAssistanceRequestsTableCreateCompanionBuilder =
+    VetAssistanceRequestsCompanion Function({
+      required String id,
+      required String farmId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String batchId,
+      required String healthRecordId,
+      required String serviceType,
+      required String status,
+      Value<bool> shareLocation,
+      Value<String> priority,
+      Value<String?> farmerNotes,
+      Value<String?> assignedVetUserId,
+      Value<int> rowid,
+    });
+typedef $$VetAssistanceRequestsTableUpdateCompanionBuilder =
+    VetAssistanceRequestsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> batchId,
+      Value<String> healthRecordId,
+      Value<String> serviceType,
+      Value<String> status,
+      Value<bool> shareLocation,
+      Value<String> priority,
+      Value<String?> farmerNotes,
+      Value<String?> assignedVetUserId,
+      Value<int> rowid,
+    });
+
+class $$VetAssistanceRequestsTableFilterComposer
+    extends Composer<_$AppDatabase, $VetAssistanceRequestsTable> {
+  $$VetAssistanceRequestsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get healthRecordId => $composableBuilder(
+    column: $table.healthRecordId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get serviceType => $composableBuilder(
+    column: $table.serviceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get shareLocation => $composableBuilder(
+    column: $table.shareLocation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmerNotes => $composableBuilder(
+    column: $table.farmerNotes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assignedVetUserId => $composableBuilder(
+    column: $table.assignedVetUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VetAssistanceRequestsTableOrderingComposer
+    extends Composer<_$AppDatabase, $VetAssistanceRequestsTable> {
+  $$VetAssistanceRequestsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get batchId => $composableBuilder(
+    column: $table.batchId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get healthRecordId => $composableBuilder(
+    column: $table.healthRecordId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get serviceType => $composableBuilder(
+    column: $table.serviceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get shareLocation => $composableBuilder(
+    column: $table.shareLocation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmerNotes => $composableBuilder(
+    column: $table.farmerNotes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assignedVetUserId => $composableBuilder(
+    column: $table.assignedVetUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VetAssistanceRequestsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $VetAssistanceRequestsTable> {
+  $$VetAssistanceRequestsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get batchId =>
+      $composableBuilder(column: $table.batchId, builder: (column) => column);
+
+  GeneratedColumn<String> get healthRecordId => $composableBuilder(
+    column: $table.healthRecordId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get serviceType => $composableBuilder(
+    column: $table.serviceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<bool> get shareLocation => $composableBuilder(
+    column: $table.shareLocation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<String> get farmerNotes => $composableBuilder(
+    column: $table.farmerNotes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get assignedVetUserId => $composableBuilder(
+    column: $table.assignedVetUserId,
+    builder: (column) => column,
+  );
+}
+
+class $$VetAssistanceRequestsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $VetAssistanceRequestsTable,
+          VetAssistanceRequestRow,
+          $$VetAssistanceRequestsTableFilterComposer,
+          $$VetAssistanceRequestsTableOrderingComposer,
+          $$VetAssistanceRequestsTableAnnotationComposer,
+          $$VetAssistanceRequestsTableCreateCompanionBuilder,
+          $$VetAssistanceRequestsTableUpdateCompanionBuilder,
+          (
+            VetAssistanceRequestRow,
+            BaseReferences<
+              _$AppDatabase,
+              $VetAssistanceRequestsTable,
+              VetAssistanceRequestRow
+            >,
+          ),
+          VetAssistanceRequestRow,
+          PrefetchHooks Function()
+        > {
+  $$VetAssistanceRequestsTableTableManager(
+    _$AppDatabase db,
+    $VetAssistanceRequestsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VetAssistanceRequestsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$VetAssistanceRequestsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$VetAssistanceRequestsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> batchId = const Value.absent(),
+                Value<String> healthRecordId = const Value.absent(),
+                Value<String> serviceType = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<bool> shareLocation = const Value.absent(),
+                Value<String> priority = const Value.absent(),
+                Value<String?> farmerNotes = const Value.absent(),
+                Value<String?> assignedVetUserId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VetAssistanceRequestsCompanion(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                healthRecordId: healthRecordId,
+                serviceType: serviceType,
+                status: status,
+                shareLocation: shareLocation,
+                priority: priority,
+                farmerNotes: farmerNotes,
+                assignedVetUserId: assignedVetUserId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String batchId,
+                required String healthRecordId,
+                required String serviceType,
+                required String status,
+                Value<bool> shareLocation = const Value.absent(),
+                Value<String> priority = const Value.absent(),
+                Value<String?> farmerNotes = const Value.absent(),
+                Value<String?> assignedVetUserId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VetAssistanceRequestsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                batchId: batchId,
+                healthRecordId: healthRecordId,
+                serviceType: serviceType,
+                status: status,
+                shareLocation: shareLocation,
+                priority: priority,
+                farmerNotes: farmerNotes,
+                assignedVetUserId: assignedVetUserId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $VetAssistanceRequestsTable,
+                    VetAssistanceRequestRow
+                  >(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $VetAssistanceRequestsTable,
+                    VetAssistanceRequestRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VetAssistanceRequestsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $VetAssistanceRequestsTable,
+      VetAssistanceRequestRow,
+      $$VetAssistanceRequestsTableFilterComposer,
+      $$VetAssistanceRequestsTableOrderingComposer,
+      $$VetAssistanceRequestsTableAnnotationComposer,
+      $$VetAssistanceRequestsTableCreateCompanionBuilder,
+      $$VetAssistanceRequestsTableUpdateCompanionBuilder,
+      (
+        VetAssistanceRequestRow,
+        BaseReferences<
+          _$AppDatabase,
+          $VetAssistanceRequestsTable,
+          VetAssistanceRequestRow
+        >,
+      ),
+      VetAssistanceRequestRow,
       PrefetchHooks Function()
     >;
 
@@ -16451,4 +18298,6 @@ class $AppDatabaseManager {
       $$SyncLockTableTableManager(_db, _db.syncLock);
   $$AuthSnapshotTableTableManager get authSnapshot =>
       $$AuthSnapshotTableTableManager(_db, _db.authSnapshot);
+  $$VetAssistanceRequestsTableTableManager get vetAssistanceRequests =>
+      $$VetAssistanceRequestsTableTableManager(_db, _db.vetAssistanceRequests);
 }

@@ -11,6 +11,7 @@ import '../../../app/theme/theme_context.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../domain/task_state_calculator.dart';
+import '../../health/presentation/report_health_concern_sheet.dart';
 import 'batch_display.dart';
 
 final batchDetailProvider = StreamProvider.family<BatchRow?, String>((ref, id) {
@@ -35,6 +36,20 @@ class BatchDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Batch')),
+      floatingActionButton: batchAsync.maybeWhen(
+        data: (batch) => batch == null
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => showReportHealthConcernSheet(
+                  context,
+                  batchId: batchId,
+                  farmId: batch.farmId,
+                ),
+                icon: const Icon(Icons.medical_services_outlined),
+                label: const Text('Health'),
+              ),
+        orElse: () => null,
+      ),
       body: batchAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => const Center(child: Text('Batch not found')),

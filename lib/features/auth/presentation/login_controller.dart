@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../core/error/user_messages.dart';
+import '../domain/app_role.dart';
 import '../domain/auth_repository.dart';
 import 'login_state.dart';
 
@@ -14,11 +15,24 @@ class LoginController extends Notifier<LoginUiState> {
   LoginUiState build() => const LoginUiState();
 
   void setFormMode(AuthFormMode mode) {
-    state = state.copyWith(formMode: mode, clearError: true, status: LoginStatus.idle);
+    state = state.copyWith(
+      formMode: mode,
+      clearError: true,
+      clearInfo: true,
+      status: LoginStatus.idle,
+    );
+  }
+
+  void setSignUpRole(AppRole role) {
+    state = state.copyWith(signUpRole: role, clearError: true);
   }
 
   void clearError() {
     state = state.copyWith(clearError: true);
+  }
+
+  void clearInfo() {
+    state = state.copyWith(clearInfo: true);
   }
 
   void togglePasswordVisibility() {
@@ -84,21 +98,35 @@ class LoginController extends Notifier<LoginUiState> {
       return null;
     }
 
-    state = state.copyWith(status: LoginStatus.submitting, clearError: true);
+    state = state.copyWith(
+      status: LoginStatus.submitting,
+      clearError: true,
+      clearInfo: true,
+    );
 
     final auth = ref.read(authRepositoryProvider);
     final result = await auth.signUpWithEmail(
       SignUpRequest(
         email: email,
         password: password,
+        appRole: state.signUpRole,
         displayName: displayName,
       ),
     );
 
     return result.when(
       success: (session) {
+        if (session.emailConfirmationPending) {
+          state = state.copyWith(
+            status: LoginStatus.emailConfirmationSent,
+            infoMessage:
+                'Account created. Confirm the email from Supabase, then sign in.',
+          );
+          return null;
+        }
         state = state.copyWith(status: LoginStatus.success);
         _afterLocalAuthWrite(ref);
+        ref.read(syncSchedulerProvider).onForeground();
         return session;
       },
       failure: (failure) {
@@ -117,6 +145,9 @@ void _afterLocalAuthWrite(Ref ref) {
   ref.read(hasAuthSnapshotProvider.notifier).adoptAuthenticated();
   SchedulerBinding.instance.scheduleFrameCallback((_) {
     ref.invalidate(userProfileProvider);
+    ref.invalidate(appRoleProvider);
     ref.invalidate(farmProfileIncompleteProvider);
+    ref.invalidate(primaryFarmProvider);
+    ref.invalidate(syncStatusProvider);
   });
 }

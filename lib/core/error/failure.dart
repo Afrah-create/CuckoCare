@@ -51,3 +51,25 @@ final class SyncSchemaMismatch extends Failure {
 final class SyncSignedOutDemo extends Failure {
   const SyncSignedOutDemo() : super('Demo session — sync disabled');
 }
+
+final class LocationPermissionDenied extends Failure {
+  const LocationPermissionDenied()
+      : super('Location permission is required to capture your farm on the map.');
+}
+
+final class LocationPermissionPermanentlyDenied extends Failure {
+  const LocationPermissionPermanentlyDenied()
+      : super(
+          'Location access was denied. Enable it in system settings to capture GPS.',
+        );
+}
+
+final class LocationServiceDisabled extends Failure {
+  const LocationServiceDisabled()
+      : super('Turn on location services on this device, then try again.');
+}
+
+final class LocationCaptureTimeout extends Failure {
+  const LocationCaptureTimeout()
+      : super('Could not get a GPS fix in time. Move outdoors and try again.');
+}

@@ -17,6 +17,10 @@ class Farms extends Table {
   TextColumn get altPhone => text().nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get profileCompletedAt => dateTime().nullable()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  RealColumn get locationAccuracyM => real().nullable()();
+  DateTimeColumn get locationCapturedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

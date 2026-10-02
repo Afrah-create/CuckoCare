@@ -7,6 +7,7 @@ class AuthSnapshot extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get phone => text().nullable()();
   TextColumn get farmIdsJson => text()();
+  TextColumn get appRole => text().withDefault(const Constant('farmer'))();
   DateTimeColumn get lastVerifiedAt => dateTime().nullable()();
 
   @override

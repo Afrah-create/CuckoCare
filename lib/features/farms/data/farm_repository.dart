@@ -7,10 +7,14 @@ import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/time/clock.dart';
 import '../../../core/utils/uuid_v7.dart';
 import '../../../data_platform/db/app_database.dart';
+import '../../../data_platform/db/synced_write.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
 import '../../../data_platform/sync/remote_sync_api.dart';
 import '../../../data_platform/sync/sync_json.dart';
 import '../../auth/data/auth_snapshot_repository.dart';
+import '../domain/farm_gps.dart';
+import '../domain/farm_phone.dart';
+import 'farm_synced_table.dart';
 
 class FarmRepository {
   FarmRepository(
@@ -20,10 +24,13 @@ class FarmRepository {
     SupabaseClient? client,
     ConnectivityMonitor? connectivity,
     RemoteSyncApi? remoteSyncApi,
+    SyncedWrite? syncedWrite,
   })  : _clock = clock ?? SystemClock(),
         _client = client ?? Supabase.instance.client,
         _connectivity = connectivity ?? ConnectivityPlusMonitor(),
-        _remote = remoteSyncApi;
+        _remote = remoteSyncApi,
+        _syncedWrite = syncedWrite ?? SyncedWrite(_db),
+        _farmMapper = FarmSyncedTable();
 
   final AppDatabase _db;
   final AuthSnapshotRepository _snapshots;
@@ -31,6 +38,8 @@ class FarmRepository {
   final SupabaseClient _client;
   final ConnectivityMonitor _connectivity;
   final RemoteSyncApi? _remote;
+  final SyncedWrite _syncedWrite;
+  final FarmSyncedTable _farmMapper;
 
   /// Reactive read path — UI should watch this; sync/bootstrap updates Drift.
   Stream<FarmRow?> watchPrimaryFarm() {
@@ -57,8 +66,29 @@ class FarmRepository {
   }
 
   Future<List<String>> allLocalFarmIds() async {
+    final userId =
+        _client.auth.currentUser?.id ?? await _snapshots.loadUserId();
+    if (userId != null) {
+      return allLocalFarmIdsForUser(userId);
+    }
     final rows = await (_db.select(_db.farms)
           ..where((f) => f.deletedAt.isNull()))
+        .get();
+    return rows.map((r) => r.id).toList();
+  }
+
+  Future<List<String>> allLocalFarmIdsForUser(String userId) async {
+    final members = await (_db.select(_db.farmMembers)
+          ..where(
+            (m) => m.userId.equals(userId) & m.deletedAt.isNull(),
+          ))
+        .get();
+    if (members.isEmpty) {
+      return [];
+    }
+    final farmIds = members.map((m) => m.farmId).toSet();
+    final rows = await (_db.select(_db.farms)
+          ..where((f) => f.deletedAt.isNull() & f.id.isIn(farmIds)))
         .get();
     return rows.map((r) => r.id).toList();
   }
@@ -124,6 +154,12 @@ class FarmRepository {
                 altPhone: Value(f['alt_phone'] as String?),
                 notes: Value(f['notes'] as String?),
                 profileCompletedAt: Value(_parseTime(f['profile_completed_at'])),
+                latitude: Value((f['latitude'] as num?)?.toDouble()),
+                longitude: Value((f['longitude'] as num?)?.toDouble()),
+                locationAccuracyM:
+                    Value((f['location_accuracy_m'] as num?)?.toDouble()),
+                locationCapturedAt:
+                    Value(_parseTime(f['location_captured_at'])),
               ),
             );
       }
@@ -223,7 +259,7 @@ class FarmRepository {
     final trimmedName = name.trim();
     final trimmedDistrict = district.trim();
     final trimmedVillage = village.trim();
-    final trimmedPhone = phone.trim();
+    final normalizedPhone = normalizeUgandaPhone(phone.trim());
 
     final existing = await primaryLocalFarm();
     final localFarmId = existing?.id ?? newId();
@@ -233,7 +269,7 @@ class FarmRepository {
       name: trimmedName,
       district: trimmedDistrict,
       village: trimmedVillage,
-      phone: trimmedPhone,
+      phone: normalizedPhone,
       altPhone: altPhone,
       notes: notes,
       syncedToServer: false,
@@ -249,13 +285,81 @@ class FarmRepository {
       } on AuthException {
         rethrow;
       } catch (e) {
+        final farm = await primaryLocalFarm();
+        if (farm != null) {
+          await _queueFarmProfileForSync(farm);
+        }
         if (!_isLikelyConnectivityFailure(e)) {
-          rethrow;
+          // Local profile is saved; sync will retry via outbox or next save.
         }
       }
     }
 
     return (await primaryLocalFarm())?.id ?? localFarmId;
+  }
+
+  /// Saves GPS coordinates locally and queues sync (for vet visits / assistance).
+  Future<void> saveFarmGps({
+    required String farmId,
+    required FarmGpsReading reading,
+  }) async {
+    final existing = await (_db.select(_db.farms)
+          ..where((f) => f.id.equals(farmId) & f.deletedAt.isNull()))
+        .getSingleOrNull();
+    if (existing == null) {
+      throw StateError('Farm not found');
+    }
+
+    final now = _clock.now();
+    final row = FarmRow(
+      id: existing.id,
+      farmId: existing.farmId,
+      createdAt: existing.createdAt,
+      updatedAt: now,
+      deletedAt: existing.deletedAt,
+      serverVersion: existing.serverVersion,
+      name: existing.name,
+      location: existing.location,
+      district: existing.district,
+      village: existing.village,
+      phone: existing.phone,
+      altPhone: existing.altPhone,
+      notes: existing.notes,
+      profileCompletedAt: existing.profileCompletedAt,
+      latitude: reading.latitude,
+      longitude: reading.longitude,
+      locationAccuracyM: reading.accuracyMeters,
+      locationCapturedAt: reading.capturedAt,
+    );
+
+    await _syncedWrite.writeSynced(
+      writeRow: () => _db.into(_db.farms).insertOnConflictUpdate(
+            FarmsCompanion(
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(now),
+              deletedAt: Value(row.deletedAt),
+              serverVersion: Value(row.serverVersion),
+              name: Value(row.name),
+              location: Value(row.location),
+              district: Value(row.district),
+              village: Value(row.village),
+              phone: Value(row.phone),
+              altPhone: Value(row.altPhone),
+              notes: Value(row.notes),
+              profileCompletedAt: Value(row.profileCompletedAt),
+              latitude: Value(row.latitude),
+              longitude: Value(row.longitude),
+              locationAccuracyM: Value(row.locationAccuracyM),
+              locationCapturedAt: Value(row.locationCapturedAt),
+            ),
+          ),
+      table: _farmMapper.tableName,
+      rowId: farmId,
+      op: 'upsert',
+      payload: _farmMapper.toPayload(row),
+    );
   }
 
   Future<void> _syncLocalProfileToServer(FarmRow farm) async {
@@ -274,7 +378,44 @@ class FarmRepository {
         updatedAt: Value(_clock.now()),
       ),
     );
-    await _refreshFarmsFromServerBootstrap();
+    try {
+      await _refreshFarmsFromServerBootstrap();
+    } catch (_) {
+      // Profile RPC succeeded; bootstrap refresh is best-effort.
+    }
+  }
+
+  Future<void> _queueFarmProfileForSync(FarmRow row) async {
+    await _syncedWrite.writeSynced(
+      writeRow: () => _db.into(_db.farms).insertOnConflictUpdate(
+            FarmsCompanion(
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(_clock.now()),
+              deletedAt: Value(row.deletedAt),
+              serverVersion: Value(row.serverVersion),
+              name: Value(row.name),
+              location: Value(row.location),
+              district: Value(row.district),
+              village: Value(row.village),
+              phone: Value(row.phone),
+              altPhone: Value(row.altPhone),
+              notes: Value(row.notes),
+              profileCompletedAt: Value(row.profileCompletedAt),
+              latitude: Value(row.latitude),
+              longitude: Value(row.longitude),
+              locationAccuracyM: Value(row.locationAccuracyM),
+              locationCapturedAt: Value(row.locationCapturedAt),
+            ),
+          ),
+      table: _farmMapper.tableName,
+      rowId: row.id,
+      op: 'upsert',
+      payload: _farmMapper.toPayload(row),
+    );
+    await _db.syncDao.ensureScope(row.id);
+    await _snapshots.addFarmId(row.id);
   }
 
   Future<void> _applyServerFarmId({
@@ -309,6 +450,10 @@ class FarmRepository {
               altPhone: Value(row.altPhone),
               notes: Value(row.notes),
               profileCompletedAt: Value(row.profileCompletedAt),
+              latitude: Value(row.latitude),
+              longitude: Value(row.longitude),
+              locationAccuracyM: Value(row.locationAccuracyM),
+              locationCapturedAt: Value(row.locationCapturedAt),
               serverVersion: const Value(1),
             ),
           );
@@ -348,7 +493,22 @@ class FarmRepository {
           },
         )
         .timeout(const Duration(seconds: 25));
-    return raw.toString();
+    return _parseRpcFarmId(raw);
+  }
+
+  static final _uuidPattern = RegExp(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    caseSensitive: false,
+  );
+
+  static String _parseRpcFarmId(dynamic raw) {
+    if (raw is String) {
+      final id = raw.trim();
+      if (_uuidPattern.hasMatch(id)) {
+        return id;
+      }
+    }
+    throw FormatException('Unexpected save_farm_profile response: $raw');
   }
 
   Future<void> _rekeyFarmId(String fromFarmId, String toFarmId) async {
@@ -379,6 +539,9 @@ class FarmRepository {
     await (_db.update(_db.entitlements)
           ..where((t) => t.farmId.equals(fromFarmId)))
         .write(EntitlementsCompanion(farmId: Value(toFarmId)));
+    await (_db.update(_db.vetAssistanceRequests)
+          ..where((t) => t.farmId.equals(fromFarmId)))
+        .write(VetAssistanceRequestsCompanion(farmId: Value(toFarmId)));
   }
 
   Future<void> _migrateSyncScope(String fromScope, String toScope) async {
@@ -429,6 +592,10 @@ class FarmRepository {
             notes: Value(notes?.trim()),
             profileCompletedAt: Value(now),
             serverVersion: Value(syncedToServer ? 1 : null),
+            latitude: Value(existing?.latitude),
+            longitude: Value(existing?.longitude),
+            locationAccuracyM: Value(existing?.locationAccuracyM),
+            locationCapturedAt: Value(existing?.locationCapturedAt),
           ),
         );
 

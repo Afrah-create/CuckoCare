@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
+import '../../auth/domain/app_role.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/app_logo.dart';
 import '../splash_controller.dart';
@@ -82,8 +84,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     }
     if (auth.value ?? false) {
       _navigated = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) {
+          return;
+        }
+        final role = await ref.read(appRoleProvider.future);
+        if (!mounted) {
+          return;
+        }
+        if (role == AppRole.vet) {
+          context.go('/vet');
+        } else {
           const TodayRoute().go(context);
         }
       });

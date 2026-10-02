@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/config/env.dart';
 import '../../core/network/connectivity_monitor.dart';
 import '../../core/time/clock.dart';
+import '../../data_platform/db/account_session.dart';
 import '../../data_platform/db/app_database.dart';
 import '../../data_platform/sync/cuco_care_sync_engine.dart';
 import '../../data_platform/sync/remote_sync_api.dart';
@@ -12,9 +13,14 @@ import '../../data_platform/sync/sync_scheduler.dart';
 import '../../features/auth/data/auth_snapshot_repository.dart';
 import '../../features/auth/data/supabase_auth_repository.dart';
 import '../../features/auth/domain/auth_repository.dart';
+import '../../features/auth/domain/app_role.dart';
+import '../../data_platform/db/synced_write.dart';
+import '../../features/health/data/health_repository.dart';
+import '../../features/vet/data/vet_inbox_repository.dart';
 import '../../features/auth/domain/user_profile.dart';
 import '../../core/time/kampala_today.dart';
 import '../../features/batches/data/batch_repository.dart';
+import '../../features/farms/data/farm_gps_reader.dart';
 import '../../features/farms/data/farm_repository.dart';
 import '../../features/farms/domain/farm_profile.dart';
 
@@ -23,7 +29,8 @@ final envProvider = Provider<Env>((ref) => Env.fromEnvironment());
 final clockProvider = Provider<Clock>((ref) => SystemClock());
 
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
-  final db = AppDatabase();
+  final userId = ref.watch(accountSessionProvider);
+  final db = AppDatabase.forAccount(userId);
   ref.onDispose(db.close);
   return db;
 });
@@ -40,12 +47,17 @@ final authSnapshotRepositoryProvider = Provider<AuthSnapshotRepository>(
   (ref) => AuthSnapshotRepository(ref.watch(appDatabaseProvider)),
 );
 
+final farmGpsReaderProvider = Provider<FarmGpsReader>(
+  (ref) => DeviceFarmGpsReader(),
+);
+
 final farmRepositoryProvider = Provider<FarmRepository>((ref) {
   return FarmRepository(
     ref.watch(appDatabaseProvider),
     ref.watch(authSnapshotRepositoryProvider),
     connectivity: ref.watch(connectivityMonitorProvider),
     remoteSyncApi: ref.watch(remoteSyncApiProvider),
+    syncedWrite: ref.watch(syncedWriteProvider),
   );
 });
 
@@ -93,9 +105,11 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   return SupabaseAuthRepository(
-    snapshotRepository: ref.watch(authSnapshotRepositoryProvider),
-    farmRepository: ref.watch(farmRepositoryProvider),
+    readSnapshots: () => AuthSnapshotRepository(ref.read(appDatabaseProvider)),
+    readFarms: () => ref.read(farmRepositoryProvider),
     remoteSyncApi: ref.watch(remoteSyncApiProvider),
+    activateAccount: (userId) =>
+        ref.read(accountSessionProvider.notifier).activate(userId),
   );
 });
 
@@ -134,8 +148,18 @@ final hasAuthSnapshotProvider =
 );
 
 final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
+  ref.watch(hasAuthSnapshotProvider);
   final repo = ref.watch(authSnapshotRepositoryProvider);
   return repo.loadProfile();
+});
+
+final appRoleProvider = FutureProvider<AppRole>((ref) async {
+  ref.watch(hasAuthSnapshotProvider);
+  final authed = ref.watch(hasAuthSnapshotProvider).value ?? false;
+  if (!authed) {
+    return AppRole.farmer;
+  }
+  return ref.watch(authSnapshotRepositoryProvider).loadAppRole();
 });
 
 /// Primary farm from Drift — updates when local rows change or sync applies data.
@@ -145,6 +169,10 @@ final primaryFarmProvider = StreamProvider<FarmRow?>((ref) {
 
 /// True when the user should see the farm profile banner (non-blocking).
 final farmProfileIncompleteProvider = Provider<bool>((ref) {
+  final role = ref.watch(appRoleProvider).value;
+  if (role == AppRole.vet) {
+    return false;
+  }
   final profile = ref.watch(userProfileProvider).value;
   if (profile?.isDemo ?? false) {
     return false;
@@ -153,11 +181,29 @@ final farmProfileIncompleteProvider = Provider<bool>((ref) {
   return !isFarmProfileComplete(farm);
 });
 
+final syncedWriteProvider = Provider<SyncedWrite>((ref) {
+  return SyncedWrite(ref.watch(appDatabaseProvider));
+});
+
 final batchRepositoryProvider = Provider<BatchRepository>((ref) {
   return BatchRepository(
     ref.watch(appDatabaseProvider),
     ref.watch(clockProvider),
+    syncedWrite: ref.watch(syncedWriteProvider),
   );
+});
+
+final healthRepositoryProvider = Provider<HealthRepository>((ref) {
+  return HealthRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(syncedWriteProvider),
+    ref.watch(farmRepositoryProvider),
+    clock: ref.watch(clockProvider),
+  );
+});
+
+final vetInboxRepositoryProvider = Provider<VetInboxRepository>((ref) {
+  return VetInboxRepository();
 });
 
 final activeBatchCountProvider = StreamProvider<int>((ref) {

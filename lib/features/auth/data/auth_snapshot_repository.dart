@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/sync/sync_session_coordinator.dart';
+import '../domain/app_role.dart';
 import '../domain/user_profile.dart';
 
 class AuthSnapshotRepository {
@@ -56,6 +57,24 @@ class AuthSnapshotRepository {
     return row?.userId;
   }
 
+  Future<AppRole> loadAppRole() async {
+    final row = await (_db.select(_db.authSnapshot)).getSingleOrNull();
+    if (row == null) {
+      return AppRole.farmer;
+    }
+    return AppRole.fromWire(row.appRole);
+  }
+
+  Future<void> setAppRole(AppRole role) async {
+    final row = await (_db.select(_db.authSnapshot)).getSingleOrNull();
+    if (row == null) {
+      return;
+    }
+    await (_db.update(_db.authSnapshot)).write(
+      AuthSnapshotCompanion(appRole: Value(role.wireValue)),
+    );
+  }
+
   Future<UserProfile?> loadProfile() async {
     final row = await (_db.select(_db.authSnapshot)).getSingleOrNull();
     if (row == null) {
@@ -71,12 +90,19 @@ class AuthSnapshotRepository {
 
   static const _singletonId = 1;
 
-  Future<void> persistFromSupabaseUser(User user) async {
+  Future<void> persistFromSupabaseUser(
+    User user, {
+    AppRole? appRole,
+  }) async {
     final now = _clock.now();
     final prior = await (_db.select(_db.authSnapshot)).getSingleOrNull();
     final farmIdsJson = prior != null && prior.userId == user.id
         ? prior.farmIdsJson
         : jsonEncode(<String>[]);
+    final roleWire = appRole?.wireValue ??
+        user.userMetadata?['app_role'] as String? ??
+        prior?.appRole ??
+        AppRole.farmer.wireValue;
     await _db.into(_db.authSnapshot).insertOnConflictUpdate(
           AuthSnapshotCompanion.insert(
             id: const Value(_singletonId),
@@ -84,6 +110,7 @@ class AuthSnapshotRepository {
             email: Value(user.email),
             phone: Value(user.phone),
             farmIdsJson: farmIdsJson,
+            appRole: Value(AppRole.fromWire(roleWire).wireValue),
             lastVerifiedAt: Value(now),
           ),
         );

@@ -184,6 +184,49 @@ begin
           deleted_at = excluded.deleted_at,
           updated_at = now()
         returning to_jsonb(vaccination_tasks.*) into v_existing;
+      elsif v_table = 'vet_assistance_requests' then
+        if coalesce(v_payload->>'status', 'submitted') not in (
+          'draft', 'pending_sync', 'submitted', 'cancelled'
+        ) then
+          raise exception 'forbidden status for farmer push' using errcode = '42501';
+        end if;
+        insert into public.vet_assistance_requests
+        select * from jsonb_populate_record(null::public.vet_assistance_requests, v_payload)
+        on conflict (id) do update set
+          farm_id = excluded.farm_id,
+          batch_id = excluded.batch_id,
+          health_record_id = excluded.health_record_id,
+          service_type = excluded.service_type,
+          status = excluded.status,
+          share_location = excluded.share_location,
+          priority = excluded.priority,
+          farmer_notes = excluded.farmer_notes,
+          deleted_at = excluded.deleted_at,
+          updated_at = now()
+        returning to_jsonb(vet_assistance_requests.*) into v_existing;
+      elsif v_table = 'farms' then
+        insert into public.farms
+        select * from jsonb_populate_record(null::public.farms, v_payload)
+        on conflict (id) do update set
+          name = coalesce(excluded.name, farms.name),
+          location = coalesce(excluded.location, farms.location),
+          notes = coalesce(excluded.notes, farms.notes),
+          district = coalesce(excluded.district, farms.district),
+          village = coalesce(excluded.village, farms.village),
+          phone = coalesce(excluded.phone, farms.phone),
+          alt_phone = coalesce(excluded.alt_phone, farms.alt_phone),
+          latitude = coalesce(excluded.latitude, farms.latitude),
+          longitude = coalesce(excluded.longitude, farms.longitude),
+          location_accuracy_m = coalesce(
+            excluded.location_accuracy_m,
+            farms.location_accuracy_m
+          ),
+          location_captured_at = coalesce(
+            excluded.location_captured_at,
+            farms.location_captured_at
+          ),
+          updated_at = now()
+        returning to_jsonb(farms.*) into v_existing;
       else
         execute format(
           'insert into public.%I select * from jsonb_populate_record(null::public.%I, $1)

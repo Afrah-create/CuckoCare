@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../core/error/user_messages.dart';
@@ -59,6 +60,12 @@ class FarmSetupController extends Notifier<FarmSetupState> {
       ref.read(syncSchedulerProvider).notifyLocalWrite();
       state = state.copyWith(status: FarmSetupStatus.success);
       return true;
+    } on AuthException catch (e) {
+      state = state.copyWith(
+        status: FarmSetupStatus.failure,
+        errorMessage: userMessageForError(e),
+      );
+      return false;
     } catch (e) {
       state = state.copyWith(
         status: FarmSetupStatus.failure,
