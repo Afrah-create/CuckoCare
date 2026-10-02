@@ -2,6 +2,13 @@ import 'programme_catalog.dart';
 import 'batch_planner.dart';
 import 'calendar_date.dart';
 
+PlannedTaskStatus plannedStatusFromDb(String status) => switch (status) {
+      'done' => PlannedTaskStatus.done,
+      'skipped' => PlannedTaskStatus.skipped,
+      'assumed_done' => PlannedTaskStatus.assumedDone,
+      _ => PlannedTaskStatus.pending,
+    };
+
 enum TaskUiState {
   upcoming,
   dueSoon,
@@ -53,4 +60,25 @@ class TaskStateCalculator {
     }
     return TaskUiState.overdueUrgent;
   }
+
+  /// Whether the farmer may mark this step done (not before the due date).
+  bool canMarkDone({
+    required PlannedTaskStatus status,
+    required CalendarDate dueOn,
+    required CalendarDate today,
+  }) {
+    if (status == PlannedTaskStatus.assumedDone) {
+      return true;
+    }
+    if (status != PlannedTaskStatus.pending) {
+      return false;
+    }
+    return today.daysUntil(dueOn) < 0;
+  }
+}
+
+bool taskUiStateAllowsMarkDone(TaskUiState ui) {
+  return ui == TaskUiState.overdueGentle ||
+      ui == TaskUiState.overdueUrgent ||
+      ui == TaskUiState.needsConfirmation;
 }

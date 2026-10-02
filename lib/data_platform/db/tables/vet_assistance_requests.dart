@@ -17,6 +17,7 @@ class VetAssistanceRequests extends Table {
   TextColumn get priority => text().withDefault(const Constant('normal'))();
   TextColumn get farmerNotes => text().nullable()();
   TextColumn get assignedVetUserId => text().nullable()();
+  TextColumn get requestedVetUserId => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

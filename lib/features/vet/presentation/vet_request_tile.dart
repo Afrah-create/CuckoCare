@@ -51,7 +51,7 @@ class VetRequestTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _serviceLabel(item.serviceType),
+                        item.summary ?? _serviceLabel(item.serviceType),
                         style: context.text.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -63,17 +63,69 @@ class VetRequestTile extends StatelessWidget {
                           color: scheme.onSurfaceVariant,
                         ),
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        item.farmLocationLabel,
+                        style: context.text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                      if (item.distanceKm != null)
+                        Text(
+                          '${item.distanceKm!.toStringAsFixed(1)} km from you',
+                          style: context.text.labelSmall?.copyWith(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                     ],
                   ),
                 ),
                 _StatusChip(status: item.status, priority: item.priority),
               ],
             ),
+            if (item.isDirectedRequest) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Requested you specifically',
+                style: context.text.labelMedium?.copyWith(
+                  color: scheme.tertiary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+            if (item.affectedBirdCount != null) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text('Birds affected: ${item.affectedBirdCount}'),
+            ],
+            if (item.symptoms.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final s in item.symptoms)
+                    Chip(
+                      label: Text(s),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                ],
+              ),
+            ],
             if (item.farmerNotes != null && item.farmerNotes!.trim().isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Text(
                 item.farmerNotes!.trim(),
                 style: context.text.bodyMedium,
+              ),
+            ],
+            if (item.photoObjectKeys.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                '${item.photoObjectKeys.length} photo(s) attached',
+                style: context.text.labelMedium?.copyWith(
+                  color: scheme.primary,
+                ),
               ),
             ],
             if (item.shareLocation) ...[

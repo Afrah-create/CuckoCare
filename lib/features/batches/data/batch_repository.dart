@@ -7,6 +7,7 @@ import '../../../data_platform/db/synced_write.dart';
 import '../domain/batch_planner.dart';
 import '../domain/calendar_date.dart';
 import '../domain/programme_catalog.dart';
+import '../domain/task_state_calculator.dart';
 import 'batch_synced_table.dart';
 import 'schedule_dates.dart';
 import '../../vaccination/data/vaccination_task_synced_table.dart';
@@ -325,6 +326,7 @@ class BatchRepository {
   Future<void> markTaskDone({
     required String taskId,
     required DateTime doneOn,
+    required DateTime todayLocal,
     String? productUsed,
     String? notes,
   }) async {
@@ -334,6 +336,20 @@ class BatchRepository {
         .getSingleOrNull();
     if (existing == null) {
       return;
+    }
+
+    const dueWindow = DueWindowConvention(
+      defaultDaysBefore: 2,
+      defaultDaysAfterOverdue: 3,
+    );
+    const calc = TaskStateCalculator(dueWindow: dueWindow);
+    final today = CalendarDate.fromDateTime(todayLocal);
+    final due = dueOnFromStorage(existing.dueOn);
+    final status = plannedStatusFromDb(existing.status);
+    if (!calc.canMarkDone(status: status, dueOn: due, today: today)) {
+      throw StateError(
+        'This step is not overdue yet. You can mark it done after the due date.',
+      );
     }
 
     final updated = VaccinationTaskRow(

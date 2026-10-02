@@ -238,6 +238,7 @@ class SyncApply {
               affectedBirdCount: Value(row.affectedBirdCount),
               symptomsJson: Value(row.symptomsJson),
               recordKind: Value(row.recordKind),
+              photoObjectKeysJson: Value(row.photoObjectKeysJson),
             ),
           );
       return;
@@ -273,6 +274,7 @@ class SyncApply {
               priority: Value(row.priority),
               farmerNotes: Value(row.farmerNotes),
               assignedVetUserId: Value(row.assignedVetUserId),
+              requestedVetUserId: Value(row.requestedVetUserId),
             ),
           );
       return;

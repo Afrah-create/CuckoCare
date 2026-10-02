@@ -16,6 +16,7 @@ import '../di/providers.dart';
 import '../shell/app_shell.dart';
 import '../shell/vet_shell.dart';
 import '../../features/vet/presentation/vet_active_screen.dart';
+import '../../features/vet/presentation/vet_map_screen.dart';
 import '../../features/vet/presentation/vet_more_screen.dart';
 import '../../features/vet/presentation/vet_requests_screen.dart';
 import '../widgets/not_found_screen.dart';
@@ -160,6 +161,12 @@ List<RouteBase> _vetShellRoutes() {
                 },
               ),
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: vetMapNavigatorKey,
+          routes: [
+            _fadeTabRoot('/vet/map', const VetMapScreen()),
           ],
         ),
         StatefulShellBranch(

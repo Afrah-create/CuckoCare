@@ -35,11 +35,21 @@ class HealthRecordSyncedTable implements SyncedTable<HealthRecordRow> {
           ? jsonEncode(symptoms)
           : (symptoms as String? ?? '[]'),
       recordKind: json['record_kind'] as String? ?? 'observation',
+      photoObjectKeysJson: _photoKeysJson(json['photo_object_keys']),
+      pendingPhotoPathsJson: '[]',
     );
+  }
+
+  static String _photoKeysJson(dynamic raw) {
+    if (raw is List) {
+      return jsonEncode(raw.map((e) => e.toString()).toList());
+    }
+    return '[]';
   }
 
   @override
   Map<String, dynamic> toPayload(HealthRecordRow row) {
+    final keys = jsonDecode(row.photoObjectKeysJson) as List;
     return {
       'id': row.id,
       'farm_id': row.farmId,
@@ -51,6 +61,7 @@ class HealthRecordSyncedTable implements SyncedTable<HealthRecordRow> {
         'affected_bird_count': row.affectedBirdCount,
       'symptoms': jsonDecode(row.symptomsJson),
       'record_kind': row.recordKind,
+      'photo_object_keys': keys,
       'created_at': row.createdAt.toIso8601String(),
     };
   }

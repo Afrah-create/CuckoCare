@@ -17,6 +17,9 @@ import '../../features/auth/domain/app_role.dart';
 import '../../data_platform/db/synced_write.dart';
 import '../../features/health/data/health_repository.dart';
 import '../../features/vet/data/vet_inbox_repository.dart';
+import '../../features/vet/data/vet_directory_repository.dart';
+import '../../features/vet/data/vet_location_repository.dart';
+import '../../features/vet/data/vet_map_repository.dart';
 import '../../features/auth/domain/user_profile.dart';
 import '../../core/time/kampala_today.dart';
 import '../../features/batches/data/batch_repository.dart';
@@ -97,6 +100,7 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
     beforeNetworkSync: () async {
       await farms.ensureSyncScopesAligned();
       await farms.pushPendingFarmProfileToServer();
+      await ref.read(healthRepositoryProvider).flushAllPendingIncidentPhotos();
     },
   );
   ref.onDispose(scheduler.dispose);
@@ -204,6 +208,18 @@ final healthRepositoryProvider = Provider<HealthRepository>((ref) {
 
 final vetInboxRepositoryProvider = Provider<VetInboxRepository>((ref) {
   return VetInboxRepository();
+});
+
+final vetMapRepositoryProvider = Provider<VetMapRepository>((ref) {
+  return VetMapRepository();
+});
+
+final vetDirectoryRepositoryProvider = Provider<VetDirectoryRepository>((ref) {
+  return VetDirectoryRepository();
+});
+
+final vetLocationRepositoryProvider = Provider<VetLocationRepository>((ref) {
+  return VetLocationRepository();
 });
 
 final activeBatchCountProvider = StreamProvider<int>((ref) {

@@ -61,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -111,6 +111,19 @@ class AppDatabase extends _$AppDatabase {
             await m.addColumn(farms, farms.locationAccuracyM);
             await m.addColumn(farms, farms.locationCapturedAt);
             await m.createTable(vetAssistanceRequests);
+          }
+          if (from < 7) {
+            await m.addColumn(healthRecords, healthRecords.photoObjectKeysJson);
+            await m.addColumn(
+              healthRecords,
+              healthRecords.pendingPhotoPathsJson,
+            );
+          }
+          if (from < 8) {
+            await m.addColumn(
+              vetAssistanceRequests,
+              vetAssistanceRequests.requestedVetUserId,
+            );
           }
         },
       );

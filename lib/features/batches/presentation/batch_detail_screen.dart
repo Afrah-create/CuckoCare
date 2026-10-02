@@ -13,6 +13,7 @@ import '../../../data_platform/db/app_database.dart';
 import '../domain/task_state_calculator.dart';
 import '../../health/presentation/report_health_concern_sheet.dart';
 import 'batch_display.dart';
+import 'batch_health_incidents_section.dart';
 
 final batchDetailProvider = StreamProvider.family<BatchRow?, String>((ref, id) {
   return ref.watch(batchRepositoryProvider).watchBatch(id);
@@ -46,7 +47,7 @@ class BatchDetailScreen extends ConsumerWidget {
                   farmId: batch.farmId,
                 ),
                 icon: const Icon(Icons.medical_services_outlined),
-                label: const Text('Health'),
+                label: const Text('Incident'),
               ),
         orElse: () => null,
       ),
@@ -204,6 +205,7 @@ class _BatchDetailBody extends StatelessWidget {
             ),
           ),
         ],
+        BatchHealthIncidentsSection(batchId: batchId),
       ],
     );
   }
@@ -232,14 +234,23 @@ class _BatchDetailBody extends StatelessWidget {
       return;
     }
     final todayLocal = ref.read(kampalaTodayProvider);
-    await ref.read(batchRepositoryProvider).markTaskDone(
-          taskId: task.id,
-          doneOn: DateTime.utc(
-            todayLocal.year,
-            todayLocal.month,
-            todayLocal.day,
-          ),
+    try {
+      await ref.read(batchRepositoryProvider).markTaskDone(
+            taskId: task.id,
+            todayLocal: todayLocal,
+            doneOn: DateTime.utc(
+              todayLocal.year,
+              todayLocal.month,
+              todayLocal.day,
+            ),
+          );
+    } on StateError catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message)),
         );
+      }
+    }
   }
 }
 
@@ -324,13 +335,7 @@ class _TaskTile extends StatelessWidget {
                 ],
               ),
             ),
-            if (onMarkDone != null &&
-                (ui == TaskUiState.dueToday ||
-                    ui == TaskUiState.dueSoon ||
-                    ui == TaskUiState.overdueGentle ||
-                    ui == TaskUiState.overdueUrgent ||
-                    ui == TaskUiState.needsConfirmation ||
-                    ui == TaskUiState.upcoming))
+            if (onMarkDone != null && taskUiStateAllowsMarkDone(ui))
               IconButton(
                 icon: const Icon(Icons.check_circle_outline),
                 tooltip: 'Mark done',

@@ -9,6 +9,12 @@ abstract final class VetShellDestinations {
       semanticsLabel: 'Assistance requests',
     ),
     VetShellTab(
+      outlined: Icons.map_outlined,
+      filled: Icons.map_rounded,
+      label: 'Map',
+      semanticsLabel: 'Request map',
+    ),
+    VetShellTab(
       outlined: Icons.assignment_outlined,
       filled: Icons.assignment_rounded,
       label: 'Active',

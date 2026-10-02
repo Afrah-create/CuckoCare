@@ -6602,6 +6602,30 @@ class $HealthRecordsTable extends HealthRecords
     requiredDuringInsert: false,
     defaultValue: const Constant('observation'),
   );
+  static const VerificationMeta _photoObjectKeysJsonMeta =
+      const VerificationMeta('photoObjectKeysJson');
+  @override
+  late final GeneratedColumn<String> photoObjectKeysJson =
+      GeneratedColumn<String>(
+        'photo_object_keys_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _pendingPhotoPathsJsonMeta =
+      const VerificationMeta('pendingPhotoPathsJson');
+  @override
+  late final GeneratedColumn<String> pendingPhotoPathsJson =
+      GeneratedColumn<String>(
+        'pending_photo_paths_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6617,6 +6641,8 @@ class $HealthRecordsTable extends HealthRecords
     affectedBirdCount,
     symptomsJson,
     recordKind,
+    photoObjectKeysJson,
+    pendingPhotoPathsJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6728,6 +6754,24 @@ class $HealthRecordsTable extends HealthRecords
         recordKind.isAcceptableOrUnknown(data['record_kind']!, _recordKindMeta),
       );
     }
+    if (data.containsKey('photo_object_keys_json')) {
+      context.handle(
+        _photoObjectKeysJsonMeta,
+        photoObjectKeysJson.isAcceptableOrUnknown(
+          data['photo_object_keys_json']!,
+          _photoObjectKeysJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('pending_photo_paths_json')) {
+      context.handle(
+        _pendingPhotoPathsJsonMeta,
+        pendingPhotoPathsJson.isAcceptableOrUnknown(
+          data['pending_photo_paths_json']!,
+          _pendingPhotoPathsJsonMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -6789,6 +6833,14 @@ class $HealthRecordsTable extends HealthRecords
         DriftSqlType.string,
         data['${effectivePrefix}record_kind'],
       )!,
+      photoObjectKeysJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}photo_object_keys_json'],
+      )!,
+      pendingPhotoPathsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}pending_photo_paths_json'],
+      )!,
     );
   }
 
@@ -6812,6 +6864,10 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
   final int? affectedBirdCount;
   final String symptomsJson;
   final String recordKind;
+  final String photoObjectKeysJson;
+
+  /// Local filesystem paths awaiting upload (not synced to server).
+  final String pendingPhotoPathsJson;
   const HealthRecordRow({
     required this.id,
     required this.farmId,
@@ -6826,6 +6882,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     this.affectedBirdCount,
     required this.symptomsJson,
     required this.recordKind,
+    required this.photoObjectKeysJson,
+    required this.pendingPhotoPathsJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6851,6 +6909,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     }
     map['symptoms_json'] = Variable<String>(symptomsJson);
     map['record_kind'] = Variable<String>(recordKind);
+    map['photo_object_keys_json'] = Variable<String>(photoObjectKeysJson);
+    map['pending_photo_paths_json'] = Variable<String>(pendingPhotoPathsJson);
     return map;
   }
 
@@ -6877,6 +6937,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           : Value(affectedBirdCount),
       symptomsJson: Value(symptomsJson),
       recordKind: Value(recordKind),
+      photoObjectKeysJson: Value(photoObjectKeysJson),
+      pendingPhotoPathsJson: Value(pendingPhotoPathsJson),
     );
   }
 
@@ -6899,6 +6961,12 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       affectedBirdCount: serializer.fromJson<int?>(json['affectedBirdCount']),
       symptomsJson: serializer.fromJson<String>(json['symptomsJson']),
       recordKind: serializer.fromJson<String>(json['recordKind']),
+      photoObjectKeysJson: serializer.fromJson<String>(
+        json['photoObjectKeysJson'],
+      ),
+      pendingPhotoPathsJson: serializer.fromJson<String>(
+        json['pendingPhotoPathsJson'],
+      ),
     );
   }
   @override
@@ -6918,6 +6986,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       'affectedBirdCount': serializer.toJson<int?>(affectedBirdCount),
       'symptomsJson': serializer.toJson<String>(symptomsJson),
       'recordKind': serializer.toJson<String>(recordKind),
+      'photoObjectKeysJson': serializer.toJson<String>(photoObjectKeysJson),
+      'pendingPhotoPathsJson': serializer.toJson<String>(pendingPhotoPathsJson),
     };
   }
 
@@ -6935,6 +7005,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     Value<int?> affectedBirdCount = const Value.absent(),
     String? symptomsJson,
     String? recordKind,
+    String? photoObjectKeysJson,
+    String? pendingPhotoPathsJson,
   }) => HealthRecordRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -6953,6 +7025,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
         : this.affectedBirdCount,
     symptomsJson: symptomsJson ?? this.symptomsJson,
     recordKind: recordKind ?? this.recordKind,
+    photoObjectKeysJson: photoObjectKeysJson ?? this.photoObjectKeysJson,
+    pendingPhotoPathsJson: pendingPhotoPathsJson ?? this.pendingPhotoPathsJson,
   );
   HealthRecordRow copyWithCompanion(HealthRecordsCompanion data) {
     return HealthRecordRow(
@@ -6979,6 +7053,12 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
       recordKind: data.recordKind.present
           ? data.recordKind.value
           : this.recordKind,
+      photoObjectKeysJson: data.photoObjectKeysJson.present
+          ? data.photoObjectKeysJson.value
+          : this.photoObjectKeysJson,
+      pendingPhotoPathsJson: data.pendingPhotoPathsJson.present
+          ? data.pendingPhotoPathsJson.value
+          : this.pendingPhotoPathsJson,
     );
   }
 
@@ -6997,7 +7077,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           ..write('notes: $notes, ')
           ..write('affectedBirdCount: $affectedBirdCount, ')
           ..write('symptomsJson: $symptomsJson, ')
-          ..write('recordKind: $recordKind')
+          ..write('recordKind: $recordKind, ')
+          ..write('photoObjectKeysJson: $photoObjectKeysJson, ')
+          ..write('pendingPhotoPathsJson: $pendingPhotoPathsJson')
           ..write(')'))
         .toString();
   }
@@ -7017,6 +7099,8 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
     affectedBirdCount,
     symptomsJson,
     recordKind,
+    photoObjectKeysJson,
+    pendingPhotoPathsJson,
   );
   @override
   bool operator ==(Object other) =>
@@ -7034,7 +7118,9 @@ class HealthRecordRow extends DataClass implements Insertable<HealthRecordRow> {
           other.notes == this.notes &&
           other.affectedBirdCount == this.affectedBirdCount &&
           other.symptomsJson == this.symptomsJson &&
-          other.recordKind == this.recordKind);
+          other.recordKind == this.recordKind &&
+          other.photoObjectKeysJson == this.photoObjectKeysJson &&
+          other.pendingPhotoPathsJson == this.pendingPhotoPathsJson);
 }
 
 class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
@@ -7051,6 +7137,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
   final Value<int?> affectedBirdCount;
   final Value<String> symptomsJson;
   final Value<String> recordKind;
+  final Value<String> photoObjectKeysJson;
+  final Value<String> pendingPhotoPathsJson;
   final Value<int> rowid;
   const HealthRecordsCompanion({
     this.id = const Value.absent(),
@@ -7066,6 +7154,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     this.affectedBirdCount = const Value.absent(),
     this.symptomsJson = const Value.absent(),
     this.recordKind = const Value.absent(),
+    this.photoObjectKeysJson = const Value.absent(),
+    this.pendingPhotoPathsJson = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   HealthRecordsCompanion.insert({
@@ -7082,6 +7172,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     this.affectedBirdCount = const Value.absent(),
     this.symptomsJson = const Value.absent(),
     this.recordKind = const Value.absent(),
+    this.photoObjectKeysJson = const Value.absent(),
+    this.pendingPhotoPathsJson = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -7104,6 +7196,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     Expression<int>? affectedBirdCount,
     Expression<String>? symptomsJson,
     Expression<String>? recordKind,
+    Expression<String>? photoObjectKeysJson,
+    Expression<String>? pendingPhotoPathsJson,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7120,6 +7214,10 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
       if (affectedBirdCount != null) 'affected_bird_count': affectedBirdCount,
       if (symptomsJson != null) 'symptoms_json': symptomsJson,
       if (recordKind != null) 'record_kind': recordKind,
+      if (photoObjectKeysJson != null)
+        'photo_object_keys_json': photoObjectKeysJson,
+      if (pendingPhotoPathsJson != null)
+        'pending_photo_paths_json': pendingPhotoPathsJson,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7138,6 +7236,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     Value<int?>? affectedBirdCount,
     Value<String>? symptomsJson,
     Value<String>? recordKind,
+    Value<String>? photoObjectKeysJson,
+    Value<String>? pendingPhotoPathsJson,
     Value<int>? rowid,
   }) {
     return HealthRecordsCompanion(
@@ -7154,6 +7254,9 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
       affectedBirdCount: affectedBirdCount ?? this.affectedBirdCount,
       symptomsJson: symptomsJson ?? this.symptomsJson,
       recordKind: recordKind ?? this.recordKind,
+      photoObjectKeysJson: photoObjectKeysJson ?? this.photoObjectKeysJson,
+      pendingPhotoPathsJson:
+          pendingPhotoPathsJson ?? this.pendingPhotoPathsJson,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7200,6 +7303,16 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
     if (recordKind.present) {
       map['record_kind'] = Variable<String>(recordKind.value);
     }
+    if (photoObjectKeysJson.present) {
+      map['photo_object_keys_json'] = Variable<String>(
+        photoObjectKeysJson.value,
+      );
+    }
+    if (pendingPhotoPathsJson.present) {
+      map['pending_photo_paths_json'] = Variable<String>(
+        pendingPhotoPathsJson.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -7222,6 +7335,8 @@ class HealthRecordsCompanion extends UpdateCompanion<HealthRecordRow> {
           ..write('affectedBirdCount: $affectedBirdCount, ')
           ..write('symptomsJson: $symptomsJson, ')
           ..write('recordKind: $recordKind, ')
+          ..write('photoObjectKeysJson: $photoObjectKeysJson, ')
+          ..write('pendingPhotoPathsJson: $pendingPhotoPathsJson, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11481,6 +11596,17 @@ class $VetAssistanceRequestsTable extends VetAssistanceRequests
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _requestedVetUserIdMeta =
+      const VerificationMeta('requestedVetUserId');
+  @override
+  late final GeneratedColumn<String> requestedVetUserId =
+      GeneratedColumn<String>(
+        'requested_vet_user_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -11497,6 +11623,7 @@ class $VetAssistanceRequestsTable extends VetAssistanceRequests
     priority,
     farmerNotes,
     assignedVetUserId,
+    requestedVetUserId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -11625,6 +11752,15 @@ class $VetAssistanceRequestsTable extends VetAssistanceRequests
         ),
       );
     }
+    if (data.containsKey('requested_vet_user_id')) {
+      context.handle(
+        _requestedVetUserIdMeta,
+        requestedVetUserId.isAcceptableOrUnknown(
+          data['requested_vet_user_id']!,
+          _requestedVetUserIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -11693,6 +11829,10 @@ class $VetAssistanceRequestsTable extends VetAssistanceRequests
         DriftSqlType.string,
         data['${effectivePrefix}assigned_vet_user_id'],
       ),
+      requestedVetUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}requested_vet_user_id'],
+      ),
     );
   }
 
@@ -11718,6 +11858,7 @@ class VetAssistanceRequestRow extends DataClass
   final String priority;
   final String? farmerNotes;
   final String? assignedVetUserId;
+  final String? requestedVetUserId;
   const VetAssistanceRequestRow({
     required this.id,
     required this.farmId,
@@ -11733,6 +11874,7 @@ class VetAssistanceRequestRow extends DataClass
     required this.priority,
     this.farmerNotes,
     this.assignedVetUserId,
+    this.requestedVetUserId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -11758,6 +11900,9 @@ class VetAssistanceRequestRow extends DataClass
     }
     if (!nullToAbsent || assignedVetUserId != null) {
       map['assigned_vet_user_id'] = Variable<String>(assignedVetUserId);
+    }
+    if (!nullToAbsent || requestedVetUserId != null) {
+      map['requested_vet_user_id'] = Variable<String>(requestedVetUserId);
     }
     return map;
   }
@@ -11786,6 +11931,9 @@ class VetAssistanceRequestRow extends DataClass
       assignedVetUserId: assignedVetUserId == null && nullToAbsent
           ? const Value.absent()
           : Value(assignedVetUserId),
+      requestedVetUserId: requestedVetUserId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(requestedVetUserId),
     );
   }
 
@@ -11811,6 +11959,9 @@ class VetAssistanceRequestRow extends DataClass
       assignedVetUserId: serializer.fromJson<String?>(
         json['assignedVetUserId'],
       ),
+      requestedVetUserId: serializer.fromJson<String?>(
+        json['requestedVetUserId'],
+      ),
     );
   }
   @override
@@ -11831,6 +11982,7 @@ class VetAssistanceRequestRow extends DataClass
       'priority': serializer.toJson<String>(priority),
       'farmerNotes': serializer.toJson<String?>(farmerNotes),
       'assignedVetUserId': serializer.toJson<String?>(assignedVetUserId),
+      'requestedVetUserId': serializer.toJson<String?>(requestedVetUserId),
     };
   }
 
@@ -11849,6 +12001,7 @@ class VetAssistanceRequestRow extends DataClass
     String? priority,
     Value<String?> farmerNotes = const Value.absent(),
     Value<String?> assignedVetUserId = const Value.absent(),
+    Value<String?> requestedVetUserId = const Value.absent(),
   }) => VetAssistanceRequestRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -11868,6 +12021,9 @@ class VetAssistanceRequestRow extends DataClass
     assignedVetUserId: assignedVetUserId.present
         ? assignedVetUserId.value
         : this.assignedVetUserId,
+    requestedVetUserId: requestedVetUserId.present
+        ? requestedVetUserId.value
+        : this.requestedVetUserId,
   );
   VetAssistanceRequestRow copyWithCompanion(
     VetAssistanceRequestsCompanion data,
@@ -11899,6 +12055,9 @@ class VetAssistanceRequestRow extends DataClass
       assignedVetUserId: data.assignedVetUserId.present
           ? data.assignedVetUserId.value
           : this.assignedVetUserId,
+      requestedVetUserId: data.requestedVetUserId.present
+          ? data.requestedVetUserId.value
+          : this.requestedVetUserId,
     );
   }
 
@@ -11918,7 +12077,8 @@ class VetAssistanceRequestRow extends DataClass
           ..write('shareLocation: $shareLocation, ')
           ..write('priority: $priority, ')
           ..write('farmerNotes: $farmerNotes, ')
-          ..write('assignedVetUserId: $assignedVetUserId')
+          ..write('assignedVetUserId: $assignedVetUserId, ')
+          ..write('requestedVetUserId: $requestedVetUserId')
           ..write(')'))
         .toString();
   }
@@ -11939,6 +12099,7 @@ class VetAssistanceRequestRow extends DataClass
     priority,
     farmerNotes,
     assignedVetUserId,
+    requestedVetUserId,
   );
   @override
   bool operator ==(Object other) =>
@@ -11957,7 +12118,8 @@ class VetAssistanceRequestRow extends DataClass
           other.shareLocation == this.shareLocation &&
           other.priority == this.priority &&
           other.farmerNotes == this.farmerNotes &&
-          other.assignedVetUserId == this.assignedVetUserId);
+          other.assignedVetUserId == this.assignedVetUserId &&
+          other.requestedVetUserId == this.requestedVetUserId);
 }
 
 class VetAssistanceRequestsCompanion
@@ -11976,6 +12138,7 @@ class VetAssistanceRequestsCompanion
   final Value<String> priority;
   final Value<String?> farmerNotes;
   final Value<String?> assignedVetUserId;
+  final Value<String?> requestedVetUserId;
   final Value<int> rowid;
   const VetAssistanceRequestsCompanion({
     this.id = const Value.absent(),
@@ -11992,6 +12155,7 @@ class VetAssistanceRequestsCompanion
     this.priority = const Value.absent(),
     this.farmerNotes = const Value.absent(),
     this.assignedVetUserId = const Value.absent(),
+    this.requestedVetUserId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   VetAssistanceRequestsCompanion.insert({
@@ -12009,6 +12173,7 @@ class VetAssistanceRequestsCompanion
     this.priority = const Value.absent(),
     this.farmerNotes = const Value.absent(),
     this.assignedVetUserId = const Value.absent(),
+    this.requestedVetUserId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -12033,6 +12198,7 @@ class VetAssistanceRequestsCompanion
     Expression<String>? priority,
     Expression<String>? farmerNotes,
     Expression<String>? assignedVetUserId,
+    Expression<String>? requestedVetUserId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -12050,6 +12216,8 @@ class VetAssistanceRequestsCompanion
       if (priority != null) 'priority': priority,
       if (farmerNotes != null) 'farmer_notes': farmerNotes,
       if (assignedVetUserId != null) 'assigned_vet_user_id': assignedVetUserId,
+      if (requestedVetUserId != null)
+        'requested_vet_user_id': requestedVetUserId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -12069,6 +12237,7 @@ class VetAssistanceRequestsCompanion
     Value<String>? priority,
     Value<String?>? farmerNotes,
     Value<String?>? assignedVetUserId,
+    Value<String?>? requestedVetUserId,
     Value<int>? rowid,
   }) {
     return VetAssistanceRequestsCompanion(
@@ -12086,6 +12255,7 @@ class VetAssistanceRequestsCompanion
       priority: priority ?? this.priority,
       farmerNotes: farmerNotes ?? this.farmerNotes,
       assignedVetUserId: assignedVetUserId ?? this.assignedVetUserId,
+      requestedVetUserId: requestedVetUserId ?? this.requestedVetUserId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -12135,6 +12305,9 @@ class VetAssistanceRequestsCompanion
     if (assignedVetUserId.present) {
       map['assigned_vet_user_id'] = Variable<String>(assignedVetUserId.value);
     }
+    if (requestedVetUserId.present) {
+      map['requested_vet_user_id'] = Variable<String>(requestedVetUserId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -12158,6 +12331,7 @@ class VetAssistanceRequestsCompanion
           ..write('priority: $priority, ')
           ..write('farmerNotes: $farmerNotes, ')
           ..write('assignedVetUserId: $assignedVetUserId, ')
+          ..write('requestedVetUserId: $requestedVetUserId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -15294,6 +15468,8 @@ typedef $$HealthRecordsTableCreateCompanionBuilder =
       Value<int?> affectedBirdCount,
       Value<String> symptomsJson,
       Value<String> recordKind,
+      Value<String> photoObjectKeysJson,
+      Value<String> pendingPhotoPathsJson,
       Value<int> rowid,
     });
 typedef $$HealthRecordsTableUpdateCompanionBuilder =
@@ -15311,6 +15487,8 @@ typedef $$HealthRecordsTableUpdateCompanionBuilder =
       Value<int?> affectedBirdCount,
       Value<String> symptomsJson,
       Value<String> recordKind,
+      Value<String> photoObjectKeysJson,
+      Value<String> pendingPhotoPathsJson,
       Value<int> rowid,
     });
 
@@ -15385,6 +15563,16 @@ class $$HealthRecordsTableFilterComposer
 
   ColumnFilters<String> get recordKind => $composableBuilder(
     column: $table.recordKind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get photoObjectKeysJson => $composableBuilder(
+    column: $table.photoObjectKeysJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get pendingPhotoPathsJson => $composableBuilder(
+    column: $table.pendingPhotoPathsJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -15462,6 +15650,16 @@ class $$HealthRecordsTableOrderingComposer
     column: $table.recordKind,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get photoObjectKeysJson => $composableBuilder(
+    column: $table.photoObjectKeysJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get pendingPhotoPathsJson => $composableBuilder(
+    column: $table.pendingPhotoPathsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$HealthRecordsTableAnnotationComposer
@@ -15521,6 +15719,16 @@ class $$HealthRecordsTableAnnotationComposer
     column: $table.recordKind,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get photoObjectKeysJson => $composableBuilder(
+    column: $table.photoObjectKeysJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get pendingPhotoPathsJson => $composableBuilder(
+    column: $table.pendingPhotoPathsJson,
+    builder: (column) => column,
+  );
 }
 
 class $$HealthRecordsTableTableManager
@@ -15567,6 +15775,8 @@ class $$HealthRecordsTableTableManager
                 Value<int?> affectedBirdCount = const Value.absent(),
                 Value<String> symptomsJson = const Value.absent(),
                 Value<String> recordKind = const Value.absent(),
+                Value<String> photoObjectKeysJson = const Value.absent(),
+                Value<String> pendingPhotoPathsJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HealthRecordsCompanion(
                 id: id,
@@ -15582,6 +15792,8 @@ class $$HealthRecordsTableTableManager
                 affectedBirdCount: affectedBirdCount,
                 symptomsJson: symptomsJson,
                 recordKind: recordKind,
+                photoObjectKeysJson: photoObjectKeysJson,
+                pendingPhotoPathsJson: pendingPhotoPathsJson,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -15599,6 +15811,8 @@ class $$HealthRecordsTableTableManager
                 Value<int?> affectedBirdCount = const Value.absent(),
                 Value<String> symptomsJson = const Value.absent(),
                 Value<String> recordKind = const Value.absent(),
+                Value<String> photoObjectKeysJson = const Value.absent(),
+                Value<String> pendingPhotoPathsJson = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => HealthRecordsCompanion.insert(
                 id: id,
@@ -15614,6 +15828,8 @@ class $$HealthRecordsTableTableManager
                 affectedBirdCount: affectedBirdCount,
                 symptomsJson: symptomsJson,
                 recordKind: recordKind,
+                photoObjectKeysJson: photoObjectKeysJson,
+                pendingPhotoPathsJson: pendingPhotoPathsJson,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -17860,6 +18076,7 @@ typedef $$VetAssistanceRequestsTableCreateCompanionBuilder =
       Value<String> priority,
       Value<String?> farmerNotes,
       Value<String?> assignedVetUserId,
+      Value<String?> requestedVetUserId,
       Value<int> rowid,
     });
 typedef $$VetAssistanceRequestsTableUpdateCompanionBuilder =
@@ -17878,6 +18095,7 @@ typedef $$VetAssistanceRequestsTableUpdateCompanionBuilder =
       Value<String> priority,
       Value<String?> farmerNotes,
       Value<String?> assignedVetUserId,
+      Value<String?> requestedVetUserId,
       Value<int> rowid,
     });
 
@@ -17957,6 +18175,11 @@ class $$VetAssistanceRequestsTableFilterComposer
 
   ColumnFilters<String> get assignedVetUserId => $composableBuilder(
     column: $table.assignedVetUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get requestedVetUserId => $composableBuilder(
+    column: $table.requestedVetUserId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -18039,6 +18262,11 @@ class $$VetAssistanceRequestsTableOrderingComposer
     column: $table.assignedVetUserId,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get requestedVetUserId => $composableBuilder(
+    column: $table.requestedVetUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$VetAssistanceRequestsTableAnnotationComposer
@@ -18103,6 +18331,11 @@ class $$VetAssistanceRequestsTableAnnotationComposer
     column: $table.assignedVetUserId,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get requestedVetUserId => $composableBuilder(
+    column: $table.requestedVetUserId,
+    builder: (column) => column,
+  );
 }
 
 class $$VetAssistanceRequestsTableTableManager
@@ -18165,6 +18398,7 @@ class $$VetAssistanceRequestsTableTableManager
                 Value<String> priority = const Value.absent(),
                 Value<String?> farmerNotes = const Value.absent(),
                 Value<String?> assignedVetUserId = const Value.absent(),
+                Value<String?> requestedVetUserId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VetAssistanceRequestsCompanion(
                 id: id,
@@ -18181,6 +18415,7 @@ class $$VetAssistanceRequestsTableTableManager
                 priority: priority,
                 farmerNotes: farmerNotes,
                 assignedVetUserId: assignedVetUserId,
+                requestedVetUserId: requestedVetUserId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -18199,6 +18434,7 @@ class $$VetAssistanceRequestsTableTableManager
                 Value<String> priority = const Value.absent(),
                 Value<String?> farmerNotes = const Value.absent(),
                 Value<String?> assignedVetUserId = const Value.absent(),
+                Value<String?> requestedVetUserId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VetAssistanceRequestsCompanion.insert(
                 id: id,
@@ -18215,6 +18451,7 @@ class $$VetAssistanceRequestsTableTableManager
                 priority: priority,
                 farmerNotes: farmerNotes,
                 assignedVetUserId: assignedVetUserId,
+                requestedVetUserId: requestedVetUserId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

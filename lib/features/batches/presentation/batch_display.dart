@@ -35,13 +35,6 @@ const _defaultDueWindow = DueWindowConvention(
   defaultDaysAfterOverdue: 3,
 );
 
-PlannedTaskStatus plannedStatusFromDb(String status) => switch (status) {
-      'done' => PlannedTaskStatus.done,
-      'skipped' => PlannedTaskStatus.skipped,
-      'assumed_done' => PlannedTaskStatus.assumedDone,
-      _ => PlannedTaskStatus.pending,
-    };
-
 TaskUiState taskUiStateFor(VaccinationTaskRow task, DateTime todayLocal) {
   const calc = TaskStateCalculator(dueWindow: _defaultDueWindow);
   final today = CalendarDate.fromDateTime(todayLocal);

@@ -17,6 +17,11 @@ class HealthRecords extends Table {
   TextColumn get symptomsJson => text().withDefault(const Constant('[]'))();
   TextColumn get recordKind =>
       text().withDefault(const Constant('observation'))();
+  TextColumn get photoObjectKeysJson =>
+      text().withDefault(const Constant('[]'))();
+  /// Local filesystem paths awaiting upload (not synced to server).
+  TextColumn get pendingPhotoPathsJson =>
+      text().withDefault(const Constant('[]'))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

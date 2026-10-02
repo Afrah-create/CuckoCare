@@ -20,7 +20,7 @@ class VetShell extends ConsumerStatefulWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  static const _titles = ['Requests', 'Active cases', 'More'];
+  static const _titles = ['Requests', 'Map', 'Active cases', 'More'];
 
   @override
   ConsumerState<VetShell> createState() => _VetShellState();
@@ -32,7 +32,7 @@ class _VetShellState extends ConsumerState<VetShell> {
   }
 
   void _openMoreTab() {
-    widget.navigationShell.goBranch(2, initialLocation: false);
+    widget.navigationShell.goBranch(3, initialLocation: false);
   }
 
   void _openProfile() {

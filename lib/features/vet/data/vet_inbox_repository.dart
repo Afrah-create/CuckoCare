@@ -16,6 +16,15 @@ class VetInboxItem {
     required this.priority,
     required this.createdAt,
     this.farmerNotes,
+    this.summary,
+    this.affectedBirdCount,
+    this.symptoms = const [],
+    this.photoObjectKeys = const [],
+    this.farmName,
+    this.farmDistrict,
+    this.farmVillage,
+    this.distanceKm,
+    this.requestedVetUserId,
   });
 
   final String id;
@@ -28,8 +37,32 @@ class VetInboxItem {
   final String priority;
   final DateTime createdAt;
   final String? farmerNotes;
+  final String? summary;
+  final int? affectedBirdCount;
+  final List<String> symptoms;
+  final List<String> photoObjectKeys;
+  final String? farmName;
+  final String? farmDistrict;
+  final String? farmVillage;
+  final double? distanceKm;
+  final String? requestedVetUserId;
+
+  bool get isDirectedRequest => requestedVetUserId != null;
+
+  String get farmLocationLabel {
+    final parts = [
+      if (farmVillage != null && farmVillage!.isNotEmpty) farmVillage,
+      if (farmDistrict != null && farmDistrict!.isNotEmpty) farmDistrict,
+    ];
+    if (parts.isNotEmpty) {
+      return parts.join(', ');
+    }
+    return farmName ?? 'Farm';
+  }
 
   factory VetInboxItem.fromJson(Map<String, dynamic> json) {
+    final symptomsRaw = json['symptoms'];
+    final photosRaw = json['photo_object_keys'];
     return VetInboxItem(
       id: json['id'] as String,
       farmId: json['farm_id'] as String,
@@ -41,6 +74,19 @@ class VetInboxItem {
       priority: json['priority'] as String? ?? 'normal',
       createdAt: DateTime.parse(json['created_at'] as String),
       farmerNotes: json['farmer_notes'] as String?,
+      summary: json['summary'] as String?,
+      affectedBirdCount: json['affected_bird_count'] as int?,
+      symptoms: symptomsRaw is List
+          ? symptomsRaw.map((e) => e.toString()).toList()
+          : const [],
+      photoObjectKeys: photosRaw is List
+          ? photosRaw.map((e) => e.toString()).toList()
+          : const [],
+      farmName: json['farm_name'] as String?,
+      farmDistrict: json['farm_district'] as String?,
+      farmVillage: json['farm_village'] as String?,
+      distanceKm: (json['distance_km'] as num?)?.toDouble(),
+      requestedVetUserId: json['requested_vet_user_id'] as String?,
     );
   }
 }

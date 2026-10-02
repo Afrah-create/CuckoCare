@@ -32,6 +32,7 @@ class VetAssistanceRequestSyncedTable
       priority: json['priority'] as String? ?? 'normal',
       farmerNotes: json['farmer_notes'] as String?,
       assignedVetUserId: json['assigned_vet_user_id'] as String?,
+      requestedVetUserId: json['requested_vet_user_id'] as String?,
     );
   }
 
@@ -47,6 +48,8 @@ class VetAssistanceRequestSyncedTable
       'share_location': row.shareLocation,
       'priority': row.priority,
       if (row.farmerNotes != null) 'farmer_notes': row.farmerNotes,
+      if (row.requestedVetUserId != null)
+        'requested_vet_user_id': row.requestedVetUserId,
       'created_at': row.createdAt.toIso8601String(),
     };
   }
