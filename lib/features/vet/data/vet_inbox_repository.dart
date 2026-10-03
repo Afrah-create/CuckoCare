@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
+import '../domain/vet_request_visibility.dart';
 
 class VetInboxItem {
   VetInboxItem({
@@ -25,6 +26,7 @@ class VetInboxItem {
     this.farmVillage,
     this.distanceKm,
     this.requestedVetUserId,
+    this.assignedVetUserId,
   });
 
   final String id;
@@ -46,6 +48,7 @@ class VetInboxItem {
   final String? farmVillage;
   final double? distanceKm;
   final String? requestedVetUserId;
+  final String? assignedVetUserId;
 
   bool get isDirectedRequest => requestedVetUserId != null;
 
@@ -87,6 +90,7 @@ class VetInboxItem {
       farmVillage: json['farm_village'] as String?,
       distanceKm: (json['distance_km'] as num?)?.toDouble(),
       requestedVetUserId: json['requested_vet_user_id'] as String?,
+      assignedVetUserId: json['assigned_vet_user_id'] as String?,
     );
   }
 }
@@ -113,9 +117,19 @@ class VetInboxRepository {
       if (list is! List) {
         return const Success([]);
       }
+      final viewerId = _client.auth.currentUser?.id;
       final items = list
           .whereType<Map<String, dynamic>>()
           .map(VetInboxItem.fromJson)
+          .where(
+            (item) =>
+                viewerId == null ||
+                vetCanViewRequest(
+                  assignedVetUserId: item.assignedVetUserId,
+                  requestedVetUserId: item.requestedVetUserId,
+                  viewerUserId: viewerId,
+                ),
+          )
           .toList();
       return Success(items);
     } on PostgrestException catch (e) {

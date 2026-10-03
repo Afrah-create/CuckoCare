@@ -152,10 +152,10 @@ class SupabaseAuthRepository implements AuthRepository {
             : <String>[];
         final scopeIds = await farms.mergeFarmScopeIds(serverFarmIds);
         await snapshots.setFarmIds(scopeIds);
-        if (userId != null && appRole == AppRole.farmer) {
+        if (userId != null) {
           await snapshots.alignSyncScopesForUser(
             userId: userId,
-            farmScopeIds: scopeIds,
+            farmScopeIds: appRole == AppRole.farmer ? scopeIds : const [],
           );
         }
         return Success(_sessionResult(appRole, scopeIds));
@@ -163,10 +163,10 @@ class SupabaseAuthRepository implements AuthRepository {
       failure: (_) async {
         final scopeIds = await farms.mergeFarmScopeIds(const []);
         await snapshots.setFarmIds(scopeIds);
-        if (userId != null && appRole == AppRole.farmer) {
+        if (userId != null) {
           await snapshots.alignSyncScopesForUser(
             userId: userId,
-            farmScopeIds: scopeIds,
+            farmScopeIds: appRole == AppRole.farmer ? scopeIds : const [],
           );
         }
         return Success(_sessionResult(appRole, scopeIds));

@@ -5,6 +5,7 @@ import '../../../core/error/result.dart';
 import '../data/vet_directory_repository.dart';
 import '../data/vet_inbox_repository.dart';
 import '../data/vet_map_repository.dart';
+import '../domain/vet_request_visibility.dart';
 
 final vetInboxProvider = FutureProvider<List<VetInboxItem>>((ref) async {
   ref.watch(connectivityOnlineProvider);
@@ -37,10 +38,19 @@ final availableVetsProvider =
   };
 });
 
-bool vetInboxItemIsPending(VetInboxItem item) {
-  return item.status == 'submitted' || item.status == 'received';
+bool vetInboxItemIsPending(VetInboxItem item, String vetUserId) {
+  return vetInboxItemIsPendingForVet(
+    status: item.status,
+    assignedVetUserId: item.assignedVetUserId,
+    requestedVetUserId: item.requestedVetUserId,
+    vetUserId: vetUserId,
+  );
 }
 
-bool vetInboxItemIsActive(VetInboxItem item) {
-  return item.status == 'accepted' || item.status == 'in_progress';
+bool vetInboxItemIsActive(VetInboxItem item, String vetUserId) {
+  return vetInboxItemIsActiveForVet(
+    status: item.status,
+    assignedVetUserId: item.assignedVetUserId,
+    vetUserId: vetUserId,
+  );
 }

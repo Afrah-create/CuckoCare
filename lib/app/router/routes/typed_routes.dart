@@ -130,3 +130,14 @@ class MoreSyncRoute extends GoRouteData with $MoreSyncRoute {
   Widget build(BuildContext context, GoRouterState state) =>
       const SyncDiagnosticsScreen();
 }
+
+@TypedGoRoute<VetSyncRoute>(path: '/vet/sync')
+class VetSyncRoute extends GoRouteData with $VetSyncRoute {
+  const VetSyncRoute();
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const SyncDiagnosticsScreen();
+}

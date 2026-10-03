@@ -84,7 +84,10 @@ class HealthRepository {
   Stream<List<FarmerIncidentEntry>> watchFarmIncidents(String farmId) {
     final healthQuery = (_db.select(_db.healthRecords)
           ..where(
-            (h) => h.farmId.equals(farmId) & h.deletedAt.isNull(),
+            (h) =>
+                h.farmId.equals(farmId) &
+                h.deletedAt.isNull() &
+                h.recordKind.equals('incident'),
           )
           ..orderBy([(h) => OrderingTerm.desc(h.occurredOn)]))
         .watch();

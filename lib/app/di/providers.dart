@@ -15,6 +15,7 @@ import '../../features/auth/data/supabase_auth_repository.dart';
 import '../../features/auth/domain/auth_repository.dart';
 import '../../features/auth/domain/app_role.dart';
 import '../../data_platform/db/synced_write.dart';
+import '../../features/health/data/health_incident_photo_storage.dart';
 import '../../features/health/data/health_repository.dart';
 import '../../features/vet/data/vet_inbox_repository.dart';
 import '../../features/vet/data/vet_directory_repository.dart';
@@ -157,6 +158,15 @@ final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
   return repo.loadProfile();
 });
 
+final authUserIdProvider = FutureProvider<String?>((ref) async {
+  ref.watch(hasAuthSnapshotProvider);
+  final authed = ref.watch(hasAuthSnapshotProvider).value ?? false;
+  if (!authed) {
+    return null;
+  }
+  return ref.watch(authSnapshotRepositoryProvider).loadUserId();
+});
+
 final appRoleProvider = FutureProvider<AppRole>((ref) async {
   ref.watch(hasAuthSnapshotProvider);
   final authed = ref.watch(hasAuthSnapshotProvider).value ?? false;
@@ -196,6 +206,10 @@ final batchRepositoryProvider = Provider<BatchRepository>((ref) {
     syncedWrite: ref.watch(syncedWriteProvider),
   );
 });
+
+final healthIncidentPhotoStorageProvider = Provider<HealthIncidentPhotoStorage>(
+  (ref) => HealthIncidentPhotoStorage(),
+);
 
 final healthRepositoryProvider = Provider<HealthRepository>((ref) {
   return HealthRepository(

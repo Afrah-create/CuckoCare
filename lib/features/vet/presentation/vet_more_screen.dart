@@ -45,7 +45,7 @@ class VetMoreScreen extends ConsumerWidget {
                 title: const Text('Sync diagnostics'),
                 subtitle: const Text('Queue and connection status'),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => const MoreSyncRoute().push(context),
+                onTap: () => const VetSyncRoute().push(context),
               ),
             ],
           ),

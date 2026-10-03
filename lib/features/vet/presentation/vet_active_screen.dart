@@ -15,6 +15,7 @@ class VetActiveScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inboxAsync = ref.watch(vetInboxProvider);
+    final vetUserId = ref.watch(authUserIdProvider).value;
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -47,8 +48,12 @@ class VetActiveScreen extends ConsumerWidget {
                 ),
               ),
               data: (items) {
-                final active =
-                    items.where(vetInboxItemIsActive).toList(growable: false);
+                if (vetUserId == null) {
+                  return const _EmptyActive();
+                }
+                final active = items
+                    .where((i) => vetInboxItemIsActive(i, vetUserId))
+                    .toList(growable: false);
                 if (active.isEmpty) {
                   return const _EmptyActive();
                 }

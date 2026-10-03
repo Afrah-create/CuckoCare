@@ -124,6 +124,14 @@ class _IncidentRecordCard extends StatelessWidget {
             if (request != null) ...[
               const SizedBox(height: AppSpacing.md),
               _VetRequestStatusRow(request: request),
+            ] else ...[
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                'Saved locally — vet was not notified.',
+                style: context.text.bodySmall?.copyWith(
+                  color: context.scheme.onSurfaceVariant,
+                ),
+              ),
             ],
           ],
         ),

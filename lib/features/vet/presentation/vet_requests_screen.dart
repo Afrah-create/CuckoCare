@@ -7,6 +7,8 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../core/error/result.dart';
 import '../../../core/error/user_messages.dart';
+import '../domain/vet_incident_detail.dart';
+import 'vet_incident_detail_screen.dart';
 import 'vet_inbox_providers.dart';
 import 'vet_request_tile.dart';
 
@@ -36,6 +38,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     final profile = ref.watch(userProfileProvider).value;
     final online = ref.watch(connectivityOnlineProvider).value ?? true;
     final inboxAsync = ref.watch(vetInboxProvider);
+    final vetUserId = ref.watch(authUserIdProvider).value;
 
     return RefreshIndicator(
       onRefresh: _refresh,
@@ -74,13 +77,17 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
                 onRetry: _refresh,
               ),
               data: (items) {
-                final pending =
-                    items.where(vetInboxItemIsPending).toList(growable: false);
+                if (vetUserId == null) {
+                  return const _EmptyInbox();
+                }
+                final pending = items
+                    .where((i) => vetInboxItemIsPending(i, vetUserId))
+                    .toList(growable: false);
                 final activeOthers = items
-                    .where(vetInboxItemIsActive)
+                    .where((i) => vetInboxItemIsActive(i, vetUserId))
                     .toList(growable: false);
 
-                if (items.isEmpty) {
+                if (pending.isEmpty && activeOthers.isEmpty) {
                   return const _EmptyInbox();
                 }
 
@@ -88,7 +95,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      '${items.length} open from server',
+                      '${pending.length + activeOthers.length} visible to you',
                       style: context.text.labelLarge?.copyWith(
                         color: context.scheme.onSurfaceVariant,
                       ),
@@ -105,6 +112,10 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
                       for (final item in pending) ...[
                         VetRequestTile(
                           item: item,
+                          onOpenDetail: () => openVetIncidentDetail(
+                            context,
+                            VetIncidentDetail.fromInbox(item),
+                          ),
                           onAccept: () => _accept(context, ref, item.id),
                         ),
                         const SizedBox(height: AppSpacing.sm),
@@ -120,7 +131,13 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       for (final item in activeOthers) ...[
-                        VetRequestTile(item: item),
+                        VetRequestTile(
+                          item: item,
+                          onOpenDetail: () => openVetIncidentDetail(
+                            context,
+                            VetIncidentDetail.fromInbox(item),
+                          ),
+                        ),
                         const SizedBox(height: AppSpacing.sm),
                       ],
                     ],
@@ -254,7 +271,7 @@ class _EmptyInbox extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            'Directed and broadcast requests appear here when farmers report incidents online.',
+            'When farmers request vet help on an incident, directed and open broadcast requests show here. Cases accepted by another vet are hidden.',
             textAlign: TextAlign.center,
             style: context.text.bodyMedium?.copyWith(
               color: scheme.onSurfaceVariant,

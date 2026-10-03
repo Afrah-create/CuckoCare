@@ -16,6 +16,7 @@ List<RouteBase> get $appRoutes => [
   $batchDetailRoute,
   $moreFarmRoute,
   $moreSyncRoute,
+  $vetSyncRoute,
 ];
 
 RouteBase get $splashRoute => GoRouteData.$route(
@@ -288,6 +289,33 @@ mixin $MoreSyncRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/more/sync');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $vetSyncRoute => GoRouteData.$route(
+  path: '/vet/sync',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: VetSyncRoute.$parentNavigatorKey,
+  factory: $VetSyncRoute._fromState,
+);
+
+mixin $VetSyncRoute on GoRouteData {
+  static VetSyncRoute _fromState(GoRouterState state) => const VetSyncRoute();
+
+  @override
+  String get location => GoRouteData.$location('/vet/sync');
 
   @override
   void go(BuildContext context) => context.go(location);

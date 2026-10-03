@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
+import '../domain/vet_request_visibility.dart';
 
 class VetMapRequest {
   VetMapRequest({
@@ -25,6 +26,8 @@ class VetMapRequest {
     this.farmVillage,
     this.latitude,
     this.longitude,
+    this.requestedVetUserId,
+    this.assignedVetUserId,
   });
 
   final String id;
@@ -46,6 +49,8 @@ class VetMapRequest {
   final String? farmVillage;
   final double? latitude;
   final double? longitude;
+  final String? requestedVetUserId;
+  final String? assignedVetUserId;
 
   bool get hasMapPin =>
       shareLocation && latitude != null && longitude != null;
@@ -88,6 +93,8 @@ class VetMapRequest {
       farmVillage: json['farm_village'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
+      requestedVetUserId: json['requested_vet_user_id'] as String?,
+      assignedVetUserId: json['assigned_vet_user_id'] as String?,
     );
   }
 }
@@ -114,9 +121,19 @@ class VetMapRepository {
       if (list is! List) {
         return const Success([]);
       }
+      final viewerId = _client.auth.currentUser?.id;
       final items = list
           .whereType<Map<String, dynamic>>()
           .map(VetMapRequest.fromJson)
+          .where(
+            (item) =>
+                viewerId == null ||
+                vetCanViewRequest(
+                  assignedVetUserId: item.assignedVetUserId,
+                  requestedVetUserId: item.requestedVetUserId,
+                  viewerUserId: viewerId,
+                ),
+          )
           .toList();
       return Success(items);
     } on PostgrestException catch (e) {

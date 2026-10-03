@@ -15,7 +15,9 @@ import '../../features/auth/domain/app_role.dart';
 import '../di/providers.dart';
 import '../shell/app_shell.dart';
 import '../shell/vet_shell.dart';
+import '../../features/vet/domain/vet_incident_detail.dart';
 import '../../features/vet/presentation/vet_active_screen.dart';
+import '../../features/vet/presentation/vet_incident_detail_screen.dart';
 import '../../features/vet/presentation/vet_map_screen.dart';
 import '../../features/vet/presentation/vet_more_screen.dart';
 import '../../features/vet/presentation/vet_requests_screen.dart';
@@ -274,10 +276,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     routes: [
       $splashRoute,
       ..._authRoutes(),
+      GoRoute(
+        path: '/vet/incident',
+        parentNavigatorKey: rootNavigatorKey,
+        pageBuilder: (context, state) {
+          final detail = state.extra! as VetIncidentDetail;
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: VetIncidentDetailScreen(detail: detail),
+          );
+        },
+      ),
       $batchNewRoute,
       $batchDetailRoute,
       $moreFarmRoute,
       $moreSyncRoute,
+      $vetSyncRoute,
       ..._vetShellRoutes(),
       ..._shellRoutes(),
     ],

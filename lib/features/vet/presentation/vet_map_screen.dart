@@ -8,6 +8,9 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../core/error/result.dart';
 import '../data/vet_map_repository.dart';
+import '../domain/vet_incident_detail.dart';
+import 'vet_incident_detail_screen.dart';
+import 'vet_incident_photo_gallery.dart';
 import 'vet_inbox_providers.dart';
 
 /// Kampala — default map center when no pins exist.
@@ -214,7 +217,7 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
   }
 }
 
-class _RequestDetailSheet extends StatelessWidget {
+class _RequestDetailSheet extends ConsumerWidget {
   const _RequestDetailSheet({
     required this.request,
     required this.onClose,
@@ -226,7 +229,7 @@ class _RequestDetailSheet extends StatelessWidget {
   final VoidCallback onAccept;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scheme = context.scheme;
     return Material(
       elevation: 8,
@@ -234,14 +237,18 @@ class _RequestDetailSheet extends StatelessWidget {
       color: scheme.surface,
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.sm,
-            AppSpacing.lg,
-            AppSpacing.lg,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.55,
           ),
-          child: Column(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.lg,
+            ),
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -302,22 +309,32 @@ class _RequestDetailSheet extends StatelessWidget {
                 Text(request.farmerNotes!.trim()),
               ],
               if (request.photoObjectKeys.isNotEmpty) ...[
-                const SizedBox(height: AppSpacing.xs),
-                Text(
-                  '${request.photoObjectKeys.length} photo(s) attached',
-                  style: context.text.labelMedium?.copyWith(
-                    color: scheme.primary,
-                  ),
+                const SizedBox(height: AppSpacing.md),
+                VetIncidentPhotoGallery(
+                  photoObjectKeys: request.photoObjectKeys,
                 ),
               ],
               const SizedBox(height: AppSpacing.md),
+              OutlinedButton(
+                onPressed: () {
+                  onClose();
+                  openVetIncidentDetail(
+                    context,
+                    VetIncidentDetail.fromMap(request),
+                  );
+                },
+                child: const Text('Full incident details'),
+              ),
               if (request.status == 'submitted' ||
-                  request.status == 'received')
+                  request.status == 'received') ...[
+                const SizedBox(height: AppSpacing.sm),
                 FilledButton(
                   onPressed: onAccept,
                   child: const Text('Accept request'),
                 ),
+              ],
             ],
+            ),
           ),
         ),
       ),

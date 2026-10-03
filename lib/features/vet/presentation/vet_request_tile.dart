@@ -10,12 +10,14 @@ class VetRequestTile extends StatelessWidget {
     required this.item,
     this.onAccept,
     this.onMarkInProgress,
+    this.onOpenDetail,
     super.key,
   });
 
   final VetInboxItem item;
   final VoidCallback? onAccept;
   final VoidCallback? onMarkInProgress;
+  final VoidCallback? onOpenDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,10 @@ class VetRequestTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
       ),
-      child: Padding(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onOpenDetail,
+        child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,12 +125,19 @@ class VetRequestTile extends StatelessWidget {
               ),
             ],
             if (item.photoObjectKeys.isNotEmpty) ...[
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                '${item.photoObjectKeys.length} photo(s) attached',
-                style: context.text.labelMedium?.copyWith(
-                  color: scheme.primary,
-                ),
+              const SizedBox(height: AppSpacing.sm),
+              Row(
+                children: [
+                  Icon(Icons.photo_library_outlined, size: 18, color: scheme.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${item.photoObjectKeys.length} photo${item.photoObjectKeys.length == 1 ? '' : 's'} · tap to view',
+                    style: context.text.labelMedium?.copyWith(
+                      color: scheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ],
             if (item.shareLocation) ...[
@@ -167,6 +179,7 @@ class VetRequestTile extends StatelessWidget {
             ],
           ],
         ),
+      ),
       ),
     );
   }
