@@ -18,6 +18,7 @@ class VetIncidentDetail {
     this.farmLocationLabel = 'Farm',
     this.distanceKm,
     this.isDirectedRequest = false,
+    this.assignedVetUserId,
   });
 
   final String requestId;
@@ -34,6 +35,7 @@ class VetIncidentDetail {
   final String farmLocationLabel;
   final double? distanceKm;
   final bool isDirectedRequest;
+  final String? assignedVetUserId;
 
   factory VetIncidentDetail.fromInbox(VetInboxItem item) {
     return VetIncidentDetail(
@@ -51,6 +53,7 @@ class VetIncidentDetail {
       farmLocationLabel: item.farmLocationLabel,
       distanceKm: item.distanceKm,
       isDirectedRequest: item.isDirectedRequest,
+      assignedVetUserId: item.assignedVetUserId,
     );
   }
 
@@ -68,6 +71,7 @@ class VetIncidentDetail {
       symptoms: request.symptoms,
       photoObjectKeys: request.photoObjectKeys,
       farmLocationLabel: request.locationLabel,
+      assignedVetUserId: request.assignedVetUserId,
     );
   }
 }

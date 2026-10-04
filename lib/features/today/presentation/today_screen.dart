@@ -426,7 +426,10 @@ class _NeedsAttentionList extends ConsumerWidget {
                 title: Text(label),
                 subtitle: Text(DateFormat.yMMMd().format(task.dueOn.toUtc())),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => BatchDetailRoute(batchId: task.batchId).push(context),
+                onTap: () => BatchVaccinationTaskRoute(
+                  batchId: task.batchId,
+                  taskId: task.id,
+                ).push(context),
               ),
             );
           }).toList(),

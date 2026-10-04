@@ -6,10 +6,10 @@ import 'package:intl/intl.dart';
 import '../../../app/di/providers.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
-import '../../../core/error/result.dart';
+import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
+import 'vet_case_status_handler.dart';
 import 'vet_incident_photo_gallery.dart';
-import 'vet_inbox_providers.dart';
 
 void openVetIncidentDetail(BuildContext context, VetIncidentDetail detail) {
   context.push('/vet/incident', extra: detail);
@@ -23,6 +23,13 @@ class VetIncidentDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = context.scheme;
+    final vetUserId = ref.watch(authUserIdProvider).value;
+    final isAssignedToMe =
+        detail.assignedVetUserId == null || detail.assignedVetUserId == vetUserId;
+    final actions = vetCaseActionsFor(
+      status: detail.status,
+      isAssignedToMe: isAssignedToMe,
+    );
     final date =
         DateFormat.yMMMd().add_jm().format(detail.createdAt.toLocal());
 
@@ -54,7 +61,10 @@ class VetIncidentDetailScreen extends ConsumerWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    _Pill(label: _statusLabel(detail.status), color: scheme.primary),
+                    _Pill(
+                      label: vetRequestStatusLabel(detail.status),
+                      color: scheme.primary,
+                    ),
                     _Pill(label: _serviceLabel(detail.serviceType), color: scheme.secondary),
                     if (detail.priority == 'urgent')
                       _Pill(label: 'Urgent', color: scheme.error),
@@ -154,46 +164,41 @@ class VetIncidentDetailScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
           VetIncidentPhotoGallery(photoObjectKeys: detail.photoObjectKeys),
           const SizedBox(height: AppSpacing.xl),
-          if (detail.status == 'submitted' || detail.status == 'received')
-            FilledButton(
-              onPressed: () => _accept(context, ref),
-              child: const Text('Accept request'),
+          if (actions.isNotEmpty)
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [
+                for (final action in actions)
+                  if (action == VetCaseAction.decline)
+                    OutlinedButton(
+                      onPressed: () => applyVetCaseAction(
+                        context: context,
+                        ref: ref,
+                        requestId: detail.requestId,
+                        action: action,
+                        popAfterSuccess: true,
+                      ),
+                      child: Text(vetCaseActionLabel(action)),
+                    )
+                  else
+                    FilledButton(
+                      onPressed: () => applyVetCaseAction(
+                        context: context,
+                        ref: ref,
+                        requestId: detail.requestId,
+                        action: action,
+                        popAfterSuccess:
+                            action == VetCaseAction.markComplete,
+                      ),
+                      child: Text(vetCaseActionLabel(action)),
+                    ),
+              ],
             ),
         ],
       ),
     );
   }
-
-  Future<void> _accept(BuildContext context, WidgetRef ref) async {
-    final result = await ref.read(vetInboxRepositoryProvider).setRequestStatus(
-          requestId: detail.requestId,
-          status: 'accepted',
-        );
-    if (!context.mounted) {
-      return;
-    }
-    switch (result) {
-      case Success():
-        ref.invalidate(vetInboxProvider);
-        ref.invalidate(vetMapProvider);
-        context.pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Request accepted')),
-        );
-      case Error(failure: final f):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message)),
-        );
-    }
-  }
-
-  static String _statusLabel(String status) => switch (status) {
-        'submitted' => 'New',
-        'received' => 'Received',
-        'accepted' => 'Accepted',
-        'in_progress' => 'In progress',
-        _ => status,
-      };
 
   static String _serviceLabel(String type) => switch (type) {
         'consultation' => 'Consultation',

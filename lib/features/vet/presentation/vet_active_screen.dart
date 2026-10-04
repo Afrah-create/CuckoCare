@@ -5,7 +5,11 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
-import '../../../core/error/result.dart';
+import '../../../app/widgets/tab_empty_state.dart';
+import '../domain/vet_case_workflow.dart';
+import '../domain/vet_incident_detail.dart';
+import 'vet_case_status_handler.dart';
+import 'vet_incident_detail_screen.dart';
 import 'vet_inbox_providers.dart';
 import 'vet_request_tile.dart';
 
@@ -17,20 +21,25 @@ class VetActiveScreen extends ConsumerWidget {
     final inboxAsync = ref.watch(vetInboxProvider);
     final vetUserId = ref.watch(authUserIdProvider).value;
 
+    Future<void> refresh() async {
+      ref.invalidate(vetInboxProvider);
+      await ref.read(vetInboxProvider.future);
+    }
+
     return RefreshIndicator(
-      onRefresh: () async {
-        ref.invalidate(vetInboxProvider);
-        await ref.read(vetInboxProvider.future);
-      },
+      onRefresh: refresh,
       child: ContentFrame(
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.only(
-            bottom: ContentFrame.scrollBottomInset(context),
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.md,
+            ContentFrame.scrollBottomInset(context),
           ),
           children: [
             Text(
-              'Cases you accepted or are working on.',
+              'Accepted cases — start the visit, then mark complete when done.',
               style: context.text.bodyMedium?.copyWith(
                 color: context.scheme.onSurfaceVariant,
               ),
@@ -41,11 +50,12 @@ class VetActiveScreen extends ConsumerWidget {
                 padding: EdgeInsets.symmetric(vertical: 48),
                 child: Center(child: CircularProgressIndicator()),
               ),
-              error: (e, _) => Text(
-                'Could not load cases: $e',
-                style: context.text.bodyMedium?.copyWith(
-                  color: context.scheme.error,
-                ),
+              error: (e, _) => TabEmptyState(
+                icon: Icons.error_outline,
+                title: 'Could not load',
+                message: '$e',
+                actionLabel: 'Retry',
+                onAction: refresh,
               ),
               data: (items) {
                 if (vetUserId == null) {
@@ -62,12 +72,24 @@ class VetActiveScreen extends ConsumerWidget {
                     for (final item in active) ...[
                       VetRequestTile(
                         item: item,
+                        onOpenDetail: () => openVetIncidentDetail(
+                          context,
+                          VetIncidentDetail.fromInbox(item),
+                        ),
                         onMarkInProgress: item.status == 'accepted'
-                            ? () => _setStatus(
-                                  context,
-                                  ref,
-                                  item.id,
-                                  'in_progress',
+                            ? () => applyVetCaseAction(
+                                  context: context,
+                                  ref: ref,
+                                  requestId: item.id,
+                                  action: VetCaseAction.startVisit,
+                                )
+                            : null,
+                        onMarkComplete: item.status == 'in_progress'
+                            ? () => applyVetCaseAction(
+                                  context: context,
+                                  ref: ref,
+                                  requestId: item.id,
+                                  action: VetCaseAction.markComplete,
                                 )
                             : null,
                       ),
@@ -82,32 +104,6 @@ class VetActiveScreen extends ConsumerWidget {
       ),
     );
   }
-
-  Future<void> _setStatus(
-    BuildContext context,
-    WidgetRef ref,
-    String requestId,
-    String status,
-  ) async {
-    final result = await ref.read(vetInboxRepositoryProvider).setRequestStatus(
-          requestId: requestId,
-          status: status,
-        );
-    if (!context.mounted) {
-      return;
-    }
-    switch (result) {
-      case Success():
-        ref.invalidate(vetInboxProvider);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Marked in progress')),
-        );
-      case Error(failure: final f):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message)),
-        );
-    }
-  }
 }
 
 class _EmptyActive extends StatelessWidget {
@@ -115,33 +111,11 @@ class _EmptyActive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = context.scheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40),
-      child: Column(
-        children: [
-          Icon(
-            Icons.assignment_outlined,
-            size: 56,
-            color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'No active cases',
-            style: context.text.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Accept a request from the Requests tab to see it here.',
-            textAlign: TextAlign.center,
-            style: context.text.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
+    return TabEmptyState(
+      icon: Icons.assignment_outlined,
+      title: 'No active cases',
+      message:
+          'Accept a request from the Requests tab, then start the visit here.',
     );
   }
 }

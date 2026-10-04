@@ -21,7 +21,7 @@ class ReportHealthConcernInput {
     this.affectedBirdCount,
     this.symptoms = const [],
     this.localPhotoPaths = const [],
-    this.requestVet = false,
+    this.requestVet = true,
     this.serviceType = 'either',
     this.shareLocation = true,
     this.requestedVetUserId,
@@ -55,18 +55,23 @@ class FarmerIncidentEntry {
 class HealthRepository {
   HealthRepository(
     this._db,
-    this._syncedWrite,
-    this._farms, {
+    this._syncedWrite, {
+    FarmRepository? farms,
+    Future<FarmRow?> Function()? resolvePrimaryFarm,
     Clock? clock,
     HealthIncidentPhotoStorage? photoStorage,
-  })  : _clock = clock ?? SystemClock(),
+  })  : assert(farms != null || resolvePrimaryFarm != null),
+        _farms = farms,
+        _resolvePrimaryFarm = resolvePrimaryFarm,
+        _clock = clock ?? SystemClock(),
         _healthMapper = HealthRecordSyncedTable(),
         _vetRequestMapper = VetAssistanceRequestSyncedTable(),
         _photoStorage = photoStorage ?? HealthIncidentPhotoStorage();
 
   final AppDatabase _db;
   final SyncedWrite _syncedWrite;
-  final FarmRepository _farms;
+  final FarmRepository? _farms;
+  final Future<FarmRow?> Function()? _resolvePrimaryFarm;
   final Clock _clock;
   final HealthRecordSyncedTable _healthMapper;
   final VetAssistanceRequestSyncedTable _vetRequestMapper;
@@ -138,7 +143,7 @@ class HealthRepository {
     );
     final pendingPhotosJson = jsonEncode(input.localPhotoPaths);
 
-    final farm = await _farms.primaryLocalFarm();
+    final farm = await _loadPrimaryFarm();
     final shareLocation = input.shareLocation &&
         farm != null &&
         farm.latitude != null &&
@@ -187,55 +192,96 @@ class HealthRepository {
       ),
     ];
 
-    if (input.requestVet) {
-      final requestId = newId();
-      final requestRow = VetAssistanceRequestRow(
-        id: requestId,
-        farmId: input.farmId,
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null,
-        serverVersion: null,
-        batchId: input.batchId,
-        healthRecordId: healthId,
-        serviceType: input.serviceType,
-        status: 'submitted',
-        shareLocation: shareLocation,
-        priority: input.affectedBirdCount != null && input.affectedBirdCount! > 50
-            ? 'urgent'
-            : 'normal',
-        farmerNotes: _vetNotesFromIncident(healthRow),
-        assignedVetUserId: null,
-        requestedVetUserId: input.requestedVetUserId,
-      );
-      ops.add(
-        SyncedWriteOp(
-          writeRow: () => _db.into(_db.vetAssistanceRequests).insert(
-                VetAssistanceRequestsCompanion.insert(
-                  id: requestId,
-                  farmId: input.farmId,
-                  createdAt: now,
-                  updatedAt: now,
-                  batchId: input.batchId,
-                  healthRecordId: healthId,
-                  serviceType: input.serviceType,
-                  status: 'submitted',
-                  shareLocation: Value(shareLocation),
-                  priority: Value(requestRow.priority),
-                  farmerNotes: Value(requestRow.farmerNotes),
-                  requestedVetUserId: Value(input.requestedVetUserId),
-                ),
+    final requestId = newId();
+    final notifyVet = input.requestVet;
+    final requestRow = VetAssistanceRequestRow(
+      id: requestId,
+      farmId: input.farmId,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
+      serverVersion: null,
+      batchId: input.batchId,
+      healthRecordId: healthId,
+      serviceType: input.serviceType,
+      status: notifyVet ? 'submitted' : 'draft',
+      shareLocation: shareLocation,
+      priority: input.affectedBirdCount != null && input.affectedBirdCount! > 50
+          ? 'urgent'
+          : 'normal',
+      farmerNotes: _vetNotesFromIncident(healthRow),
+      assignedVetUserId: null,
+      requestedVetUserId: notifyVet ? input.requestedVetUserId : null,
+    );
+    ops.add(
+      SyncedWriteOp(
+        writeRow: () => _db.into(_db.vetAssistanceRequests).insert(
+              VetAssistanceRequestsCompanion.insert(
+                id: requestId,
+                farmId: input.farmId,
+                createdAt: now,
+                updatedAt: now,
+                batchId: input.batchId,
+                healthRecordId: healthId,
+                serviceType: input.serviceType,
+                status: requestRow.status,
+                shareLocation: Value(shareLocation),
+                priority: Value(requestRow.priority),
+                farmerNotes: Value(requestRow.farmerNotes),
+                requestedVetUserId: Value(requestRow.requestedVetUserId),
               ),
-          table: _vetRequestMapper.tableName,
-          rowId: requestId,
-          op: 'upsert',
-          payload: _vetRequestMapper.toPayload(requestRow),
-        ),
-      );
-    }
+            ),
+        table: _vetRequestMapper.tableName,
+        rowId: requestId,
+        op: 'upsert',
+        payload: _vetRequestMapper.toPayload(requestRow),
+      ),
+    );
 
     await _syncedWrite.writeSyncedMany(ops);
     await flushPendingPhotos(healthRecordId: healthId);
+  }
+
+  Future<FarmRow?> _loadPrimaryFarm() async {
+    final override = _resolvePrimaryFarm;
+    if (override != null) {
+      return override();
+    }
+    return _farms!.primaryLocalFarm();
+  }
+
+  /// Sends a draft vet request to the network inbox (status → submitted).
+  Future<void> publishDraftVetRequest(String requestId) async {
+    final existing = await (_db.select(_db.vetAssistanceRequests)
+          ..where(
+            (v) => v.id.equals(requestId) & v.deletedAt.isNull(),
+          ))
+        .getSingleOrNull();
+    if (existing == null) {
+      throw StateError('Vet request not found');
+    }
+    if (existing.status != 'draft') {
+      return;
+    }
+    final now = _clock.now();
+    final updated = existing.copyWith(
+      status: 'submitted',
+      updatedAt: now,
+    );
+    await _syncedWrite.writeSynced(
+      writeRow: () => (_db.update(_db.vetAssistanceRequests)
+            ..where((v) => v.id.equals(requestId)))
+          .write(
+        VetAssistanceRequestsCompanion(
+          status: const Value('submitted'),
+          updatedAt: Value(now),
+        ),
+      ),
+      table: _vetRequestMapper.tableName,
+      rowId: requestId,
+      op: 'upsert',
+      payload: _vetRequestMapper.toPayload(updated),
+    );
   }
 
   String? _vetNotesFromIncident(HealthRecordRow row) {

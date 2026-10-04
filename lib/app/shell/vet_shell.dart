@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data_platform/sync/sync_engine.dart';
+import '../../features/auth/presentation/confirm_sign_out.dart';
 import '../../features/auth/presentation/sign_out.dart';
 import '../../features/home/presentation/profile_sheet.dart';
 import '../di/providers.dart';
@@ -28,6 +29,9 @@ class VetShell extends ConsumerStatefulWidget {
 
 class _VetShellState extends ConsumerState<VetShell> {
   Future<void> _signOut() async {
+    if (!await confirmSignOut(context)) {
+      return;
+    }
     await signOutFromApp(ref);
   }
 

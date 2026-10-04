@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../di/providers.dart';
+import 'deep_link_navigation.dart';
 
 /// Routes notification and `cucocare://` links after the session gate resolves.
 class DeepLinkHandler {
@@ -29,7 +30,7 @@ class DeepLinkHandler {
       router.go('/auth/login?from=${Uri.encodeComponent(path)}');
       return;
     }
-    router.go(path);
+    await navigateAuthenticatedDeepLink(router, path);
   }
 }
 

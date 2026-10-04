@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../auth/presentation/confirm_sign_out.dart';
 
 void showProfileSheet(
   BuildContext context,
@@ -123,6 +124,9 @@ class _ProfileSheet extends ConsumerWidget {
   }
 
   Future<void> _signOut(BuildContext context) async {
+    if (!await confirmSignOut(context)) {
+      return;
+    }
     context.pop();
     await onSignOut?.call();
   }

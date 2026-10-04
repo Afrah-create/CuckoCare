@@ -9,6 +9,7 @@ import '../../../features/batches/presentation/batch_detail_screen.dart';
 import '../../../features/batches/presentation/batch_new_screen.dart';
 import '../../../features/batches/presentation/batch_vaccination_task_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
+import '../../../features/notifications/presentation/notifications_settings_screen.dart';
 import '../../../features/settings/presentation/sync_diagnostics_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
 import '../navigator_keys.dart';
@@ -118,6 +119,20 @@ class MoreFarmRoute extends GoRouteData with $MoreFarmRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const FarmSetupScreen();
+}
+
+@TypedGoRoute<NotificationsSettingsRoute>(
+  path: '/more/settings/notifications',
+)
+class NotificationsSettingsRoute extends GoRouteData
+    with $NotificationsSettingsRoute {
+  const NotificationsSettingsRoute();
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const NotificationsSettingsScreen();
 }
 
 @TypedGoRoute<MoreSyncRoute>(path: '/more/sync')

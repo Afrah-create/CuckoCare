@@ -11,7 +11,9 @@ import '../data/vet_map_repository.dart';
 import '../domain/vet_incident_detail.dart';
 import 'vet_incident_detail_screen.dart';
 import 'vet_incident_photo_gallery.dart';
+import '../domain/vet_case_workflow.dart';
 import 'vet_inbox_providers.dart';
+import 'vet_map_pin_style.dart';
 
 /// Kampala — default map center when no pins exist.
 const _defaultCenter = LatLng(0.3476, 32.5825);
@@ -38,11 +40,12 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
     if (pins.isEmpty) {
       return;
     }
-    if (pins.length == 1) {
-      _mapController.move(
-        LatLng(pins.first.latitude!, pins.first.longitude!),
-        13,
-      );
+    final first = LatLng(pins.first.latitude!, pins.first.longitude!);
+    if (pins.length == 1 ||
+        pins.every(
+          (p) => p.latitude == pins.first.latitude && p.longitude == pins.first.longitude,
+        )) {
+      _mapController.move(first, 13);
       return;
     }
     final bounds = LatLngBounds.fromPoints(
@@ -111,12 +114,12 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                         child: GestureDetector(
                           onTap: () => setState(() => _selected = pin),
                           child: Icon(
-                            pin.priority == 'urgent'
-                                ? Icons.local_hospital
-                                : Icons.location_on,
-                            color: pin.priority == 'urgent'
-                                ? context.scheme.error
-                                : context.scheme.primary,
+                            vetMapPinIcon(pin.status),
+                            color: vetMapPinColor(
+                              status: pin.status,
+                              priority: pin.priority,
+                              scheme: context.scheme,
+                            ),
                             size: 40,
                           ),
                         ),
@@ -145,8 +148,8 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                       Expanded(
                         child: Text(
                           pins.isEmpty
-                              ? '${items.length} open requests · no shared GPS yet'
-                              : '${pins.length} on map · ${items.length} open requests',
+                              ? '${items.length} requests · no shared GPS yet'
+                              : '${pins.length} on map · ${items.length} requests',
                           style: context.text.bodyMedium,
                         ),
                       ),
@@ -160,6 +163,13 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                 ),
               ),
             ),
+            if (_selected == null)
+              Positioned(
+                bottom: AppSpacing.lg,
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                child: _MapLegend(scheme: context.scheme),
+              ),
             if (_selected != null)
               Positioned(
                 left: 0,
@@ -171,9 +181,9 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                   onAccept: () => _accept(_selected!.id),
                 ),
               ),
-            if (pins.isEmpty && items.isNotEmpty)
+            if (_selected == null && pins.isEmpty && items.isNotEmpty)
               Positioned(
-                bottom: AppSpacing.lg,
+                bottom: 72,
                 left: AppSpacing.md,
                 right: AppSpacing.md,
                 child: Card(
@@ -214,6 +224,59 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
           SnackBar(content: Text(f.message)),
         );
     }
+  }
+}
+
+class _MapLegend extends StatelessWidget {
+  const _MapLegend({required this.scheme});
+
+  final ColorScheme scheme;
+
+  @override
+  Widget build(BuildContext context) {
+    const statuses = [
+      'submitted',
+      'accepted',
+      'in_progress',
+      'completed',
+    ];
+    return Material(
+      elevation: 1,
+      borderRadius: BorderRadius.circular(12),
+      color: scheme.surface.withValues(alpha: 0.94),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: 4,
+          children: [
+            for (final status in statuses)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    vetMapPinIcon(status),
+                    size: 16,
+                    color: vetMapPinColor(
+                      status: status,
+                      priority: 'normal',
+                      scheme: scheme,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    vetMapLegendLine(status),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -285,6 +348,18 @@ class _RequestDetailSheet extends ConsumerWidget {
                   color: scheme.onSurfaceVariant,
                 ),
               ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                vetRequestStatusLabel(request.status),
+                style: context.text.labelLarge?.copyWith(
+                  color: vetMapPinColor(
+                    status: request.status,
+                    priority: request.priority,
+                    scheme: scheme,
+                  ),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               if (request.affectedBirdCount != null) ...[
                 const SizedBox(height: AppSpacing.xs),
                 Text('Birds affected: ${request.affectedBirdCount}'),
@@ -331,6 +406,14 @@ class _RequestDetailSheet extends ConsumerWidget {
                 FilledButton(
                   onPressed: onAccept,
                   child: const Text('Accept request'),
+                ),
+              ] else if (request.status == 'completed') ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  'This visit is complete. Pin is shown for your records.',
+                  style: context.text.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ],

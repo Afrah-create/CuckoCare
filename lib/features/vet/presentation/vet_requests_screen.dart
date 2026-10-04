@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
-import '../../../core/error/result.dart';
+import '../../../app/widgets/tab_empty_state.dart';
 import '../../../core/error/user_messages.dart';
+import '../data/vet_inbox_repository.dart';
+import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
+import 'vet_case_status_handler.dart';
 import 'vet_incident_detail_screen.dart';
+import '../domain/vet_inbox_stats.dart';
 import 'vet_inbox_providers.dart';
 import 'vet_request_tile.dart';
+import 'vet_requests_dashboard.dart';
+
+enum _VetRequestFilter { all, newOnly, directed, urgent }
 
 class VetRequestsScreen extends ConsumerStatefulWidget {
   const VetRequestsScreen({super.key});
@@ -20,6 +28,8 @@ class VetRequestsScreen extends ConsumerStatefulWidget {
 }
 
 class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
+  _VetRequestFilter _filter = _VetRequestFilter.all;
+
   @override
   void initState() {
     super.initState();
@@ -33,9 +43,58 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     await ref.read(vetInboxProvider.future);
   }
 
+  List<VetInboxItem> _pendingForVet(
+    List<VetInboxItem> items,
+    String vetUserId,
+  ) {
+    final pending = items
+        .where((i) => vetInboxItemIsPending(i, vetUserId))
+        .toList(growable: false);
+    pending.sort((a, b) {
+      final aScore = _sortScore(a, vetUserId);
+      final bScore = _sortScore(b, vetUserId);
+      if (aScore != bScore) {
+        return bScore.compareTo(aScore);
+      }
+      return b.createdAt.compareTo(a.createdAt);
+    });
+    return pending;
+  }
+
+  int _sortScore(VetInboxItem item, String vetUserId) {
+    var score = 0;
+    if (item.priority == 'urgent') {
+      score += 100;
+    }
+    if (item.requestedVetUserId == vetUserId) {
+      score += 50;
+    }
+    if (item.isDirectedRequest) {
+      score += 10;
+    }
+    return score;
+  }
+
+  List<VetInboxItem> _applyFilter(
+    List<VetInboxItem> pending,
+    String vetUserId,
+    _VetRequestFilter filter,
+  ) {
+    return switch (filter) {
+      _VetRequestFilter.all => pending,
+      _VetRequestFilter.newOnly => pending
+          .where((i) => i.status == 'submitted')
+          .toList(growable: false),
+      _VetRequestFilter.directed => pending
+          .where((i) => i.requestedVetUserId == vetUserId)
+          .toList(growable: false),
+      _VetRequestFilter.urgent =>
+        pending.where((i) => i.priority == 'urgent').toList(growable: false),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).value;
     final online = ref.watch(connectivityOnlineProvider).value ?? true;
     final inboxAsync = ref.watch(vetInboxProvider);
     final vetUserId = ref.watch(authUserIdProvider).value;
@@ -49,266 +108,303 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
             bottom: ContentFrame.scrollBottomInset(context),
           ),
           children: [
-            _HeroHeader(
-              displayName: profile?.displayName,
-              online: online,
-              onRefresh: _refresh,
-            ),
-            if (!online) ...[
-              const SizedBox(height: AppSpacing.sm),
-              MaterialBanner(
-                content: const Text(
-                  'You are offline. Connect to load live requests from farmers.',
-                ),
-                leading: const Icon(Icons.cloud_off_outlined),
-                actions: [
-                  TextButton(onPressed: _refresh, child: const Text('Retry')),
-                ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.md,
+                AppSpacing.sm,
+                AppSpacing.md,
+                AppSpacing.md,
               ),
-            ],
-            const SizedBox(height: AppSpacing.lg),
-            inboxAsync.when(
-              loading: () => const Padding(
-                padding: EdgeInsets.symmetric(vertical: 48),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              error: (e, _) => _InboxError(
-                message: userMessageForError(e),
-                onRetry: _refresh,
-              ),
-              data: (items) {
-                if (vetUserId == null) {
-                  return const _EmptyInbox();
-                }
-                final pending = items
-                    .where((i) => vetInboxItemIsPending(i, vetUserId))
-                    .toList(growable: false);
-                final activeOthers = items
-                    .where((i) => vetInboxItemIsActive(i, vetUserId))
-                    .toList(growable: false);
-
-                if (pending.isEmpty && activeOthers.isEmpty) {
-                  return const _EmptyInbox();
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      '${pending.length + activeOthers.length} visible to you',
-                      style: context.text.labelLarge?.copyWith(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      online
+                          ? 'Open farmer requests waiting for a vet.'
+                          : 'Offline — pull down to refresh when online.',
+                      style: context.text.bodyMedium?.copyWith(
                         color: context.scheme.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: AppSpacing.md),
-                    if (pending.isNotEmpty) ...[
-                      Text(
-                        'New requests',
-                        style: context.text.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      for (final item in pending) ...[
-                        VetRequestTile(
-                          item: item,
-                          onOpenDetail: () => openVetIncidentDetail(
-                            context,
-                            VetIncidentDetail.fromInbox(item),
-                          ),
-                          onAccept: () => _accept(context, ref, item.id),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                      ],
-                    ],
-                    if (activeOthers.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'Already in progress',
-                        style: context.text.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      for (final item in activeOthers) ...[
-                        VetRequestTile(
-                          item: item,
-                          onOpenDetail: () => openVetIncidentDetail(
-                            context,
-                            VetIncidentDetail.fromInbox(item),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                      ],
-                    ],
-                    if (pending.isEmpty && activeOthers.isEmpty)
-                      const _EmptyInbox(),
-                  ],
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _accept(
-    BuildContext context,
-    WidgetRef ref,
-    String requestId,
-  ) async {
-    final result = await ref.read(vetInboxRepositoryProvider).setRequestStatus(
-          requestId: requestId,
-          status: 'accepted',
-        );
-    if (!context.mounted) {
-      return;
-    }
-    switch (result) {
-      case Success():
-        ref.invalidate(vetInboxProvider);
-        ref.invalidate(vetMapProvider);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Request accepted — see Active tab')),
-        );
-      case Error(failure: final f):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message)),
-        );
-    }
-  }
-}
-
-class _HeroHeader extends StatelessWidget {
-  const _HeroHeader({
-    this.displayName,
-    required this.online,
-    required this.onRefresh,
-  });
-
-  final String? displayName;
-  final bool online;
-  final VoidCallback onRefresh;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = context.scheme;
-    final greeting = displayName != null && displayName!.trim().isNotEmpty
-        ? 'Hello, ${displayName!.trim()}'
-        : 'Hello';
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.lg),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            scheme.primaryContainer,
-            scheme.secondaryContainer.withValues(alpha: 0.85),
-          ],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  greeting,
-                  style: context.text.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
                   ),
+                  IconButton(
+                    tooltip: 'Refresh',
+                    onPressed: _refresh,
+                    icon: const Icon(Icons.refresh),
+                  ),
+                ],
+              ),
+            ),
+            if (!online)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: MaterialBanner(
+                  content: const Text(
+                    'Connect to the internet to load live requests.',
+                  ),
+                  leading: const Icon(Icons.cloud_off_outlined),
+                  actions: [
+                    TextButton(onPressed: _refresh, child: const Text('Retry')),
+                  ],
                 ),
               ),
-              IconButton(
-                tooltip: 'Refresh inbox',
-                onPressed: onRefresh,
-                icon: const Icon(Icons.refresh),
+            ...inboxAsync.when(
+              loading: () => [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 48),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ],
+              error: (e, _) => [
+                TabEmptyState(
+                  icon: Icons.error_outline,
+                  title: 'Could not load',
+                  message: userMessageForError(e),
+                  actionLabel: 'Try again',
+                  onAction: _refresh,
+                ),
+              ],
+              data: (items) => _inboxListChildren(
+                context,
+                items: items,
+                vetUserId: vetUserId,
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            online
-                ? 'Live requests from farmers (pull to refresh).'
-                : 'Offline — showing last loaded data when available.',
-            style: context.text.bodyMedium?.copyWith(
-              color: scheme.onPrimaryContainer.withValues(alpha: 0.85),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _inboxListChildren(
+    BuildContext context, {
+    required List<VetInboxItem> items,
+    required String? vetUserId,
+  }) {
+    if (vetUserId == null) {
+      return const [_InboxEmptyBody(hasStats: false)];
+    }
+
+    final stats = VetInboxStats.fromItems(items, vetUserId);
+    final pending = _pendingForVet(items, vetUserId);
+    final urgentCount = stats.urgentPending;
+    final effectiveFilter =
+        _filter == _VetRequestFilter.urgent && urgentCount == 0
+            ? _VetRequestFilter.all
+            : _filter;
+    final filtered = _applyFilter(pending, vetUserId, effectiveFilter);
+
+    final children = <Widget>[
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        child: VetRequestsStatsPanel(stats: stats),
+      ),
+      const SizedBox(height: AppSpacing.md),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        child: VetRequestsQuickActions(
+          stats: stats,
+          onRefresh: _refresh,
+        ),
+      ),
+      const SizedBox(height: AppSpacing.lg),
+    ];
+
+    if (pending.isEmpty) {
+      children.add(
+        _InboxEmptyBody(
+          hasStats: true,
+          activeCount: stats.active,
+          inProgressCount: stats.inProgress,
+        ),
+      );
+      return children;
+    }
+
+    children.addAll([
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Queue',
+              style: context.text.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            _FilterRow(
+              selected: effectiveFilter,
+              showUrgent: urgentCount > 0,
+              onSelected: (f) => setState(() => _filter = f),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: AppSpacing.md),
+    ]);
+
+    if (filtered.isEmpty) {
+      children.add(
+        TabEmptyState(
+          icon: Icons.filter_list_off,
+          title: 'No matches',
+          message: 'Try another filter or refresh the list.',
+          actionLabel: 'Show all',
+          onAction: () => setState(() => _filter = _VetRequestFilter.all),
+        ),
+      );
+      return children;
+    }
+
+    for (final item in filtered) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          child: VetRequestTile(
+            item: item,
+            onOpenDetail: () => openVetIncidentDetail(
+              context,
+              VetIncidentDetail.fromInbox(item),
+            ),
+            onAccept: () => applyVetCaseAction(
+              context: context,
+              ref: ref,
+              requestId: item.id,
+              action: VetCaseAction.accept,
+            ),
+            onDecline: () => applyVetCaseAction(
+              context: context,
+              ref: ref,
+              requestId: item.id,
+              action: VetCaseAction.decline,
             ),
           ),
-        ],
-      ),
+        ),
+      );
+      children.add(const SizedBox(height: AppSpacing.sm));
+    }
+    return children;
+  }
+}
+
+class _FilterRow extends StatelessWidget {
+  const _FilterRow({
+    required this.selected,
+    required this.showUrgent,
+    required this.onSelected,
+  });
+
+  final _VetRequestFilter selected;
+  final bool showUrgent;
+  final ValueChanged<_VetRequestFilter> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        _FilterChip(
+          label: 'All',
+          selected: selected == _VetRequestFilter.all,
+          onTap: () => onSelected(_VetRequestFilter.all),
+        ),
+        _FilterChip(
+          label: 'New',
+          selected: selected == _VetRequestFilter.newOnly,
+          onTap: () => onSelected(_VetRequestFilter.newOnly),
+        ),
+        _FilterChip(
+          label: 'For you',
+          selected: selected == _VetRequestFilter.directed,
+          onTap: () => onSelected(_VetRequestFilter.directed),
+        ),
+        if (showUrgent)
+          _FilterChip(
+            label: 'Urgent',
+            selected: selected == _VetRequestFilter.urgent,
+            onTap: () => onSelected(_VetRequestFilter.urgent),
+          ),
+      ],
     );
   }
 }
 
-class _EmptyInbox extends StatelessWidget {
-  const _EmptyInbox();
+class _FilterChip extends StatelessWidget {
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final scheme = context.scheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 32),
-      child: Column(
-        children: [
-          Icon(
-            Icons.inbox_outlined,
-            size: 56,
-            color: scheme.onSurfaceVariant.withValues(alpha: 0.7),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            'No open requests',
-            style: context.text.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+    return Material(
+      color: selected
+          ? scheme.primaryContainer
+          : scheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Text(
+            label,
+            style: context.text.labelLarge?.copyWith(
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              color: selected
+                  ? scheme.onPrimaryContainer
+                  : scheme.onSurfaceVariant,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            'When farmers request vet help on an incident, directed and open broadcast requests show here. Cases accepted by another vet are hidden.',
-            textAlign: TextAlign.center,
-            style: context.text.bodyMedium?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class _InboxError extends StatelessWidget {
-  const _InboxError({required this.message, required this.onRetry});
+class _InboxEmptyBody extends StatelessWidget {
+  const _InboxEmptyBody({
+    this.hasStats = false,
+    this.activeCount = 0,
+    this.inProgressCount = 0,
+  });
 
-  final String message;
-  final VoidCallback onRetry;
+  final bool hasStats;
+  final int activeCount;
+  final int inProgressCount;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        children: [
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: context.text.bodyMedium?.copyWith(
-              color: context.scheme.error,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          FilledButton.tonal(
-            onPressed: onRetry,
-            child: const Text('Try again'),
-          ),
-        ],
-      ),
+    if (hasStats && activeCount > 0) {
+      return TabEmptyState(
+        icon: Icons.check_circle_outline,
+        title: 'Queue is clear',
+        message: inProgressCount > 0
+            ? 'No new requests right now. You have $activeCount active '
+                'case${activeCount == 1 ? '' : 's'} ($inProgressCount in progress).'
+            : 'No new requests right now. You have $activeCount active '
+                'case${activeCount == 1 ? '' : 's'} waiting to start.',
+        actionLabel: 'Open Active',
+        onAction: () => context.go('/vet/active'),
+      );
+    }
+
+    return TabEmptyState(
+      icon: Icons.inbox_outlined,
+      title: hasStats ? 'No new requests' : 'Sign in required',
+      message: hasStats
+          ? 'Stats above reflect your inbox. New farmer incidents appear here '
+              'when they notify a vet and sync completes.'
+          : 'Could not load your vet account. Pull to refresh or sign in again.',
     );
   }
 }

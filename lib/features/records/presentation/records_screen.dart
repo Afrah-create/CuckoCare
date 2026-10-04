@@ -60,7 +60,9 @@ class RecordsScreen extends ConsumerWidget {
                   ),
                 );
               }
-              return _IncidentRecordCard(entry: entries[index - 1]);
+              return _IncidentRecordCard(
+                entry: entries[index - 1],
+              );
             },
           ),
         );
@@ -69,13 +71,13 @@ class RecordsScreen extends ConsumerWidget {
   }
 }
 
-class _IncidentRecordCard extends StatelessWidget {
+class _IncidentRecordCard extends ConsumerWidget {
   const _IncidentRecordCard({required this.entry});
 
   final FarmerIncidentEntry entry;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final record = entry.record;
     final request = entry.vetRequest;
     final date = DateFormat.yMMMd().format(record.occurredOn.toLocal());
@@ -123,11 +125,41 @@ class _IncidentRecordCard extends StatelessWidget {
             ],
             if (request != null) ...[
               const SizedBox(height: AppSpacing.md),
-              _VetRequestStatusRow(request: request),
+              if (request.status == 'draft')
+                _DraftVetRequestRow(
+                  requestId: request.id,
+                  onPublish: () async {
+                    try {
+                      await ref
+                          .read(healthRepositoryProvider)
+                          .publishDraftVetRequest(request.id);
+                      ref.read(syncSchedulerProvider).notifyLocalWrite();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Vet notified — request will send when online.',
+                            ),
+                          ),
+                        );
+                      }
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Could not notify vet. Try again.'),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                )
+              else
+                _VetRequestStatusRow(request: request),
             ] else ...[
               const SizedBox(height: AppSpacing.md),
               Text(
-                'Saved locally — vet was not notified.',
+                'No vet request linked (older record).',
                 style: context.text.bodySmall?.copyWith(
                   color: context.scheme.onSurfaceVariant,
                 ),
@@ -135,6 +167,54 @@ class _IncidentRecordCard extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _DraftVetRequestRow extends StatelessWidget {
+  const _DraftVetRequestRow({
+    required this.requestId,
+    required this.onPublish,
+  });
+
+  final String requestId;
+  final VoidCallback onPublish;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: context.scheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Vet not notified yet',
+            style: context.text.labelLarge?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'This incident is saved on your device only.',
+            style: context.text.bodySmall?.copyWith(
+              color: context.scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Align(
+            alignment: Alignment.centerRight,
+            child: FilledButton.tonal(
+              onPressed: onPublish,
+              child: const Text('Notify a vet'),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -208,10 +288,11 @@ class _VetRequestStatusRow extends StatelessWidget {
   static (String, Color) _statusStyle(BuildContext context, String status) {
     final scheme = context.scheme;
     return switch (status) {
+      'draft' => ('Not sent', scheme.outline),
       'submitted' || 'received' => ('Awaiting vet', scheme.tertiary),
       'accepted' => ('Accepted', scheme.primary),
       'in_progress' => ('In progress', scheme.primary),
-      'completed' => ('Completed', scheme.outline),
+      'completed' => ('Vet completed', scheme.outline),
       'declined' || 'cancelled' => ('Closed', scheme.error),
       _ => (status, scheme.outline),
     };

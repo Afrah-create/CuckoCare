@@ -15,6 +15,7 @@ List<RouteBase> get $appRoutes => [
   $batchNewRoute,
   $batchDetailRoute,
   $moreFarmRoute,
+  $notificationsSettingsRoute,
   $moreSyncRoute,
   $vetSyncRoute,
 ];
@@ -262,6 +263,34 @@ mixin $MoreFarmRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/more/farm');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $notificationsSettingsRoute => GoRouteData.$route(
+  path: '/more/settings/notifications',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: NotificationsSettingsRoute.$parentNavigatorKey,
+  factory: $NotificationsSettingsRoute._fromState,
+);
+
+mixin $NotificationsSettingsRoute on GoRouteData {
+  static NotificationsSettingsRoute _fromState(GoRouterState state) =>
+      const NotificationsSettingsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/more/settings/notifications');
 
   @override
   void go(BuildContext context) => context.go(location);

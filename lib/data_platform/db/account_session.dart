@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../features/notifications/presentation/notification_prefs_provider.dart';
+import '../../features/notifications/presentation/reminder_account_providers.dart';
 import 'local_account_registry.dart';
 
 /// Which account's Drift database [appDatabaseProvider] should open.
@@ -13,6 +15,11 @@ class AccountSessionNotifier extends Notifier<String?> {
     }
     await ref.read(localAccountRegistryProvider).setActiveAccountId(userId);
     state = userId;
+    if (userId != null) {
+      await ref.read(reminderAccountStoreProvider).set(userId);
+      ref.read(reminderAccountUserIdProvider.notifier).adopt(userId);
+      ref.read(reminderReconcilerProvider).scheduleReconcile();
+    }
   }
 }
 

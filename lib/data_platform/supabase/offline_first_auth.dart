@@ -21,7 +21,12 @@ Future<void> reconcileSupabaseWithLocalSnapshot({
 ///
 /// Returns false when there is no usable session (caller should skip remote work).
 Future<bool> ensureSupabaseSessionForNetwork() async {
-  final auth = Supabase.instance.client.auth;
+  final GoTrueClient auth;
+  try {
+    auth = Supabase.instance.client.auth;
+  } catch (_) {
+    return false;
+  }
   if (auth.currentSession == null) {
     final storage = SecureLocalStorage();
     if (await storage.hasAccessToken()) {

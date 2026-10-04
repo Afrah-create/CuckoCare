@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
+import '../../auth/presentation/confirm_sign_out.dart';
 import '../../auth/presentation/sign_out.dart';
 import '../../settings/presentation/appearance_section.dart';
 import 'vet_gps_capture_card.dart';
@@ -68,7 +69,12 @@ class VetMoreScreen extends ConsumerWidget {
               style: theme.textTheme.bodyLarge
                   ?.copyWith(color: theme.colorScheme.error),
             ),
-            onTap: () => signOutFromApp(ref),
+            onTap: () async {
+              if (!await confirmSignOut(context)) {
+                return;
+              }
+              await signOutFromApp(ref);
+            },
           ),
         ),
       ],

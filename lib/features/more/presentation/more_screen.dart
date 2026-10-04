@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/di/providers.dart';
+import '../../auth/presentation/confirm_sign_out.dart';
 import '../../auth/presentation/sign_out.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../settings/presentation/appearance_section.dart';
@@ -10,6 +10,9 @@ class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
 
   Future<void> _signOut(BuildContext context, WidgetRef ref) async {
+    if (!await confirmSignOut(context)) {
+      return;
+    }
     await signOutFromApp(ref);
   }
 
@@ -54,6 +57,23 @@ class MoreScreen extends ConsumerWidget {
                 onTap: () {},
               ),
             ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Preferences',
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.notifications_outlined),
+            title: const Text('Notifications'),
+            subtitle: const Text('Due and overdue reminders'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => const NotificationsSettingsRoute().push(context),
           ),
         ),
         const SizedBox(height: 24),

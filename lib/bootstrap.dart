@@ -11,7 +11,6 @@ import 'package:workmanager/workmanager.dart';
 import 'core/config/env.dart';
 import 'core/time/clock.dart';
 import 'data_platform/db/app_database.dart';
-import 'data_platform/notifications/local_reminder_scheduler.dart';
 import 'data_platform/supabase/supabase_bootstrap.dart';
 import 'data_platform/sync/sync_scheduler.dart';
 import 'features/vaccination/data/seed_programme_loader.dart';
@@ -33,7 +32,6 @@ Future<void> bootstrap({
   required Env env,
   required AppDatabase db,
   required SyncScheduler syncScheduler,
-  required LocalReminderScheduler reminders,
   Clock? clock,
   bool initializeSupabase = true,
 }) async {
@@ -51,8 +49,6 @@ Future<void> bootstrap({
   if (initializeSupabase) {
     await bootstrapSupabase(env);
   }
-  await reminders.initialize();
-
   await SeedProgrammeLoader(db, clock ?? SystemClock()).loadIfEmpty();
 
   await syncScheduler.start();

@@ -215,7 +215,7 @@ final healthRepositoryProvider = Provider<HealthRepository>((ref) {
   return HealthRepository(
     ref.watch(appDatabaseProvider),
     ref.watch(syncedWriteProvider),
-    ref.watch(farmRepositoryProvider),
+    farms: ref.watch(farmRepositoryProvider),
     clock: ref.watch(clockProvider),
   );
 });

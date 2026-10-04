@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
+import '../../notifications/presentation/notification_prefs_provider.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -244,6 +246,7 @@ class _BatchDetailBody extends StatelessWidget {
               todayLocal.day,
             ),
           );
+      ref.read(reminderReconcilerProvider).scheduleReconcile();
     } on StateError catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -301,7 +304,13 @@ class _TaskTile extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.sm),
-      child: Padding(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => BatchVaccinationTaskRoute(
+          batchId: task.batchId,
+          taskId: task.id,
+        ).push(context),
+        child: Padding(
         padding: const EdgeInsets.fromLTRB(
           AppSpacing.md,
           AppSpacing.sm,
@@ -340,9 +349,15 @@ class _TaskTile extends StatelessWidget {
                 icon: const Icon(Icons.check_circle_outline),
                 tooltip: 'Mark done',
                 onPressed: onMarkDone,
+              )
+            else
+              Icon(
+                Icons.chevron_right,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
           ],
         ),
+      ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../db/app_database.dart';
 import 'remote_sync_api.dart';
 import 'sync_apply.dart';
 import 'sync_engine.dart';
+import 'sync_push_order.dart';
 
 class CucoCareSyncEngine implements SyncEngine {
   CucoCareSyncEngine({
@@ -146,6 +147,7 @@ class CucoCareSyncEngine implements SyncEngine {
       if (batch.isEmpty) {
         return const Success(null);
       }
+      sortOutboxRowsForPush(batch);
 
       final ops = batch
           .map(

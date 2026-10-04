@@ -4,19 +4,24 @@ import 'package:intl/intl.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../data/vet_inbox_repository.dart';
+import '../domain/vet_case_workflow.dart';
 
 class VetRequestTile extends StatelessWidget {
   const VetRequestTile({
     required this.item,
     this.onAccept,
+    this.onDecline,
     this.onMarkInProgress,
+    this.onMarkComplete,
     this.onOpenDetail,
     super.key,
   });
 
   final VetInboxItem item;
   final VoidCallback? onAccept;
+  final VoidCallback? onDecline;
   final VoidCallback? onMarkInProgress;
+  final VoidCallback? onMarkComplete;
   final VoidCallback? onOpenDetail;
 
   @override
@@ -32,13 +37,15 @@ class VetRequestTile extends StatelessWidget {
         side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
       ),
       clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onOpenDetail,
-        child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: SizedBox(
+        width: double.infinity,
+        child: InkWell(
+          onTap: onOpenDetail,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -86,7 +93,12 @@ class VetRequestTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                _StatusChip(status: item.status, priority: item.priority),
+                Flexible(
+                  child: _StatusChip(
+                    status: item.status,
+                    priority: item.priority,
+                  ),
+                ),
               ],
             ),
             if (item.isDirectedRequest) ...[
@@ -159,15 +171,30 @@ class VetRequestTile extends StatelessWidget {
                 ],
               ),
             ],
-            if (onAccept != null || onMarkInProgress != null) ...[
+            if (onAccept != null ||
+                onDecline != null ||
+                onMarkInProgress != null ||
+                onMarkComplete != null) ...[
               const SizedBox(height: AppSpacing.md),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  if (onMarkInProgress != null)
+                  if (onDecline != null)
                     TextButton(
+                      onPressed: onDecline,
+                      child: const Text('Decline'),
+                    ),
+                  if (onMarkInProgress != null)
+                    FilledButton.tonal(
                       onPressed: onMarkInProgress,
                       child: const Text('Start visit'),
+                    ),
+                  if (onMarkComplete != null)
+                    FilledButton(
+                      onPressed: onMarkComplete,
+                      child: const Text('Mark complete'),
                     ),
                   if (onAccept != null)
                     FilledButton.tonal(
@@ -177,9 +204,10 @@ class VetRequestTile extends StatelessWidget {
                 ],
               ),
             ],
-          ],
+              ],
+            ),
+          ),
         ),
-      ),
       ),
     );
   }
@@ -206,14 +234,13 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = context.scheme;
-    final (label, color) = switch (status) {
-      'submitted' => ('New', scheme.tertiary),
-      'received' => ('Received', scheme.tertiary),
-      'accepted' => ('Accepted', scheme.primary),
-      'in_progress' => ('In progress', scheme.primary),
-      'completed' => ('Done', scheme.outline),
-      'declined' => ('Declined', scheme.error),
-      _ => (status, scheme.outline),
+    final label = _shortStatusLabel(status);
+    final color = switch (status) {
+      'submitted' || 'received' => scheme.tertiary,
+      'accepted' || 'in_progress' => scheme.primary,
+      'completed' => scheme.outline,
+      'declined' || 'cancelled' => scheme.error,
+      _ => scheme.outline,
     };
 
     return Column(
@@ -227,6 +254,7 @@ class _StatusChip extends StatelessWidget {
           ),
           child: Text(
             label,
+            textAlign: TextAlign.end,
             style: context.text.labelSmall?.copyWith(
               color: color,
               fontWeight: FontWeight.w600,
@@ -246,4 +274,14 @@ class _StatusChip extends StatelessWidget {
       ],
     );
   }
+
+  static String _shortStatusLabel(String status) => switch (status) {
+        'submitted' => 'New',
+        'received' => 'Received',
+        'accepted' => 'Accepted',
+        'in_progress' => 'In progress',
+        'completed' => 'Done',
+        'declined' => 'Declined',
+        _ => vetRequestStatusLabel(status),
+      };
 }

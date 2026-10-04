@@ -277,6 +277,12 @@ class BatchRepository {
         .watch();
   }
 
+  Stream<VaccinationTaskRow?> watchTask(String taskId) {
+    return (_db.select(_db.vaccinationTasks)
+          ..where((t) => t.id.equals(taskId) & t.deletedAt.isNull()))
+        .watchSingleOrNull();
+  }
+
   Stream<int> watchActiveBatchCount(String farmId) {
     final query = _db.select(_db.batches)
       ..where(
