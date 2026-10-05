@@ -14,6 +14,7 @@ import '../../../data_platform/sync/sync_json.dart';
 import '../../auth/data/auth_snapshot_repository.dart';
 import '../domain/farm_gps.dart';
 import '../domain/farm_phone.dart';
+import '../domain/farm_profile.dart';
 import 'farm_synced_table.dart';
 
 class FarmRepository {
@@ -108,26 +109,13 @@ class FarmRepository {
   }
 
   Future<FarmRow?> _pickPrimaryFarm(List<FarmRow> rows) async {
-    if (rows.isEmpty) {
-      return null;
-    }
     final ids = await _snapshots.loadFarmIds();
-    for (final id in ids) {
-      for (final row in rows) {
-        if (row.id == id && row.serverVersion != null) {
-          return row;
-        }
-      }
-    }
-    for (final id in ids) {
-      for (final row in rows) {
-        if (row.id == id) {
-          return row;
-        }
-      }
-    }
-    rows.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    return rows.first;
+    return selectPrimaryFarm(rows, ids);
+  }
+
+  Future<FarmRow?> _farmById(String farmId) {
+    return (_db.select(_db.farms)..where((f) => f.id.equals(farmId)))
+        .getSingleOrNull();
   }
 
   Future<void> cacheBootstrapData({
@@ -138,28 +126,70 @@ class FarmRepository {
     await _db.transaction(() async {
       for (final f in farms) {
         final id = f['id'] as String;
+        final existing = await (_db.select(_db.farms)
+              ..where((row) => row.id.equals(id)))
+            .getSingleOrNull();
+        final serverUpdatedAt = _parseTime(f['updated_at']) ?? now;
+        final keep = existing != null &&
+                !existing.updatedAt.isBefore(serverUpdatedAt)
+            ? existing
+            : null;
         await _db.into(_db.farms).insertOnConflictUpdate(
               FarmsCompanion.insert(
                 id: id,
                 farmId: f['farm_id'] as String? ?? id,
                 createdAt: _parseTime(f['created_at']) ?? now,
-                updatedAt: _parseTime(f['updated_at']) ?? now,
+                updatedAt: keep?.updatedAt ?? serverUpdatedAt,
                 deletedAt: Value(_parseTime(f['deleted_at'])),
-                serverVersion: Value(syncJsonInt(f['server_version'])),
-                name: f['name'] as String,
-                location: Value(f['location'] as String?),
-                district: Value(f['district'] as String?),
-                village: Value(f['village'] as String?),
-                phone: Value(f['phone'] as String?),
-                altPhone: Value(f['alt_phone'] as String?),
-                notes: Value(f['notes'] as String?),
-                profileCompletedAt: Value(_parseTime(f['profile_completed_at'])),
-                latitude: Value((f['latitude'] as num?)?.toDouble()),
-                longitude: Value((f['longitude'] as num?)?.toDouble()),
-                locationAccuracyM:
-                    Value((f['location_accuracy_m'] as num?)?.toDouble()),
-                locationCapturedAt:
-                    Value(_parseTime(f['location_captured_at'])),
+                serverVersion: Value(
+                  keep != null
+                      ? keep.serverVersion
+                      : syncJsonInt(f['server_version']),
+                ),
+                name: keep?.name ?? f['name'] as String,
+                location: Value(
+                  keep != null ? keep.location : f['location'] as String?,
+                ),
+                district: Value(
+                  keep != null ? keep.district : f['district'] as String?,
+                ),
+                village: Value(
+                  keep != null ? keep.village : f['village'] as String?,
+                ),
+                phone: Value(
+                  keep != null ? keep.phone : f['phone'] as String?,
+                ),
+                altPhone: Value(
+                  keep != null ? keep.altPhone : f['alt_phone'] as String?,
+                ),
+                notes: Value(
+                  keep != null ? keep.notes : f['notes'] as String?,
+                ),
+                profileCompletedAt: Value(
+                  keep != null
+                      ? keep.profileCompletedAt
+                      : _parseTime(f['profile_completed_at']),
+                ),
+                latitude: Value(
+                  keep != null
+                      ? keep.latitude
+                      : (f['latitude'] as num?)?.toDouble(),
+                ),
+                longitude: Value(
+                  keep != null
+                      ? keep.longitude
+                      : (f['longitude'] as num?)?.toDouble(),
+                ),
+                locationAccuracyM: Value(
+                  keep != null
+                      ? keep.locationAccuracyM
+                      : (f['location_accuracy_m'] as num?)?.toDouble(),
+                ),
+                locationCapturedAt: Value(
+                  keep != null
+                      ? keep.locationCapturedAt
+                      : _parseTime(f['location_captured_at']),
+                ),
               ),
             );
       }
@@ -278,14 +308,14 @@ class FarmRepository {
     final online = await _connectivity.hasConnectivityHint();
     if (online && await ensureSupabaseSessionForNetwork()) {
       try {
-        final farm = await primaryLocalFarm();
+        final farm = await _farmById(localFarmId);
         if (farm != null) {
-          await _syncLocalProfileToServer(farm);
+          return await _syncLocalProfileToServer(farm);
         }
       } on AuthException {
         rethrow;
       } catch (e) {
-        final farm = await primaryLocalFarm();
+        final farm = await _farmById(localFarmId);
         if (farm != null) {
           await _queueFarmProfileForSync(farm);
         }
@@ -295,7 +325,7 @@ class FarmRepository {
       }
     }
 
-    return (await primaryLocalFarm())?.id ?? localFarmId;
+    return localFarmId;
   }
 
   /// Saves GPS coordinates locally and queues sync (for vet visits / assistance).
@@ -362,7 +392,7 @@ class FarmRepository {
     );
   }
 
-  Future<void> _syncLocalProfileToServer(FarmRow farm) async {
+  Future<String> _syncLocalProfileToServer(FarmRow farm) async {
     final serverFarmId = await _rpcSaveFarmProfile(
       name: farm.name,
       district: farm.district ?? '',
@@ -383,6 +413,7 @@ class FarmRepository {
     } catch (_) {
       // Profile RPC succeeded; bootstrap refresh is best-effort.
     }
+    return serverFarmId;
   }
 
   Future<void> _queueFarmProfileForSync(FarmRow row) async {

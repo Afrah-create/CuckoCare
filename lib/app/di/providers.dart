@@ -35,7 +35,7 @@ final clockProvider = Provider<Clock>((ref) => SystemClock());
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final userId = ref.watch(accountSessionProvider);
   final db = AppDatabase.forAccount(userId);
-  ref.onDispose(db.close);
+  ref.onDispose(() => disposeAppDatabase(db));
   return db;
 });
 

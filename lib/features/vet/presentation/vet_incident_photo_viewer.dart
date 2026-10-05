@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/theme/app_spacing.dart';
+import '../../../app/widgets/states/skeleton.dart';
 
 void openVetIncidentPhotoViewer(
   BuildContext context, {
@@ -84,8 +85,12 @@ class _VetIncidentPhotoViewerState extends State<VetIncidentPhotoViewer> {
                             if (progress == null) {
                               return child;
                             }
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return const SkeletonScope(
+                              child: SkeletonBlock(
+                                width: 220,
+                                height: 160,
+                                radius: 12,
+                              ),
                             );
                           },
                           errorBuilder: (_, __, ___) => const Icon(

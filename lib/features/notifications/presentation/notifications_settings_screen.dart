@@ -7,6 +7,8 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/cuco_confirm_dialog.dart';
 import '../../../app/widgets/inline_banner.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/app_snack.dart';
 import '../domain/notification_channels.dart';
 import '../domain/notification_prefs.dart';
 import '../domain/notifications_availability.dart';
@@ -49,12 +51,10 @@ class NotificationsSettingsScreen extends ConsumerWidget {
             prefs.copyWith(permissionDenialCount: nextDenials),
           );
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
+        AppSnack.show(
+          context,
+          message:
               'Permission was not granted. You can enable alerts in system settings.',
-            ),
-          ),
         );
       }
       return;
@@ -115,10 +115,13 @@ class NotificationsSettingsScreen extends ConsumerWidget {
             bottom: ContentFrame.scrollBottomInset(context),
           ),
           children: [
-            availabilityAsync.when(
-              loading: () => const SizedBox.shrink(),
+            AsyncStateView(
+              expand: false,
+              value: availabilityAsync,
+              skeleton: const SizedBox(height: 8),
               error: (_, _) => const SizedBox.shrink(),
-              data: (availability) => _BlockedBanner(availability: availability),
+              builder: (availability) =>
+                  _BlockedBanner(availability: availability),
             ),
             const SizedBox(height: AppSpacing.sm),
             Card(
@@ -221,10 +224,12 @@ class NotificationsSettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            nextLine.when(
-              loading: () => const SizedBox.shrink(),
+            AsyncStateView(
+              expand: false,
+              value: nextLine,
+              skeleton: const SizedBox(height: 8),
               error: (_, _) => const SizedBox.shrink(),
-              data: (line) => Padding(
+              builder: (line) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Text(
                   line,

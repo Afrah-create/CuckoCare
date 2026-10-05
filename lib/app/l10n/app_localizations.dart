@@ -135,6 +135,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Following your phone\'s setting (currently Dark)'**
   String get themeSystemHelperDark;
+
+  /// No description provided for @stateLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading'**
+  String get stateLoading;
+
+  /// No description provided for @stateTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get stateTryAgain;
+
+  /// No description provided for @stateSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get stateSaved;
+
+  /// No description provided for @stateSavedOnPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone'**
+  String get stateSavedOnPhone;
+
+  /// No description provided for @stateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to date'**
+  String get stateUpToDate;
+
+  /// No description provided for @stateOfflineWillSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline. Will sync later'**
+  String get stateOfflineWillSync;
+
+  /// No description provided for @stateCouldNotUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t update. Showing saved data.'**
+  String get stateCouldNotUpdate;
+
+  /// No description provided for @statePendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved on this phone. Will sync when online'**
+  String get statePendingSync;
+
+  /// No description provided for @stateScreenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong on this screen'**
+  String get stateScreenFailed;
+
+  /// No description provided for @stateItemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'This item was removed'**
+  String get stateItemRemoved;
+
+  /// No description provided for @emptyTodayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing due today'**
+  String get emptyTodayTitle;
+
+  /// No description provided for @emptyTodayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice work. New tasks will show up here.'**
+  String get emptyTodayMessage;
+
+  /// No description provided for @emptyBatchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No batches yet'**
+  String get emptyBatchesTitle;
+
+  /// No description provided for @emptyBatchesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first flock to get a care schedule. This works offline.'**
+  String get emptyBatchesMessage;
+
+  /// No description provided for @emptyFeedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No feed items yet'**
+  String get emptyFeedTitle;
+
+  /// No description provided for @emptyFeedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add feed to track stock. This works offline.'**
+  String get emptyFeedMessage;
+
+  /// No description provided for @emptyRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No health records yet'**
+  String get emptyRecordsTitle;
+
+  /// No description provided for @emptyRecordsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Incidents and vet requests will show up here after you add one.'**
+  String get emptyRecordsMessage;
+
+  /// No description provided for @emptyVetInboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No requests right now'**
+  String get emptyVetInboxTitle;
+
+  /// No description provided for @emptyVetInboxMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'New farmer requests will show up here.'**
+  String get emptyVetInboxMessage;
 }
 
 class _AppLocalizationsDelegate

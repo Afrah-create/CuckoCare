@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/app.dart';
 import 'app/di/providers.dart';
+import 'app/widgets/states/install_error_handlers.dart';
 import 'bootstrap.dart';
 import 'features/settings/data/shared_prefs_theme_preference_repository.dart';
 import 'features/settings/presentation/theme_mode_provider.dart';
@@ -27,6 +28,7 @@ import 'data_platform/supabase/supabase_bootstrap.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  installErrorHandlers();
 
   final env = Env.fromEnvironment();
   final registry = LocalAccountRegistry();

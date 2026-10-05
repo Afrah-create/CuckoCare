@@ -10,6 +10,8 @@ import '../../../app/theme/theme_context.dart';
 import '../../../data_platform/db/app_database.dart';
 import 'farm_gps_capture_card.dart';
 import 'farm_setup_controller.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../domain/farm_phone.dart';
 
 class FarmSetupScreen extends ConsumerStatefulWidget {
   const FarmSetupScreen({super.key});
@@ -46,8 +48,8 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
     _nameController.text = farm.name;
     _districtController.text = farm.district ?? '';
     _villageController.text = farm.village ?? '';
-    _phoneController.text = farm.phone ?? '';
-    _altPhoneController.text = farm.altPhone ?? '';
+    _phoneController.text = ugandaPhoneFieldText(farm.phone);
+    _altPhoneController.text = ugandaPhoneFieldText(farm.altPhone);
     _notesController.text = farm.notes ?? '';
   }
 
@@ -67,6 +69,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
   }
 
   Future<void> _submit() async {
+    _userEdited = true;
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -148,6 +151,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _districtController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(labelText: 'District'),
@@ -157,6 +161,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _villageController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   textCapitalization: TextCapitalization.words,
                   decoration: const InputDecoration(labelText: 'Village / parish'),
@@ -166,6 +171,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _phoneController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -184,6 +190,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _altPhoneController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -195,6 +202,7 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 const SizedBox(height: AppSpacing.md),
                 TextFormField(
                   controller: _notesController,
+                  onChanged: (_) => _markEdited(),
                   enabled: !setup.isSubmitting,
                   maxLines: 3,
                   decoration: const InputDecoration(
@@ -214,10 +222,9 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
                 FilledButton(
                   onPressed: setup.isSubmitting ? null : _submit,
                   child: setup.isSubmitting
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                      ? AppBusyIndicator(
+                          size: 20,
+                          color: context.scheme.onPrimary,
                         )
                       : const Text('Save farm profile'),
                 ),

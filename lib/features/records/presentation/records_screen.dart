@@ -8,7 +8,13 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
-import '../../../app/widgets/tab_empty_state.dart';
+import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/empty_state.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/pending_sync_badge.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../health/data/health_repository.dart';
 
@@ -27,22 +33,22 @@ class RecordsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final incidentsAsync = ref.watch(farmerIncidentsProvider);
 
-    return incidentsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const TabEmptyState(
+    return AsyncStateView<List<FarmerIncidentEntry>>(
+      screenId: 'records',
+      value: incidentsAsync,
+      onRetry: () => ref.invalidate(farmerIncidentsProvider),
+      skeleton: const ListSkeleton(),
+      isEmpty: (entries) => entries.isEmpty,
+      empty: const EmptyState(
         icon: Icons.note_alt_outlined,
-        title: 'Records',
-        message: 'Could not load health records.',
+        title: 'No health records yet',
+        message: 'Incidents and vet requests will show up here after you add one.',
       ),
-      data: (entries) {
-        if (entries.isEmpty) {
-          return const TabEmptyState(
-            icon: Icons.note_alt_outlined,
-            title: 'Records',
-            message:
-                'Batch health incidents and vet request status will appear here.',
-          );
-        }
+      error: (error, _) => ErrorState(
+        failure: FailureMapper.mapObject(error),
+        onRetry: () => ref.invalidate(farmerIncidentsProvider),
+      ),
+      builder: (entries) {
         return ContentFrame(
           child: ListView.separated(
             padding: EdgeInsets.only(
@@ -92,12 +98,19 @@ class _IncidentRecordCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              record.summary,
-              style: context.text.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  record.summary,
+                  style: context.text.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
+              PendingSyncBadge(rowId: record.id),
+            ],
+          ),
             const SizedBox(height: 4),
             Text(
               '${entry.batchName ?? 'Batch'} · $date',
@@ -135,20 +148,16 @@ class _IncidentRecordCard extends ConsumerWidget {
                           .publishDraftVetRequest(request.id);
                       ref.read(syncSchedulerProvider).notifyLocalWrite();
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              'Vet notified — request will send when online.',
-                            ),
-                          ),
+                        AppSnack.success(
+                          context,
+                          'Request saved. It will be sent when you are online.',
                         );
                       }
                     } catch (_) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Could not notify vet. Try again.'),
-                          ),
+                        AppSnack.error(
+                          context,
+                          "Couldn't notify the vet. Please try again.",
                         );
                       }
                     }

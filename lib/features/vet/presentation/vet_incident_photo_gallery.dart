@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../app/widgets/states/skeleton.dart';
 import 'vet_incident_photo_providers.dart';
 import 'vet_incident_photo_viewer.dart';
 
@@ -39,10 +41,7 @@ class VetIncidentPhotoGallery extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.sm),
         urlsAsync.when(
-          loading: () => const SizedBox(
-            height: 120,
-            child: Center(child: CircularProgressIndicator()),
-          ),
+          loading: () => const PhotoStripSkeleton(),
           error: (_, __) => Text(
             'Could not load photos. Pull to refresh or try again later.',
             style: context.text.bodySmall?.copyWith(
@@ -109,17 +108,10 @@ class _PhotoThumb extends StatelessWidget {
                 if (progress == null) {
                   return child;
                 }
-                return SizedBox(
+                return const SkeletonBlock(
                   width: 112,
                   height: 112,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: progress.expectedTotalBytes != null
-                          ? progress.cumulativeBytesLoaded /
-                              progress.expectedTotalBytes!
-                          : null,
-                    ),
-                  ),
+                  radius: 14,
                 );
               },
               errorBuilder: (_, __, ___) => SizedBox(

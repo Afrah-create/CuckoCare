@@ -6,16 +6,22 @@ import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
-import '../../notifications/presentation/notification_prefs_provider.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/not_found_state.dart';
+import '../../../app/widgets/states/pending_sync_badge.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../domain/task_state_calculator.dart';
 import '../../health/presentation/report_health_concern_sheet.dart';
 import 'batch_display.dart';
 import 'batch_health_incidents_section.dart';
+import 'mark_task_done_sheet.dart';
 
 final batchDetailProvider = StreamProvider.family<BatchRow?, String>((ref, id) {
   return ref.watch(batchRepositoryProvider).watchBatch(id);
@@ -53,17 +59,31 @@ class BatchDetailScreen extends ConsumerWidget {
               ),
         orElse: () => null,
       ),
-      body: batchAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Batch not found')),
-        data: (batch) {
+      body: AsyncStateView<BatchRow?>(
+        screenId: 'batch-detail',
+        value: batchAsync,
+        onRetry: () => ref.invalidate(batchDetailProvider(batchId)),
+        skeleton: const DetailSkeleton(),
+        error: (error, _) => ErrorState(
+          failure: FailureMapper.mapObject(error),
+          onRetry: () => ref.invalidate(batchDetailProvider(batchId)),
+        ),
+        builder: (batch) {
           if (batch == null) {
-            return const Center(child: Text('Batch not found'));
+            return NotFoundState(
+              onBack: () => Navigator.of(context).pop(),
+            );
           }
-          return tasksAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const Center(child: Text('Could not load schedule')),
-            data: (tasks) => _BatchDetailBody(
+          return AsyncStateView<List<VaccinationTaskRow>>(
+            value: tasksAsync,
+            expand: true,
+            skeleton: const DetailSkeleton(),
+            error: (error, _) => ErrorState(
+              failure: FailureMapper.mapObject(error),
+              onRetry: () => ref.invalidate(batchTasksProvider(batchId)),
+            ),
+            onRetry: () => ref.invalidate(batchTasksProvider(batchId)),
+            builder: (tasks) => _BatchDetailBody(
               batch: batch,
               batchId: batchId,
               tasks: tasks,
@@ -145,11 +165,18 @@ class _BatchDetailBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  batch.name,
-                  style: context.text.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        batch.name,
+                        style: context.text.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    PendingSyncBadge(rowId: batch.id),
+                  ],
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
@@ -212,48 +239,13 @@ class _BatchDetailBody extends StatelessWidget {
     );
   }
 
-  Future<void> _markDone(BuildContext context, VaccinationTaskRow task) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Mark as done?'),
-        content: const Text(
-          'Only mark done if you completed this step on your farm.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Mark done'),
-          ),
-        ],
-      ),
+  Future<void> _markDone(BuildContext context, VaccinationTaskRow task) {
+    return showMarkTaskDoneSheet(
+      context,
+      ref,
+      task: task,
+      today: ref.read(kampalaTodayProvider),
     );
-    if (ok != true) {
-      return;
-    }
-    final todayLocal = ref.read(kampalaTodayProvider);
-    try {
-      await ref.read(batchRepositoryProvider).markTaskDone(
-            taskId: task.id,
-            todayLocal: todayLocal,
-            doneOn: DateTime.utc(
-              todayLocal.year,
-              todayLocal.month,
-              todayLocal.day,
-            ),
-          );
-      ref.read(reminderReconcilerProvider).scheduleReconcile();
-    } on StateError catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message)),
-        );
-      }
-    }
   }
 }
 

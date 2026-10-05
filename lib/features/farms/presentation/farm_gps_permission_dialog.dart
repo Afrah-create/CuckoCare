@@ -1,3 +1,4 @@
+import '../../../app/widgets/states/app_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
@@ -14,11 +15,11 @@ Future<bool> confirmFarmGpsPermission(BuildContext context) async {
     return false;
   }
 
-  final proceed = await showDialog<bool>(
+  final proceed = await showAppDialog<bool>(
     context: context,
     builder: (ctx) {
       final scheme = Theme.of(ctx).colorScheme;
-      return AlertDialog(
+      return AppDialog(
         icon: Icon(Icons.location_on_outlined, color: scheme.primary, size: 32),
         title: const Text('Use your location?'),
         content: const Text(
@@ -48,10 +49,10 @@ Future<void> showFarmGpsSettingsHint(
   BuildContext context, {
   required bool locationServices,
 }) async {
-  await showDialog<void>(
+  await showAppDialog<void>(
     context: context,
     builder: (ctx) {
-      return AlertDialog(
+      return AppDialog(
         title: Text(
           locationServices ? 'Allow location for CucoCare' : 'Turn on GPS',
         ),

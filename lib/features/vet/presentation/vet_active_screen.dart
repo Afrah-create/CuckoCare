@@ -5,7 +5,11 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../app/widgets/tab_empty_state.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
 import 'vet_case_status_handler.dart';
@@ -45,19 +49,17 @@ class VetActiveScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
-            inboxAsync.when(
-              loading: () => const Padding(
-                padding: EdgeInsets.symmetric(vertical: 48),
-                child: Center(child: CircularProgressIndicator()),
+            AsyncStateView(
+              screenId: 'vet-active',
+              expand: false,
+              value: inboxAsync,
+              onRetry: refresh,
+              skeleton: const ListSkeleton(count: 3, scrollable: false),
+              error: (error, _) => ErrorState(
+                failure: FailureMapper.mapObject(error),
+                onRetry: refresh,
               ),
-              error: (e, _) => TabEmptyState(
-                icon: Icons.error_outline,
-                title: 'Could not load',
-                message: '$e',
-                actionLabel: 'Retry',
-                onAction: refresh,
-              ),
-              data: (items) {
+              builder: (items) {
                 if (vetUserId == null) {
                   return const _EmptyActive();
                 }

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../app/di/providers.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../../../app/widgets/states/app_snack.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../domain/farm_gps.dart';
 import '../domain/farm_profile.dart';
@@ -298,21 +300,14 @@ class _ActionRow extends ConsumerWidget {
                   }
                   final ok = await controller.captureForFarm(farmId);
                   if (ok && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Farm location saved'),
-                      ),
-                    );
+                    AppSnack.success(context, 'Farm location saved');
                   }
                 },
           icon: isCapturing
-              ? SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+              ? AppBusyIndicator(
+                  size: 18,
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 )
               : Icon(hasGps ? Icons.refresh : Icons.location_searching),
           label: Text(

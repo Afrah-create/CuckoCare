@@ -6,7 +6,7 @@ Future<bool> confirmSignOut(BuildContext context) async {
   final ok = await showCucoConfirmBottomSheet(
     context: context,
     title: 'Sign out?',
-    message: 'You will need to sign in again to sync and view your farm data.',
+    message: 'Are you sure you want to sign out?',
     confirmLabel: 'Sign out',
     cancelLabel: 'Stay signed in',
     destructive: true,

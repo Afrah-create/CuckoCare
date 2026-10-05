@@ -1,0 +1,14 @@
+---
+description: How screens show loading, empty, error, and feedback
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# UI states
+
+- Paint `AsyncValue` with `AsyncStateView`. Do not call `.when` in a `*_screen.dart`.
+- Skeletons, empty, error, permission, and not-found views live in `lib/app/widgets/states/`.
+- Snackbars go through `AppSnack`. Dialogs go through `AppDialog` or `showConfirmDialog`.
+- Durations come from `AppMotion`. Colours come from `context.colors`.
+- A local save shows a short confirmation and `PendingSyncBadge` until the outbox clears.
+- Do not add a spinner for a Drift read that returns immediately.

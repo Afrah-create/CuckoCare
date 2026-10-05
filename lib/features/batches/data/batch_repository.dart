@@ -398,4 +398,56 @@ class BatchRepository {
       payload: _taskMapper.toPayload(updated),
     );
   }
+
+  Future<void> revertTaskDone({
+    required String taskId,
+    required String previousStatus,
+    DateTime? previousDoneOn,
+    String? previousProduct,
+  }) async {
+    final now = _clock.now();
+    final existing = await (_db.select(_db.vaccinationTasks)
+          ..where((t) => t.id.equals(taskId)))
+        .getSingleOrNull();
+    if (existing == null) {
+      return;
+    }
+    final updated = VaccinationTaskRow(
+      id: existing.id,
+      farmId: existing.farmId,
+      createdAt: existing.createdAt,
+      updatedAt: now,
+      deletedAt: existing.deletedAt,
+      serverVersion: existing.serverVersion,
+      batchId: existing.batchId,
+      stepId: existing.stepId,
+      occurrence: existing.occurrence,
+      dueOn: existing.dueOn,
+      enabled: existing.enabled,
+      status: previousStatus,
+      doneOn: previousDoneOn,
+      doneBy: existing.doneBy,
+      productUsed: previousProduct,
+      notes: existing.notes,
+      stepSnapshot: existing.stepSnapshot,
+      programmeContentHash: existing.programmeContentHash,
+      shiftedFrom: existing.shiftedFrom,
+    );
+    await _syncedWrite.writeSynced(
+      writeRow: () => (_db.update(_db.vaccinationTasks)
+            ..where((t) => t.id.equals(taskId)))
+          .write(
+        VaccinationTasksCompanion(
+          updatedAt: Value(now),
+          status: Value(previousStatus),
+          doneOn: Value(previousDoneOn),
+          productUsed: Value(previousProduct),
+        ),
+      ),
+      table: _taskMapper.tableName,
+      rowId: taskId,
+      op: 'upsert',
+      payload: _taskMapper.toPayload(updated),
+    );
+  }
 }

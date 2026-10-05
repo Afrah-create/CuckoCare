@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/widgets/states/app_dialog.dart';
+
 /// In-app consent before opening the camera or gallery.
 /// OS permissions are requested by [ImagePicker] when picking.
 Future<bool> confirmIncidentCamera(BuildContext context) async {
-  final proceed = await showDialog<bool>(
+  final proceed = await showAppDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
+    builder: (ctx) => AppDialog(
       icon: Icon(
         Icons.photo_camera_outlined,
         color: Theme.of(ctx).colorScheme.primary,
@@ -31,9 +33,9 @@ Future<bool> confirmIncidentCamera(BuildContext context) async {
 }
 
 Future<bool> confirmIncidentGallery(BuildContext context) async {
-  final proceed = await showDialog<bool>(
+  final proceed = await showAppDialog<bool>(
     context: context,
-    builder: (ctx) => AlertDialog(
+    builder: (ctx) => AppDialog(
       icon: Icon(
         Icons.photo_library_outlined,
         color: Theme.of(ctx).colorScheme.primary,

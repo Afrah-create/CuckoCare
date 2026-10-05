@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:cucocare/app/theme/app_spacing.dart';
+import 'package:cucocare/app/theme/app_motion.dart';
 import 'package:cucocare/app/theme/theme_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,7 +49,7 @@ void main() {
 
     expect(
       duration,
-      const Duration(milliseconds: AppSpacing.durationThemeMs),
+      AppMotion.standard,
     );
   });
 }

@@ -52,7 +52,7 @@ final reminderReconciliationDatabaseProvider = Provider<AppDatabase>((ref) {
     return ref.watch(appDatabaseProvider);
   }
   final db = AppDatabase.forAccount(reminderId);
-  ref.onDispose(db.close);
+  ref.onDispose(() => disposeAppDatabase(db));
   return db;
 });
 

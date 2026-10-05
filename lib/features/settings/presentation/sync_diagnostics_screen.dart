@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/widgets/states/app_dialog.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/sync/sync_engine.dart';
 
@@ -87,13 +88,12 @@ class _SyncDiagnosticsScreenState extends ConsumerState<SyncDiagnosticsScreen> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        final ok = await showDialog<bool>(
+                        final ok = await showAppDialog<bool>(
                           context: context,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('Discard op?'),
-                            content: const Text(
-                              'Removes the failed op from the queue. Local row is unchanged.',
-                            ),
+                          builder: (ctx) => AppDialog(
+                            title: const Text('Discard this change?'),
+                            message:
+                                'Removes the failed change from the queue. The saved row stays on this phone.',
                             actions: [
                               TextButton(
                                 onPressed: () => ctx.pop(false),

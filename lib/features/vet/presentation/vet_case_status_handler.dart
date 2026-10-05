@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/widgets/states/app_snack.dart';
 import '../../../core/error/result.dart';
-import '../data/vet_inbox_repository.dart';
 import '../domain/vet_case_workflow.dart';
 import 'vet_inbox_providers.dart';
 
@@ -35,12 +35,8 @@ Future<void> applyVetCaseAction({
       if (popAfterSuccess) {
         context.pop();
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      AppSnack.success(context, message);
     case Error(failure: final f):
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(f.message)),
-      );
+      AppSnack.error(context, f.message);
   }
 }

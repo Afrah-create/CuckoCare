@@ -22,7 +22,7 @@ class SignUpRolePicker extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'I am a',
+          'What best describes you?',
           style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: AppSpacing.sm),

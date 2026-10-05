@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
-import '../../../app/theme/theme_context.dart';
-import '../../../app/widgets/tab_empty_state.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/empty_state.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/pending_sync_badge.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../data_platform/db/app_database.dart';
 import 'batch_display.dart';
@@ -28,34 +31,24 @@ class BatchesListScreen extends ConsumerWidget {
     final batchesAsync = ref.watch(farmBatchesProvider);
     final today = ref.watch(kampalaTodayProvider);
 
-    return batchesAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const TabEmptyState(
-        icon: Icons.error_outline,
-        title: 'Could not load batches',
-        message: 'Pull to refresh or try again.',
+    return AsyncStateView<List<BatchRow>>(
+      screenId: 'batches',
+      value: batchesAsync,
+      onRetry: () => ref.invalidate(farmBatchesProvider),
+      skeleton: const ListSkeleton(),
+      isEmpty: (batches) => batches.isEmpty,
+      empty: EmptyState(
+        title: 'No batches yet',
+        message: 'Add your first flock to get a care schedule. This works offline.',
+        actionLabel: 'Add batch',
+        onAction: () => const BatchNewRoute().push(context),
+        showMark: true,
       ),
-      data: (batches) {
-        if (batches.isEmpty) {
-          return ListView(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            children: [
-              const TabEmptyState(
-                icon: Icons.egg_outlined,
-                title: 'No batches yet',
-                message:
-                    'Add your first flock to get a vaccination and care schedule — works offline.',
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              FilledButton.icon(
-                onPressed: () => const BatchNewRoute().push(context),
-                icon: const Icon(Icons.add),
-                label: const Text('Add batch'),
-              ),
-            ],
-          );
-        }
-
+      error: (error, _) => ErrorState(
+        failure: FailureMapper.mapObject(error),
+        onRetry: () => ref.invalidate(farmBatchesProvider),
+      ),
+      builder: (batches) {
         return ListView.builder(
           padding: EdgeInsets.fromLTRB(
             AppSpacing.md,
@@ -107,7 +100,13 @@ class _BatchCard extends ConsumerWidget {
         subtitle: Text(
           '${birdTypeLabel(batch.birdType)} · $age · ${batch.initialCount} birds',
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PendingSyncBadge(rowId: batch.id),
+            const Icon(Icons.chevron_right),
+          ],
+        ),
         onTap: () => BatchDetailRoute(batchId: batch.id).push(context),
       ),
     );

@@ -10,6 +10,7 @@ import 'layout/layout_profile.dart';
 import 'layout/layout_scope.dart';
 import 'theme/themed_system_ui.dart';
 import 'widgets/lifecycle_host.dart';
+import 'widgets/states/state_simulator.dart';
 
 class CucoCareApp extends ConsumerWidget {
   const CucoCareApp({super.key});
@@ -31,10 +32,12 @@ class CucoCareApp extends ConsumerWidget {
       routerConfig: router,
       builder: (context, child) {
         final tokens = tokensFor(MediaQuery.sizeOf(context));
-        return LayoutScope(
-          tokens: tokens,
-          child: LifecycleHost(
-            child: ThemedSystemUi(child: child ?? const SizedBox.shrink()),
+        return StateSimulatorBinder(
+          child: LayoutScope(
+            tokens: tokens,
+            child: LifecycleHost(
+              child: ThemedSystemUi(child: child ?? const SizedBox.shrink()),
+            ),
           ),
         );
       },

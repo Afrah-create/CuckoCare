@@ -68,12 +68,16 @@ class MoreScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         Card(
-          child: ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Notifications'),
-            subtitle: const Text('Due and overdue reminders'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => const NotificationsSettingsRoute().push(context),
+          child: Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.notifications_outlined),
+                title: const Text('Notifications'),
+                subtitle: const Text('Due and overdue reminders'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => const NotificationsSettingsRoute().push(context),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 24),

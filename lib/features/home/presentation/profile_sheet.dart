@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/widgets/states/skeleton.dart';
 import '../../auth/presentation/confirm_sign_out.dart';
 
 void showProfileSheet(
@@ -38,10 +39,19 @@ class _ProfileSheet extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: profileAsync.when(
-          loading: () => const Center(
-            child: Padding(
-              padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(),
+          loading: () => const Padding(
+            padding: EdgeInsets.all(32),
+            child: SkeletonScope(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SkeletonCircle(size: 56),
+                  SizedBox(height: 16),
+                  SkeletonLine(widthFactor: 0.5, height: 14),
+                  SizedBox(height: 8),
+                  SkeletonLine(widthFactor: 0.7, height: 12),
+                ],
+              ),
             ),
           ),
           error: (_, _) => Text(

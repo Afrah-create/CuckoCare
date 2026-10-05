@@ -6,17 +6,21 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
-import '../../notifications/presentation/notification_prefs_provider.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
-import '../../../app/widgets/cuco_confirm_dialog.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/not_found_state.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../domain/task_state_calculator.dart';
 import 'batch_detail_screen.dart';
 import 'batch_display.dart';
+import 'mark_task_done_sheet.dart';
 
 final vaccinationTaskProvider =
     StreamProvider.family<VaccinationTaskRow?, (String, String)>(
@@ -50,17 +54,25 @@ class BatchVaccinationTaskScreen extends ConsumerWidget {
           onPressed: () => _close(context),
         ),
       ),
-      body: batchAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+      body: AsyncStateView<BatchRow?>(
+        screenId: 'vaccination-task',
+        value: batchAsync,
+        skeleton: const DetailSkeleton(),
         error: (_, __) => const _TaskMissingBody(),
-        data: (batch) {
+        builder: (batch) {
           if (batch == null) {
             return const _TaskMissingBody();
           }
-          return taskAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => const _TaskMissingBody(),
-            data: (task) {
+          return AsyncStateView<VaccinationTaskRow?>(
+            value: taskAsync,
+            skeleton: const DetailSkeleton(),
+            error: (error, _) => ErrorState(
+              failure: FailureMapper.mapObject(error),
+              onRetry: () => ref.invalidate(
+                vaccinationTaskProvider((batchId, taskId)),
+              ),
+            ),
+            builder: (task) {
               if (task == null || task.batchId != batchId) {
                 return const _TaskMissingBody();
               }
@@ -195,36 +207,13 @@ class _TaskBody extends StatelessWidget {
     }
   }
 
-  Future<void> _markDone(BuildContext context) async {
-    final ok = await showCucoConfirmDialog(
-      context: context,
-      title: 'Mark as done?',
-      message: 'Only confirm if you completed this step on your farm.',
-      confirmLabel: 'Mark done',
-      cancelLabel: 'Cancel',
+  Future<void> _markDone(BuildContext context) {
+    return showMarkTaskDoneSheet(
+      context,
+      ref,
+      task: task,
+      today: today,
     );
-    if (ok != true) {
-      return;
-    }
-    try {
-      await ref.read(batchRepositoryProvider).markTaskDone(
-            taskId: task.id,
-            todayLocal: today,
-            doneOn: DateTime.utc(today.year, today.month, today.day),
-          );
-      ref.read(reminderReconcilerProvider).scheduleReconcile();
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Task marked as done')),
-        );
-      }
-    } on StateError catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message)),
-        );
-      }
-    }
   }
 }
 
@@ -280,38 +269,11 @@ class _TaskMissingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContentFrame(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.search_off_outlined,
-              size: 48,
-              color: context.scheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              'This task is no longer on this phone',
-              textAlign: TextAlign.center,
-              style: context.text.titleMedium,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Sign in and sync, or open Today to see what is due now.',
-              textAlign: TextAlign.center,
-              style: context.text.bodyMedium?.copyWith(
-                color: context.scheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            FilledButton(
-              onPressed: () => const TodayRoute().go(context),
-              child: const Text('Go to Today'),
-            ),
-          ],
-        ),
-      ),
+    return NotFoundState(
+      title: 'This task is no longer on this phone',
+      message: 'Open Today to see what is due now.',
+      actionLabel: 'Go to Today',
+      onBack: () => const TodayRoute().go(context),
     );
   }
 }

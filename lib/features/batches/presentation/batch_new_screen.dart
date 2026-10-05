@@ -14,6 +14,12 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/app_text_field.dart';
 import '../../../app/widgets/inline_banner.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../domain/batch_planner.dart';
 import '../domain/programme_resolver.dart';
 import 'batch_new_controller.dart';
@@ -67,16 +73,16 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
       ),
       bottomNavigationBar:
           showActions ? _bottomBar(draft, ctrl) : null,
-      body: catalogAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => ContentFrame(
-          child: InlineBanner(
-            message:
-                'Could not load the vaccination schedule. Check your app install and try again.',
-            icon: Icons.error_outline,
-          ),
+      body: AsyncStateView(
+        screenId: 'batch-new',
+        value: catalogAsync,
+        onRetry: () => ref.invalidate(programmeCatalogProvider),
+        skeleton: const FormSkeleton(),
+        error: (error, _) => ErrorState(
+          failure: FailureMapper.mapObject(error),
+          onRetry: () => ref.invalidate(programmeCatalogProvider),
         ),
-        data: (catalog) {
+        builder: (catalog) {
           final isDraftSchedule = catalog.isDraft;
           final body = switch (draft.wizardStep) {
             BatchWizardStep.farm => _farmStep(draft, ctrl),
@@ -395,7 +401,7 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
   ) {
     final plan = draft.preview;
     final timeline = plan == null
-        ? const Center(child: CircularProgressIndicator())
+        ? const FormSkeleton()
         : _SchedulePreview(plan: plan, onToggle: ctrl.setStepEnabled);
 
     final summary = _ReviewSummary(draft: draft);
@@ -507,10 +513,9 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
                       ? null
                       : () => _onPrimary(draft, ctrl),
                   child: draft.isSubmitting
-                      ? const SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                      ? AppBusyIndicator(
+                          size: 22,
+                          color: context.scheme.onPrimary,
                         )
                       : Text(_primaryLabel(draft)),
                 ),
@@ -550,9 +555,7 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
       case BatchWizardStep.review:
         final id = await ctrl.submit();
         if (id != null && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Batch saved on this device')),
-          );
+          AppSnack.success(context, 'Saved on this phone');
           context.pop();
           BatchDetailRoute(batchId: id).push(context);
         }

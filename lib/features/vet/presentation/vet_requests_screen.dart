@@ -6,8 +6,12 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/offline_notice.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../app/widgets/tab_empty_state.dart';
-import '../../../core/error/user_messages.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../data/vet_inbox_repository.dart';
 import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
@@ -135,39 +139,23 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
                 ],
               ),
             ),
-            if (!online)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: MaterialBanner(
-                  content: const Text(
-                    'Connect to the internet to load live requests.',
-                  ),
-                  leading: const Icon(Icons.cloud_off_outlined),
-                  actions: [
-                    TextButton(onPressed: _refresh, child: const Text('Retry')),
-                  ],
-                ),
+            if (!online) const OfflineNotice(),
+            AsyncStateView<List<VetInboxItem>>(
+              screenId: 'vet-inbox',
+              expand: false,
+              value: inboxAsync,
+              onRetry: _refresh,
+              skeleton: const ListSkeleton(count: 3, scrollable: false),
+              error: (error, _) => ErrorState(
+                failure: FailureMapper.mapObject(error),
+                onRetry: _refresh,
               ),
-            ...inboxAsync.when(
-              loading: () => [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 48),
-                  child: Center(child: CircularProgressIndicator()),
+              builder: (items) => Column(
+                children: _inboxListChildren(
+                  context,
+                  items: items,
+                  vetUserId: vetUserId,
                 ),
-              ],
-              error: (e, _) => [
-                TabEmptyState(
-                  icon: Icons.error_outline,
-                  title: 'Could not load',
-                  message: userMessageForError(e),
-                  actionLabel: 'Try again',
-                  onAction: _refresh,
-                ),
-              ],
-              data: (items) => _inboxListChildren(
-                context,
-                items: items,
-                vetUserId: vetUserId,
               ),
             ),
           ],
@@ -400,11 +388,10 @@ class _InboxEmptyBody extends StatelessWidget {
 
     return TabEmptyState(
       icon: Icons.inbox_outlined,
-      title: hasStats ? 'No new requests' : 'Sign in required',
+      title: hasStats ? 'No requests right now' : 'Sign in required',
       message: hasStats
-          ? 'Stats above reflect your inbox. New farmer incidents appear here '
-              'when they notify a vet and sync completes.'
-          : 'Could not load your vet account. Pull to refresh or sign in again.',
+          ? 'New farmer requests will show up here.'
+          : 'Pull to refresh, or sign in again.',
     );
   }
 }

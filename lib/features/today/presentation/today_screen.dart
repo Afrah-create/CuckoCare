@@ -12,8 +12,16 @@ import '../../../app/layout/two_pane.dart';
 import '../../../app/shell/tab_scroll_registry.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../home/presentation/farm_profile_banner.dart';
+import '../../../app/widgets/states/animated_count.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/pull_to_refresh.dart';
+import '../../../app/widgets/states/skeleton.dart';
+import '../../../core/error/failure_mapper.dart';
+import 'getting_started_card.dart';
 import 'today_greeting_card.dart';
 
 class TodayScreen extends ConsumerStatefulWidget {
@@ -72,6 +80,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final bottomInset = ContentFrame.scrollBottomInset(context);
     final horizontal = layout.margin;
     final topInset = MediaQuery.viewPaddingOf(context).top;
+    final online = ref.watch(connectivityOnlineProvider).value ?? true;
     final useTwoPane = layout.useTwoPane;
 
     final banner = showFarmProfileBanner
@@ -87,6 +96,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        const GettingStartedCard(),
         const _SectionHeader(
           title: 'Needs attention',
           subtitle: 'Overdue and due-today tasks',
@@ -110,9 +120,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     );
 
     if (useTwoPane) {
-      return RefreshIndicator(
-        onRefresh: _onRefresh,
-        edgeOffset: 8,
+      return PullToRefresh(
+        online: online,
+        onSync: _onRefresh,
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Column(
@@ -157,9 +167,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       );
     }
 
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      edgeOffset: 8,
+    return PullToRefresh(
+      online: online,
+      onSync: _onRefresh,
       child: CustomScrollView(
         controller: _scrollController,
         physics: const AlwaysScrollableScrollPhysics(
@@ -282,9 +292,24 @@ class _MetricGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layout = context.layout;
+    final activeAsync = ref.watch(activeBatchCountProvider);
+    final dueAsync = ref.watch(dueThisWeekCountProvider);
+    final loading = (activeAsync.isLoading && !activeAsync.hasValue) ||
+        (dueAsync.isLoading && !dueAsync.hasValue);
+    if (loading) {
+      return const SkeletonScope(
+        child: Row(
+          children: [
+            Expanded(child: SkeletonStatTile()),
+            SizedBox(width: AppSpacing.sm),
+            Expanded(child: SkeletonStatTile()),
+          ],
+        ),
+      );
+    }
     final cols = layout.statColumns;
-    final active = ref.watch(activeBatchCountProvider).value ?? 0;
-    final dueWeek = ref.watch(dueThisWeekCountProvider).value ?? 0;
+    final active = activeAsync.value ?? 0;
+    final dueWeek = dueAsync.value ?? 0;
     return LayoutBuilder(
       builder: (context, constraints) {
         final gap = AppSpacing.sm * (cols - 1);
@@ -298,13 +323,13 @@ class _MetricGrid extends ConsumerWidget {
               width: tileWidth,
               icon: Icons.view_module_outlined,
               label: 'Active batches',
-              value: '$active',
+              count: active,
             ),
             _MetricTile(
               width: tileWidth,
               icon: Icons.vaccines_outlined,
               label: 'Due this week',
-              value: '$dueWeek',
+              count: dueWeek,
             ),
             _MetricTile(
               width: tileWidth,
@@ -330,13 +355,15 @@ class _MetricTile extends StatelessWidget {
     required this.width,
     required this.icon,
     required this.label,
-    required this.value,
+    this.value,
+    this.count,
   });
 
   final double width;
   final IconData icon;
   final String label;
-  final String value;
+  final String? value;
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +371,7 @@ class _MetricTile extends StatelessWidget {
     final maxH = context.layout.statCardMaxHeight;
 
     return Semantics(
-      label: '$label, $value',
+      label: '$label, ${count ?? value}',
       child: SizedBox(
         width: width,
         child: ConstrainedBox(
@@ -372,13 +399,22 @@ class _MetricTile extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
-                      Text(
-                        value,
-                        style: context.text.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          height: 1,
+                      if (count != null)
+                        AnimatedCount(
+                          value: count!,
+                          style: context.text.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            height: 1,
+                          ),
+                        )
+                      else
+                        Text(
+                          value ?? '—',
+                          style: context.text.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            height: 1,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.xxs),
@@ -406,13 +442,28 @@ class _NeedsAttentionList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(needsAttentionTasksProvider);
-    return tasksAsync.when(
-      loading: () => const LinearProgressIndicator(),
-      error: (_, __) => const _TasksEmptyState(),
-      data: (tasks) {
-        if (tasks.isEmpty) {
-          return const _TasksEmptyState();
-        }
+    return AsyncStateView<List<VaccinationTaskRow>>(
+      screenId: 'today',
+      expand: false,
+      value: tasksAsync,
+      onRetry: () => ref.invalidate(needsAttentionTasksProvider),
+      skeleton: const SkeletonScope(
+        child: Column(
+          children: [
+            SkeletonListTile(lineWidth: 0.62),
+            SkeletonListTile(lineWidth: 0.48),
+            SkeletonListTile(lineWidth: 0.7),
+          ],
+        ),
+      ),
+      isEmpty: (tasks) => tasks.isEmpty,
+      empty: const _TasksEmptyState(),
+      error: (error, _) => ErrorState(
+        failure: FailureMapper.mapObject(error),
+        onRetry: () => ref.invalidate(needsAttentionTasksProvider),
+        compact: true,
+      ),
+      builder: (tasks) {
         return Column(
           children: tasks.take(8).map((task) {
             final label = _taskLabel(task.stepSnapshot, task.stepId);
@@ -495,7 +546,7 @@ class _TasksEmptyState extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
-                    'When vaccinations or chores are scheduled, they will show up here.',
+                    'Nice work. New tasks will show up here.',
                     style: context.text.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
                       height: 1.35,

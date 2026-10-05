@@ -10,6 +10,9 @@ import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/states/skeleton.dart';
 import '../../farms/domain/farm_profile.dart';
 import '../../vet/presentation/vet_inbox_providers.dart';
 import '../data/health_incident_photo_storage.dart';
@@ -104,20 +107,16 @@ class _ReportHealthConcernSheetState
       final denied = e.code == 'camera_access_denied' ||
           e.code == 'photo_access_denied' ||
           e.code == 'permission_denied';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            denied
-                ? 'Permission denied. Allow camera or photos in Settings, then try again.'
-                : 'Could not add photo. Please try again.',
-          ),
-        ),
+      AppSnack.show(
+        context,
+        message: denied
+            ? 'Permission denied. Allow camera or photos in Settings, then try again.'
+            : "Couldn't add that photo. Please try again.",
+        kind: AppSnackKind.error,
       );
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not add photo. Please try again.')),
-        );
+        AppSnack.error(context, "Couldn't add that photo. Please try again.");
       }
     }
   }
@@ -127,9 +126,7 @@ class _ReportHealthConcernSheetState
       return;
     }
     if (_summaryController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe what you noticed.')),
-      );
+      AppSnack.show(context, message: 'Please describe what you noticed.');
       return;
     }
     setState(() => _saving = true);
@@ -151,20 +148,15 @@ class _ReportHealthConcernSheetState
           );
       ref.read(syncSchedulerProvider).notifyLocalWrite();
       if (mounted) {
-        final messenger = ScaffoldMessenger.of(context);
         final message = _requestVet
-            ? 'Incident saved successfully. Vet request will send when you are online.'
-            : 'Incident saved successfully.';
+            ? 'Saved. The vet request will send when you are online.'
+            : 'Saved';
+        AppSnack.success(context, message);
         context.pop(true);
-        messenger.showSnackBar(SnackBar(content: Text(message)));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not save incident. Please try again.'),
-          ),
-        );
+        AppSnack.error(context, "Couldn't save. Please try again.");
       }
     } finally {
       if (mounted) {
@@ -395,8 +387,9 @@ class _ReportHealthConcernSheetState
                                 children: [
                                   if (online)
                                     vetsAsync.when(
-                                      loading: () =>
-                                          const LinearProgressIndicator(),
+                                      loading: () => const SkeletonScope(
+                                        child: SkeletonLine(height: 8),
+                                      ),
                                       error: (_, __) =>
                                           const SizedBox.shrink(),
                                       data: (vets) {
@@ -482,10 +475,9 @@ class _ReportHealthConcernSheetState
                     child: FilledButton(
                       onPressed: _saving ? null : _submit,
                       child: _saving
-                          ? const SizedBox(
-                              height: 22,
-                              width: 22,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                          ? AppBusyIndicator(
+                              size: 22,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             )
                           : const Text('Save'),
                     ),

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+
+import '../../core/logging/app_logger.dart';
 
 import 'local_database_identity.dart';
 
@@ -134,5 +138,28 @@ class AppDatabase extends _$AppDatabase {
 
   static QueryExecutor _openConnectionForAccount(String? userId) {
     return driftDatabase(name: localDatabaseNameForAccount(userId));
+  }
+}
+
+/// Closes [db] after Drift's idle-stream timers have finished.
+///
+/// [StreamQueryStore.close] iterates the live query map. Those timers remove
+/// entries from the same map, so closing in the same turn throws
+/// [ConcurrentModificationError] and leaves it uncaught.
+void disposeAppDatabase(AppDatabase db) {
+  unawaited(_disposeAppDatabase(db));
+}
+
+Future<void> _disposeAppDatabase(AppDatabase db) async {
+  await Future<void>.delayed(Duration.zero);
+  await Future<void>.delayed(Duration.zero);
+  try {
+    await db.close();
+  } catch (error, stackTrace) {
+    appLogger.e(
+      'Failed to close local database',
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
 }

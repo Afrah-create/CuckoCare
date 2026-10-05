@@ -5,6 +5,8 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../farms/presentation/farm_gps_permission_dialog.dart';
 import 'vet_gps_controller.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../../../app/widgets/states/app_snack.dart';
 
 class VetGpsCaptureCard extends ConsumerWidget {
   const VetGpsCaptureCard({super.key});
@@ -61,17 +63,15 @@ class VetGpsCaptureCard extends ConsumerWidget {
                           .read(vetGpsCaptureControllerProvider.notifier)
                           .captureAndUpload();
                       if (saved && context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Location updated')),
-                        );
+                        AppSnack.success(context, 'Location updated');
                       }
                     },
               icon: state.isCapturing
-                  ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
+                      ? AppBusyIndicator(
+                          size: 18,
+                          strokeWidth: 2,
+                          color: scheme.onPrimary,
+                        )
                   : const Icon(Icons.gps_fixed),
               label: Text(state.isCapturing ? 'Capturing…' : 'Update my location'),
             ),

@@ -40,6 +40,12 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.glassSurfaceBorder,
     required this.scrim,
     required this.notificationAccent,
+    required this.skeletonBase,
+    required this.skeletonHighlight,
+    required this.emptyStateTint,
+    required this.highlightPulse,
+    required this.offlineSurface,
+    required this.pendingSyncIndicator,
   });
 
   final Color success;
@@ -80,6 +86,12 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color glassSurfaceBorder;
   final Color scrim;
   final Color notificationAccent;
+  final Color skeletonBase;
+  final Color skeletonHighlight;
+  final Color emptyStateTint;
+  final Color highlightPulse;
+  final Color offlineSurface;
+  final Color pendingSyncIndicator;
 
   static AppColors light = AppColors(
     success: BrandPalette.success,
@@ -117,6 +129,12 @@ class AppColors extends ThemeExtension<AppColors> {
     glassSurfaceBorder: BrandPalette.glassBorderLight,
     scrim: const Color(0x99000000),
     notificationAccent: BrandPalette.brandInk,
+    skeletonBase: const Color(0xFFE6DDD4),
+    skeletonHighlight: const Color(0xFFF8F4EE),
+    emptyStateTint: const Color(0xFFF4E4EC),
+    highlightPulse: const Color(0xFFC8E6C9),
+    offlineSurface: const Color(0xFFFFF3E0),
+    pendingSyncIndicator: BrandPalette.warning,
   );
 
   static AppColors dark = AppColors(
@@ -155,6 +173,12 @@ class AppColors extends ThemeExtension<AppColors> {
     glassSurfaceBorder: BrandPalette.glassBorderDark,
     scrim: const Color(0xCC000000),
     notificationAccent: BrandPalette.brandCream,
+    skeletonBase: const Color(0xFF2C2622),
+    skeletonHighlight: const Color(0xFF3E3732),
+    emptyStateTint: const Color(0xFF3A2832),
+    highlightPulse: const Color(0xFF1B5E20),
+    offlineSurface: const Color(0xFF3E2A22),
+    pendingSyncIndicator: const Color(0xFFFFB74D),
   );
 
   @override
@@ -194,6 +218,12 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? glassSurfaceBorder,
     Color? scrim,
     Color? notificationAccent,
+    Color? skeletonBase,
+    Color? skeletonHighlight,
+    Color? emptyStateTint,
+    Color? highlightPulse,
+    Color? offlineSurface,
+    Color? pendingSyncIndicator,
   }) {
     return AppColors(
       success: success ?? this.success,
@@ -231,6 +261,13 @@ class AppColors extends ThemeExtension<AppColors> {
       glassSurfaceBorder: glassSurfaceBorder ?? this.glassSurfaceBorder,
       scrim: scrim ?? this.scrim,
       notificationAccent: notificationAccent ?? this.notificationAccent,
+      skeletonBase: skeletonBase ?? this.skeletonBase,
+      skeletonHighlight: skeletonHighlight ?? this.skeletonHighlight,
+      emptyStateTint: emptyStateTint ?? this.emptyStateTint,
+      highlightPulse: highlightPulse ?? this.highlightPulse,
+      offlineSurface: offlineSurface ?? this.offlineSurface,
+      pendingSyncIndicator:
+          pendingSyncIndicator ?? this.pendingSyncIndicator,
     );
   }
 
@@ -287,6 +324,17 @@ class AppColors extends ThemeExtension<AppColors> {
       scrim: _lerpColor(scrim, other.scrim, t)!,
       notificationAccent:
           _lerpColor(notificationAccent, other.notificationAccent, t)!,
+      skeletonBase: _lerpColor(skeletonBase, other.skeletonBase, t)!,
+      skeletonHighlight:
+          _lerpColor(skeletonHighlight, other.skeletonHighlight, t)!,
+      emptyStateTint: _lerpColor(emptyStateTint, other.emptyStateTint, t)!,
+      highlightPulse: _lerpColor(highlightPulse, other.highlightPulse, t)!,
+      offlineSurface: _lerpColor(offlineSurface, other.offlineSurface, t)!,
+      pendingSyncIndicator: _lerpColor(
+        pendingSyncIndicator,
+        other.pendingSyncIndicator,
+        t,
+      )!,
     );
   }
 }

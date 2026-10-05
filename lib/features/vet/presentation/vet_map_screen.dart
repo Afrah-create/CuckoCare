@@ -6,6 +6,12 @@ import 'package:latlong2/latlong.dart';
 import '../../../app/di/providers.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/states/async_state_view.dart';
+import '../../../app/widgets/states/empty_state.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../core/error/failure_mapper.dart';
 import '../../../core/error/result.dart';
 import '../data/vet_map_repository.dart';
 import '../domain/vet_incident_detail.dart';
@@ -60,25 +66,22 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
   Widget build(BuildContext context) {
     final mapAsync = ref.watch(vetMapProvider);
 
-    return mapAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Could not load map: $e', textAlign: TextAlign.center),
-              const SizedBox(height: AppSpacing.md),
-              FilledButton.tonal(
-                onPressed: () => ref.invalidate(vetMapProvider),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
+    return AsyncStateView(
+      screenId: 'vet-map',
+      value: mapAsync,
+      onRetry: () => ref.invalidate(vetMapProvider),
+      skeleton: const MapSkeleton(),
+      isEmpty: (items) => items.isEmpty,
+      empty: const EmptyState(
+        icon: Icons.map_outlined,
+        title: 'No farms on the map',
+        message: 'Requests with a saved location will appear here.',
       ),
-      data: (items) {
+      error: (error, _) => ErrorState(
+        failure: FailureMapper.mapObject(error),
+        onRetry: () => ref.invalidate(vetMapProvider),
+      ),
+      builder: (items) {
         final pins = items.where((r) => r.hasMapPin).toList();
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted && pins.isNotEmpty) {
@@ -216,13 +219,9 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
         ref.invalidate(vetMapProvider);
         ref.invalidate(vetInboxProvider);
         setState(() => _selected = null);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Request accepted')),
-        );
+        AppSnack.success(context, 'Request accepted');
       case Error(failure: final f):
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(f.message)),
-        );
+        AppSnack.error(context, f.message);
     }
   }
 }
