@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../core/error/user_messages.dart';
+import '../../notifications/presentation/notification_prefs_provider.dart';
 
 enum FarmSetupStatus { idle, submitting, failure, success }
 
@@ -58,6 +59,7 @@ class FarmSetupController extends Notifier<FarmSetupState> {
             notes: notes,
           );
       ref.read(syncSchedulerProvider).notifyLocalWrite();
+      ref.read(reminderReconcilerProvider).scheduleReconcile();
       state = state.copyWith(status: FarmSetupStatus.success);
       return true;
     } on AuthException catch (e) {

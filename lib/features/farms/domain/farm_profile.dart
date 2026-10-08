@@ -47,6 +47,39 @@ int _primaryFarmOrder(FarmRow a, FarmRow b) {
   return b.updatedAt.compareTo(a.updatedAt);
 }
 
+/// Name plus district and village, for reminders and headers.
+String farmDetailLabel(FarmRow? farm) {
+  if (farm == null) {
+    return '';
+  }
+  final name = farm.name.trim();
+  final place = [farm.district, farm.village]
+      .whereType<String>()
+      .map((part) => part.trim())
+      .where((part) => part.isNotEmpty)
+      .join(', ');
+  if (name.isEmpty) {
+    return place;
+  }
+  if (place.isEmpty) {
+    return name;
+  }
+  return '$name · $place';
+}
+
+/// Prefer the task's farm, unless a completed profile should replace a stub.
+FarmRow? farmForReminder(FarmRow? taskFarm, FarmRow? primary) {
+  if (taskFarm == null) {
+    return primary;
+  }
+  if (!isFarmProfileComplete(taskFarm) &&
+      primary != null &&
+      isFarmProfileComplete(primary)) {
+    return primary;
+  }
+  return taskFarm;
+}
+
 bool farmHasGps(FarmRow? farm) {
   if (farm == null) {
     return false;

@@ -1,10 +1,5 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'typed_routes.dart';
-
-// **************************************************************************
-// GoRouterGenerator
-// **************************************************************************
 
 List<RouteBase> get $appRoutes => [
   $splashRoute,

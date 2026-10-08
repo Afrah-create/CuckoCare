@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../app/di/providers.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../core/utils/uuid_v7.dart';
+import '../../notifications/presentation/notification_prefs_provider.dart';
 import '../data/batch_repository.dart';
 import '../domain/batch_planner.dart';
 import '../domain/calendar_date.dart';
@@ -118,6 +119,7 @@ final batchNewControllerProvider =
 class BatchNewController extends Notifier<BatchNewState> {
   static const _draftKey = 'draft:batch:new';
   var _bootstrapped = false;
+  String? _batchId;
 
   @override
   BatchNewState build() {
@@ -125,7 +127,8 @@ class BatchNewController extends Notifier<BatchNewState> {
     final farm = ref.watch(primaryFarmProvider).value;
     final today = ref.watch(kampalaTodayProvider);
     final needsFarm = farm == null;
-    final batchId = newId();
+    _batchId ??= newId();
+    final batchId = _batchId!;
     final defaultName = _defaultBatchName(today, BirdType.layer);
 
     if (!_bootstrapped) {
@@ -150,6 +153,21 @@ class BatchNewController extends Notifier<BatchNewState> {
       acquiredOn: today,
       name: defaultName,
       batchId: batchId,
+    );
+  }
+
+  void _startNextBatch() {
+    _batchId = newId();
+    final today = ref.read(kampalaTodayProvider);
+    final farm = ref.read(primaryFarmProvider).value;
+    final needsFarm = farm == null;
+    state = BatchNewState(
+      needsFarmStep: needsFarm,
+      wizardStep: needsFarm ? BatchWizardStep.farm : BatchWizardStep.details,
+      farmName: farm?.name ?? state.farmName,
+      acquiredOn: today,
+      name: _defaultBatchName(today, BirdType.layer),
+      batchId: _batchId!,
     );
   }
 
@@ -222,6 +240,7 @@ class BatchNewController extends Notifier<BatchNewState> {
         includeOptional: map['include_optional'] as bool? ?? false,
         batchId: map['batch_id'] as String? ?? batchId,
       );
+      _batchId = state.batchId;
     } catch (_) {
       // ignore corrupt draft
     }
@@ -511,8 +530,11 @@ class BatchNewController extends Notifier<BatchNewState> {
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_draftKey);
-      state = state.copyWith(isSubmitting: false);
-      return state.batchId;
+      final savedId = state.batchId;
+      _startNextBatch();
+      ref.read(syncSchedulerProvider).notifyLocalWrite();
+      ref.read(reminderReconcilerProvider).scheduleReconcile();
+      return savedId;
     } catch (e) {
       state = state.copyWith(
         isSubmitting: false,

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import '../../features/batches/domain/calendar_date.dart';
+import '../../features/farms/domain/farm_profile.dart';
 import '../../features/notifications/domain/reminder_planner.dart';
 import '../../features/notifications/domain/step_snapshot.dart';
 import '../db/app_database.dart';
@@ -12,7 +15,9 @@ class ReminderPlanLoader {
     final farms = await (db.select(db.farms)
           ..where((f) => f.deletedAt.isNull()))
         .get();
-    final farmNames = {for (final f in farms) f.id: f.name};
+    final farmsById = {for (final farm in farms) farm.id: farm};
+    final snapshot = await db.select(db.authSnapshot).getSingleOrNull();
+    final primary = selectPrimaryFarm(farms, _snapshotFarmIds(snapshot));
 
     final batches = await (db.select(db.batches)
           ..where(
@@ -31,13 +36,18 @@ class ReminderPlanLoader {
       if (batch == null) {
         continue;
       }
+      final display = farmForReminder(farmsById[row.farmId], primary);
       tasks.add(
         ReminderPlanTask(
           taskId: row.id,
           batchId: row.batchId,
           farmId: row.farmId,
           batchName: batch.name,
-          farmName: farmNames[row.farmId] ?? 'Farm',
+          farmName: () {
+            final name = display?.name.trim() ?? '';
+            return name.isEmpty ? 'Farm' : name;
+          }(),
+          farmDetail: farmDetailLabel(display),
           stepLabel: stepLabelFromSnapshot(row.stepSnapshot, row.stepId),
           dueOn: CalendarDate.fromDateTime(row.dueOn.toUtc()),
           enabled: row.enabled,
@@ -50,8 +60,23 @@ class ReminderPlanLoader {
 
     return ReminderPlanLoadResult(
       tasks: tasks,
-      farmCount: farms.length,
+      farmCount: batches.map((batch) => batch.farmId).toSet().length,
     );
+  }
+}
+
+List<String> _snapshotFarmIds(AuthSnapshotRow? row) {
+  if (row == null) {
+    return const [];
+  }
+  try {
+    final decoded = jsonDecode(row.farmIdsJson);
+    if (decoded is! List) {
+      return const [];
+    }
+    return decoded.map((entry) => entry.toString()).toList();
+  } catch (_) {
+    return const [];
   }
 }
 

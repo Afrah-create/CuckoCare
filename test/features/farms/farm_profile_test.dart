@@ -31,6 +31,23 @@ void main() {
     expect(isFarmProfileComplete(picked), isTrue);
   });
 
+  test('reminder uses the completed profile instead of a name-only stub', () {
+    final stub = _farm(id: 'stub', name: 'Draft', updatedAt: newer);
+    final saved = _farm(
+      id: 'saved',
+      name: 'Kato Farm',
+      district: 'Wakiso',
+      village: 'Nansana',
+      phone: '+256712345678',
+      updatedAt: older,
+    );
+
+    final chosen = farmForReminder(stub, saved);
+
+    expect(chosen?.id, 'saved');
+    expect(farmDetailLabel(chosen), 'Kato Farm · Wakiso, Nansana');
+  });
+
   test('synced farm wins over an empty local stub before a profile exists', () {
     final stub = _farm(id: 'stub', name: 'Draft', updatedAt: newer);
     final synced = _farm(

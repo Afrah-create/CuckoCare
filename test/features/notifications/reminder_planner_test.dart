@@ -84,6 +84,42 @@ void main() {
     expect(plan.any((p) => p.kind == ReminderKind.scheduleDue), isTrue);
   });
 
+  test('body includes the current farm detail and changes when it does', () {
+    final prefs = NotificationPrefs.defaults.copyWith(
+      dueRemindersEnabled: false,
+    );
+    PlannedReminder planFor(String detail) {
+      return planner.plan(
+        prefs: prefs,
+        tasks: [
+          ReminderPlanTask(
+            taskId: 't1',
+            batchId: 'b1',
+            farmId: 'f1',
+            batchName: 'Batch 1',
+            farmName: 'Home farm',
+            farmDetail: detail,
+            stepLabel: 'Gumboro',
+            dueOn: CalendarDate.parseIso('2026-10-05'),
+            enabled: true,
+            status: 'pending',
+            isHatcheryStep: false,
+            batchActive: true,
+          ),
+        ],
+        today: today,
+        nowLocal: nowLocal,
+        farmCount: 1,
+      ).first;
+    }
+
+    final before = planFor('Home farm');
+    final after = planFor('Kato Farm · Wakiso, Nansana');
+    expect(before.body, contains('Home farm'));
+    expect(after.body, contains('Kato Farm · Wakiso, Nansana'));
+    expect(before.contentHash, isNot(after.contentHash));
+  });
+
   test('content hash changes when task set changes', () {
     final prefs = NotificationPrefs.defaults.copyWith(
       dueRemindersEnabled: false,

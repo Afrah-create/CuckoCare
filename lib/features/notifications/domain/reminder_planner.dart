@@ -15,6 +15,7 @@ class ReminderPlanTask {
     required this.farmId,
     required this.batchName,
     required this.farmName,
+    this.farmDetail = '',
     required this.stepLabel,
     required this.dueOn,
     required this.enabled,
@@ -28,6 +29,9 @@ class ReminderPlanTask {
   final String farmId;
   final String batchName;
   final String farmName;
+
+  /// Current farm name and place, refreshed whenever reminders are planned.
+  final String farmDetail;
   final String stepLabel;
   final CalendarDate dueOn;
   final bool enabled;
@@ -238,7 +242,13 @@ class ReminderPlanner {
     if (group.length > 5) {
       lines.add('+${group.length - 5} more');
     }
-    final body = lines.join('\n');
+    final detail = first.task.farmDetail.trim().isNotEmpty
+        ? first.task.farmDetail.trim()
+        : first.task.farmName.trim();
+    final body = [
+      if (detail.isNotEmpty && detail != 'Farm') detail,
+      ...lines,
+    ].join('\n');
 
     final payload = group.length == 1
         ? '/batches/${first.task.batchId}/vaccinations/${first.task.taskId}'
