@@ -36,7 +36,6 @@ class BatchesListScreen extends ConsumerWidget {
       primary: false,
       frame: false,
       body: AsyncStateView<List<BatchRow>>(
-      screenId: 'batches',
       value: batchesAsync,
       onRetry: () => ref.invalidate(farmBatchesProvider),
       skeleton: const ListSkeleton(),

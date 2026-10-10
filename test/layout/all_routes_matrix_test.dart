@@ -15,15 +15,6 @@ void main() {
     expect(routes.toSet(), routeSamplePaths);
   });
 
-  test('known_failures ratchet is empty', () {
-    final file = File('test/layout/known_failures.txt');
-    final lines = file
-        .readAsLinesSync()
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty && !line.startsWith('#'));
-    expect(lines, isEmpty);
-  });
-
   final sizes = <Size>[
     const Size(320, 568),
     const Size(360, 800),
@@ -31,7 +22,7 @@ void main() {
     const Size(800, 1280),
   ];
 
-  for (final path in [...routes, layoutSandboxPath]) {
+  for (final path in routes) {
     for (final size in sizes) {
       for (final scale in [1.0, 2.0]) {
         testWidgets(

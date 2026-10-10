@@ -57,7 +57,6 @@ class BatchVaccinationTaskScreen extends ConsumerWidget {
         onPressed: () => _close(context),
       ),
       body: AsyncStateView<BatchRow?>(
-        screenId: 'vaccination-task',
         value: batchAsync,
         skeleton: const DetailSkeleton(),
         error: (_, __) => const _TaskMissingBody(),

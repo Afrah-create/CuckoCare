@@ -18,7 +18,6 @@ abstract final class AppMotion {
   static const undoWindow = Duration(seconds: 6);
   static const highlightPulse = Duration(milliseconds: 900);
   static const loadTimeout = Duration(seconds: 8);
-  static const slowNetwork = Duration(seconds: 3);
 
   static const curveStandard = Cubic(0.33, 1, 0.68, 1);
   static const curveEmphasized = Cubic(0.2, 0, 0, 1);

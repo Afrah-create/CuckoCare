@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
@@ -64,7 +65,6 @@ class BatchDetailScreen extends ConsumerWidget {
         orElse: () => null,
       ),
       body: AsyncStateView<BatchRow?>(
-        screenId: 'batch-detail',
         value: batchAsync,
         onRetry: () => ref.invalidate(batchDetailProvider(batchId)),
         skeleton: const DetailSkeleton(),
@@ -75,7 +75,7 @@ class BatchDetailScreen extends ConsumerWidget {
         builder: (batch) {
           if (batch == null) {
             return NotFoundState(
-              onBack: () => Navigator.of(context).pop(),
+              onBack: () => context.pop(),
             );
           }
           return AsyncStateView<List<VaccinationTaskRow>>(

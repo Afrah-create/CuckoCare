@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../data_platform/sync/sync_engine.dart';
 import '../../di/providers.dart';
-import '../../router/routes/typed_routes.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/theme_context.dart';
 
@@ -55,22 +53,6 @@ class _SyncDetails extends ConsumerWidget {
               ref.read(syncEngineProvider).syncOnce(force: true);
             },
             child: const Text('Retry now'),
-          ),
-          TextButton(
-            onPressed: () {
-              final host = Navigator.of(context).context;
-              final path = GoRouterState.of(host).uri.path;
-              Navigator.of(context).pop();
-              if (!host.mounted) {
-                return;
-              }
-              if (path.startsWith('/vet')) {
-                const VetSyncRoute().push(host);
-              } else {
-                const MoreSyncRoute().push(host);
-              }
-            },
-            child: const Text('Sync diagnostics'),
           ),
         ],
       ),

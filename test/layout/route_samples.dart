@@ -1,12 +1,8 @@
 import 'package:cucocare/app/layout/app_page.dart';
-import 'package:cucocare/app/layout/layout_sandbox.dart';
 import 'package:cucocare/app/layout/page_layout.dart';
 import 'package:cucocare/features/auth/presentation/sign_up_screen.dart';
 import 'package:cucocare/features/feed/presentation/feed_screen.dart';
 import 'package:flutter/material.dart';
-
-/// Every registered route must have an entry. The sandbox is the zero-config proof.
-const layoutSandboxPath = '/dev/layout-sandbox';
 
 PageLayout presetForRoute(String path) {
   return switch (path) {
@@ -22,8 +18,6 @@ PageLayout presetForRoute(String path) {
     '/more' ||
     '/more/farm' ||
     '/more/settings/notifications' ||
-    '/more/sync' ||
-    '/vet/sync' ||
     '/vet/more' =>
       PageLayout.form,
     _ => PageLayout.standard,
@@ -44,7 +38,6 @@ const routeSamplePaths = <String>{
   '/more',
   '/more/farm',
   '/more/settings/notifications',
-  '/more/sync',
   '/records',
   '/splash',
   '/today',
@@ -53,15 +46,13 @@ const routeSamplePaths = <String>{
   '/vet/incident',
   '/vet/map',
   '/vet/more',
-  '/vet/sync',
 };
 
 Widget routeSample(String path) {
-  if (path != layoutSandboxPath && !routeSamplePaths.contains(path)) {
+  if (!routeSamplePaths.contains(path)) {
     throw ArgumentError('No layout sample for $path');
   }
   return switch (path) {
-    layoutSandboxPath => const LayoutSandbox(),
     '/auth/signup' => const SignUpScreen(),
     '/feed' => const FeedScreen(),
     _ => RouteChromeSample(path: path, preset: presetForRoute(path)),

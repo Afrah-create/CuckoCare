@@ -31,7 +31,6 @@ void main() {
         continue;
       }
 
-      final rel = entity.path.replaceFirst('lib/', 'lib/');
       final content = entity.readAsStringSync();
       final lines = content.split('\n');
       for (var i = 0; i < lines.length; i++) {

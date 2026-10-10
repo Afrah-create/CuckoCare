@@ -34,7 +34,10 @@ class AppSnack {
         behavior: SnackBarBehavior.floating,
         duration: hasAction ? motion.snackbarWithAction : motion.snackbarShort,
         backgroundColor: background,
-        content: Text(message, style: TextStyle(color: foreground)),
+        content: Text(
+          message,
+          style: context.text.bodyMedium?.copyWith(color: foreground),
+        ),
         action: hasAction
             ? SnackBarAction(
                 label: actionLabel,

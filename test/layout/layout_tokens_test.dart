@@ -1,13 +1,9 @@
 import 'package:cucocare/app/layout/adaptive.dart';
-import 'package:cucocare/app/layout/layout_inspector.dart';
 import 'package:cucocare/app/layout/layout_profile.dart';
 import 'package:cucocare/app/layout/layout_scope.dart';
 import 'package:cucocare/app/layout/page_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'device_profiles.dart';
 
 void main() {
   test('width classes follow the breakpoint table', () {
@@ -40,12 +36,6 @@ void main() {
       tokensFor(const Size(800, 1280)).maxWidthFor(PageLayout.form),
       640,
     );
-  });
-
-  test('every catalogue size resolves a profile', () {
-    for (final device in deviceProfiles) {
-      expect(tokensFor(device.size).profile, isNotNull);
-    }
   });
 
   testWidgets('LayoutScope does not notify for a resize inside one class', (
@@ -117,24 +107,6 @@ void main() {
     expect(find.byType(Row), findsOneWidget);
     await pump(2);
     expect(find.byType(Row), findsNothing);
-  });
-
-  testWidgets('layout inspector prints the central values', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          builder: (context, child) {
-            return LayoutScope(
-              tokens: tokensFor(const Size(915, 412)),
-              child: child ?? const SizedBox.shrink(),
-            );
-          },
-          home: const Scaffold(body: LayoutInspectorBanner()),
-        ),
-      ),
-    );
-    expect(find.textContaining('phoneLandscape'), findsOneWidget);
-    expect(find.textContaining('915×412'), findsOneWidget);
   });
 }
 

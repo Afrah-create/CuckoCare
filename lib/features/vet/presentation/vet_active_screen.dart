@@ -54,7 +54,6 @@ class VetActiveScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
             AsyncStateView(
-              screenId: 'vet-active',
               expand: false,
               value: inboxAsync,
               onRetry: refresh,

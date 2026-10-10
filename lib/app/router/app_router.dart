@@ -291,8 +291,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       $batchDetailRoute,
       $moreFarmRoute,
       $notificationsSettingsRoute,
-      $moreSyncRoute,
-      $vetSyncRoute,
       ..._vetShellRoutes(),
       ..._shellRoutes(),
     ],

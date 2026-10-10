@@ -74,7 +74,6 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
       preset: PageLayout.fullBleed,
       frame: false,
       body: AsyncStateView(
-      screenId: 'vet-map',
       value: mapAsync,
       onRetry: () => ref.invalidate(vetMapProvider),
       skeleton: const MapSkeleton(),

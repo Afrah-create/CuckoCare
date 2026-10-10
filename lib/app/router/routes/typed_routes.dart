@@ -12,7 +12,6 @@ import '../../../features/batches/presentation/batch_new_screen.dart';
 import '../../../features/batches/presentation/batch_vaccination_task_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
 import '../../../features/notifications/presentation/notifications_settings_screen.dart';
-import '../../../features/settings/presentation/sync_diagnostics_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
 import '../navigator_keys.dart';
 
@@ -141,26 +140,4 @@ class NotificationsSettingsRoute extends GoRouteData
         preset: PageLayout.form,
         child: const NotificationsSettingsScreen(),
       );
-}
-
-@TypedGoRoute<MoreSyncRoute>(path: '/more/sync')
-class MoreSyncRoute extends GoRouteData with $MoreSyncRoute {
-  const MoreSyncRoute();
-
-  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SyncDiagnosticsScreen();
-}
-
-@TypedGoRoute<VetSyncRoute>(path: '/vet/sync')
-class VetSyncRoute extends GoRouteData with $VetSyncRoute {
-  const VetSyncRoute();
-
-  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SyncDiagnosticsScreen();
 }

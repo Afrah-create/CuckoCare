@@ -38,7 +38,6 @@ class RecordsScreen extends ConsumerWidget {
       primary: false,
       frame: false,
       body: AsyncStateView<List<FarmerIncidentEntry>>(
-      screenId: 'records',
       value: incidentsAsync,
       onRetry: () => ref.invalidate(farmerIncidentsProvider),
       skeleton: const ListSkeleton(),

@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../theme/app_motion.dart';
 import '../inline_banner.dart';
-import 'offline_notice.dart';
-import 'state_simulator.dart';
 
 /// The only way a screen paints an [AsyncValue].
 ///
@@ -22,7 +20,6 @@ class AsyncStateView<T> extends StatefulWidget {
     this.error,
     this.onRetry,
     this.loadTimeout = AppMotion.loadTimeout,
-    this.screenId,
     this.expand = true,
     super.key,
   });
@@ -35,7 +32,6 @@ class AsyncStateView<T> extends StatefulWidget {
   final Widget Function(Object error, StackTrace stack)? error;
   final VoidCallback? onRetry;
   final Duration loadTimeout;
-  final String? screenId;
   final bool expand;
 
   @override
@@ -46,26 +42,11 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
   Timer? _revealTimer;
   Timer? _holdTimer;
   Timer? _timeoutTimer;
-  Timer? _slowTimer;
-  DateTime? _slowUntil;
   var _skeletonOn = false;
   var _timedOut = false;
   var _releaseScheduled = false;
 
   bool get _firstLoad => widget.value.isLoading && !widget.value.hasValue;
-
-  SimulatedLoad? _forced() {
-    final id = widget.screenId;
-    if (id == null) {
-      return null;
-    }
-    return StateSimulatorScope.maybeOf(context)?.forcedFor(id);
-  }
-
-  bool get _slow => StateSimulatorScope.maybeOf(context)?.slowNetwork ?? false;
-
-  bool get _holdingSlow =>
-      _slow && _slowUntil != null && DateTime.now().isBefore(_slowUntil!);
 
   @override
   void didChangeDependencies() {
@@ -84,29 +65,13 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
     _revealTimer?.cancel();
     _holdTimer?.cancel();
     _timeoutTimer?.cancel();
-    _slowTimer?.cancel();
     super.dispose();
   }
 
   void _sync() {
     final motion = AppMotion.of(context);
-    final forcedLoading = _forced() == SimulatedLoad.loading;
 
-    if (_slow && _slowUntil == null && (forcedLoading || _firstLoad || widget.value.hasValue)) {
-      _slowUntil = DateTime.now().add(AppMotion.slowNetwork);
-      _slowTimer?.cancel();
-      _slowTimer = Timer(AppMotion.slowNetwork, () {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
-        _sync();
-      });
-    }
-
-    final waiting = _firstLoad || forcedLoading || _holdingSlow;
-
-    if (!waiting) {
+    if (!_firstLoad) {
       _revealTimer?.cancel();
       _revealTimer = null;
       _timeoutTimer?.cancel();
@@ -127,7 +92,7 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
       if (!mounted) {
         return;
       }
-      if (_firstLoad || _forced() == SimulatedLoad.loading) {
+      if (_firstLoad) {
         setState(() => _timedOut = true);
       }
     });
@@ -146,7 +111,7 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
       if (!mounted) {
         return;
       }
-      if (_firstLoad || _forced() == SimulatedLoad.loading || _holdingSlow) {
+      if (_firstLoad) {
         _armSkeleton();
       }
     });
@@ -179,14 +144,10 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
   @override
   Widget build(BuildContext context) {
     final motion = AppMotion.of(context);
-    final forced = _forced();
-    final refreshing = widget.value.isLoading &&
-        widget.value.hasValue &&
-        !_skeletonOn &&
-        !_holdingSlow &&
-        forced != SimulatedLoad.loading;
+    final refreshing =
+        widget.value.isLoading && widget.value.hasValue && !_skeletonOn;
 
-    final page = _page(forced);
+    final page = _page();
     final faded = AnimatedSwitcher(
       duration: motion.standard,
       switchInCurve: motion.curveStandard,
@@ -213,15 +174,9 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
     );
   }
 
-  (String, Widget) _page(SimulatedLoad? forced) {
-    if (forced == SimulatedLoad.error || (_timedOut && !widget.value.hasValue)) {
-      final error = _timedOut ? LoadTimedOut() : (widget.value.error ?? LoadTimedOut());
-      final stack = widget.value.stackTrace ?? StackTrace.empty;
-      return ('error', _error(error, stack));
-    }
-
-    if (forced == SimulatedLoad.empty) {
-      return ('empty', widget.empty ?? const SizedBox.shrink());
+  (String, Widget) _page() {
+    if (_timedOut && !widget.value.hasValue) {
+      return ('error', _error(LoadTimedOut(), StackTrace.empty));
     }
 
     if (_skeletonOn) {
@@ -240,27 +195,21 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
     }
 
     final data = widget.value.requireValue;
-    final empty = widget.isEmpty?.call(data) ?? false;
-    if (empty || forced == SimulatedLoad.empty) {
+    if (widget.isEmpty?.call(data) ?? false) {
       return ('empty', widget.empty ?? widget.builder(data));
     }
 
     var content = widget.builder(data);
-    final stale = widget.value.hasError && widget.value.hasValue;
-    final offline = forced == SimulatedLoad.offline;
-    if (stale || offline) {
+    if (widget.value.hasError) {
       content = Column(
         mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (offline)
-            const OfflineNotice()
-          else
-            const InlineBanner(
-              message: "Couldn't update. Showing saved data.",
-              icon: Icons.cloud_off_outlined,
-              tone: BannerTone.warning,
-            ),
+          const InlineBanner(
+            message: "Couldn't update. Showing saved data.",
+            icon: Icons.cloud_off_outlined,
+            tone: BannerTone.warning,
+          ),
           if (widget.expand) Expanded(child: content) else content,
         ],
       );

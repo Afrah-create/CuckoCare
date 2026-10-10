@@ -452,7 +452,6 @@ class _NeedsAttentionList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(needsAttentionTasksProvider);
     return AsyncStateView<List<VaccinationTaskRow>>(
-      screenId: 'today',
       expand: false,
       value: tasksAsync,
       onRetry: () => ref.invalidate(needsAttentionTasksProvider),

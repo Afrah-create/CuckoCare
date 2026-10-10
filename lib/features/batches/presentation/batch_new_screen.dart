@@ -75,7 +75,6 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
       ),
       bottom: showActions ? _bottomBar(draft, ctrl) : null,
       body: AsyncStateView(
-        screenId: 'batch-new',
         value: catalogAsync,
         onRetry: () => ref.invalidate(programmeCatalogProvider),
         skeleton: const FormSkeleton(),

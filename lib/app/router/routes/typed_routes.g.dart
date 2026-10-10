@@ -1,5 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'typed_routes.dart';
+
+// **************************************************************************
+// GoRouterGenerator
+// **************************************************************************
 
 List<RouteBase> get $appRoutes => [
   $splashRoute,
@@ -11,8 +16,6 @@ List<RouteBase> get $appRoutes => [
   $batchDetailRoute,
   $moreFarmRoute,
   $notificationsSettingsRoute,
-  $moreSyncRoute,
-  $vetSyncRoute,
 ];
 
 RouteBase get $splashRoute => GoRouteData.$route(
@@ -286,60 +289,6 @@ mixin $NotificationsSettingsRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/more/settings/notifications');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $moreSyncRoute => GoRouteData.$route(
-  path: '/more/sync',
-  hasOverriddenOnExit: false,
-  parentNavigatorKey: MoreSyncRoute.$parentNavigatorKey,
-  factory: $MoreSyncRoute._fromState,
-);
-
-mixin $MoreSyncRoute on GoRouteData {
-  static MoreSyncRoute _fromState(GoRouterState state) => const MoreSyncRoute();
-
-  @override
-  String get location => GoRouteData.$location('/more/sync');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-RouteBase get $vetSyncRoute => GoRouteData.$route(
-  path: '/vet/sync',
-  hasOverriddenOnExit: false,
-  parentNavigatorKey: VetSyncRoute.$parentNavigatorKey,
-  factory: $VetSyncRoute._fromState,
-);
-
-mixin $VetSyncRoute on GoRouteData {
-  static VetSyncRoute _fromState(GoRouterState state) => const VetSyncRoute();
-
-  @override
-  String get location => GoRouteData.$location('/vet/sync');
 
   @override
   void go(BuildContext context) => context.go(location);

@@ -145,7 +145,6 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
             ),
             if (!online) const OfflineNotice(),
             AsyncStateView<List<VetInboxItem>>(
-              screenId: 'vet-inbox',
               expand: false,
               value: inboxAsync,
               onRetry: _refresh,
