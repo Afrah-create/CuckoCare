@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
@@ -31,7 +32,10 @@ class BatchesListScreen extends ConsumerWidget {
     final batchesAsync = ref.watch(farmBatchesProvider);
     final today = ref.watch(kampalaTodayProvider);
 
-    return AsyncStateView<List<BatchRow>>(
+    return AppPage(
+      primary: false,
+      frame: false,
+      body: AsyncStateView<List<BatchRow>>(
       screenId: 'batches',
       value: batchesAsync,
       onRetry: () => ref.invalidate(farmBatchesProvider),
@@ -73,6 +77,7 @@ class BatchesListScreen extends ConsumerWidget {
           },
         );
       },
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/layout/layout_scope.dart';
 import '../../../app/layout/two_pane.dart';
@@ -120,7 +121,10 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     );
 
     if (useTwoPane) {
-      return PullToRefresh(
+      return AppPage(
+        primary: false,
+        frame: false,
+        body: PullToRefresh(
         online: online,
         onSync: _onRefresh,
         child: LayoutBuilder(
@@ -164,10 +168,14 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             );
           },
         ),
+        ),
       );
     }
 
-    return PullToRefresh(
+    return AppPage(
+      primary: false,
+      frame: false,
+      body: PullToRefresh(
       online: online,
       onSync: _onRefresh,
       child: CustomScrollView(
@@ -207,6 +215,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

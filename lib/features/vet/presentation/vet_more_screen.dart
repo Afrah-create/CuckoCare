@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../auth/presentation/confirm_sign_out.dart';
 import '../../auth/presentation/sign_out.dart';
@@ -16,7 +18,11 @@ class VetMoreScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final profile = ref.watch(userProfileProvider).value;
 
-    return ListView(
+    return AppPage(
+      primary: false,
+      preset: PageLayout.form,
+      frame: false,
+      body: ListView(
       padding: const EdgeInsets.all(16),
       children: [
         if (profile != null) ...[
@@ -78,6 +84,7 @@ class VetMoreScreen extends ConsumerWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../auth/domain/app_role.dart';
 import '../../../app/theme/theme_context.dart';
@@ -147,9 +149,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        backgroundColor: bg,
-        body: SafeArea(
+      child: AppPage(
+        preset: PageLayout.fullBleed,
+        primary: false,
+        body: ColoredBox(
+          color: bg,
+          child: SafeArea(
           child: Center(
             child: splash.bootstrapFailed
                 ? _Retry(onRetry: () {
@@ -185,7 +190,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               ),
           ),
         ),
-      ),
+          ),
+        ),
     );
   }
 }

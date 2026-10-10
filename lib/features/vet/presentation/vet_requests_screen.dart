@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -103,7 +104,10 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     final inboxAsync = ref.watch(vetInboxProvider);
     final vetUserId = ref.watch(authUserIdProvider).value;
 
-    return RefreshIndicator(
+    return AppPage(
+      primary: false,
+      frame: false,
+      body: RefreshIndicator(
       onRefresh: _refresh,
       child: ContentFrame(
         child: ListView(
@@ -160,6 +164,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

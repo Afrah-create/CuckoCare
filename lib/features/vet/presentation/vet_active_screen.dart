@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -30,7 +31,10 @@ class VetActiveScreen extends ConsumerWidget {
       await ref.read(vetInboxProvider.future);
     }
 
-    return RefreshIndicator(
+    return AppPage(
+      primary: false,
+      frame: false,
+      body: RefreshIndicator(
       onRefresh: refresh,
       child: ContentFrame(
         child: ListView(
@@ -103,6 +107,7 @@ class VetActiveScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

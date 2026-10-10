@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/cuco_confirm_dialog.dart';
@@ -101,13 +103,13 @@ class NotificationsSettingsScreen extends ConsumerWidget {
     final scheme = context.scheme;
     final masterEnabled = prefs.remindersEnabled;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => _close(context),
-        ),
+    return AppPage(
+      title: 'Notifications',
+      preset: PageLayout.form,
+      frame: false,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => _close(context),
       ),
       body: ContentFrame(
         child: ListView(

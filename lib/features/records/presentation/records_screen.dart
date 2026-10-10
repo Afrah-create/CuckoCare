@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -33,7 +34,10 @@ class RecordsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final incidentsAsync = ref.watch(farmerIncidentsProvider);
 
-    return AsyncStateView<List<FarmerIncidentEntry>>(
+    return AppPage(
+      primary: false,
+      frame: false,
+      body: AsyncStateView<List<FarmerIncidentEntry>>(
       screenId: 'records',
       value: incidentsAsync,
       onRetry: () => ref.invalidate(farmerIncidentsProvider),
@@ -73,6 +77,7 @@ class RecordsScreen extends ConsumerWidget {
           ),
         );
       },
+      ),
     );
   }
 }

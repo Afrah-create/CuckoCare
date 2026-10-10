@@ -19,9 +19,7 @@ class LayoutScope extends InheritedWidget {
 
   @override
   bool updateShouldNotify(LayoutScope oldWidget) {
-    return oldWidget.tokens.profile != tokens.profile ||
-        oldWidget.tokens.widthClass != tokens.widthClass ||
-        oldWidget.tokens.heightClass != tokens.heightClass;
+    return !oldWidget.tokens.sameBreakpoint(tokens);
   }
 }
 

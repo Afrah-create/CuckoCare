@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -46,13 +48,13 @@ class BatchVaccinationTaskScreen extends ConsumerWidget {
     final taskAsync = ref.watch(vaccinationTaskProvider((batchId, taskId)));
     final today = ref.watch(kampalaTodayProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vaccination task'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => _close(context),
-        ),
+    return AppPage(
+      title: 'Vaccination task',
+      preset: PageLayout.reading,
+      frame: false,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => _close(context),
       ),
       body: AsyncStateView<BatchRow?>(
         screenId: 'vaccination-task',

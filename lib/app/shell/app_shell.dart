@@ -144,9 +144,9 @@ class _AppShellState extends ConsumerState<AppShell> {
           children: [
             Offstage(
               offstage: !useRail,
-              child: SizedBox(
+              child: ShellRailHost(
                 width: railExtended ? 256 : 80,
-                child: rail,
+                rail: rail,
               ),
             ),
             Expanded(

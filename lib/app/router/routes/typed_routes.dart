@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../build_app_page.dart';
+import '../../layout/page_layout.dart';
 import '../../../features/splash/presentation/splash_screen.dart';
 import '../../../features/auth/presentation/forgot_password_screen.dart';
 import '../../../features/auth/presentation/login_screen.dart';
@@ -70,8 +72,10 @@ class BatchNewRoute extends GoRouteData with $BatchNewRoute {
   static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const BatchNewScreen();
+  Widget build(BuildContext context, GoRouterState state) => buildAppPage(
+        preset: PageLayout.form,
+        child: const BatchNewScreen(),
+      );
 }
 
 @TypedGoRoute<BatchDetailRoute>(
@@ -117,8 +121,10 @@ class MoreFarmRoute extends GoRouteData with $MoreFarmRoute {
   static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const FarmSetupScreen();
+  Widget build(BuildContext context, GoRouterState state) => buildAppPage(
+        preset: PageLayout.form,
+        child: const FarmSetupScreen(),
+      );
 }
 
 @TypedGoRoute<NotificationsSettingsRoute>(
@@ -131,8 +137,10 @@ class NotificationsSettingsRoute extends GoRouteData
   static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const NotificationsSettingsScreen();
+  Widget build(BuildContext context, GoRouterState state) => buildAppPage(
+        preset: PageLayout.form,
+        child: const NotificationsSettingsScreen(),
+      );
 }
 
 @TypedGoRoute<MoreSyncRoute>(path: '/more/sync')

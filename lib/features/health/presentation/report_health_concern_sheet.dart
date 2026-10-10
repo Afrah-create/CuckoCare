@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/layout_scope.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
@@ -168,7 +169,7 @@ class _ReportHealthConcernSheetState
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final sheetHeight = MediaQuery.sizeOf(context).height * 0.88;
+    final sheetHeight = context.layout.size.height * 0.88;
     final farm = ref.watch(primaryFarmProvider).value;
     final hasGps = farmHasGps(farm);
     final vetsAsync = ref.watch(availableVetsProvider(widget.farmId));

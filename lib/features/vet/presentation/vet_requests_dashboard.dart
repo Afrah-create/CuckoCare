@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/layout/adaptive.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../domain/vet_inbox_stats.dart';
@@ -32,45 +33,35 @@ class VetRequestsStatsPanel extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final width = constraints.maxWidth;
-                final crossCount = width >= 360 ? 2 : 1;
-                return GridView.count(
-                  crossAxisCount: crossCount,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: crossCount == 2 ? 2.4 : 3.2,
-                  children: [
-                    _StatCell(
-                      label: 'New requests',
-                      value: stats.pending,
-                      icon: Icons.inbox_outlined,
-                      color: scheme.tertiary,
-                    ),
-                    _StatCell(
-                      label: 'Your active cases',
-                      value: stats.active,
-                      icon: Icons.assignment_outlined,
-                      color: scheme.primary,
-                    ),
-                    _StatCell(
-                      label: 'Visits in progress',
-                      value: stats.inProgress,
-                      icon: Icons.directions_walk_outlined,
-                      color: scheme.primary,
-                    ),
-                    _StatCell(
-                      label: 'Directed to you',
-                      value: stats.directedToYouPending,
-                      icon: Icons.person_pin_outlined,
-                      color: scheme.secondary,
-                    ),
-                  ],
-                );
-              },
+            AdaptiveGrid(
+              minItemWidth: 160,
+              itemHeight: 88,
+              children: [
+                _StatCell(
+                  label: 'New requests',
+                  value: stats.pending,
+                  icon: Icons.inbox_outlined,
+                  color: scheme.tertiary,
+                ),
+                _StatCell(
+                  label: 'Your active cases',
+                  value: stats.active,
+                  icon: Icons.assignment_outlined,
+                  color: scheme.primary,
+                ),
+                _StatCell(
+                  label: 'Visits in progress',
+                  value: stats.inProgress,
+                  icon: Icons.directions_walk_outlined,
+                  color: scheme.primary,
+                ),
+                _StatCell(
+                  label: 'Directed to you',
+                  value: stats.directedToYouPending,
+                  icon: Icons.person_pin_outlined,
+                  color: scheme.secondary,
+                ),
+              ],
             ),
             if (stats.urgentPending > 0) ...[
               const SizedBox(height: AppSpacing.sm),

@@ -6,7 +6,9 @@ import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/router/routes/typed_routes.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/async_state_view.dart';
@@ -43,8 +45,10 @@ class BatchDetailScreen extends ConsumerWidget {
     final tasksAsync = ref.watch(batchTasksProvider(batchId));
     final today = ref.watch(kampalaTodayProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Batch')),
+    return AppPage(
+      title: 'Batch',
+      preset: PageLayout.reading,
+      frame: false,
       floatingActionButton: batchAsync.maybeWhen(
         data: (batch) => batch == null
             ? null

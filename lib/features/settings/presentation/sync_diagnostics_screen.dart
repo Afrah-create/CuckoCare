@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/widgets/states/app_dialog.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/sync/sync_engine.dart';
@@ -39,8 +41,10 @@ class _SyncDiagnosticsScreenState extends ConsumerState<SyncDiagnosticsScreen> {
         const SyncStatus(phase: SyncPhase.idle, pendingOutboxCount: 0);
     final data = _data;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sync diagnostics')),
+    return AppPage(
+      title: 'Sync diagnostics',
+      preset: PageLayout.form,
+      frame: false,
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

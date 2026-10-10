@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/router/routes/typed_routes.dart';
 
 /// Placeholder — sign-up UI lives on [LoginScreen] for now.
@@ -7,8 +9,9 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Create account')),
+    return AppPage(
+      title: 'Create account',
+      preset: PageLayout.form,
       body: Center(
         child: FilledButton(
           onPressed: () => const LoginRoute().go(context),

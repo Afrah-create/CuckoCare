@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../domain/vet_case_workflow.dart';
@@ -33,10 +35,10 @@ class VetIncidentDetailScreen extends ConsumerWidget {
     final date =
         DateFormat.yMMMd().add_jm().format(detail.createdAt.toLocal());
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Incident'),
-      ),
+    return AppPage(
+      title: 'Incident',
+      preset: PageLayout.reading,
+      frame: false,
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [

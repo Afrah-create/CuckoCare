@@ -4,6 +4,38 @@ import '../../data_platform/sync/sync_engine.dart';
 import '../theme/app_spacing.dart';
 import '../theme/theme_context.dart';
 import '../widgets/app_logo.dart';
+import 'layout_scope.dart';
+
+/// Gives the rail a bounded height and scrolls it when the window is short.
+class ShellRailHost extends StatelessWidget {
+  const ShellRailHost({
+    required this.rail,
+    required this.width,
+    super.key,
+  });
+
+  final Widget rail;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    final layout = context.layout;
+    if (!layout.isShort) {
+      return SizedBox(width: width, child: rail);
+    }
+    return SizedBox(
+      width: width,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final height = constraints.maxHeight < 520 ? 520.0 : constraints.maxHeight;
+          return SingleChildScrollView(
+            child: SizedBox(height: height, width: width, child: rail),
+          );
+        },
+      ),
+    );
+  }
+}
 
 /// Brand mark at the top of the navigation rail.
 class ShellRailLeading extends StatelessWidget {

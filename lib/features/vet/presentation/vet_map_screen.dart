@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
+import '../../../app/layout/layout_scope.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_snack.dart';
@@ -66,7 +69,11 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
   Widget build(BuildContext context) {
     final mapAsync = ref.watch(vetMapProvider);
 
-    return AsyncStateView(
+    return AppPage(
+      primary: false,
+      preset: PageLayout.fullBleed,
+      frame: false,
+      body: AsyncStateView(
       screenId: 'vet-map',
       value: mapAsync,
       onRetry: () => ref.invalidate(vetMapProvider),
@@ -203,6 +210,7 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
           ],
         );
       },
+      ),
     );
   }
 
@@ -301,7 +309,7 @@ class _RequestDetailSheet extends ConsumerWidget {
         top: false,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height * 0.55,
+            maxHeight: context.layout.size.height * 0.55,
           ),
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(

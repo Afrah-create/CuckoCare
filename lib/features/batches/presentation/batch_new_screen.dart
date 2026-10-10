@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/time/kampala_today.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/layout/two_pane.dart';
 import '../../../app/layout/layout_scope.dart';
 import '../../../app/router/routes/typed_routes.dart';
@@ -63,16 +65,15 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
 
     final showActions = catalogAsync.hasValue;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_titleForStep(draft.wizardStep)),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: draft.isSubmitting ? null : () => context.pop(),
-        ),
+    return AppPage(
+      title: _titleForStep(draft.wizardStep),
+      preset: PageLayout.form,
+      frame: false,
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: draft.isSubmitting ? null : () => context.pop(),
       ),
-      bottomNavigationBar:
-          showActions ? _bottomBar(draft, ctrl) : null,
+      bottom: showActions ? _bottomBar(draft, ctrl) : null,
       body: AsyncStateView(
         screenId: 'batch-new',
         value: catalogAsync,
@@ -481,7 +482,7 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
     final showBack = draft.wizardStep != BatchWizardStep.farm &&
         !(draft.wizardStep == BatchWizardStep.details && !draft.needsFarmStep);
     // bottomNavigationBar can receive unbounded max width on some devices.
-    final barWidth = MediaQuery.sizeOf(context).width;
+    final barWidth = context.layout.size.width;
 
     return ColoredBox(
       color: context.scheme.surfaceContainerLow,

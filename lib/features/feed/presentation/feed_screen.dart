@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/layout/app_page.dart';
 import '../../../app/widgets/states/empty_state.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -7,10 +8,14 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const EmptyState(
-      icon: Icons.restaurant_outlined,
-      title: 'No feed items yet',
-      message: 'Add feed to track stock. This works offline.',
+    return const AppPage(
+      primary: false,
+      frame: false,
+      body: EmptyState(
+        icon: Icons.restaurant_outlined,
+        title: 'No feed items yet',
+        message: 'Add feed to track stock. This works offline.',
+      ),
     );
   }
 }

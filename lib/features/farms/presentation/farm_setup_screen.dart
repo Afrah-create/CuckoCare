@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/page_layout.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../data_platform/db/app_database.dart';
@@ -97,13 +99,13 @@ class _FarmSetupScreenState extends ConsumerState<FarmSetupScreen> {
 
     final setup = ref.watch(farmSetupControllerProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Farm profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: setup.isSubmitting ? null : () => context.pop(),
-        ),
+    return AppPage(
+      title: 'Farm profile',
+      preset: PageLayout.form,
+      frame: false,
+      leading: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: setup.isSubmitting ? null : () => context.pop(),
       ),
       body: SafeArea(
         child: ContentFrame(
