@@ -10,6 +10,7 @@ class AvailableVet {
     required this.displayName,
     this.organization,
     this.district,
+    this.phone,
     required this.offersConsultation,
     required this.offersFarmVisit,
     this.latitude,
@@ -21,6 +22,10 @@ class AvailableVet {
   final String displayName;
   final String? organization;
   final String? district;
+
+  /// E.164-formatted phone (e.g. +256701234567). May be null if not shared.
+  final String? phone;
+
   final bool offersConsultation;
   final bool offersFarmVisit;
   final double? latitude;
@@ -47,6 +52,7 @@ class AvailableVet {
       displayName: json['display_name'] as String? ?? 'Veterinarian',
       organization: json['organization'] as String?,
       district: json['district'] as String?,
+      phone: json['phone'] as String?,
       offersConsultation: json['offers_consultation'] as bool? ?? true,
       offersFarmVisit: json['offers_farm_visit'] as bool? ?? true,
       latitude: (json['latitude'] as num?)?.toDouble(),
@@ -69,7 +75,7 @@ class VetDirectoryRepository {
     try {
       final raw = await _client.rpc(
         'list_available_vets',
-        params: {if (farmId != null) 'p_farm_id': farmId},
+        params: {'p_farm_id': ?farmId},
       );
       if (raw is! Map<String, dynamic>) {
         return const Error(UnexpectedFailure('Unexpected vet list response'));

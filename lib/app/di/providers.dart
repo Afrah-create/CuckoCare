@@ -31,6 +31,7 @@ import '../../features/batches/domain/calendar_date.dart';
 import '../../features/farms/data/farm_gps_reader.dart';
 import '../../features/farms/data/farm_repository.dart';
 import '../../features/farms/domain/farm_profile.dart';
+import '../../features/feed/data/feed_repository.dart';
 
 final envProvider = Provider<Env>((ref) => Env.fromEnvironment());
 
@@ -274,6 +275,14 @@ final vetDirectoryRepositoryProvider = Provider<VetDirectoryRepository>((ref) {
 
 final vetLocationRepositoryProvider = Provider<VetLocationRepository>((ref) {
   return VetLocationRepository();
+});
+
+final feedRepositoryProvider = Provider<FeedRepository>((ref) {
+  return FeedRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(clockProvider),
+    syncedWrite: ref.watch(syncedWriteProvider),
+  );
 });
 
 final activeBatchCountProvider = StreamProvider<int>((ref) {

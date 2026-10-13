@@ -17,6 +17,7 @@ import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../batches/presentation/batch_providers.dart';
 import '../../home/presentation/farm_profile_banner.dart';
+import '../../vet/presentation/find_vet_screen.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
@@ -581,14 +582,23 @@ class _QuickActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
       children: [
-        Expanded(
-          child: FilledButton.tonalIcon(
-            onPressed: onSync,
-            icon: const Icon(Icons.sync_rounded),
-            label: const Text('Sync now'),
+        FilledButton.tonalIcon(
+          onPressed: onSync,
+          icon: const Icon(Icons.sync_rounded),
+          label: const Text('Sync now'),
+        ),
+        FilledButton.tonalIcon(
+          onPressed: () => Navigator.of(context, rootNavigator: true).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const FindVetScreen(),
+            ),
           ),
+          icon: const Icon(Icons.person_search_outlined),
+          label: const Text('Find a vet'),
         ),
       ],
     );
