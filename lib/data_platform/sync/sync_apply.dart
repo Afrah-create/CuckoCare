@@ -4,6 +4,7 @@ import '../db/app_database.dart';
 import 'remote_sync_api.dart';
 import 'synced_table.dart';
 import '../../features/batches/data/batch_synced_table.dart';
+import '../../features/batches/data/loss_synced_table.dart';
 import '../../features/farms/data/farm_synced_table.dart';
 import '../../features/health/data/health_record_synced_table.dart';
 import '../../features/health/data/vet_assistance_request_synced_table.dart';
@@ -24,6 +25,7 @@ class SyncApply {
   final AppDatabase _db;
   final _batches = BatchSyncedTable();
   final _tasks = VaccinationTaskSyncedTable();
+  final _losses = LossSyncedTable();
   final _health = HealthRecordSyncedTable();
   final _vetRequests = VetAssistanceRequestSyncedTable();
   final _farms = FarmSyncedTable();
@@ -65,6 +67,7 @@ class SyncApply {
   SyncedTable<dynamic>? _mapperFor(String table) => switch (table) {
         'batches' => _batches,
         'vaccination_tasks' => _tasks,
+        'mortality_records' => _losses,
         'health_records' => _health,
         'vet_assistance_requests' => _vetRequests,
         'farms' => _farms,
@@ -142,6 +145,61 @@ class SyncApply {
                     : local?.programmeContentHash,
               ),
               notes: Value(row.notes),
+              closedOn: Value(
+                remote.row.containsKey('closed_on')
+                    ? row.closedOn
+                    : local?.closedOn,
+              ),
+              closeReason: Value(
+                remote.row.containsKey('close_reason')
+                    ? row.closeReason
+                    : local?.closeReason,
+              ),
+              closeNote: Value(
+                remote.row.containsKey('close_note')
+                    ? row.closeNote
+                    : local?.closeNote,
+              ),
+              deletedGroupId: Value(
+                remote.row.containsKey('deleted_group_id')
+                    ? row.deletedGroupId
+                    : local?.deletedGroupId,
+              ),
+            ),
+          );
+      return;
+    }
+
+    if (mapper.tableName == 'mortality_records') {
+      final local = await (_db.select(_db.mortalityRecords)
+            ..where((b) => b.id.equals(id)))
+          .getSingleOrNull();
+      final row = incoming as MortalityRecordRow;
+      if (local != null &&
+          !shouldApplyRemoteVersion(
+            localServerVersion: local.serverVersion,
+            localUpdatedAt: local.updatedAt,
+            incomingServerVersion: incomingVersion,
+            incomingUpdatedAt: row.updatedAt,
+          )) {
+        return;
+      }
+      await _db.into(_db.mortalityRecords).insertOnConflictUpdate(
+            MortalityRecordsCompanion(
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(row.updatedAt),
+              deletedAt: Value(row.deletedAt),
+              serverVersion: Value(incomingVersion),
+              batchId: Value(row.batchId),
+              count: Value(row.count),
+              kind: Value(row.kind),
+              suspectedCause: Value(row.suspectedCause),
+              occurredOn: Value(row.occurredOn),
+              notes: Value(row.notes),
+              editedAt: Value(row.editedAt),
+              deletedGroupId: Value(row.deletedGroupId),
             ),
           );
       return;
@@ -204,6 +262,11 @@ class SyncApply {
                     : local?.programmeContentHash,
               ),
               shiftedFrom: Value(row.shiftedFrom ?? local?.shiftedFrom),
+              deletedGroupId: Value(
+                remote.row.containsKey('deleted_group_id')
+                    ? row.deletedGroupId
+                    : local?.deletedGroupId,
+              ),
             ),
           );
       return;
@@ -357,6 +420,11 @@ class SyncApply {
       await (_db.update(_db.vaccinationTasks)..where((b) => b.id.equals(id)))
           .write(
         VaccinationTasksCompanion(serverVersion: Value(serverVersion)),
+      );
+    } else if (table == 'mortality_records') {
+      await (_db.update(_db.mortalityRecords)..where((b) => b.id.equals(id)))
+          .write(
+        MortalityRecordsCompanion(serverVersion: Value(serverVersion)),
       );
     } else if (table == 'health_records') {
       await (_db.update(_db.healthRecords)..where((b) => b.id.equals(id)))

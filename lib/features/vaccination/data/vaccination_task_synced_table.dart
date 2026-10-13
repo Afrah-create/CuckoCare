@@ -40,6 +40,7 @@ class VaccinationTaskSyncedTable implements SyncedTable<VaccinationTaskRow> {
       shiftedFrom: json['shifted_from'] == null
           ? null
           : DateTime.parse(json['shifted_from'] as String),
+      deletedGroupId: json['deleted_group_id'] as String?,
     );
   }
 
@@ -63,6 +64,8 @@ class VaccinationTaskSyncedTable implements SyncedTable<VaccinationTaskRow> {
         'programme_content_hash': row.programmeContentHash,
       if (row.shiftedFrom != null)
         'shifted_from': row.shiftedFrom!.toIso8601String().substring(0, 10),
+      'deleted_at': row.deletedAt?.toUtc().toIso8601String(),
+      'deleted_group_id': row.deletedGroupId,
       'created_at': row.createdAt.toIso8601String(),
     };
   }

@@ -1759,6 +1759,50 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _closedOnMeta = const VerificationMeta(
+    'closedOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> closedOn = GeneratedColumn<DateTime>(
+    'closed_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _closeReasonMeta = const VerificationMeta(
+    'closeReason',
+  );
+  @override
+  late final GeneratedColumn<String> closeReason = GeneratedColumn<String>(
+    'close_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _closeNoteMeta = const VerificationMeta(
+    'closeNote',
+  );
+  @override
+  late final GeneratedColumn<String> closeNote = GeneratedColumn<String>(
+    'close_note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedGroupIdMeta = const VerificationMeta(
+    'deletedGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> deletedGroupId = GeneratedColumn<String>(
+    'deleted_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1780,6 +1824,10 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
     productionType,
     programmeContentHash,
     notes,
+    closedOn,
+    closeReason,
+    closeNote,
+    deletedGroupId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1950,6 +1998,36 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('closed_on')) {
+      context.handle(
+        _closedOnMeta,
+        closedOn.isAcceptableOrUnknown(data['closed_on']!, _closedOnMeta),
+      );
+    }
+    if (data.containsKey('close_reason')) {
+      context.handle(
+        _closeReasonMeta,
+        closeReason.isAcceptableOrUnknown(
+          data['close_reason']!,
+          _closeReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('close_note')) {
+      context.handle(
+        _closeNoteMeta,
+        closeNote.isAcceptableOrUnknown(data['close_note']!, _closeNoteMeta),
+      );
+    }
+    if (data.containsKey('deleted_group_id')) {
+      context.handle(
+        _deletedGroupIdMeta,
+        deletedGroupId.isAcceptableOrUnknown(
+          data['deleted_group_id']!,
+          _deletedGroupIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2035,6 +2113,22 @@ class $BatchesTable extends Batches with TableInfo<$BatchesTable, BatchRow> {
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       ),
+      closedOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}closed_on'],
+      ),
+      closeReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}close_reason'],
+      ),
+      closeNote: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}close_note'],
+      ),
+      deletedGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_group_id'],
+      ),
     );
   }
 
@@ -2064,6 +2158,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
   final String? productionType;
   final String? programmeContentHash;
   final String? notes;
+  final DateTime? closedOn;
+  final String? closeReason;
+  final String? closeNote;
+  final String? deletedGroupId;
   const BatchRow({
     required this.id,
     required this.farmId,
@@ -2084,6 +2182,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     this.productionType,
     this.programmeContentHash,
     this.notes,
+    this.closedOn,
+    this.closeReason,
+    this.closeNote,
+    this.deletedGroupId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2120,6 +2222,18 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || closedOn != null) {
+      map['closed_on'] = Variable<DateTime>(closedOn);
+    }
+    if (!nullToAbsent || closeReason != null) {
+      map['close_reason'] = Variable<String>(closeReason);
+    }
+    if (!nullToAbsent || closeNote != null) {
+      map['close_note'] = Variable<String>(closeNote);
+    }
+    if (!nullToAbsent || deletedGroupId != null) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId);
     }
     return map;
   }
@@ -2159,6 +2273,18 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      closedOn: closedOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closedOn),
+      closeReason: closeReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closeReason),
+      closeNote: closeNote == null && nullToAbsent
+          ? const Value.absent()
+          : Value(closeNote),
+      deletedGroupId: deletedGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedGroupId),
     );
   }
 
@@ -2193,6 +2319,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
         json['programmeContentHash'],
       ),
       notes: serializer.fromJson<String?>(json['notes']),
+      closedOn: serializer.fromJson<DateTime?>(json['closedOn']),
+      closeReason: serializer.fromJson<String?>(json['closeReason']),
+      closeNote: serializer.fromJson<String?>(json['closeNote']),
+      deletedGroupId: serializer.fromJson<String?>(json['deletedGroupId']),
     );
   }
   @override
@@ -2218,6 +2348,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
       'productionType': serializer.toJson<String?>(productionType),
       'programmeContentHash': serializer.toJson<String?>(programmeContentHash),
       'notes': serializer.toJson<String?>(notes),
+      'closedOn': serializer.toJson<DateTime?>(closedOn),
+      'closeReason': serializer.toJson<String?>(closeReason),
+      'closeNote': serializer.toJson<String?>(closeNote),
+      'deletedGroupId': serializer.toJson<String?>(deletedGroupId),
     };
   }
 
@@ -2241,6 +2375,10 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     Value<String?> productionType = const Value.absent(),
     Value<String?> programmeContentHash = const Value.absent(),
     Value<String?> notes = const Value.absent(),
+    Value<DateTime?> closedOn = const Value.absent(),
+    Value<String?> closeReason = const Value.absent(),
+    Value<String?> closeNote = const Value.absent(),
+    Value<String?> deletedGroupId = const Value.absent(),
   }) => BatchRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -2269,6 +2407,12 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
         ? programmeContentHash.value
         : this.programmeContentHash,
     notes: notes.present ? notes.value : this.notes,
+    closedOn: closedOn.present ? closedOn.value : this.closedOn,
+    closeReason: closeReason.present ? closeReason.value : this.closeReason,
+    closeNote: closeNote.present ? closeNote.value : this.closeNote,
+    deletedGroupId: deletedGroupId.present
+        ? deletedGroupId.value
+        : this.deletedGroupId,
   );
   BatchRow copyWithCompanion(BatchesCompanion data) {
     return BatchRow(
@@ -2309,6 +2453,14 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
           ? data.programmeContentHash.value
           : this.programmeContentHash,
       notes: data.notes.present ? data.notes.value : this.notes,
+      closedOn: data.closedOn.present ? data.closedOn.value : this.closedOn,
+      closeReason: data.closeReason.present
+          ? data.closeReason.value
+          : this.closeReason,
+      closeNote: data.closeNote.present ? data.closeNote.value : this.closeNote,
+      deletedGroupId: data.deletedGroupId.present
+          ? data.deletedGroupId.value
+          : this.deletedGroupId,
     );
   }
 
@@ -2333,13 +2485,17 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
           ..write('programmeVersion: $programmeVersion, ')
           ..write('productionType: $productionType, ')
           ..write('programmeContentHash: $programmeContentHash, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('closedOn: $closedOn, ')
+          ..write('closeReason: $closeReason, ')
+          ..write('closeNote: $closeNote, ')
+          ..write('deletedGroupId: $deletedGroupId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     farmId,
     createdAt,
@@ -2359,7 +2515,11 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
     productionType,
     programmeContentHash,
     notes,
-  );
+    closedOn,
+    closeReason,
+    closeNote,
+    deletedGroupId,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2382,7 +2542,11 @@ class BatchRow extends DataClass implements Insertable<BatchRow> {
           other.programmeVersion == this.programmeVersion &&
           other.productionType == this.productionType &&
           other.programmeContentHash == this.programmeContentHash &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.closedOn == this.closedOn &&
+          other.closeReason == this.closeReason &&
+          other.closeNote == this.closeNote &&
+          other.deletedGroupId == this.deletedGroupId);
 }
 
 class BatchesCompanion extends UpdateCompanion<BatchRow> {
@@ -2405,6 +2569,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
   final Value<String?> productionType;
   final Value<String?> programmeContentHash;
   final Value<String?> notes;
+  final Value<DateTime?> closedOn;
+  final Value<String?> closeReason;
+  final Value<String?> closeNote;
+  final Value<String?> deletedGroupId;
   final Value<int> rowid;
   const BatchesCompanion({
     this.id = const Value.absent(),
@@ -2426,6 +2594,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     this.productionType = const Value.absent(),
     this.programmeContentHash = const Value.absent(),
     this.notes = const Value.absent(),
+    this.closedOn = const Value.absent(),
+    this.closeReason = const Value.absent(),
+    this.closeNote = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   BatchesCompanion.insert({
@@ -2448,6 +2620,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     this.productionType = const Value.absent(),
     this.programmeContentHash = const Value.absent(),
     this.notes = const Value.absent(),
+    this.closedOn = const Value.absent(),
+    this.closeReason = const Value.absent(),
+    this.closeNote = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -2480,6 +2656,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     Expression<String>? productionType,
     Expression<String>? programmeContentHash,
     Expression<String>? notes,
+    Expression<DateTime>? closedOn,
+    Expression<String>? closeReason,
+    Expression<String>? closeNote,
+    Expression<String>? deletedGroupId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2504,6 +2684,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
       if (programmeContentHash != null)
         'programme_content_hash': programmeContentHash,
       if (notes != null) 'notes': notes,
+      if (closedOn != null) 'closed_on': closedOn,
+      if (closeReason != null) 'close_reason': closeReason,
+      if (closeNote != null) 'close_note': closeNote,
+      if (deletedGroupId != null) 'deleted_group_id': deletedGroupId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2528,6 +2712,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     Value<String?>? productionType,
     Value<String?>? programmeContentHash,
     Value<String?>? notes,
+    Value<DateTime?>? closedOn,
+    Value<String?>? closeReason,
+    Value<String?>? closeNote,
+    Value<String?>? deletedGroupId,
     Value<int>? rowid,
   }) {
     return BatchesCompanion(
@@ -2550,6 +2738,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
       productionType: productionType ?? this.productionType,
       programmeContentHash: programmeContentHash ?? this.programmeContentHash,
       notes: notes ?? this.notes,
+      closedOn: closedOn ?? this.closedOn,
+      closeReason: closeReason ?? this.closeReason,
+      closeNote: closeNote ?? this.closeNote,
+      deletedGroupId: deletedGroupId ?? this.deletedGroupId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2618,6 +2810,18 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (closedOn.present) {
+      map['closed_on'] = Variable<DateTime>(closedOn.value);
+    }
+    if (closeReason.present) {
+      map['close_reason'] = Variable<String>(closeReason.value);
+    }
+    if (closeNote.present) {
+      map['close_note'] = Variable<String>(closeNote.value);
+    }
+    if (deletedGroupId.present) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2646,6 +2850,10 @@ class BatchesCompanion extends UpdateCompanion<BatchRow> {
           ..write('productionType: $productionType, ')
           ..write('programmeContentHash: $programmeContentHash, ')
           ..write('notes: $notes, ')
+          ..write('closedOn: $closedOn, ')
+          ..write('closeReason: $closeReason, ')
+          ..write('closeNote: $closeNote, ')
+          ..write('deletedGroupId: $deletedGroupId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4254,6 +4462,17 @@ class $VaccinationTasksTable extends VaccinationTasks
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _deletedGroupIdMeta = const VerificationMeta(
+    'deletedGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> deletedGroupId = GeneratedColumn<String>(
+    'deleted_group_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4275,6 +4494,7 @@ class $VaccinationTasksTable extends VaccinationTasks
     stepSnapshot,
     programmeContentHash,
     shiftedFrom,
+    deletedGroupId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4430,6 +4650,15 @@ class $VaccinationTasksTable extends VaccinationTasks
         ),
       );
     }
+    if (data.containsKey('deleted_group_id')) {
+      context.handle(
+        _deletedGroupIdMeta,
+        deletedGroupId.isAcceptableOrUnknown(
+          data['deleted_group_id']!,
+          _deletedGroupIdMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -4515,6 +4744,10 @@ class $VaccinationTasksTable extends VaccinationTasks
         DriftSqlType.dateTime,
         data['${effectivePrefix}shifted_from'],
       ),
+      deletedGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_group_id'],
+      ),
     );
   }
 
@@ -4545,6 +4778,7 @@ class VaccinationTaskRow extends DataClass
   final String? stepSnapshot;
   final String? programmeContentHash;
   final DateTime? shiftedFrom;
+  final String? deletedGroupId;
   const VaccinationTaskRow({
     required this.id,
     required this.farmId,
@@ -4565,6 +4799,7 @@ class VaccinationTaskRow extends DataClass
     this.stepSnapshot,
     this.programmeContentHash,
     this.shiftedFrom,
+    this.deletedGroupId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4605,6 +4840,9 @@ class VaccinationTaskRow extends DataClass
     }
     if (!nullToAbsent || shiftedFrom != null) {
       map['shifted_from'] = Variable<DateTime>(shiftedFrom);
+    }
+    if (!nullToAbsent || deletedGroupId != null) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId);
     }
     return map;
   }
@@ -4648,6 +4886,9 @@ class VaccinationTaskRow extends DataClass
       shiftedFrom: shiftedFrom == null && nullToAbsent
           ? const Value.absent()
           : Value(shiftedFrom),
+      deletedGroupId: deletedGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedGroupId),
     );
   }
 
@@ -4678,6 +4919,7 @@ class VaccinationTaskRow extends DataClass
         json['programmeContentHash'],
       ),
       shiftedFrom: serializer.fromJson<DateTime?>(json['shiftedFrom']),
+      deletedGroupId: serializer.fromJson<String?>(json['deletedGroupId']),
     );
   }
   @override
@@ -4703,6 +4945,7 @@ class VaccinationTaskRow extends DataClass
       'stepSnapshot': serializer.toJson<String?>(stepSnapshot),
       'programmeContentHash': serializer.toJson<String?>(programmeContentHash),
       'shiftedFrom': serializer.toJson<DateTime?>(shiftedFrom),
+      'deletedGroupId': serializer.toJson<String?>(deletedGroupId),
     };
   }
 
@@ -4726,6 +4969,7 @@ class VaccinationTaskRow extends DataClass
     Value<String?> stepSnapshot = const Value.absent(),
     Value<String?> programmeContentHash = const Value.absent(),
     Value<DateTime?> shiftedFrom = const Value.absent(),
+    Value<String?> deletedGroupId = const Value.absent(),
   }) => VaccinationTaskRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -4750,6 +4994,9 @@ class VaccinationTaskRow extends DataClass
         ? programmeContentHash.value
         : this.programmeContentHash,
     shiftedFrom: shiftedFrom.present ? shiftedFrom.value : this.shiftedFrom,
+    deletedGroupId: deletedGroupId.present
+        ? deletedGroupId.value
+        : this.deletedGroupId,
   );
   VaccinationTaskRow copyWithCompanion(VaccinationTasksCompanion data) {
     return VaccinationTaskRow(
@@ -4784,6 +5031,9 @@ class VaccinationTaskRow extends DataClass
       shiftedFrom: data.shiftedFrom.present
           ? data.shiftedFrom.value
           : this.shiftedFrom,
+      deletedGroupId: data.deletedGroupId.present
+          ? data.deletedGroupId.value
+          : this.deletedGroupId,
     );
   }
 
@@ -4808,7 +5058,8 @@ class VaccinationTaskRow extends DataClass
           ..write('notes: $notes, ')
           ..write('stepSnapshot: $stepSnapshot, ')
           ..write('programmeContentHash: $programmeContentHash, ')
-          ..write('shiftedFrom: $shiftedFrom')
+          ..write('shiftedFrom: $shiftedFrom, ')
+          ..write('deletedGroupId: $deletedGroupId')
           ..write(')'))
         .toString();
   }
@@ -4834,6 +5085,7 @@ class VaccinationTaskRow extends DataClass
     stepSnapshot,
     programmeContentHash,
     shiftedFrom,
+    deletedGroupId,
   );
   @override
   bool operator ==(Object other) =>
@@ -4857,7 +5109,8 @@ class VaccinationTaskRow extends DataClass
           other.notes == this.notes &&
           other.stepSnapshot == this.stepSnapshot &&
           other.programmeContentHash == this.programmeContentHash &&
-          other.shiftedFrom == this.shiftedFrom);
+          other.shiftedFrom == this.shiftedFrom &&
+          other.deletedGroupId == this.deletedGroupId);
 }
 
 class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
@@ -4880,6 +5133,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
   final Value<String?> stepSnapshot;
   final Value<String?> programmeContentHash;
   final Value<DateTime?> shiftedFrom;
+  final Value<String?> deletedGroupId;
   final Value<int> rowid;
   const VaccinationTasksCompanion({
     this.id = const Value.absent(),
@@ -4901,6 +5155,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     this.stepSnapshot = const Value.absent(),
     this.programmeContentHash = const Value.absent(),
     this.shiftedFrom = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   VaccinationTasksCompanion.insert({
@@ -4923,6 +5178,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     this.stepSnapshot = const Value.absent(),
     this.programmeContentHash = const Value.absent(),
     this.shiftedFrom = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -4952,6 +5208,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     Expression<String>? stepSnapshot,
     Expression<String>? programmeContentHash,
     Expression<DateTime>? shiftedFrom,
+    Expression<String>? deletedGroupId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -4975,6 +5232,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
       if (programmeContentHash != null)
         'programme_content_hash': programmeContentHash,
       if (shiftedFrom != null) 'shifted_from': shiftedFrom,
+      if (deletedGroupId != null) 'deleted_group_id': deletedGroupId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -4999,6 +5257,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     Value<String?>? stepSnapshot,
     Value<String?>? programmeContentHash,
     Value<DateTime?>? shiftedFrom,
+    Value<String?>? deletedGroupId,
     Value<int>? rowid,
   }) {
     return VaccinationTasksCompanion(
@@ -5021,6 +5280,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
       stepSnapshot: stepSnapshot ?? this.stepSnapshot,
       programmeContentHash: programmeContentHash ?? this.programmeContentHash,
       shiftedFrom: shiftedFrom ?? this.shiftedFrom,
+      deletedGroupId: deletedGroupId ?? this.deletedGroupId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -5087,6 +5347,9 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
     if (shiftedFrom.present) {
       map['shifted_from'] = Variable<DateTime>(shiftedFrom.value);
     }
+    if (deletedGroupId.present) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -5115,6 +5378,7 @@ class VaccinationTasksCompanion extends UpdateCompanion<VaccinationTaskRow> {
           ..write('stepSnapshot: $stepSnapshot, ')
           ..write('programmeContentHash: $programmeContentHash, ')
           ..write('shiftedFrom: $shiftedFrom, ')
+          ..write('deletedGroupId: $deletedGroupId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -7431,6 +7695,27 @@ class $MortalityRecordsTable extends MortalityRecords
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('died'),
+  );
+  static const VerificationMeta _suspectedCauseMeta = const VerificationMeta(
+    'suspectedCause',
+  );
+  @override
+  late final GeneratedColumn<String> suspectedCause = GeneratedColumn<String>(
+    'suspected_cause',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _occurredOnMeta = const VerificationMeta(
     'occurredOn',
   );
@@ -7442,19 +7727,32 @@ class $MortalityRecordsTable extends MortalityRecords
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _causeMeta = const VerificationMeta('cause');
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
-  late final GeneratedColumn<String> cause = GeneratedColumn<String>(
-    'cause',
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  static const VerificationMeta _editedAtMeta = const VerificationMeta(
+    'editedAt',
+  );
   @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-    'notes',
+  late final GeneratedColumn<DateTime> editedAt = GeneratedColumn<DateTime>(
+    'edited_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedGroupIdMeta = const VerificationMeta(
+    'deletedGroupId',
+  );
+  @override
+  late final GeneratedColumn<String> deletedGroupId = GeneratedColumn<String>(
+    'deleted_group_id',
     aliasedName,
     true,
     type: DriftSqlType.string,
@@ -7470,9 +7768,12 @@ class $MortalityRecordsTable extends MortalityRecords
     serverVersion,
     batchId,
     count,
+    kind,
+    suspectedCause,
     occurredOn,
-    cause,
     notes,
+    editedAt,
+    deletedGroupId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -7546,6 +7847,21 @@ class $MortalityRecordsTable extends MortalityRecords
     } else if (isInserting) {
       context.missing(_countMeta);
     }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    }
+    if (data.containsKey('suspected_cause')) {
+      context.handle(
+        _suspectedCauseMeta,
+        suspectedCause.isAcceptableOrUnknown(
+          data['suspected_cause']!,
+          _suspectedCauseMeta,
+        ),
+      );
+    }
     if (data.containsKey('occurred_on')) {
       context.handle(
         _occurredOnMeta,
@@ -7554,16 +7870,25 @@ class $MortalityRecordsTable extends MortalityRecords
     } else if (isInserting) {
       context.missing(_occurredOnMeta);
     }
-    if (data.containsKey('cause')) {
-      context.handle(
-        _causeMeta,
-        cause.isAcceptableOrUnknown(data['cause']!, _causeMeta),
-      );
-    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('edited_at')) {
+      context.handle(
+        _editedAtMeta,
+        editedAt.isAcceptableOrUnknown(data['edited_at']!, _editedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted_group_id')) {
+      context.handle(
+        _deletedGroupIdMeta,
+        deletedGroupId.isAcceptableOrUnknown(
+          data['deleted_group_id']!,
+          _deletedGroupIdMeta,
+        ),
       );
     }
     return context;
@@ -7607,17 +7932,29 @@ class $MortalityRecordsTable extends MortalityRecords
         DriftSqlType.int,
         data['${effectivePrefix}count'],
       )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      suspectedCause: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}suspected_cause'],
+      ),
       occurredOn: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}occurred_on'],
       )!,
-      cause: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}cause'],
-      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
+      ),
+      editedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}edited_at'],
+      ),
+      deletedGroupId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}deleted_group_id'],
       ),
     );
   }
@@ -7638,9 +7975,12 @@ class MortalityRecordRow extends DataClass
   final int? serverVersion;
   final String batchId;
   final int count;
+  final String kind;
+  final String? suspectedCause;
   final DateTime occurredOn;
-  final String? cause;
   final String? notes;
+  final DateTime? editedAt;
+  final String? deletedGroupId;
   const MortalityRecordRow({
     required this.id,
     required this.farmId,
@@ -7650,9 +7990,12 @@ class MortalityRecordRow extends DataClass
     this.serverVersion,
     required this.batchId,
     required this.count,
+    required this.kind,
+    this.suspectedCause,
     required this.occurredOn,
-    this.cause,
     this.notes,
+    this.editedAt,
+    this.deletedGroupId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -7669,12 +8012,19 @@ class MortalityRecordRow extends DataClass
     }
     map['batch_id'] = Variable<String>(batchId);
     map['count'] = Variable<int>(count);
-    map['occurred_on'] = Variable<DateTime>(occurredOn);
-    if (!nullToAbsent || cause != null) {
-      map['cause'] = Variable<String>(cause);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || suspectedCause != null) {
+      map['suspected_cause'] = Variable<String>(suspectedCause);
     }
+    map['occurred_on'] = Variable<DateTime>(occurredOn);
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || editedAt != null) {
+      map['edited_at'] = Variable<DateTime>(editedAt);
+    }
+    if (!nullToAbsent || deletedGroupId != null) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId);
     }
     return map;
   }
@@ -7693,13 +8043,20 @@ class MortalityRecordRow extends DataClass
           : Value(serverVersion),
       batchId: Value(batchId),
       count: Value(count),
-      occurredOn: Value(occurredOn),
-      cause: cause == null && nullToAbsent
+      kind: Value(kind),
+      suspectedCause: suspectedCause == null && nullToAbsent
           ? const Value.absent()
-          : Value(cause),
+          : Value(suspectedCause),
+      occurredOn: Value(occurredOn),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
+      editedAt: editedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(editedAt),
+      deletedGroupId: deletedGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedGroupId),
     );
   }
 
@@ -7717,9 +8074,12 @@ class MortalityRecordRow extends DataClass
       serverVersion: serializer.fromJson<int?>(json['serverVersion']),
       batchId: serializer.fromJson<String>(json['batchId']),
       count: serializer.fromJson<int>(json['count']),
+      kind: serializer.fromJson<String>(json['kind']),
+      suspectedCause: serializer.fromJson<String?>(json['suspectedCause']),
       occurredOn: serializer.fromJson<DateTime>(json['occurredOn']),
-      cause: serializer.fromJson<String?>(json['cause']),
       notes: serializer.fromJson<String?>(json['notes']),
+      editedAt: serializer.fromJson<DateTime?>(json['editedAt']),
+      deletedGroupId: serializer.fromJson<String?>(json['deletedGroupId']),
     );
   }
   @override
@@ -7734,9 +8094,12 @@ class MortalityRecordRow extends DataClass
       'serverVersion': serializer.toJson<int?>(serverVersion),
       'batchId': serializer.toJson<String>(batchId),
       'count': serializer.toJson<int>(count),
+      'kind': serializer.toJson<String>(kind),
+      'suspectedCause': serializer.toJson<String?>(suspectedCause),
       'occurredOn': serializer.toJson<DateTime>(occurredOn),
-      'cause': serializer.toJson<String?>(cause),
       'notes': serializer.toJson<String?>(notes),
+      'editedAt': serializer.toJson<DateTime?>(editedAt),
+      'deletedGroupId': serializer.toJson<String?>(deletedGroupId),
     };
   }
 
@@ -7749,9 +8112,12 @@ class MortalityRecordRow extends DataClass
     Value<int?> serverVersion = const Value.absent(),
     String? batchId,
     int? count,
+    String? kind,
+    Value<String?> suspectedCause = const Value.absent(),
     DateTime? occurredOn,
-    Value<String?> cause = const Value.absent(),
     Value<String?> notes = const Value.absent(),
+    Value<DateTime?> editedAt = const Value.absent(),
+    Value<String?> deletedGroupId = const Value.absent(),
   }) => MortalityRecordRow(
     id: id ?? this.id,
     farmId: farmId ?? this.farmId,
@@ -7763,9 +8129,16 @@ class MortalityRecordRow extends DataClass
         : this.serverVersion,
     batchId: batchId ?? this.batchId,
     count: count ?? this.count,
+    kind: kind ?? this.kind,
+    suspectedCause: suspectedCause.present
+        ? suspectedCause.value
+        : this.suspectedCause,
     occurredOn: occurredOn ?? this.occurredOn,
-    cause: cause.present ? cause.value : this.cause,
     notes: notes.present ? notes.value : this.notes,
+    editedAt: editedAt.present ? editedAt.value : this.editedAt,
+    deletedGroupId: deletedGroupId.present
+        ? deletedGroupId.value
+        : this.deletedGroupId,
   );
   MortalityRecordRow copyWithCompanion(MortalityRecordsCompanion data) {
     return MortalityRecordRow(
@@ -7779,11 +8152,18 @@ class MortalityRecordRow extends DataClass
           : this.serverVersion,
       batchId: data.batchId.present ? data.batchId.value : this.batchId,
       count: data.count.present ? data.count.value : this.count,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      suspectedCause: data.suspectedCause.present
+          ? data.suspectedCause.value
+          : this.suspectedCause,
       occurredOn: data.occurredOn.present
           ? data.occurredOn.value
           : this.occurredOn,
-      cause: data.cause.present ? data.cause.value : this.cause,
       notes: data.notes.present ? data.notes.value : this.notes,
+      editedAt: data.editedAt.present ? data.editedAt.value : this.editedAt,
+      deletedGroupId: data.deletedGroupId.present
+          ? data.deletedGroupId.value
+          : this.deletedGroupId,
     );
   }
 
@@ -7798,9 +8178,12 @@ class MortalityRecordRow extends DataClass
           ..write('serverVersion: $serverVersion, ')
           ..write('batchId: $batchId, ')
           ..write('count: $count, ')
+          ..write('kind: $kind, ')
+          ..write('suspectedCause: $suspectedCause, ')
           ..write('occurredOn: $occurredOn, ')
-          ..write('cause: $cause, ')
-          ..write('notes: $notes')
+          ..write('notes: $notes, ')
+          ..write('editedAt: $editedAt, ')
+          ..write('deletedGroupId: $deletedGroupId')
           ..write(')'))
         .toString();
   }
@@ -7815,9 +8198,12 @@ class MortalityRecordRow extends DataClass
     serverVersion,
     batchId,
     count,
+    kind,
+    suspectedCause,
     occurredOn,
-    cause,
     notes,
+    editedAt,
+    deletedGroupId,
   );
   @override
   bool operator ==(Object other) =>
@@ -7831,9 +8217,12 @@ class MortalityRecordRow extends DataClass
           other.serverVersion == this.serverVersion &&
           other.batchId == this.batchId &&
           other.count == this.count &&
+          other.kind == this.kind &&
+          other.suspectedCause == this.suspectedCause &&
           other.occurredOn == this.occurredOn &&
-          other.cause == this.cause &&
-          other.notes == this.notes);
+          other.notes == this.notes &&
+          other.editedAt == this.editedAt &&
+          other.deletedGroupId == this.deletedGroupId);
 }
 
 class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
@@ -7845,9 +8234,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
   final Value<int?> serverVersion;
   final Value<String> batchId;
   final Value<int> count;
+  final Value<String> kind;
+  final Value<String?> suspectedCause;
   final Value<DateTime> occurredOn;
-  final Value<String?> cause;
   final Value<String?> notes;
+  final Value<DateTime?> editedAt;
+  final Value<String?> deletedGroupId;
   final Value<int> rowid;
   const MortalityRecordsCompanion({
     this.id = const Value.absent(),
@@ -7858,9 +8250,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
     this.serverVersion = const Value.absent(),
     this.batchId = const Value.absent(),
     this.count = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.suspectedCause = const Value.absent(),
     this.occurredOn = const Value.absent(),
-    this.cause = const Value.absent(),
     this.notes = const Value.absent(),
+    this.editedAt = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MortalityRecordsCompanion.insert({
@@ -7872,9 +8267,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
     this.serverVersion = const Value.absent(),
     required String batchId,
     required int count,
+    this.kind = const Value.absent(),
+    this.suspectedCause = const Value.absent(),
     required DateTime occurredOn,
-    this.cause = const Value.absent(),
     this.notes = const Value.absent(),
+    this.editedAt = const Value.absent(),
+    this.deletedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        farmId = Value(farmId),
@@ -7892,9 +8290,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
     Expression<int>? serverVersion,
     Expression<String>? batchId,
     Expression<int>? count,
+    Expression<String>? kind,
+    Expression<String>? suspectedCause,
     Expression<DateTime>? occurredOn,
-    Expression<String>? cause,
     Expression<String>? notes,
+    Expression<DateTime>? editedAt,
+    Expression<String>? deletedGroupId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -7906,9 +8307,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
       if (serverVersion != null) 'server_version': serverVersion,
       if (batchId != null) 'batch_id': batchId,
       if (count != null) 'count': count,
+      if (kind != null) 'kind': kind,
+      if (suspectedCause != null) 'suspected_cause': suspectedCause,
       if (occurredOn != null) 'occurred_on': occurredOn,
-      if (cause != null) 'cause': cause,
       if (notes != null) 'notes': notes,
+      if (editedAt != null) 'edited_at': editedAt,
+      if (deletedGroupId != null) 'deleted_group_id': deletedGroupId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -7922,9 +8326,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
     Value<int?>? serverVersion,
     Value<String>? batchId,
     Value<int>? count,
+    Value<String>? kind,
+    Value<String?>? suspectedCause,
     Value<DateTime>? occurredOn,
-    Value<String?>? cause,
     Value<String?>? notes,
+    Value<DateTime?>? editedAt,
+    Value<String?>? deletedGroupId,
     Value<int>? rowid,
   }) {
     return MortalityRecordsCompanion(
@@ -7936,9 +8343,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
       serverVersion: serverVersion ?? this.serverVersion,
       batchId: batchId ?? this.batchId,
       count: count ?? this.count,
+      kind: kind ?? this.kind,
+      suspectedCause: suspectedCause ?? this.suspectedCause,
       occurredOn: occurredOn ?? this.occurredOn,
-      cause: cause ?? this.cause,
       notes: notes ?? this.notes,
+      editedAt: editedAt ?? this.editedAt,
+      deletedGroupId: deletedGroupId ?? this.deletedGroupId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -7970,14 +8380,23 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
     if (count.present) {
       map['count'] = Variable<int>(count.value);
     }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (suspectedCause.present) {
+      map['suspected_cause'] = Variable<String>(suspectedCause.value);
+    }
     if (occurredOn.present) {
       map['occurred_on'] = Variable<DateTime>(occurredOn.value);
     }
-    if (cause.present) {
-      map['cause'] = Variable<String>(cause.value);
-    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
+    }
+    if (editedAt.present) {
+      map['edited_at'] = Variable<DateTime>(editedAt.value);
+    }
+    if (deletedGroupId.present) {
+      map['deleted_group_id'] = Variable<String>(deletedGroupId.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -7996,9 +8415,12 @@ class MortalityRecordsCompanion extends UpdateCompanion<MortalityRecordRow> {
           ..write('serverVersion: $serverVersion, ')
           ..write('batchId: $batchId, ')
           ..write('count: $count, ')
+          ..write('kind: $kind, ')
+          ..write('suspectedCause: $suspectedCause, ')
           ..write('occurredOn: $occurredOn, ')
-          ..write('cause: $cause, ')
           ..write('notes: $notes, ')
+          ..write('editedAt: $editedAt, ')
+          ..write('deletedGroupId: $deletedGroupId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -12367,6 +12789,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AuthSnapshotTable authSnapshot = $AuthSnapshotTable(this);
   late final $VetAssistanceRequestsTable vetAssistanceRequests =
       $VetAssistanceRequestsTable(this);
+  late final Index batchesFarmStatusIdx = Index(
+    'batches_farm_status_idx',
+    'CREATE INDEX batches_farm_status_idx ON batches (farm_id, status)',
+  );
+  late final Index mortalityBatchOccurredIdx = Index(
+    'mortality_batch_occurred_idx',
+    'CREATE INDEX mortality_batch_occurred_idx ON mortality_records (batch_id, occurred_on)',
+  );
   late final OutboxDao outboxDao = OutboxDao(this as AppDatabase);
   late final SyncDao syncDao = SyncDao(this as AppDatabase);
   late final SyncMetaDao syncMetaDao = SyncMetaDao(this as AppDatabase);
@@ -12394,6 +12824,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncLock,
     authSnapshot,
     vetAssistanceRequests,
+    batchesFarmStatusIdx,
+    mortalityBatchOccurredIdx,
   ];
 }
 
@@ -13140,6 +13572,10 @@ typedef $$BatchesTableCreateCompanionBuilder = BatchesCompanion Function({
   Value<String?> productionType,
   Value<String?> programmeContentHash,
   Value<String?> notes,
+  Value<DateTime?> closedOn,
+  Value<String?> closeReason,
+  Value<String?> closeNote,
+  Value<String?> deletedGroupId,
   Value<int> rowid,
 });
 typedef $$BatchesTableUpdateCompanionBuilder = BatchesCompanion Function({
@@ -13162,6 +13598,10 @@ typedef $$BatchesTableUpdateCompanionBuilder = BatchesCompanion Function({
   Value<String?> productionType,
   Value<String?> programmeContentHash,
   Value<String?> notes,
+  Value<DateTime?> closedOn,
+  Value<String?> closeReason,
+  Value<String?> closeNote,
+  Value<String?> deletedGroupId,
   Value<int> rowid,
 });
 
@@ -13266,6 +13706,26 @@ class $$BatchesTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get closedOn => $composableBuilder(
+    column: $table.closedOn,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get closeReason => $composableBuilder(
+    column: $table.closeReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get closeNote => $composableBuilder(
+    column: $table.closeNote,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -13373,6 +13833,26 @@ class $$BatchesTableOrderingComposer
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get closedOn => $composableBuilder(
+    column: $table.closedOn,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get closeReason => $composableBuilder(
+    column: $table.closeReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get closeNote => $composableBuilder(
+    column: $table.closeNote,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BatchesTableAnnotationComposer
@@ -13458,6 +13938,22 @@ class $$BatchesTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get closedOn =>
+      $composableBuilder(column: $table.closedOn, builder: (column) => column);
+
+  GeneratedColumn<String> get closeReason => $composableBuilder(
+    column: $table.closeReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get closeNote =>
+      $composableBuilder(column: $table.closeNote, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
+    builder: (column) => column,
+  );
 }
 
 class $$BatchesTableTableManager
@@ -13507,6 +14003,10 @@ class $$BatchesTableTableManager
                 Value<String?> productionType = const Value.absent(),
                 Value<String?> programmeContentHash = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> closedOn = const Value.absent(),
+                Value<String?> closeReason = const Value.absent(),
+                Value<String?> closeNote = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BatchesCompanion(
                 id: id,
@@ -13528,6 +14028,10 @@ class $$BatchesTableTableManager
                 productionType: productionType,
                 programmeContentHash: programmeContentHash,
                 notes: notes,
+                closedOn: closedOn,
+                closeReason: closeReason,
+                closeNote: closeNote,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -13551,6 +14055,10 @@ class $$BatchesTableTableManager
                 Value<String?> productionType = const Value.absent(),
                 Value<String?> programmeContentHash = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> closedOn = const Value.absent(),
+                Value<String?> closeReason = const Value.absent(),
+                Value<String?> closeNote = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => BatchesCompanion.insert(
                 id: id,
@@ -13572,6 +14080,10 @@ class $$BatchesTableTableManager
                 productionType: productionType,
                 programmeContentHash: programmeContentHash,
                 notes: notes,
+                closedOn: closedOn,
+                closeReason: closeReason,
+                closeNote: closeNote,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -14309,6 +14821,7 @@ typedef $$VaccinationTasksTableCreateCompanionBuilder =
       Value<String?> stepSnapshot,
       Value<String?> programmeContentHash,
       Value<DateTime?> shiftedFrom,
+      Value<String?> deletedGroupId,
       Value<int> rowid,
     });
 typedef $$VaccinationTasksTableUpdateCompanionBuilder =
@@ -14332,6 +14845,7 @@ typedef $$VaccinationTasksTableUpdateCompanionBuilder =
       Value<String?> stepSnapshot,
       Value<String?> programmeContentHash,
       Value<DateTime?> shiftedFrom,
+      Value<String?> deletedGroupId,
       Value<int> rowid,
     });
 
@@ -14436,6 +14950,11 @@ class $$VaccinationTasksTableFilterComposer
 
   ColumnFilters<DateTime> get shiftedFrom => $composableBuilder(
     column: $table.shiftedFrom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -14543,6 +15062,11 @@ class $$VaccinationTasksTableOrderingComposer
     column: $table.shiftedFrom,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$VaccinationTasksTableAnnotationComposer
@@ -14622,6 +15146,11 @@ class $$VaccinationTasksTableAnnotationComposer
     column: $table.shiftedFrom,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
+    builder: (column) => column,
+  );
 }
 
 class $$VaccinationTasksTableTableManager
@@ -14680,6 +15209,7 @@ class $$VaccinationTasksTableTableManager
                 Value<String?> stepSnapshot = const Value.absent(),
                 Value<String?> programmeContentHash = const Value.absent(),
                 Value<DateTime?> shiftedFrom = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VaccinationTasksCompanion(
                 id: id,
@@ -14701,6 +15231,7 @@ class $$VaccinationTasksTableTableManager
                 stepSnapshot: stepSnapshot,
                 programmeContentHash: programmeContentHash,
                 shiftedFrom: shiftedFrom,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -14724,6 +15255,7 @@ class $$VaccinationTasksTableTableManager
                 Value<String?> stepSnapshot = const Value.absent(),
                 Value<String?> programmeContentHash = const Value.absent(),
                 Value<DateTime?> shiftedFrom = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VaccinationTasksCompanion.insert(
                 id: id,
@@ -14745,6 +15277,7 @@ class $$VaccinationTasksTableTableManager
                 stepSnapshot: stepSnapshot,
                 programmeContentHash: programmeContentHash,
                 shiftedFrom: shiftedFrom,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -15876,9 +16409,12 @@ typedef $$MortalityRecordsTableCreateCompanionBuilder =
       Value<int?> serverVersion,
       required String batchId,
       required int count,
+      Value<String> kind,
+      Value<String?> suspectedCause,
       required DateTime occurredOn,
-      Value<String?> cause,
       Value<String?> notes,
+      Value<DateTime?> editedAt,
+      Value<String?> deletedGroupId,
       Value<int> rowid,
     });
 typedef $$MortalityRecordsTableUpdateCompanionBuilder =
@@ -15891,9 +16427,12 @@ typedef $$MortalityRecordsTableUpdateCompanionBuilder =
       Value<int?> serverVersion,
       Value<String> batchId,
       Value<int> count,
+      Value<String> kind,
+      Value<String?> suspectedCause,
       Value<DateTime> occurredOn,
-      Value<String?> cause,
       Value<String?> notes,
+      Value<DateTime?> editedAt,
+      Value<String?> deletedGroupId,
       Value<int> rowid,
     });
 
@@ -15946,18 +16485,33 @@ class $$MortalityRecordsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get suspectedCause => $composableBuilder(
+    column: $table.suspectedCause,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<DateTime> get occurredOn => $composableBuilder(
     column: $table.occurredOn,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get cause => $composableBuilder(
-    column: $table.cause,
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get notes => $composableBuilder(
-    column: $table.notes,
+  ColumnFilters<DateTime> get editedAt => $composableBuilder(
+    column: $table.editedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -16011,18 +16565,33 @@ class $$MortalityRecordsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get suspectedCause => $composableBuilder(
+    column: $table.suspectedCause,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get occurredOn => $composableBuilder(
     column: $table.occurredOn,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get cause => $composableBuilder(
-    column: $table.cause,
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get notes => $composableBuilder(
-    column: $table.notes,
+  ColumnOrderings<DateTime> get editedAt => $composableBuilder(
+    column: $table.editedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -16062,16 +16631,29 @@ class $$MortalityRecordsTableAnnotationComposer
   GeneratedColumn<int> get count =>
       $composableBuilder(column: $table.count, builder: (column) => column);
 
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get suspectedCause => $composableBuilder(
+    column: $table.suspectedCause,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<DateTime> get occurredOn => $composableBuilder(
     column: $table.occurredOn,
     builder: (column) => column,
   );
 
-  GeneratedColumn<String> get cause =>
-      $composableBuilder(column: $table.cause, builder: (column) => column);
-
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get editedAt =>
+      $composableBuilder(column: $table.editedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get deletedGroupId => $composableBuilder(
+    column: $table.deletedGroupId,
+    builder: (column) => column,
+  );
 }
 
 class $$MortalityRecordsTableTableManager
@@ -16119,9 +16701,12 @@ class $$MortalityRecordsTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 Value<String> batchId = const Value.absent(),
                 Value<int> count = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String?> suspectedCause = const Value.absent(),
                 Value<DateTime> occurredOn = const Value.absent(),
-                Value<String?> cause = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> editedAt = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MortalityRecordsCompanion(
                 id: id,
@@ -16132,9 +16717,12 @@ class $$MortalityRecordsTableTableManager
                 serverVersion: serverVersion,
                 batchId: batchId,
                 count: count,
+                kind: kind,
+                suspectedCause: suspectedCause,
                 occurredOn: occurredOn,
-                cause: cause,
                 notes: notes,
+                editedAt: editedAt,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -16147,9 +16735,12 @@ class $$MortalityRecordsTableTableManager
                 Value<int?> serverVersion = const Value.absent(),
                 required String batchId,
                 required int count,
+                Value<String> kind = const Value.absent(),
+                Value<String?> suspectedCause = const Value.absent(),
                 required DateTime occurredOn,
-                Value<String?> cause = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
+                Value<DateTime?> editedAt = const Value.absent(),
+                Value<String?> deletedGroupId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MortalityRecordsCompanion.insert(
                 id: id,
@@ -16160,9 +16751,12 @@ class $$MortalityRecordsTableTableManager
                 serverVersion: serverVersion,
                 batchId: batchId,
                 count: count,
+                kind: kind,
+                suspectedCause: suspectedCause,
                 occurredOn: occurredOn,
-                cause: cause,
                 notes: notes,
+                editedAt: editedAt,
+                deletedGroupId: deletedGroupId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

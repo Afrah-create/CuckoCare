@@ -9,12 +9,11 @@ import '../../../app/di/providers.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../data_platform/db/app_database.dart';
-import '../../health/data/health_repository.dart';
 
 final batchHealthIncidentsProvider =
     StreamProvider.family<List<HealthRecordRow>, String>((ref, batchId) {
-  return ref.watch(healthRepositoryProvider).watchForBatch(batchId);
-});
+      return ref.watch(healthRepositoryProvider).watchForBatch(batchId);
+    });
 
 class BatchHealthIncidentsSection extends ConsumerWidget {
   const BatchHealthIncidentsSection({required this.batchId, super.key});
@@ -125,10 +124,7 @@ class _IncidentTile extends StatelessWidget {
                 runSpacing: 6,
                 children: [
                   for (final s in symptoms)
-                    Chip(
-                      label: Text(s),
-                      visualDensity: VisualDensity.compact,
-                    ),
+                    Chip(label: Text(s), visualDensity: VisualDensity.compact),
                 ],
               ),
             ],

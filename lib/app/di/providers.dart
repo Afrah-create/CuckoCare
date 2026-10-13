@@ -23,7 +23,11 @@ import '../../features/vet/data/vet_location_repository.dart';
 import '../../features/vet/data/vet_map_repository.dart';
 import '../../features/auth/domain/user_profile.dart';
 import '../../core/time/kampala_today.dart';
+import '../../features/batches/data/batch_management.dart';
 import '../../features/batches/data/batch_repository.dart';
+import '../../features/batches/data/loss_repository.dart';
+import '../../features/batches/domain/batch_permissions.dart';
+import '../../features/batches/domain/calendar_date.dart';
 import '../../features/farms/data/farm_gps_reader.dart';
 import '../../features/farms/data/farm_repository.dart';
 import '../../features/farms/domain/farm_profile.dart';
@@ -205,6 +209,42 @@ final batchRepositoryProvider = Provider<BatchRepository>((ref) {
     ref.watch(clockProvider),
     syncedWrite: ref.watch(syncedWriteProvider),
   );
+});
+
+final lossRepositoryProvider = Provider<LossRepository>((ref) {
+  return LossRepository(
+    ref.watch(appDatabaseProvider),
+    ref.watch(clockProvider),
+    syncedWrite: ref.watch(syncedWriteProvider),
+  );
+});
+
+final batchManagementProvider = Provider<BatchManagement>((ref) {
+  final clock = ref.watch(clockProvider);
+  final farms = ref.watch(farmRepositoryProvider);
+  return BatchManagement(
+    batches: ref.watch(batchRepositoryProvider),
+    losses: ref.watch(lossRepositoryProvider),
+    today: () =>
+        CalendarDate.fromDateTime(kampalaCalendarDate(clock.now(), clock)),
+    roleOf: (farmId) async => FarmRole.fromStorage(await farms.memberRole(farmId)),
+  );
+});
+
+/// The signed-in user's role on the primary farm. A farm with no stored
+/// membership was created on this phone, so its user is the owner.
+final farmRoleProvider = FutureProvider<FarmRole>((ref) async {
+  final farmId = ref.watch(primaryFarmProvider).value?.id;
+  if (farmId == null) {
+    return FarmRole.owner;
+  }
+  return FarmRole.fromStorage(
+    await ref.watch(farmRepositoryProvider).memberRole(farmId),
+  );
+});
+
+final batchPermissionsProvider = Provider<BatchPermissions>((ref) {
+  return BatchPermissions(ref.watch(farmRoleProvider).value ?? FarmRole.owner);
 });
 
 final healthIncidentPhotoStorageProvider = Provider<HealthIncidentPhotoStorage>(

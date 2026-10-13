@@ -65,7 +65,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -128,6 +128,33 @@ class AppDatabase extends _$AppDatabase {
               vetAssistanceRequests,
               vetAssistanceRequests.requestedVetUserId,
             );
+          }
+          if (from < 9) {
+            await m.addColumn(batches, batches.closedOn);
+            await m.addColumn(batches, batches.closeReason);
+            await m.addColumn(batches, batches.closeNote);
+            await m.addColumn(batches, batches.deletedGroupId);
+            await m.addColumn(vaccinationTasks, vaccinationTasks.deletedGroupId);
+            // The free-text `cause` column is folded into notes before it is dropped.
+            await customStatement(
+              "UPDATE mortality_records SET notes = CASE "
+              "WHEN notes IS NULL OR notes = '' THEN cause "
+              "ELSE notes || ' (' || cause || ')' END "
+              "WHERE cause IS NOT NULL AND cause <> ''",
+            );
+            await m.alterTable(
+              TableMigration(
+                mortalityRecords,
+                newColumns: [
+                  mortalityRecords.kind,
+                  mortalityRecords.suspectedCause,
+                  mortalityRecords.editedAt,
+                  mortalityRecords.deletedGroupId,
+                ],
+              ),
+            );
+            await m.createIndex(mortalityBatchOccurredIdx);
+            await m.createIndex(batchesFarmStatusIdx);
           }
         },
       );

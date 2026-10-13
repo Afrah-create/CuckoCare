@@ -15,10 +15,10 @@ class ProgrammeResolver {
       BirdType.broiler => ProgrammeKey.broiler,
       BirdType.layer => ProgrammeKey.layer,
       BirdType.dualPurpose => switch (productionType) {
-          ProductionType.egg => ProgrammeKey.layer,
-          ProductionType.meat => ProgrammeKey.broiler,
-          null => null,
-        },
+        ProductionType.egg => ProgrammeKey.layer,
+        ProductionType.meat => ProgrammeKey.broiler,
+        null => null,
+      },
       BirdType.local => null,
     };
   }

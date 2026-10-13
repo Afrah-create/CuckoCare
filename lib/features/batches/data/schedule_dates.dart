@@ -5,3 +5,8 @@ DateTime dueOnToStorage(CalendarDate date) =>
 
 CalendarDate dueOnFromStorage(DateTime stored) =>
     CalendarDate.fromDateTime(stored.toUtc());
+
+/// A Postgres `date` from sync JSON. `DateTime.parse` would give local
+/// midnight, which reads back as the previous day east of UTC.
+DateTime dateOnlyFromJson(String value) =>
+    dueOnToStorage(CalendarDate.parseIso(value.substring(0, 10)));

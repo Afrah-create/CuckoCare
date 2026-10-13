@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 
 @DataClassName('BatchRow')
+@TableIndex(name: 'batches_farm_status_idx', columns: {#farmId, #status})
 class Batches extends Table {
   TextColumn get id => text()();
   TextColumn get farmId => text()();
@@ -22,6 +23,10 @@ class Batches extends Table {
   TextColumn get productionType => text().nullable()();
   TextColumn get programmeContentHash => text().nullable()();
   TextColumn get notes => text().nullable()();
+  DateTimeColumn get closedOn => dateTime().nullable()();
+  TextColumn get closeReason => text().nullable()();
+  TextColumn get closeNote => text().nullable()();
+  TextColumn get deletedGroupId => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

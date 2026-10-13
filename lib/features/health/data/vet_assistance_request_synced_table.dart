@@ -28,7 +28,7 @@ class VetAssistanceRequestSyncedTable
       healthRecordId: json['health_record_id'] as String,
       serviceType: json['service_type'] as String,
       status: json['status'] as String,
-      shareLocation: syncJsonBool(json['share_location']) ?? false,
+      shareLocation: syncJsonBool(json['share_location']),
       priority: json['priority'] as String? ?? 'normal',
       farmerNotes: json['farmer_notes'] as String?,
       assignedVetUserId: json['assigned_vet_user_id'] as String?,

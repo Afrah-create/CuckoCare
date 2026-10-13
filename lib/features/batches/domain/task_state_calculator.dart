@@ -3,11 +3,11 @@ import 'batch_planner.dart';
 import 'calendar_date.dart';
 
 PlannedTaskStatus plannedStatusFromDb(String status) => switch (status) {
-      'done' => PlannedTaskStatus.done,
-      'skipped' => PlannedTaskStatus.skipped,
-      'assumed_done' => PlannedTaskStatus.assumedDone,
-      _ => PlannedTaskStatus.pending,
-    };
+  'done' => PlannedTaskStatus.done,
+  'skipped' => PlannedTaskStatus.skipped,
+  'assumed_done' => PlannedTaskStatus.assumedDone,
+  _ => PlannedTaskStatus.pending,
+};
 
 enum TaskUiState {
   upcoming,

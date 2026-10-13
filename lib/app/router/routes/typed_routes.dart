@@ -8,8 +8,11 @@ import '../../../features/auth/presentation/forgot_password_screen.dart';
 import '../../../features/auth/presentation/login_screen.dart';
 import '../../../features/auth/presentation/sign_up_screen.dart';
 import '../../../features/batches/presentation/batch_detail_screen.dart';
+import '../../../features/batches/presentation/batch_edit_screen.dart';
 import '../../../features/batches/presentation/batch_new_screen.dart';
 import '../../../features/batches/presentation/batch_vaccination_task_screen.dart';
+import '../../../features/batches/presentation/loss_form_screen.dart';
+import '../../../features/batches/presentation/losses_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
 import '../../../features/notifications/presentation/notifications_settings_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
@@ -83,6 +86,10 @@ class BatchNewRoute extends GoRouteData with $BatchNewRoute {
     TypedGoRoute<BatchVaccinationTaskRoute>(
       path: 'vaccinations/:taskId',
     ),
+    TypedGoRoute<BatchEditRoute>(path: 'edit'),
+    TypedGoRoute<BatchLossesRoute>(path: 'losses'),
+    TypedGoRoute<LossNewRoute>(path: 'losses/new'),
+    TypedGoRoute<LossEditRoute>(path: 'losses/:lossId'),
   ],
 )
 class BatchDetailRoute extends GoRouteData with $BatchDetailRoute {
@@ -111,6 +118,55 @@ class BatchVaccinationTaskRoute extends GoRouteData with $BatchVaccinationTaskRo
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       BatchVaccinationTaskScreen(batchId: batchId, taskId: taskId);
+}
+
+class BatchEditRoute extends GoRouteData with $BatchEditRoute {
+  const BatchEditRoute({required this.batchId});
+
+  final String batchId;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      BatchEditScreen(batchId: batchId);
+}
+
+class BatchLossesRoute extends GoRouteData with $BatchLossesRoute {
+  const BatchLossesRoute({required this.batchId});
+
+  final String batchId;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      LossesScreen(batchId: batchId);
+}
+
+class LossNewRoute extends GoRouteData with $LossNewRoute {
+  const LossNewRoute({required this.batchId});
+
+  final String batchId;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      LossFormScreen(batchId: batchId);
+}
+
+class LossEditRoute extends GoRouteData with $LossEditRoute {
+  const LossEditRoute({required this.batchId, required this.lossId});
+
+  final String batchId;
+  final String lossId;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      LossFormScreen(batchId: batchId, lossId: lossId);
 }
 
 @TypedGoRoute<MoreFarmRoute>(path: '/more/farm')

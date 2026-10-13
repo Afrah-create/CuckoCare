@@ -11,9 +11,6 @@ CalendarDate hatchDate({
   return acquiredOn.addDays(-(ageAtAcquisitionDays - 1));
 }
 
-int ageDaysAt({
-  required CalendarDate hatch,
-  required CalendarDate today,
-}) {
+int ageDaysAt({required CalendarDate hatch, required CalendarDate today}) {
   return hatch.daysUntil(today) + 1;
 }

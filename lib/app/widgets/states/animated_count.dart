@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import '../../theme/app_motion.dart';
 
 class AnimatedCount extends StatelessWidget {
-  const AnimatedCount({required this.value, this.style, super.key});
+  const AnimatedCount({
+    required this.value,
+    this.style,
+    this.format,
+    super.key,
+  });
 
   final int value;
   final TextStyle? style;
+  final String Function(int value)? format;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class AnimatedCount extends StatelessWidget {
         );
       },
       child: Text(
-        '$value',
+        format?.call(value) ?? '$value',
         key: ValueKey(value),
         style: style,
       ),

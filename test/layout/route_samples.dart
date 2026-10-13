@@ -9,12 +9,16 @@ PageLayout presetForRoute(String path) {
     '/splash' || '/vet/map' => PageLayout.fullBleed,
     '/batches/:batchId' ||
     '/batches/:batchId/vaccinations/:taskId' ||
+    '/batches/:batchId/losses' ||
     '/vet/incident' =>
       PageLayout.reading,
     '/auth/login' ||
     '/auth/signup' ||
     '/auth/forgot-password' ||
     '/batches/new' ||
+    '/batches/:batchId/edit' ||
+    '/batches/:batchId/losses/new' ||
+    '/batches/:batchId/losses/:lossId' ||
     '/more' ||
     '/more/farm' ||
     '/more/settings/notifications' ||
@@ -33,6 +37,10 @@ const routeSamplePaths = <String>{
   '/batches',
   '/batches/:batchId',
   '/batches/:batchId/vaccinations/:taskId',
+  '/batches/:batchId/edit',
+  '/batches/:batchId/losses',
+  '/batches/:batchId/losses/new',
+  '/batches/:batchId/losses/:lossId',
   '/batches/new',
   '/feed',
   '/more',

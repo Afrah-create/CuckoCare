@@ -126,8 +126,7 @@ class ProgrammeCatalog {
 
     final status = json['status'] as String? ?? '';
     final conventions = json['conventions'] as Map<String, dynamic>? ?? {};
-    final dueRaw =
-        conventions['due_window'] as Map<String, dynamic>? ?? {};
+    final dueRaw = conventions['due_window'] as Map<String, dynamic>? ?? {};
     final dueWindow = DueWindowConvention(
       defaultDaysBefore: dueRaw['default_days_before'] as int? ?? 1,
       defaultDaysAfterOverdue:
@@ -221,7 +220,9 @@ class ProgrammeCatalog {
       throw ProgrammeCatalogException('Recurring $id: invalid age or interval');
     }
     if (start >= end || interval < 1) {
-      throw ProgrammeCatalogException('Recurring $id: start/end/interval invalid');
+      throw ProgrammeCatalogException(
+        'Recurring $id: start/end/interval invalid',
+      );
     }
     return RecurringRule(
       id: id,

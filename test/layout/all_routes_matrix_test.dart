@@ -72,6 +72,10 @@ List<String> registeredRoutes() {
         .allMatches(sources)
         .map((m) => m.group(1)!),
     '/batches/:batchId/vaccinations/:taskId',
+    '/batches/:batchId/edit',
+    '/batches/:batchId/losses',
+    '/batches/:batchId/losses/new',
+    '/batches/:batchId/losses/:lossId',
   };
   return paths.toList()..sort();
 }

@@ -4,7 +4,6 @@ import 'package:cucocare/data_platform/db/synced_write.dart';
 import 'package:cucocare/features/batches/data/batch_repository.dart';
 import 'package:cucocare/features/health/data/health_incident_photo_storage.dart';
 import 'package:cucocare/features/health/data/health_repository.dart';
-import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase/supabase.dart';

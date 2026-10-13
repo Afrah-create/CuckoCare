@@ -22,6 +22,7 @@ class VaccinationTasks extends Table {
   TextColumn get stepSnapshot => text().nullable()();
   TextColumn get programmeContentHash => text().nullable()();
   DateTimeColumn get shiftedFrom => dateTime().nullable()();
+  TextColumn get deletedGroupId => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../app/di/providers.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../core/utils/uuid_v7.dart';
@@ -112,9 +113,7 @@ class BatchNewState {
 }
 
 final batchNewControllerProvider =
-    NotifierProvider<BatchNewController, BatchNewState>(
-  BatchNewController.new,
-);
+    NotifierProvider<BatchNewController, BatchNewState>(BatchNewController.new);
 
 class BatchNewController extends Notifier<BatchNewState> {
   static const _draftKey = 'draft:batch:new';
@@ -133,12 +132,14 @@ class BatchNewController extends Notifier<BatchNewState> {
 
     if (!_bootstrapped) {
       _bootstrapped = true;
-      Future.microtask(() => _restoreDraft(
-            needsFarm: needsFarm,
-            today: today,
-            defaultName: defaultName,
-            batchId: batchId,
-          ));
+      Future.microtask(
+        () => _restoreDraft(
+          needsFarm: needsFarm,
+          today: today,
+          defaultName: defaultName,
+          batchId: batchId,
+        ),
+      );
     }
 
     ref.listen(programmeCatalogProvider, (_, next) {
@@ -217,7 +218,9 @@ class BatchNewController extends Notifier<BatchNewState> {
               ),
         needsFarmStep: needsFarm,
         farmName: map['farm_name'] as String? ?? '',
-        birdType: BirdType.values.byName(map['bird_type'] as String? ?? 'layer'),
+        birdType: BirdType.values.byName(
+          map['bird_type'] as String? ?? 'layer',
+        ),
         productionType: map['production_type'] == null
             ? null
             : ProductionType.values.byName(map['production_type'] as String),
@@ -344,21 +347,33 @@ class BatchNewController extends Notifier<BatchNewState> {
   }
 
   void goToDetails() {
-    state = state.copyWith(wizardStep: BatchWizardStep.details, clearError: true);
+    state = state.copyWith(
+      wizardStep: BatchWizardStep.details,
+      clearError: true,
+    );
   }
 
   void goToReview() {
-    state = state.copyWith(wizardStep: BatchWizardStep.review, clearError: true);
+    state = state.copyWith(
+      wizardStep: BatchWizardStep.review,
+      clearError: true,
+    );
     _refreshPreview();
   }
 
   void goBack() {
     if (state.wizardStep == BatchWizardStep.review) {
-      state = state.copyWith(wizardStep: BatchWizardStep.details, clearError: true);
+      state = state.copyWith(
+        wizardStep: BatchWizardStep.details,
+        clearError: true,
+      );
       return;
     }
     if (state.wizardStep == BatchWizardStep.details && state.needsFarmStep) {
-      state = state.copyWith(wizardStep: BatchWizardStep.farm, clearError: true);
+      state = state.copyWith(
+        wizardStep: BatchWizardStep.farm,
+        clearError: true,
+      );
     }
   }
 
@@ -410,7 +425,9 @@ class BatchNewController extends Notifier<BatchNewState> {
       acquiredOn: CalendarDate.fromDateTime(acquired),
       ageAtAcquisitionDays: age,
       productionType: state.productionType,
-      sourceName: state.sourceName.trim().isEmpty ? null : state.sourceName.trim(),
+      sourceName: state.sourceName.trim().isEmpty
+          ? null
+          : state.sourceName.trim(),
       notes: state.notes.trim().isEmpty ? null : state.notes.trim(),
     );
   }
@@ -429,16 +446,21 @@ class BatchNewController extends Notifier<BatchNewState> {
       return false;
     }
     if (state.initialCount < 1 || state.initialCount > 500000) {
-      state = state.copyWith(errorMessage: 'Bird count must be between 1 and 500,000.');
+      state = state.copyWith(
+        errorMessage: 'Bird count must be between 1 and 500,000.',
+      );
       return false;
     }
     final today = ref.read(kampalaTodayProvider);
     final acquired = state.acquiredOn;
     if (acquired == null || acquired.isAfter(today)) {
-      state = state.copyWith(errorMessage: 'Acquisition date cannot be in the future.');
+      state = state.copyWith(
+        errorMessage: 'Acquisition date cannot be in the future.',
+      );
       return false;
     }
-    if (state.birdType == BirdType.dualPurpose && state.productionType == null) {
+    if (state.birdType == BirdType.dualPurpose &&
+        state.productionType == null) {
       state = state.copyWith(errorMessage: 'Choose egg or meat type.');
       return false;
     }
@@ -460,7 +482,9 @@ class BatchNewController extends Notifier<BatchNewState> {
     try {
       var farmId = ref.read(primaryFarmProvider).value?.id;
       if (farmId == null) {
-        farmId = await ref.read(farmRepositoryProvider).ensureFarmNamed(state.farmName);
+        farmId = await ref
+            .read(farmRepositoryProvider)
+            .ensureFarmNamed(state.farmName);
       }
 
       final today = CalendarDate.fromDateTime(ref.read(kampalaTodayProvider));
@@ -498,7 +522,9 @@ class BatchNewController extends Notifier<BatchNewState> {
         return null;
       }
 
-      await ref.read(batchRepositoryProvider).createBatchWithSchedule(
+      await ref
+          .read(batchRepositoryProvider)
+          .createBatchWithSchedule(
             CreateBatchRequest(
               farmId: farmId,
               input: BatchPlanInput(

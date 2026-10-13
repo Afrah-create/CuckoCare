@@ -194,6 +194,30 @@ RouteBase get $batchDetailRoute => GoRouteData.$route(
       parentNavigatorKey: BatchVaccinationTaskRoute.$parentNavigatorKey,
       factory: $BatchVaccinationTaskRoute._fromState,
     ),
+    GoRouteData.$route(
+      path: 'edit',
+      hasOverriddenOnExit: false,
+      parentNavigatorKey: BatchEditRoute.$parentNavigatorKey,
+      factory: $BatchEditRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: 'losses',
+      hasOverriddenOnExit: false,
+      parentNavigatorKey: BatchLossesRoute.$parentNavigatorKey,
+      factory: $BatchLossesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: 'losses/new',
+      hasOverriddenOnExit: false,
+      parentNavigatorKey: LossNewRoute.$parentNavigatorKey,
+      factory: $LossNewRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: 'losses/:lossId',
+      hasOverriddenOnExit: false,
+      parentNavigatorKey: LossEditRoute.$parentNavigatorKey,
+      factory: $LossEditRoute._fromState,
+    ),
   ],
 );
 
@@ -233,6 +257,108 @@ mixin $BatchVaccinationTaskRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/batches/${Uri.encodeComponent(_self.batchId)}/vaccinations/${Uri.encodeComponent(_self.taskId)}',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $BatchEditRoute on GoRouteData {
+  static BatchEditRoute _fromState(GoRouterState state) =>
+      BatchEditRoute(batchId: state.pathParameters['batchId']!);
+
+  BatchEditRoute get _self => this as BatchEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/batches/${Uri.encodeComponent(_self.batchId)}/edit',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $BatchLossesRoute on GoRouteData {
+  static BatchLossesRoute _fromState(GoRouterState state) =>
+      BatchLossesRoute(batchId: state.pathParameters['batchId']!);
+
+  BatchLossesRoute get _self => this as BatchLossesRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/batches/${Uri.encodeComponent(_self.batchId)}/losses',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $LossNewRoute on GoRouteData {
+  static LossNewRoute _fromState(GoRouterState state) =>
+      LossNewRoute(batchId: state.pathParameters['batchId']!);
+
+  LossNewRoute get _self => this as LossNewRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/batches/${Uri.encodeComponent(_self.batchId)}/losses/new',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $LossEditRoute on GoRouteData {
+  static LossEditRoute _fromState(GoRouterState state) => LossEditRoute(
+    batchId: state.pathParameters['batchId']!,
+    lossId: state.pathParameters['lossId']!,
+  );
+
+  LossEditRoute get _self => this as LossEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/batches/${Uri.encodeComponent(_self.batchId)}/losses/${Uri.encodeComponent(_self.lossId)}',
   );
 
   @override

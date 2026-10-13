@@ -5,11 +5,11 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('AppColors lerp endpoints match light and dark', () {
     expect(
-      AppColors.light.lerp(AppColors.dark, 0)!.taskOverdue,
+      AppColors.light.lerp(AppColors.dark, 0).taskOverdue,
       AppColors.light.taskOverdue,
     );
     expect(
-      AppColors.light.lerp(AppColors.dark, 1)!.taskOverdue,
+      AppColors.light.lerp(AppColors.dark, 1).taskOverdue,
       AppColors.dark.taskOverdue,
     );
   });

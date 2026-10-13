@@ -35,6 +35,30 @@ abstract final class FailureMapper {
           presentation: UiPresentation.banner,
         ),
       UnexpectedFailure() => _unknown,
+      ValidationFailure(:final message) => _info(
+          kind: UiFailureKind.validation,
+          code: 'validation',
+          title: "Couldn't save",
+          message: message,
+          action: UiAction.dismiss,
+          presentation: UiPresentation.inline,
+        ),
+      NotFoundFailure(:final message) => _info(
+          kind: UiFailureKind.notFound,
+          code: 'not-found',
+          title: 'Not found',
+          message: message,
+          action: UiAction.dismiss,
+          presentation: UiPresentation.page,
+        ),
+      PermissionFailure(:final message) => _info(
+          kind: UiFailureKind.permissionDenied,
+          code: 'role',
+          title: 'Not allowed',
+          message: message,
+          action: UiAction.dismiss,
+          presentation: UiPresentation.snack,
+        ),
     };
   }
 

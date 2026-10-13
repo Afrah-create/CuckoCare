@@ -48,6 +48,23 @@ class FarmRepository {
     return query.watch().asyncMap(_pickPrimaryFarm);
   }
 
+  /// The signed-in user's role on [farmId], or null when no membership is stored.
+  Future<String?> memberRole(String farmId) async {
+    final userId = await _snapshots.loadUserId();
+    if (userId == null) {
+      return null;
+    }
+    final members = await (_db.select(_db.farmMembers)
+          ..where(
+            (m) =>
+                m.farmId.equals(farmId) &
+                m.userId.equals(userId) &
+                m.deletedAt.isNull(),
+          ))
+        .get();
+    return members.isEmpty ? null : members.first.role;
+  }
+
   Future<FarmRow?> primaryLocalFarm() async {
     final rows = await (_db.select(_db.farms)
           ..where((f) => f.deletedAt.isNull()))

@@ -20,6 +20,21 @@ final class UnexpectedFailure extends Failure {
   const UnexpectedFailure(super.message);
 }
 
+/// A business rule was broken. [message] is already user-facing copy.
+final class ValidationFailure extends Failure {
+  const ValidationFailure(super.message);
+}
+
+final class NotFoundFailure extends Failure {
+  const NotFoundFailure([super.message = 'This item no longer exists.']);
+}
+
+final class PermissionFailure extends Failure {
+  const PermissionFailure([
+    super.message = 'You do not have permission to do that.',
+  ]);
+}
+
 final class SyncOffline extends Failure {
   const SyncOffline() : super('Offline');
 }

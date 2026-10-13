@@ -25,12 +25,10 @@ import 'batch_display.dart';
 import 'mark_task_done_sheet.dart';
 
 final vaccinationTaskProvider =
-    StreamProvider.family<VaccinationTaskRow?, (String, String)>(
-  (ref, key) {
-    final taskId = key.$2;
-    return ref.watch(batchRepositoryProvider).watchTask(taskId);
-  },
-);
+    StreamProvider.family<VaccinationTaskRow?, (String, String)>((ref, key) {
+      final taskId = key.$2;
+      return ref.watch(batchRepositoryProvider).watchTask(taskId);
+    });
 
 class BatchVaccinationTaskScreen extends ConsumerWidget {
   const BatchVaccinationTaskScreen({
@@ -69,9 +67,8 @@ class BatchVaccinationTaskScreen extends ConsumerWidget {
             skeleton: const DetailSkeleton(),
             error: (error, _) => ErrorState(
               failure: FailureMapper.mapObject(error),
-              onRetry: () => ref.invalidate(
-                vaccinationTaskProvider((batchId, taskId)),
-              ),
+              onRetry: () =>
+                  ref.invalidate(vaccinationTaskProvider((batchId, taskId))),
             ),
             builder: (task) {
               if (task == null || task.batchId != batchId) {
@@ -155,10 +152,7 @@ class _TaskBody extends StatelessWidget {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       Expanded(
-                        child: Text(
-                          'Due $due',
-                          style: context.text.bodyLarge,
-                        ),
+                        child: Text('Due $due', style: context.text.bodyLarge),
                       ),
                     ],
                   ),
@@ -209,12 +203,7 @@ class _TaskBody extends StatelessWidget {
   }
 
   Future<void> _markDone(BuildContext context) {
-    return showMarkTaskDoneSheet(
-      context,
-      ref,
-      task: task,
-      today: today,
-    );
+    return showMarkTaskDoneSheet(context, ref, task: task, today: today);
   }
 }
 
@@ -228,21 +217,34 @@ class _DetailStatusChip extends StatelessWidget {
     final scheme = context.scheme;
     final (bg, fg) = switch (state) {
       TaskUiState.done => (scheme.primaryContainer, scheme.onPrimaryContainer),
-      TaskUiState.skipped =>
-        (scheme.surfaceContainerHighest, scheme.onSurfaceVariant),
-      TaskUiState.needsConfirmation =>
-        (scheme.tertiaryContainer, scheme.onTertiaryContainer),
-      TaskUiState.dueToday =>
-        (scheme.primaryContainer, scheme.onPrimaryContainer),
-      TaskUiState.dueSoon =>
-        (scheme.secondaryContainer, scheme.onSecondaryContainer),
-      TaskUiState.overdueGentle ||
-      TaskUiState.overdueUrgent =>
-        (scheme.errorContainer, scheme.onErrorContainer),
-      TaskUiState.upcoming =>
-        (scheme.surfaceContainerHighest, scheme.onSurfaceVariant),
-      TaskUiState.disabled =>
-        (scheme.surfaceContainerHighest, scheme.onSurfaceVariant),
+      TaskUiState.skipped => (
+        scheme.surfaceContainerHighest,
+        scheme.onSurfaceVariant,
+      ),
+      TaskUiState.needsConfirmation => (
+        scheme.tertiaryContainer,
+        scheme.onTertiaryContainer,
+      ),
+      TaskUiState.dueToday => (
+        scheme.primaryContainer,
+        scheme.onPrimaryContainer,
+      ),
+      TaskUiState.dueSoon => (
+        scheme.secondaryContainer,
+        scheme.onSecondaryContainer,
+      ),
+      TaskUiState.overdueGentle || TaskUiState.overdueUrgent => (
+        scheme.errorContainer,
+        scheme.onErrorContainer,
+      ),
+      TaskUiState.upcoming => (
+        scheme.surfaceContainerHighest,
+        scheme.onSurfaceVariant,
+      ),
+      TaskUiState.disabled => (
+        scheme.surfaceContainerHighest,
+        scheme.onSurfaceVariant,
+      ),
     };
 
     return Container(

@@ -55,12 +55,15 @@ class _MarkDoneSheetState extends ConsumerState<_MarkDoneSheet> {
       widget.today.day,
     );
     try {
-      await ref.read(batchRepositoryProvider).markTaskDone(
+      await ref
+          .read(batchRepositoryProvider)
+          .markTaskDone(
             taskId: widget.task.id,
             todayLocal: widget.today,
             doneOn: doneOn,
-            productUsed:
-                _product.text.trim().isEmpty ? null : _product.text.trim(),
+            productUsed: _product.text.trim().isEmpty
+                ? null
+                : _product.text.trim(),
           );
       ref.read(reminderReconcilerProvider).scheduleReconcile();
       AppHaptics.success();
@@ -112,14 +115,9 @@ class _MarkDoneSheetState extends ConsumerState<_MarkDoneSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Mark done',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text('Mark done', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: AppSpacing.xs),
-          Text(
-            'Date: ${DateFormat.yMMMd().format(widget.today)}',
-          ),
+          Text('Date: ${DateFormat.yMMMd().format(widget.today)}'),
           const SizedBox(height: AppSpacing.md),
           TextField(
             controller: _product,

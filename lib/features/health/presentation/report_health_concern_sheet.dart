@@ -14,6 +14,8 @@ import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_busy_indicator.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/skeleton.dart';
+import '../../batches/presentation/batch_labels.dart';
+import '../../batches/presentation/batch_providers.dart';
 import '../../farms/domain/farm_profile.dart';
 import '../../vet/presentation/vet_inbox_providers.dart';
 import '../data/health_incident_photo_storage.dart';
@@ -31,10 +33,8 @@ Future<bool?> showReportHealthConcernSheet(
     isScrollControlled: true,
     useSafeArea: true,
     showDragHandle: true,
-    builder: (ctx) => _ReportHealthConcernSheet(
-      batchId: batchId,
-      farmId: farmId,
-    ),
+    builder: (ctx) =>
+        _ReportHealthConcernSheet(batchId: batchId, farmId: farmId),
   );
 }
 
@@ -105,7 +105,8 @@ class _ReportHealthConcernSheetState
       if (!mounted) {
         return;
       }
-      final denied = e.code == 'camera_access_denied' ||
+      final denied =
+          e.code == 'camera_access_denied' ||
           e.code == 'photo_access_denied' ||
           e.code == 'permission_denied';
       AppSnack.show(
@@ -130,10 +131,24 @@ class _ReportHealthConcernSheetState
       AppSnack.show(context, message: 'Please describe what you noticed.');
       return;
     }
+    final affected = int.tryParse(_affectedController.text.trim());
+    final live = ref
+        .read(batchViewProvider(widget.batchId))
+        .value
+        ?.metrics
+        .liveCount;
+    if (affected != null && live != null && affected > live) {
+      AppSnack.error(
+        context,
+        'You only have ${formatCount(live)} live birds in this batch.',
+      );
+      return;
+    }
     setState(() => _saving = true);
     try {
-      final affected = int.tryParse(_affectedController.text.trim());
-      await ref.read(healthRepositoryProvider).reportConcern(
+      await ref
+          .read(healthRepositoryProvider)
+          .reportConcern(
             ReportHealthConcernInput(
               batchId: widget.batchId,
               farmId: widget.farmId,
@@ -174,6 +189,11 @@ class _ReportHealthConcernSheetState
     final hasGps = farmHasGps(farm);
     final vetsAsync = ref.watch(availableVetsProvider(widget.farmId));
     final online = ref.watch(connectivityOnlineProvider).value ?? true;
+    final liveBirds = ref
+        .watch(batchViewProvider(widget.batchId))
+        .value
+        ?.metrics
+        .liveCount;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -253,8 +273,11 @@ class _ReportHealthConcernSheetState
                     const SizedBox(height: AppSpacing.md),
                     TextField(
                       controller: _affectedController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Birds affected (optional)',
+                        helperText: liveBirds == null
+                            ? null
+                            : 'This batch has ${formatCount(liveBirds)} live birds.',
                       ),
                       keyboardType: TextInputType.number,
                       enabled: !_saving,
@@ -298,19 +321,19 @@ class _ReportHealthConcernSheetState
                                     top: 4,
                                     right: 4,
                                     child: Material(
-                                      color: context.scheme.scrim
-                                          .withValues(alpha: 0.6),
+                                      color: context.scheme.scrim.withValues(
+                                        alpha: 0.6,
+                                      ),
                                       shape: const CircleBorder(),
                                       clipBehavior: Clip.antiAlias,
                                       child: InkWell(
                                         onTap: _saving
                                             ? null
                                             : () => setState(
-                                                  () =>
-                                                      _localPhotoPaths.remove(
-                                                    path,
-                                                  ),
+                                                () => _localPhotoPaths.remove(
+                                                  path,
                                                 ),
+                                              ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(4),
                                           child: Icon(
@@ -359,8 +382,9 @@ class _ReportHealthConcernSheetState
                               style: context.text.bodySmall,
                             ),
                             value: _requestVet,
-                            onChanged:
-                                _saving ? null : (v) => setState(() => _requestVet = v),
+                            onChanged: _saving
+                                ? null
+                                : (v) => setState(() => _requestVet = v),
                           ),
                           if (_requestVet && !hasGps)
                             ListTile(
@@ -391,8 +415,7 @@ class _ReportHealthConcernSheetState
                                       loading: () => const SkeletonScope(
                                         child: SkeletonLine(height: 8),
                                       ),
-                                      error: (_, __) =>
-                                          const SizedBox.shrink(),
+                                      error: (_, __) => const SizedBox.shrink(),
                                       data: (vets) {
                                         if (vets.isEmpty) {
                                           return const SizedBox.shrink();
@@ -416,8 +439,8 @@ class _ReportHealthConcernSheetState
                                           onChanged: _saving
                                               ? null
                                               : (v) => setState(
-                                                    () => _requestedVetUserId = v,
-                                                  ),
+                                                  () => _requestedVetUserId = v,
+                                                ),
                                         );
                                       },
                                     ),
@@ -444,8 +467,8 @@ class _ReportHealthConcernSheetState
                                     onChanged: _saving
                                         ? null
                                         : (v) => setState(
-                                              () => _serviceType = v ?? 'either',
-                                            ),
+                                            () => _serviceType = v ?? 'either',
+                                          ),
                                   ),
                                 ],
                               ),

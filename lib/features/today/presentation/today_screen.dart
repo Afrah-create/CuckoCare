@@ -15,6 +15,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
+import '../../batches/presentation/batch_providers.dart';
 import '../../home/presentation/farm_profile_banner.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../../../app/widgets/states/async_state_view.dart';
@@ -46,18 +47,15 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
         return;
       }
       _tabScrollRegistryNotifier = ref.read(tabScrollRegistryProvider.notifier);
-      _tabScrollRegistryNotifier!.register(
-        _tabIndex,
-        () {
-          if (_scrollController.hasClients) {
-            _scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        },
-      );
+      _tabScrollRegistryNotifier!.register(_tabIndex, () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 
@@ -125,49 +123,51 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
         primary: false,
         frame: false,
         body: PullToRefresh(
-        online: online,
-        onSync: _onRefresh,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    horizontal,
-                    layout.hideTabRootAppBar ? topInset + AppSpacing.xs : AppSpacing.xs,
-                    horizontal,
-                    0,
+          online: online,
+          onSync: _onRefresh,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      horizontal,
+                      layout.hideTabRootAppBar
+                          ? topInset + AppSpacing.xs
+                          : AppSpacing.xs,
+                      horizontal,
+                      0,
+                    ),
+                    child: banner,
                   ),
-                  child: banner,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: horizontal),
-                  child: _InlineGreetingLine(greeting: greeting),
-                ),
-                SizedBox(height: layout.gutter),
-                Expanded(
-                  child: Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: horizontal),
-                    child: TwoPane(
-                      primary: SingleChildScrollView(
-                        padding: EdgeInsets.only(bottom: bottomInset),
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
+                    child: _InlineGreetingLine(greeting: greeting),
+                  ),
+                  SizedBox(height: layout.gutter),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: horizontal),
+                      child: TwoPane(
+                        primary: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: bottomInset),
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
+                          child: needsAttention,
                         ),
-                        child: needsAttention,
-                      ),
-                      secondary: SingleChildScrollView(
-                        padding: EdgeInsets.only(bottom: bottomInset),
-                        child: atAGlance,
+                        secondary: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: bottomInset),
+                          child: atAGlance,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          },
-        ),
+                ],
+              );
+            },
+          ),
         ),
       );
     }
@@ -176,46 +176,45 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       primary: false,
       frame: false,
       body: PullToRefresh(
-      online: online,
-      onSync: _onRefresh,
-      child: CustomScrollView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(
-          parent: BouncingScrollPhysics(),
-        ),
-        slivers: [
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              horizontal,
-              AppSpacing.xs,
-              horizontal,
-              bottomInset,
-            ),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                banner,
-                TodayGreetingCard(
-                  greeting: greeting,
-                  subtitle:
-                      "Here's what needs attention on your farm today.",
-                  compact: true,
-                ),
-                const SizedBox(height: AppSpacing.lg),
-                needsAttention,
-                const SizedBox(height: AppSpacing.lg),
-                atAGlance,
-                const SizedBox(height: AppSpacing.lg),
-                const _SectionHeader(title: 'Quick actions'),
-                const SizedBox(height: AppSpacing.sm),
-                _QuickActions(
-                  onSync: () =>
-                      ref.read(syncEngineProvider).syncOnce(force: true),
-                ),
-              ]),
-            ),
+        online: online,
+        onSync: _onRefresh,
+        child: CustomScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
           ),
-        ],
-      ),
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                horizontal,
+                AppSpacing.xs,
+                horizontal,
+                bottomInset,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  banner,
+                  TodayGreetingCard(
+                    greeting: greeting,
+                    subtitle: "Here's what needs attention on your farm today.",
+                    compact: true,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  needsAttention,
+                  const SizedBox(height: AppSpacing.lg),
+                  atAGlance,
+                  const SizedBox(height: AppSpacing.lg),
+                  const _SectionHeader(title: 'Quick actions'),
+                  const SizedBox(height: AppSpacing.sm),
+                  _QuickActions(
+                    onSync: () =>
+                        ref.read(syncEngineProvider).syncOnce(force: true),
+                  ),
+                ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -225,8 +224,8 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     final period = hour < 12
         ? 'Good morning'
         : hour < 17
-            ? 'Good afternoon'
-            : 'Good evening';
+        ? 'Good afternoon'
+        : 'Good evening';
     if (profile == null) {
       return period;
     }
@@ -301,9 +300,10 @@ class _MetricGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layout = context.layout;
-    final activeAsync = ref.watch(activeBatchCountProvider);
+    final totalsAsync = ref.watch(farmBatchTotalsProvider);
     final dueAsync = ref.watch(dueThisWeekCountProvider);
-    final loading = (activeAsync.isLoading && !activeAsync.hasValue) ||
+    final loading =
+        (totalsAsync.isLoading && !totalsAsync.hasValue) ||
         (dueAsync.isLoading && !dueAsync.hasValue);
     if (loading) {
       return const SkeletonScope(
@@ -317,7 +317,8 @@ class _MetricGrid extends ConsumerWidget {
       );
     }
     final cols = layout.statColumns;
-    final active = activeAsync.value ?? 0;
+    final active = totalsAsync.value?.activeBatches ?? 0;
+    final liveBirds = totalsAsync.value?.liveBirds ?? 0;
     final dueWeek = dueAsync.value ?? 0;
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -336,15 +337,15 @@ class _MetricGrid extends ConsumerWidget {
             ),
             _MetricTile(
               width: tileWidth,
-              icon: Icons.vaccines_outlined,
-              label: 'Due this week',
-              count: dueWeek,
+              icon: Icons.egg_outlined,
+              label: 'Live birds',
+              count: liveBirds,
             ),
             _MetricTile(
               width: tileWidth,
-              icon: Icons.restaurant_outlined,
-              label: 'Feed stock',
-              value: '—',
+              icon: Icons.vaccines_outlined,
+              label: 'Due this week',
+              count: dueWeek,
             ),
             _MetricTile(
               width: tileWidth,
@@ -399,8 +400,9 @@ class _MetricTile extends StatelessWidget {
                       DecoratedBox(
                         decoration: BoxDecoration(
                           color: scheme.primary.withValues(alpha: 0.12),
-                          borderRadius:
-                              BorderRadius.circular(AppSpacing.radiusSm),
+                          borderRadius: BorderRadius.circular(
+                            AppSpacing.radiusSm,
+                          ),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(AppSpacing.xxs),
@@ -411,6 +413,8 @@ class _MetricTile extends StatelessWidget {
                       if (count != null)
                         AnimatedCount(
                           value: count!,
+                          format: (n) =>
+                              NumberFormat.decimalPattern().format(n),
                           style: context.text.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w800,
                             height: 1,

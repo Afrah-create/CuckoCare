@@ -1,6 +1,10 @@
 /// Calendar date for schedule arithmetic (no time zone, no DST).
 class CalendarDate implements Comparable<CalendarDate> {
-  const CalendarDate({required this.year, required this.month, required this.day});
+  const CalendarDate({
+    required this.year,
+    required this.month,
+    required this.day,
+  });
 
   final int year;
   final int month;

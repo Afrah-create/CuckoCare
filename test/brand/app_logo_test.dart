@@ -1,5 +1,4 @@
 import 'package:cucocare/app/theme/app_theme.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cucocare/app/l10n/app_localizations.dart';
 import 'package:cucocare/app/widgets/app_logo.dart';
 import 'package:flutter/material.dart';

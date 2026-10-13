@@ -18,8 +18,11 @@ import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../core/error/failure_mapper.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../health/data/health_repository.dart';
+import 'mortality_records_view.dart';
 
-final farmerIncidentsProvider = StreamProvider<List<FarmerIncidentEntry>>((ref) {
+final farmerIncidentsProvider = StreamProvider<List<FarmerIncidentEntry>>((
+  ref,
+) {
   final farmId = ref.watch(primaryFarmProvider).value?.id;
   if (farmId == null) {
     return Stream.value(const []);
@@ -27,17 +30,76 @@ final farmerIncidentsProvider = StreamProvider<List<FarmerIncidentEntry>>((ref) 
   return ref.watch(healthRepositoryProvider).watchFarmIncidents(farmId);
 });
 
+enum RecordsSection { health, mortality }
+
+class RecordsSectionNotifier extends Notifier<RecordsSection> {
+  @override
+  RecordsSection build() => RecordsSection.health;
+
+  void select(RecordsSection section) => state = section;
+}
+
+final recordsSectionProvider =
+    NotifierProvider<RecordsSectionNotifier, RecordsSection>(
+      RecordsSectionNotifier.new,
+    );
+
 class RecordsScreen extends ConsumerWidget {
   const RecordsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final incidentsAsync = ref.watch(farmerIncidentsProvider);
+    final section = ref.watch(recordsSectionProvider);
 
     return AppPage(
       primary: false,
       frame: false,
-      body: AsyncStateView<List<FarmerIncidentEntry>>(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ContentFrame(
+            child: Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.md),
+              child: SegmentedButton<RecordsSection>(
+                segments: const [
+                  ButtonSegment(
+                    value: RecordsSection.health,
+                    icon: Icon(Icons.medical_services_outlined),
+                    label: Text('Health'),
+                  ),
+                  ButtonSegment(
+                    value: RecordsSection.mortality,
+                    icon: Icon(Icons.trending_down),
+                    label: Text('Mortality'),
+                  ),
+                ],
+                selected: {section},
+                showSelectedIcon: false,
+                onSelectionChanged: (s) =>
+                    ref.read(recordsSectionProvider.notifier).select(s.first),
+              ),
+            ),
+          ),
+          Expanded(
+            child: switch (section) {
+              RecordsSection.health => const _HealthRecordsView(),
+              RecordsSection.mortality => const MortalityRecordsView(),
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HealthRecordsView extends ConsumerWidget {
+  const _HealthRecordsView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final incidentsAsync = ref.watch(farmerIncidentsProvider);
+
+    return AsyncStateView<List<FarmerIncidentEntry>>(
       value: incidentsAsync,
       onRetry: () => ref.invalidate(farmerIncidentsProvider),
       skeleton: const ListSkeleton(),
@@ -45,7 +107,8 @@ class RecordsScreen extends ConsumerWidget {
       empty: const EmptyState(
         icon: Icons.note_alt_outlined,
         title: 'No health records yet',
-        message: 'Incidents and vet requests will show up here after you add one.',
+        message:
+            'Incidents and vet requests will show up here after you add one.',
       ),
       error: (error, _) => ErrorState(
         failure: FailureMapper.mapObject(error),
@@ -69,14 +132,11 @@ class RecordsScreen extends ConsumerWidget {
                   ),
                 );
               }
-              return _IncidentRecordCard(
-                entry: entries[index - 1],
-              );
+              return _IncidentRecordCard(entry: entries[index - 1]);
             },
           ),
         );
       },
-      ),
     );
   }
 }
@@ -102,19 +162,19 @@ class _IncidentRecordCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  record.summary,
-                  style: context.text.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    record.summary,
+                    style: context.text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-              PendingSyncBadge(rowId: record.id),
-            ],
-          ),
+                PendingSyncBadge(rowId: record.id),
+              ],
+            ),
             const SizedBox(height: 4),
             Text(
               '${entry.batchName ?? 'Batch'} · $date',
@@ -133,10 +193,7 @@ class _IncidentRecordCard extends ConsumerWidget {
                 runSpacing: 6,
                 children: [
                   for (final s in symptoms)
-                    Chip(
-                      label: Text(s),
-                      visualDensity: VisualDensity.compact,
-                    ),
+                    Chip(label: Text(s), visualDensity: VisualDensity.compact),
                 ],
               ),
             ],
@@ -186,10 +243,7 @@ class _IncidentRecordCard extends ConsumerWidget {
 }
 
 class _DraftVetRequestRow extends StatelessWidget {
-  const _DraftVetRequestRow({
-    required this.requestId,
-    required this.onPublish,
-  });
+  const _DraftVetRequestRow({required this.requestId, required this.onPublish});
 
   final String requestId;
   final VoidCallback onPublish;
@@ -312,8 +366,8 @@ class _VetRequestStatusRow extends StatelessWidget {
   }
 
   static String _serviceLabel(String type) => switch (type) {
-        'consultation' => 'Consultation',
-        'farm_visit' => 'Farm visit',
-        _ => 'Assistance',
-      };
+    'consultation' => 'Consultation',
+    'farm_visit' => 'Farm visit',
+    _ => 'Assistance',
+  };
 }

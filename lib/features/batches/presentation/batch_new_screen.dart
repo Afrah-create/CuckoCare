@@ -88,11 +88,11 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
             BatchWizardStep.farm => _farmStep(draft, ctrl),
             BatchWizardStep.details => _detailsStep(draft, ctrl, layout),
             BatchWizardStep.review => _reviewStep(
-                draft,
-                ctrl,
-                layout,
-                isDraftSchedule,
-              ),
+              draft,
+              ctrl,
+              layout,
+              isDraftSchedule,
+            ),
           };
 
           return Column(
@@ -124,10 +124,10 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
   }
 
   String _titleForStep(BatchWizardStep step) => switch (step) {
-        BatchWizardStep.farm => 'Name your farm',
-        BatchWizardStep.details => 'New batch',
-        BatchWizardStep.review => 'Review schedule',
-      };
+    BatchWizardStep.farm => 'Name your farm',
+    BatchWizardStep.details => 'New batch',
+    BatchWizardStep.review => 'Review schedule',
+  };
 
   Widget _farmStep(BatchNewState draft, BatchNewController ctrl) {
     return ContentFrame(
@@ -144,12 +144,15 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
             const SizedBox(height: AppSpacing.lg),
             AppTextField(
               controller: _farmNameController
-                ..text = draft.farmName.isEmpty ? _farmNameController.text : draft.farmName,
+                ..text = draft.farmName.isEmpty
+                    ? _farmNameController.text
+                    : draft.farmName,
               label: 'Farm name',
               leadingIcon: Icons.agriculture_outlined,
               exampleHint: 'e.g. Kira Poultry',
               textCapitalization: TextCapitalization.words,
-              onEditingComplete: () => ctrl.setFarmName(_farmNameController.text),
+              onEditingComplete: () =>
+                  ctrl.setFarmName(_farmNameController.text),
               validator: (v) =>
                   (v == null || v.trim().length < 2) ? 'Required' : null,
             ),
@@ -168,11 +171,15 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
       child: Form(
         key: _formKey,
         child: ListView(
-          padding: EdgeInsets.only(bottom: ContentFrame.scrollBottomInset(context)),
+          padding: EdgeInsets.only(
+            bottom: ContentFrame.scrollBottomInset(context),
+          ),
           children: [
             Text(
               'What kind of birds are you raising?',
-              style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              style: context.text.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             _SectionCard(
@@ -193,7 +200,7 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
                       label: const Text('Eggs'),
                       selected:
                           (draft.productionType ?? ProductionType.egg) ==
-                              ProductionType.egg,
+                          ProductionType.egg,
                       onSelected: (_) =>
                           ctrl.setProductionType(ProductionType.egg),
                     ),
@@ -210,8 +217,7 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
             if (draft.birdType == BirdType.local) ...[
               const SizedBox(height: AppSpacing.md),
               const _NoticePanel(
-                text:
-                    'Local breeds are not scheduled automatically yet. You can still register the flock and add reminders yourself.',
+                text: 'Local breeds are not scheduled automatically yet. You can still register the flock and add reminders yourself.',
               ),
             ],
             const SizedBox(height: AppSpacing.lg),
@@ -220,152 +226,166 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-            AppTextField(
-              controller: _nameController,
-              label: 'Batch name',
-              leadingIcon: Icons.label_outline,
-              textCapitalization: TextCapitalization.words,
-              onEditingComplete: () =>
-                  ctrl.updateDetails(name: _nameController.text),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            AppTextField(
-              controller: _countController,
-              label: 'Number of birds',
-              leadingIcon: Icons.numbers,
-              keyboardType: TextInputType.number,
-              onEditingComplete: () => ctrl.updateDetails(
-                initialCount: int.tryParse(_countController.text) ?? draft.initialCount,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Date you received the birds'),
-              subtitle: Text(
-                draft.acquiredOn == null
-                    ? 'Pick a date'
-                    : DateFormat.yMMMd().format(draft.acquiredOn!),
-              ),
-              trailing: const Icon(Icons.calendar_today_outlined),
-              onTap: () async {
-                final today = ref.read(kampalaTodayProvider);
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: draft.acquiredOn ?? today,
-                  firstDate: today.subtract(const Duration(days: 365 * 2)),
-                  lastDate: today,
-                );
-                if (picked != null) {
-                  ctrl.updateDetails(acquiredOn: picked);
-                }
-              },
-            ),
-            const Divider(height: AppSpacing.lg),
-            Text(
-              'Bird age (day 1 = hatch day)',
-              style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: AppSpacing.xs),
-            Wrap(
-              spacing: AppSpacing.xs,
-              runSpacing: AppSpacing.xs,
-              children: [1, 7, 14, 21, 28].map((age) {
-                final selected = !draft.useHatchDate && draft.ageAtAcquisition == age;
-                return FilterChip(
-                  label: Text('Day $age'),
-                  selected: selected,
-                  onSelected: (_) => ctrl.updateDetails(
-                    useHatchDate: false,
-                    ageAtAcquisition: age,
+                  AppTextField(
+                    controller: _nameController,
+                    label: 'Batch name',
+                    leadingIcon: Icons.label_outline,
+                    textCapitalization: TextCapitalization.words,
+                    onEditingComplete: () =>
+                        ctrl.updateDetails(name: _nameController.text),
                   ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              title: const Text('I know the hatch date'),
-              value: draft.useHatchDate,
-              onChanged: (v) => ctrl.updateDetails(useHatchDate: v ?? false),
-            ),
-            if (draft.useHatchDate)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Hatch date'),
-                subtitle: Text(
-                  draft.hatchDate == null
-                      ? 'Pick hatch date'
-                      : DateFormat.yMMMd().format(draft.hatchDate!),
-                ),
-                trailing: const Icon(Icons.cake_outlined),
-                onTap: () async {
-                  final today = ref.read(kampalaTodayProvider);
-                  final picked = await showDatePicker(
-                    context: context,
-                    initialDate: draft.hatchDate ?? today,
-                    firstDate: today.subtract(const Duration(days: 365 * 3)),
-                    lastDate: today,
-                  );
-                  if (picked != null) {
-                    ctrl.updateDetails(hatchDate: picked);
-                  }
-                },
-              )
-            else
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Age in days'),
-                subtitle: Slider(
-                  value: draft.ageAtAcquisition.clamp(1, 120).toDouble(),
-                  min: 1,
-                  max: 120,
-                  divisions: 119,
-                  label: 'Day ${draft.ageAtAcquisition}',
-                  onChanged: (v) => ctrl.updateDetails(
-                    ageAtAcquisition: v.round(),
-                  ),
-                ),
-              ),
-            if (draft.ageAtAcquisition > 1 &&
-                draft.birdType != BirdType.local) ...[
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                'Vaccinated at the hatchery?',
-                style: context.text.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: AppSpacing.xs),
-              Wrap(
-                spacing: AppSpacing.sm,
-                children: [
-                  ChoiceChip(
-                    label: const Text('Yes'),
-                    selected:
-                        draft.hatcheryAnswer == HatcheryVaccinationAnswer.yes,
-                    onSelected: (_) => ctrl.updateDetails(
-                      hatcheryAnswer: HatcheryVaccinationAnswer.yes,
+                  const SizedBox(height: AppSpacing.md),
+                  AppTextField(
+                    controller: _countController,
+                    label: 'Number of birds',
+                    leadingIcon: Icons.numbers,
+                    keyboardType: TextInputType.number,
+                    onEditingComplete: () => ctrl.updateDetails(
+                      initialCount:
+                          int.tryParse(_countController.text) ??
+                          draft.initialCount,
                     ),
                   ),
-                  ChoiceChip(
-                    label: const Text('No'),
-                    selected:
-                        draft.hatcheryAnswer == HatcheryVaccinationAnswer.no,
-                    onSelected: (_) => ctrl.updateDetails(
-                      hatcheryAnswer: HatcheryVaccinationAnswer.no,
+                  const SizedBox(height: AppSpacing.md),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Date you received the birds'),
+                    subtitle: Text(
+                      draft.acquiredOn == null
+                          ? 'Pick a date'
+                          : DateFormat.yMMMd().format(draft.acquiredOn!),
+                    ),
+                    trailing: const Icon(Icons.calendar_today_outlined),
+                    onTap: () async {
+                      final today = ref.read(kampalaTodayProvider);
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: draft.acquiredOn ?? today,
+                        firstDate: today.subtract(
+                          const Duration(days: 365 * 2),
+                        ),
+                        lastDate: today,
+                      );
+                      if (picked != null) {
+                        ctrl.updateDetails(acquiredOn: picked);
+                      }
+                    },
+                  ),
+                  const Divider(height: AppSpacing.lg),
+                  Text(
+                    'Bird age (day 1 = hatch day)',
+                    style: context.text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  ChoiceChip(
-                    label: const Text('Not sure'),
-                    selected: draft.hatcheryAnswer ==
-                        HatcheryVaccinationAnswer.notSure,
-                    onSelected: (_) => ctrl.updateDetails(
-                      hatcheryAnswer: HatcheryVaccinationAnswer.notSure,
-                    ),
+                  const SizedBox(height: AppSpacing.xs),
+                  Wrap(
+                    spacing: AppSpacing.xs,
+                    runSpacing: AppSpacing.xs,
+                    children: [1, 7, 14, 21, 28].map((age) {
+                      final selected =
+                          !draft.useHatchDate && draft.ageAtAcquisition == age;
+                      return FilterChip(
+                        label: Text('Day $age'),
+                        selected: selected,
+                        onSelected: (_) => ctrl.updateDetails(
+                          useHatchDate: false,
+                          ageAtAcquisition: age,
+                        ),
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
-            ],
+                  const SizedBox(height: AppSpacing.sm),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: const Text('I know the hatch date'),
+                    value: draft.useHatchDate,
+                    onChanged: (v) =>
+                        ctrl.updateDetails(useHatchDate: v ?? false),
+                  ),
+                  if (draft.useHatchDate)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Hatch date'),
+                      subtitle: Text(
+                        draft.hatchDate == null
+                            ? 'Pick hatch date'
+                            : DateFormat.yMMMd().format(draft.hatchDate!),
+                      ),
+                      trailing: const Icon(Icons.cake_outlined),
+                      onTap: () async {
+                        final today = ref.read(kampalaTodayProvider);
+                        final picked = await showDatePicker(
+                          context: context,
+                          initialDate: draft.hatchDate ?? today,
+                          firstDate: today.subtract(
+                            const Duration(days: 365 * 3),
+                          ),
+                          lastDate: today,
+                        );
+                        if (picked != null) {
+                          ctrl.updateDetails(hatchDate: picked);
+                        }
+                      },
+                    )
+                  else
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('Age in days'),
+                      subtitle: Slider(
+                        value: draft.ageAtAcquisition.clamp(1, 120).toDouble(),
+                        min: 1,
+                        max: 120,
+                        divisions: 119,
+                        label: 'Day ${draft.ageAtAcquisition}',
+                        onChanged: (v) =>
+                            ctrl.updateDetails(ageAtAcquisition: v.round()),
+                      ),
+                    ),
+                  if (draft.ageAtAcquisition > 1 &&
+                      draft.birdType != BirdType.local) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Vaccinated at the hatchery?',
+                      style: context.text.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      children: [
+                        ChoiceChip(
+                          label: const Text('Yes'),
+                          selected:
+                              draft.hatcheryAnswer ==
+                              HatcheryVaccinationAnswer.yes,
+                          onSelected: (_) => ctrl.updateDetails(
+                            hatcheryAnswer: HatcheryVaccinationAnswer.yes,
+                          ),
+                        ),
+                        ChoiceChip(
+                          label: const Text('No'),
+                          selected:
+                              draft.hatcheryAnswer ==
+                              HatcheryVaccinationAnswer.no,
+                          onSelected: (_) => ctrl.updateDetails(
+                            hatcheryAnswer: HatcheryVaccinationAnswer.no,
+                          ),
+                        ),
+                        ChoiceChip(
+                          label: const Text('Not sure'),
+                          selected:
+                              draft.hatcheryAnswer ==
+                              HatcheryVaccinationAnswer.notSure,
+                          onSelected: (_) => ctrl.updateDetails(
+                            hatcheryAnswer: HatcheryVaccinationAnswer.notSure,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -413,14 +433,12 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
         const SizedBox(height: AppSpacing.md),
         if (isDraftSchedule) ...[
           const _NoticePanel(
-            text:
-                'This schedule is still in draft. Check with your vet before relying on it.',
+            text: 'This schedule is still in draft. Check with your vet before relying on it.',
           ),
           const SizedBox(height: AppSpacing.sm),
         ],
         const _NoticePanel(
-          text:
-              'This app gives guidance only. Always confirm vaccines and timing with a vet or poultry specialist.',
+          text: 'This app gives guidance only. Always confirm vaccines and timing with a vet or poultry specialist.',
         ),
         const SizedBox(height: AppSpacing.md),
         _SectionCard(
@@ -469,7 +487,9 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
         const SizedBox(height: AppSpacing.md),
         Text(
           'Upcoming tasks',
-          style: context.text.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+          style: context.text.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: AppSpacing.sm),
         timeline,
@@ -478,7 +498,8 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
   }
 
   Widget _bottomBar(BatchNewState draft, BatchNewController ctrl) {
-    final showBack = draft.wizardStep != BatchWizardStep.farm &&
+    final showBack =
+        draft.wizardStep != BatchWizardStep.farm &&
         !(draft.wizardStep == BatchWizardStep.details && !draft.needsFarmStep);
     // bottomNavigationBar can receive unbounded max width on some devices.
     final barWidth = context.layout.size.width;
@@ -528,10 +549,10 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
   }
 
   String _primaryLabel(BatchNewState draft) => switch (draft.wizardStep) {
-        BatchWizardStep.farm => 'Continue',
-        BatchWizardStep.details => 'Preview schedule',
-        BatchWizardStep.review => 'Create batch',
-      };
+    BatchWizardStep.farm => 'Continue',
+    BatchWizardStep.details => 'Preview schedule',
+    BatchWizardStep.review => 'Create batch',
+  };
 
   Future<void> _onPrimary(BatchNewState draft, BatchNewController ctrl) async {
     switch (draft.wizardStep) {
@@ -544,7 +565,8 @@ class _BatchNewScreenState extends ConsumerState<BatchNewScreen> {
       case BatchWizardStep.details:
         ctrl.updateDetails(
           name: _nameController.text,
-          initialCount: int.tryParse(_countController.text) ?? draft.initialCount,
+          initialCount:
+              int.tryParse(_countController.text) ?? draft.initialCount,
           sourceName: _sourceController.text,
           notes: _notesController.text,
         );
@@ -577,8 +599,8 @@ class _WizardStepBar extends StatelessWidget {
     final index = showFarmStep
         ? step.index
         : step == BatchWizardStep.review
-            ? 1
-            : 0;
+        ? 1
+        : 0;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -833,16 +855,16 @@ class _SchedulePreview extends StatelessWidget {
   }
 
   IconData _iconFor(PlannedTaskStatus status) => switch (status) {
-        PlannedTaskStatus.done => Icons.check_circle_outline,
-        PlannedTaskStatus.skipped => Icons.block,
-        PlannedTaskStatus.assumedDone => Icons.help_outline,
-        PlannedTaskStatus.pending => Icons.event_outlined,
-      };
+    PlannedTaskStatus.done => Icons.check_circle_outline,
+    PlannedTaskStatus.skipped => Icons.block,
+    PlannedTaskStatus.assumedDone => Icons.help_outline,
+    PlannedTaskStatus.pending => Icons.event_outlined,
+  };
 
   String _statusLabel(PlannedTaskStatus status) => switch (status) {
-        PlannedTaskStatus.done => 'Done',
-        PlannedTaskStatus.skipped => 'Skipped',
-        PlannedTaskStatus.assumedDone => 'Confirm later',
-        PlannedTaskStatus.pending => 'Scheduled',
-      };
+    PlannedTaskStatus.done => 'Done',
+    PlannedTaskStatus.skipped => 'Skipped',
+    PlannedTaskStatus.assumedDone => 'Confirm later',
+    PlannedTaskStatus.pending => 'Scheduled',
+  };
 }

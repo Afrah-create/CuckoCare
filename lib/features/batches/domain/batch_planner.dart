@@ -189,23 +189,24 @@ class BatchPlanner {
 
     final withCollisions = _applyCollisions(drafts, options.collisionPolicy);
 
-    final tasks = withCollisions
-        .map(
-          (d) => PlannedTask(
-            id: _taskId(input.batchId, d.stepId, d.occurrence),
-            stepId: d.stepId,
-            occurrence: d.occurrence,
-            dueOn: d.dueOn,
-            originalDueOn: d.originalDueOn,
-            status: d.status,
-            enabled: d.enabled,
-            category: d.category,
-            location: d.location,
-            stepSnapshotJson: d.snapshotJson,
-          ),
-        )
-        .toList()
-      ..sort((a, b) => a.dueOn.compareTo(b.dueOn));
+    final tasks =
+        withCollisions
+            .map(
+              (d) => PlannedTask(
+                id: _taskId(input.batchId, d.stepId, d.occurrence),
+                stepId: d.stepId,
+                occurrence: d.occurrence,
+                dueOn: d.dueOn,
+                originalDueOn: d.originalDueOn,
+                status: d.status,
+                enabled: d.enabled,
+                category: d.category,
+                location: d.location,
+                stepSnapshotJson: d.snapshotJson,
+              ),
+            )
+            .toList()
+          ..sort((a, b) => a.dueOn.compareTo(b.dueOn));
 
     return BatchPlan(
       programmeKey: programmeKey,
@@ -331,7 +332,8 @@ class BatchPlanner {
             final strains = rule.alternateIbStrain;
             if (strains.length >= 2) {
               final startIndex = lastIbStrain == strains[0] ? 1 : 0;
-              chosenStrain = strains[(startIndex + occurrence) % strains.length];
+              chosenStrain =
+                  strains[(startIndex + occurrence) % strains.length];
             }
 
             out.add(

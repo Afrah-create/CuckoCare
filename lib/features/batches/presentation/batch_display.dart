@@ -1,6 +1,5 @@
 import '../../../data_platform/db/app_database.dart';
 import '../data/schedule_dates.dart';
-import '../domain/batch_planner.dart';
 import '../domain/calendar_date.dart';
 import '../domain/hatch_date.dart';
 import '../domain/programme_catalog.dart';
@@ -23,12 +22,12 @@ String batchAgeLabel(BatchRow batch, DateTime todayLocal) {
 }
 
 String birdTypeLabel(String birdType) => switch (birdType) {
-      'broiler' => 'Broiler',
-      'layer' => 'Layer',
-      'dualPurpose' => 'Dual-purpose',
-      'local' => 'Local / indigenous',
-      _ => birdType,
-    };
+  'broiler' => 'Broiler',
+  'layer' => 'Layer',
+  'dualPurpose' => 'Dual-purpose',
+  'local' => 'Local / indigenous',
+  _ => birdType,
+};
 
 const _defaultDueWindow = DueWindowConvention(
   defaultDaysBefore: 2,
@@ -48,13 +47,13 @@ TaskUiState taskUiStateFor(VaccinationTaskRow task, DateTime todayLocal) {
 }
 
 String taskUiStateLabel(TaskUiState state) => switch (state) {
-      TaskUiState.upcoming => 'Upcoming',
-      TaskUiState.dueSoon => 'Due soon',
-      TaskUiState.dueToday => 'Due today',
-      TaskUiState.overdueGentle => 'Overdue',
-      TaskUiState.overdueUrgent => 'Overdue',
-      TaskUiState.done => 'Done',
-      TaskUiState.skipped => 'Skipped',
-      TaskUiState.needsConfirmation => 'Confirm',
-      TaskUiState.disabled => 'Off',
-    };
+  TaskUiState.upcoming => 'Upcoming',
+  TaskUiState.dueSoon => 'Due soon',
+  TaskUiState.dueToday => 'Due today',
+  TaskUiState.overdueGentle => 'Overdue',
+  TaskUiState.overdueUrgent => 'Overdue',
+  TaskUiState.done => 'Done',
+  TaskUiState.skipped => 'Skipped',
+  TaskUiState.needsConfirmation => 'Confirm',
+  TaskUiState.disabled => 'Off',
+};

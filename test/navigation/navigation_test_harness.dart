@@ -4,7 +4,6 @@ import 'package:cucocare/app/layout/layout_scope.dart';
 import 'package:cucocare/app/router/app_router.dart';
 import 'package:cucocare/app/l10n/app_localizations.dart';
 import 'package:cucocare/app/theme/app_theme.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:cucocare/core/config/env.dart';
 import 'package:cucocare/data_platform/db/app_database.dart';
 import 'package:flutter/material.dart';
