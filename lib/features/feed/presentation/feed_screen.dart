@@ -694,8 +694,7 @@ class _ReportTabState extends ConsumerState<_ReportTab>
     super.build(context);
     return switch (_loadState) {
       _ReportIdle() => const SizedBox.shrink(),
-      _ReportLoading() =>
-        const Center(child: CircularProgressIndicator()),
+      _ReportLoading() => const ListSkeleton(),
       _ReportError(:final message) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -917,7 +916,7 @@ class _ReportBody extends StatelessWidget {
                   width: 18,
                   height: 18,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.white))
+                      strokeWidth: 2))
               : const Icon(Icons.download_outlined),
           label: Text(exporting ? 'Preparing…' : 'Download / Share CSV'),
         ),

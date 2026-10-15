@@ -8,6 +8,7 @@ import '../../../app/layout/app_page.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/states/screen_skeletons.dart';
 import '../data/feed_report_generator.dart';
 import '../domain/feed_models.dart';
 
@@ -115,7 +116,7 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
                 ),
       ],
       body: switch (_state) {
-        _Loading() => const Center(child: CircularProgressIndicator()),
+        _Loading() => const ListSkeleton(),
         _Error(:final message) => Center(
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
@@ -287,7 +288,6 @@ class _ReportPreview extends ConsumerWidget {
                   height: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
                   ),
                 )
               : const Icon(Icons.download_outlined),

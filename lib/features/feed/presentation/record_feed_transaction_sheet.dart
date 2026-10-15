@@ -52,8 +52,12 @@ class _RecordFeedTransactionSheetState
     super.dispose();
   }
 
+  // For adjustment, the user flips this toggle to record a stock-out correction.
+  bool _adjustmentIsNegative = false;
+
   bool get _isValid {
     final qty = double.tryParse(_quantityCtrl.text.trim()) ?? 0;
+    if (_kind == FeedTransactionKind.adjustment) return qty != 0;
     return qty > 0;
   }
 
@@ -64,11 +68,19 @@ class _RecordFeedTransactionSheetState
       return false;
     }
 
-    final qty = double.tryParse(_quantityCtrl.text.trim());
-    if (qty == null || qty <= 0) {
+    final rawQty = double.tryParse(_quantityCtrl.text.trim());
+    if (rawQty == null || rawQty == 0) {
+      AppSnack.error(context, 'Enter a non-zero quantity.');
+      return false;
+    }
+    if (_kind != FeedTransactionKind.adjustment && rawQty <= 0) {
       AppSnack.error(context, 'Enter a valid quantity greater than zero.');
       return false;
     }
+    // For adjustment: apply sign from toggle. Absolute value is what the user typed.
+    final qty = _kind == FeedTransactionKind.adjustment
+        ? (_adjustmentIsNegative ? -rawQty.abs() : rawQty.abs())
+        : rawQty;
 
     final today = ref.read(kampalaTodayProvider);
     final occurredOn = _date ??
@@ -84,6 +96,7 @@ class _RecordFeedTransactionSheetState
           : null,
       unitCost: double.tryParse(_unitCostCtrl.text.trim()),
     );
+
 
     try {
       await ref.read(feedRepositoryProvider).recordTransaction(
@@ -200,7 +213,13 @@ class _RecordFeedTransactionSheetState
                           ),
                           selected: _kind == k,
                           onSelected: (_) =>
-                              setState(() => _kind = k),
+                              setState(() {
+                                _kind = k;
+                                // Reset adjustment direction on kind switch.
+                                if (k != FeedTransactionKind.adjustment) {
+                                  _adjustmentIsNegative = false;
+                                }
+                              }),
                         );
                       }).toList(),
                     ),
@@ -217,11 +236,42 @@ class _RecordFeedTransactionSheetState
                         ),
                       ],
                       decoration: InputDecoration(
-                        labelText: 'Quantity *',
+                        labelText: _kind == FeedTransactionKind.adjustment
+                            ? 'Amount *'
+                            : 'Quantity *',
                         suffixText: widget.feedItem.unit,
                       ),
                       onChanged: (_) => setState(() {}),
                     ),
+                    // Adjustment direction toggle
+                    if (_kind == FeedTransactionKind.adjustment) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      _SectionLabel('Direction'),
+                      const SizedBox(height: AppSpacing.xs),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _DirectionButton(
+                              label: '+ Stock in',
+                              icon: Icons.add_circle_outline,
+                              selected: !_adjustmentIsNegative,
+                              onTap: () =>
+                                  setState(() => _adjustmentIsNegative = false),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.xs),
+                          Expanded(
+                            child: _DirectionButton(
+                              label: '− Stock out',
+                              icon: Icons.remove_circle_outline,
+                              selected: _adjustmentIsNegative,
+                              onTap: () =>
+                                  setState(() => _adjustmentIsNegative = true),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.md),
                     // Unit cost (purchase only)
                     if (_kind == FeedTransactionKind.purchase) ...[
@@ -434,6 +484,68 @@ class _SectionLabel extends StatelessWidget {
       text,
       style: context.text.labelMedium?.copyWith(
         color: context.scheme.onSurfaceVariant,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// A selectable direction button used for the adjustment kind toggle.
+class _DirectionButton extends StatelessWidget {
+  const _DirectionButton({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = context.scheme;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        decoration: BoxDecoration(
+          color: selected
+              ? scheme.secondaryContainer
+              : scheme.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+          border: Border.all(
+            color: selected ? scheme.secondary : scheme.outlineVariant,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: selected ? scheme.onSecondaryContainer : scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.xxs),
+            Text(
+              label,
+              style: context.text.labelMedium?.copyWith(
+                color: selected
+                    ? scheme.onSecondaryContainer
+                    : scheme.onSurfaceVariant,
+                fontWeight:
+                    selected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
