@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../../core/error/result.dart';
 import '../supabase/supabase_bootstrap.dart';
 import 'remote_sync_api.dart';
@@ -152,6 +154,10 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
     );
   }
 
+  @visibleForTesting
+  SyncPushResponse parsePushResponseForTest(Map<String, dynamic> raw) =>
+      _parsePushResponse(raw);
+
   SyncPushResponse _parsePushResponse(Map<String, dynamic> raw) {
     if (raw.containsKey('error')) {
       throw SyncRejected(raw['error'] as String? ?? 'rejected');
@@ -168,6 +174,7 @@ class SupabaseRemoteSyncApi implements RemoteSyncApi {
                 : Map<String, dynamic>.from(r['row'] as Map),
             errorCode: r['error_code'] as String?,
             retryable: r['retryable'] as bool? ?? false,
+            isDuplicate: r['duplicate'] as bool? ?? false,
           ),
         )
         .toList();

@@ -8,7 +8,6 @@ import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/progress_button.dart';
 import '../../../core/logging/app_logger.dart';
-import '../../../data_platform/db/app_database.dart';
 import '../domain/feed_models.dart';
 
 /// Bottom sheet for creating or editing a feed item.
@@ -16,12 +15,12 @@ class FeedItemFormSheet extends ConsumerStatefulWidget {
   const FeedItemFormSheet({this.existing, super.key});
 
   /// Null when creating a new item.
-  final FeedItemRow? existing;
+  final FeedItem? existing;
 
   static Future<void> show(
     BuildContext context,
     WidgetRef ref, {
-    FeedItemRow? existing,
+    FeedItem? existing,
   }) async {
     await showModalBottomSheet<void>(
       context: context,

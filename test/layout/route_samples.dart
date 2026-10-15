@@ -10,6 +10,7 @@ PageLayout presetForRoute(String path) {
     '/batches/:batchId' ||
     '/batches/:batchId/vaccinations/:taskId' ||
     '/batches/:batchId/losses' ||
+    '/feed/:feedItemId' ||
     '/vet/incident' =>
       PageLayout.reading,
     '/auth/login' ||
@@ -43,6 +44,7 @@ const routeSamplePaths = <String>{
   '/batches/:batchId/losses/:lossId',
   '/batches/new',
   '/feed',
+  '/feed/:feedItemId',
   '/more',
   '/more/farm',
   '/more/settings/notifications',

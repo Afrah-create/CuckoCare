@@ -1,4 +1,6 @@
-import 'package:drift/drift.dart';import '../../../core/time/clock.dart';
+import 'package:drift/drift.dart';
+
+import '../../../core/time/clock.dart';
 import '../../../core/utils/uuid_v7.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/db/synced_write.dart';
@@ -6,30 +8,9 @@ import '../domain/feed_models.dart';
 import 'feed_item_synced_table.dart';
 import 'feed_transaction_synced_table.dart';
 
-/// Combines a FeedItemRow with its derived stock quantity.
-class FeedStockRow {
-  const FeedStockRow({
-    required this.item,
-    required this.currentQuantity,
-    required this.lastTransactionOn,
-  });
-
-  final FeedItemRow item;
-
-  /// Net quantity on hand, derived from transactions (never stored).
-  final double currentQuantity;
-
-  /// Date of the most recent transaction, null if no transactions yet.
-  final DateTime? lastTransactionOn;
-
-  bool get isBelowReorderLevel {
-    final level = item.reorderLevel;
-    if (level == null) return false;
-    return currentQuantity <= level;
-  }
-
-  bool get isOutOfStock => currentQuantity <= 0;
-}
+/// Backward-compatibility alias — callers that reference [FeedStockRow]
+/// continue to compile while the codebase migrates to [FeedMetrics].
+typedef FeedStockRow = FeedMetrics;
 
 class FeedRepository {
   FeedRepository(
@@ -56,12 +37,12 @@ class FeedRepository {
 
   /// Live stock levels for all items on the farm. Stock is derived from
   /// transactions in Dart — no complex SQL type mapping needed.
-  Stream<List<FeedStockRow>> watchStockLevelsCombined(String farmId) {
+  Stream<List<FeedMetrics>> watchStockLevelsCombined(String farmId) {
     final itemsStream = watchFeedItems(farmId);
 
     return itemsStream.asyncExpand((items) {
       if (items.isEmpty) {
-        return Stream.value(const <FeedStockRow>[]);
+        return Stream.value(const <FeedMetrics>[]);
       }
       return _watchTransactionsForFarm(farmId).map(
         (transactions) => _computeStockRows(items, transactions),
@@ -82,36 +63,42 @@ class FeedRepository {
   Stream<List<FeedTransactionRow>> watchAllTransactions(String farmId) =>
       _watchTransactionsForFarm(farmId);
 
-  List<FeedStockRow> _computeStockRows(
+  /// Converts a [FeedItemRow] from Drift into a pure domain [FeedItem].
+  FeedItem _rowToItem(FeedItemRow row) => FeedItem(
+        id: row.id,
+        farmId: row.farmId,
+        name: row.name,
+        feedType: row.feedType,
+        unit: row.unit,
+        reorderLevel: row.reorderLevel,
+      );
+
+  /// Converts a [FeedTransactionRow] from Drift into a pure domain [FeedTransaction].
+  FeedTransaction _rowToTransaction(FeedTransactionRow row) => FeedTransaction(
+        id: row.id,
+        farmId: row.farmId,
+        feedItemId: row.feedItemId,
+        kind: FeedTransactionKind.fromStorage(row.kind),
+        quantity: row.quantity,
+        occurredOn: row.occurredOn,
+        batchId: row.batchId,
+        unitCost: row.unitCost,
+      );
+
+  List<FeedMetrics> _computeStockRows(
     List<FeedItemRow> items,
     List<FeedTransactionRow> transactions,
   ) {
-    // Group transactions by feedItemId.
-    final byItem = <String, List<FeedTransactionRow>>{};
+    // Group domain transactions by feedItemId.
+    final byItem = <String, List<FeedTransaction>>{};
     for (final tx in transactions) {
-      byItem.putIfAbsent(tx.feedItemId, () => []).add(tx);
+      byItem.putIfAbsent(tx.feedItemId, () => []).add(_rowToTransaction(tx));
     }
 
-    return items.map((item) {
-      final txs = byItem[item.id] ?? const [];
-      var qty = 0.0;
-      DateTime? lastOn;
-      for (final tx in txs) {
-        final kind = FeedTransactionKind.fromStorage(tx.kind);
-        if (kind.isPositive) {
-          qty += tx.quantity;
-        } else {
-          qty -= tx.quantity;
-        }
-        if (lastOn == null || tx.occurredOn.isAfter(lastOn)) {
-          lastOn = tx.occurredOn;
-        }
-      }
-      return FeedStockRow(
-        item: item,
-        currentQuantity: qty,
-        lastTransactionOn: lastOn,
-      );
+    return items.map((itemRow) {
+      final domainItem = _rowToItem(itemRow);
+      final txs = byItem[itemRow.id] ?? const [];
+      return FeedMetrics.compute(domainItem, txs);
     }).toList();
   }
 
@@ -195,12 +182,21 @@ class FeedRepository {
   }
 
   /// Updates an existing feed item's catalogue details.
-  Future<FeedItemRow> updateFeedItem({
-    required FeedItemRow existing,
+  ///
+  /// Accepts a domain [FeedItem]; the row is loaded internally to perform
+  /// the update with Drift's copy-with semantics.
+  Future<FeedItem> updateFeedItem({
+    required FeedItem existing,
     required FeedItemInput input,
   }) async {
+    final row = await (_db.select(_db.feedItems)
+          ..where((f) => f.id.equals(existing.id)))
+        .getSingleOrNull();
+    if (row == null) {
+      throw StateError('Feed item ${existing.id} not found in local DB');
+    }
     final now = _clock.now();
-    final updated = existing.copyWith(
+    final updated = row.copyWith(
       updatedAt: now,
       name: input.name.trim(),
       feedType: input.feedType,
@@ -216,14 +212,20 @@ class FeedRepository {
       op: 'upsert',
       payload: _itemMapper.toPayload(updated),
     );
-    return updated;
+    return _rowToItem(updated);
   }
 
   /// Soft-deletes a feed item (sets deletedAt). The transactions remain for
   /// historical stock accuracy.
-  Future<void> deleteFeedItem(FeedItemRow existing) async {
+  ///
+  /// Accepts a domain [FeedItem]; the row is loaded internally.
+  Future<void> deleteFeedItem(FeedItem existing) async {
+    final row = await (_db.select(_db.feedItems)
+          ..where((f) => f.id.equals(existing.id)))
+        .getSingleOrNull();
+    if (row == null) return; // already gone — treat as no-op
     final now = _clock.now();
-    final deleted = existing.copyWith(
+    final deleted = row.copyWith(
       updatedAt: now,
       deletedAt: Value(now),
     );
@@ -238,13 +240,27 @@ class FeedRepository {
     );
   }
 
+  // ── Backward-compat: some callers still pass FeedItemRow directly. ────────
+
+  /// Updates an existing feed item using a Drift row reference.
+  @Deprecated('Pass FeedItem domain object instead')
+  Future<FeedItem> updateFeedItemRow({
+    required FeedItemRow existing,
+    required FeedItemInput input,
+  }) => updateFeedItem(existing: _rowToItem(existing), input: input);
+
+  /// Soft-deletes a feed item using a Drift row reference.
+  @Deprecated('Pass FeedItem domain object instead')
+  Future<void> deleteFeedItemRow(FeedItemRow existing) =>
+      deleteFeedItem(_rowToItem(existing));
+
   /// Records a feed transaction (purchase / consumption / etc.).
   /// Append-only — never updates existing rows (arch rule 6).
   Future<FeedTransactionRow> recordTransaction({
     required String farmId,
     required FeedTransactionInput input,
   }) async {
-    _assertValidQuantity(input.quantity);
+    _assertValidQuantity(input.kind, input.quantity);
     final now = _clock.now();
     final id = newId();
     final occurredOnDay = DateTime.utc(
@@ -289,13 +305,27 @@ class FeedRepository {
     return row;
   }
 
-  static void _assertValidQuantity(double quantity) {
-    if (quantity <= 0) {
-      throw ArgumentError.value(
-        quantity,
-        'quantity',
-        'Quantity must be greater than zero',
-      );
+  /// Validates the quantity for a given transaction kind.
+  ///
+  /// * Adjustments: quantity must be non-zero (positive or negative allowed).
+  /// * All other kinds: quantity must be strictly positive.
+  static void _assertValidQuantity(FeedTransactionKind kind, double quantity) {
+    if (kind == FeedTransactionKind.adjustment) {
+      if (quantity == 0) {
+        throw ArgumentError.value(
+          quantity,
+          'quantity',
+          'Adjustment quantity must be non-zero',
+        );
+      }
+    } else {
+      if (quantity <= 0) {
+        throw ArgumentError.value(
+          quantity,
+          'quantity',
+          'Quantity must be greater than zero',
+        );
+      }
     }
   }
 }

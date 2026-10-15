@@ -10,7 +10,6 @@ import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/empty_state.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../data_platform/db/app_database.dart';
-import '../data/feed_repository.dart';
 import '../domain/feed_models.dart';
 import 'feed_item_form_sheet.dart';
 import 'feed_providers.dart';
@@ -33,41 +32,25 @@ class FeedItemDetailScreen extends ConsumerWidget {
     );
     final stockAsync = ref.watch(feedStockProvider);
 
-    final stock = stockAsync.value?.firstWhere(
-      (s) => s.item.id == feedItemId,
-      orElse: () => FeedStockRow(
-        item: FeedItemRow(
-          id: feedItemId,
-          farmId: '',
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          deletedAt: null,
-          serverVersion: null,
-          name: '',
-          feedType: '',
-          unit: '',
-          reorderLevel: null,
-        ),
-        currentQuantity: 0,
-        lastTransactionOn: null,
-      ),
+    final stock = stockAsync.value?.firstWhereOrNull(
+      (s) => s.feedItem.id == feedItemId,
     );
 
     return AppPage(
-      title: stock?.item.name ?? 'Feed item',
+      title: stock?.feedItem.name ?? 'Feed item',
       actions: [
         if (stock != null)
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: 'Edit',
             onPressed: () =>
-                FeedItemFormSheet.show(context, ref, existing: stock.item),
+                FeedItemFormSheet.show(context, ref, existing: stock.feedItem),
           ),
         if (stock != null)
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Delete',
-            onPressed: () => _confirmDelete(context, ref, stock.item),
+            onPressed: () => _confirmDelete(context, ref, stock.feedItem),
           ),
       ],
       floatingActionButton: stock != null
@@ -76,7 +59,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
               onPressed: () => RecordFeedTransactionSheet.show(
                 context,
                 ref,
-                feedItem: stock.item,
+                feedItem: stock.feedItem,
               ),
               icon: const Icon(Icons.add),
               label: const Text('Record'),
@@ -103,7 +86,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
                         : () => RecordFeedTransactionSheet.show(
                               context,
                               ref,
-                              feedItem: stock.item,
+                              feedItem: stock.feedItem,
                             ),
                   );
                 }
@@ -119,7 +102,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
                       const SizedBox(height: AppSpacing.xs),
                   itemBuilder: (context, i) => _TransactionTile(
                     tx: transactions[i],
-                    unit: stock?.item.unit ?? '',
+                    unit: stock?.feedItem.unit ?? '',
                   ),
                 );
               },
@@ -133,7 +116,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
   Future<void> _confirmDelete(
     BuildContext context,
     WidgetRef ref,
-    FeedItemRow item,
+    FeedItem item,
   ) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -175,7 +158,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
 class _StockSummaryCard extends StatelessWidget {
   const _StockSummaryCard({required this.stock});
 
-  final FeedStockRow stock;
+  final FeedMetrics stock;
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +167,7 @@ class _StockSummaryCard extends StatelessWidget {
     final qty = stock.currentQuantity;
     final label =
         '${qty.toStringAsFixed(qty.truncateToDouble() == qty ? 0 : 1)} '
-        '${stock.item.unit}';
+        '${stock.feedItem.unit}';
 
     final statusColor = stock.isOutOfStock
         ? scheme.error
@@ -226,10 +209,17 @@ class _StockSummaryCard extends StatelessWidget {
                       color: statusColor,
                     ),
                   ),
+                if (stock.isInconsistent)
+                  Text(
+                    'Please review — ledger inconsistency detected',
+                    style: context.text.labelSmall?.copyWith(
+                      color: scheme.error,
+                    ),
+                  ),
               ],
             ),
           ),
-          if (stock.item.reorderLevel != null)
+          if (stock.feedItem.reorderLevel != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -240,7 +230,7 @@ class _StockSummaryCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${_fmt(stock.item.reorderLevel!)} ${stock.item.unit}',
+                  '${_fmt(stock.feedItem.reorderLevel!)} ${stock.feedItem.unit}',
                   style: context.text.labelMedium,
                 ),
               ],
@@ -265,7 +255,7 @@ class _TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kind = FeedTransactionKind.fromStorage(tx.kind);
-    final isPositive = kind.isPositive;
+    final isPositive = kind.stockSign > 0;
     final colors = context.colors;
     final scheme = context.scheme;
 
@@ -344,4 +334,13 @@ class _TransactionTile extends StatelessWidget {
 
   static String _formatDate(DateTime d) =>
       '${d.day}/${d.month}/${d.year}';
+}
+
+extension<T> on List<T> {
+  T? firstWhereOrNull(bool Function(T) test) {
+    for (final element in this) {
+      if (test(element)) return element;
+    }
+    return null;
+  }
 }

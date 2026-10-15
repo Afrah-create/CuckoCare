@@ -13,6 +13,7 @@ import '../../../features/batches/presentation/batch_new_screen.dart';
 import '../../../features/batches/presentation/batch_vaccination_task_screen.dart';
 import '../../../features/batches/presentation/loss_form_screen.dart';
 import '../../../features/batches/presentation/losses_screen.dart';
+import '../../../features/feed/presentation/feed_item_detail_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
 import '../../../features/notifications/presentation/notifications_settings_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
@@ -196,4 +197,17 @@ class NotificationsSettingsRoute extends GoRouteData
         preset: PageLayout.form,
         child: const NotificationsSettingsScreen(),
       );
+}
+
+@TypedGoRoute<FeedItemDetailRoute>(path: '/feed/:feedItemId')
+class FeedItemDetailRoute extends GoRouteData with $FeedItemDetailRoute {
+  const FeedItemDetailRoute({required this.feedItemId});
+
+  final String feedItemId;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      FeedItemDetailScreen(feedItemId: feedItemId);
 }

@@ -6,6 +6,8 @@ import 'synced_table.dart';
 import '../../features/batches/data/batch_synced_table.dart';
 import '../../features/batches/data/loss_synced_table.dart';
 import '../../features/farms/data/farm_synced_table.dart';
+import '../../features/feed/data/feed_item_synced_table.dart';
+import '../../features/feed/data/feed_transaction_synced_table.dart';
 import '../../features/health/data/health_record_synced_table.dart';
 import '../../features/health/data/vet_assistance_request_synced_table.dart';
 import '../../features/vaccination/data/vaccination_task_synced_table.dart';
@@ -29,6 +31,8 @@ class SyncApply {
   final _health = HealthRecordSyncedTable();
   final _vetRequests = VetAssistanceRequestSyncedTable();
   final _farms = FarmSyncedTable();
+  final _feedItems = FeedItemSyncedTable();
+  final _feedTransactions = FeedTransactionSyncedTable();
 
   Future<void> applyPullPage(List<SyncPullRow> rows) async {
     await _db.customStatement('PRAGMA defer_foreign_keys = ON');
@@ -71,6 +75,8 @@ class SyncApply {
         'health_records' => _health,
         'vet_assistance_requests' => _vetRequests,
         'farms' => _farms,
+        'feed_items' => _feedItems,
+        'feed_transactions' => _feedTransactions,
         _ => null,
       };
 
@@ -397,6 +403,47 @@ class SyncApply {
             ),
           );
     }
+
+    if (mapper.tableName == 'feed_items') {
+      final local = await (_db.select(_db.feedItems)
+            ..where((b) => b.id.equals(id)))
+          .getSingleOrNull();
+      final row = incoming as FeedItemRow;
+      if (local != null &&
+          !shouldApplyRemoteVersion(
+            localServerVersion: local.serverVersion,
+            localUpdatedAt: local.updatedAt,
+            incomingServerVersion: incomingVersion,
+            incomingUpdatedAt: row.updatedAt,
+          )) {
+        return;
+      }
+      await _db.into(_db.feedItems).insertOnConflictUpdate(
+            FeedItemsCompanion(
+              id: Value(row.id),
+              farmId: Value(row.farmId),
+              createdAt: Value(row.createdAt),
+              updatedAt: Value(row.updatedAt),
+              deletedAt: Value(row.deletedAt),
+              serverVersion: Value(incomingVersion),
+              name: Value(row.name),
+              feedType: Value(row.feedType),
+              unit: Value(row.unit),
+              reorderLevel: Value(row.reorderLevel),
+            ),
+          );
+      return;
+    }
+
+    if (mapper.tableName == 'feed_transactions') {
+      // Append-only: never overwrite an existing row (arch rule 6).
+      await _db.into(_db.feedTransactions).insert(
+            (incoming as FeedTransactionRow).toCompanion(false).copyWith(
+              serverVersion: Value(incomingVersion),
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+    }
   }
 
   static String? _nonEmpty(String? value) {
@@ -439,6 +486,15 @@ class SyncApply {
     } else if (table == 'farms') {
       await (_db.update(_db.farms)..where((b) => b.id.equals(id))).write(
         FarmsCompanion(serverVersion: Value(serverVersion)),
+      );
+    } else if (table == 'feed_items') {
+      await (_db.update(_db.feedItems)..where((b) => b.id.equals(id))).write(
+        FeedItemsCompanion(serverVersion: Value(serverVersion)),
+      );
+    } else if (table == 'feed_transactions') {
+      await (_db.update(_db.feedTransactions)..where((b) => b.id.equals(id)))
+          .write(
+        FeedTransactionsCompanion(serverVersion: Value(serverVersion)),
       );
     }
   }

@@ -179,7 +179,9 @@ class CucoCareSyncEngine implements SyncEngine {
       await _maybeResetEpoch(response.epoch);
 
       for (final opResult in response.results) {
-        if (opResult.status == 'applied' || opResult.status == 'duplicate') {
+        if (opResult.status == 'applied' ||
+            opResult.status == 'duplicate' ||
+            opResult.isDuplicate) {
           await _db.outboxDao.markApplied(opResult.opId);
           if (opResult.row != null && opResult.serverVersion != null) {
             final table = ops.firstWhere((o) => o.opId == opResult.opId).table;

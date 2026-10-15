@@ -434,7 +434,7 @@ class _StockSnapshotTable extends StatelessWidget {
       final id = tx.feedItemId as String;
       final current = stockById[id] ?? 0.0;
       stockById[id] =
-          current + (kind.isPositive ? tx.quantity as double : -(tx.quantity as double));
+          current + (kind.stockSign > 0 ? tx.quantity as double : -(tx.quantity as double));
     }
 
     return Container(

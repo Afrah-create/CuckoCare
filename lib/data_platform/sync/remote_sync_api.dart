@@ -26,6 +26,7 @@ class SyncPushOpResult {
     this.row,
     this.errorCode,
     this.retryable = false,
+    this.isDuplicate = false,
   });
 
   final String opId;
@@ -34,6 +35,10 @@ class SyncPushOpResult {
   final Map<String, dynamic>? row;
   final String? errorCode;
   final bool retryable;
+
+  /// True when the server returned `"duplicate": true` — the op was already
+  /// applied on a previous push and the server is acknowledging it again.
+  final bool isDuplicate;
 }
 
 class SyncPushResponse {

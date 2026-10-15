@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
-import '../data/feed_repository.dart';
+import '../domain/feed_models.dart';
 
 /// Live stock levels for the primary farm.
-final feedStockProvider = StreamProvider<List<FeedStockRow>>((ref) {
+final feedStockProvider = StreamProvider<List<FeedMetrics>>((ref) {
   final farmId = ref.watch(primaryFarmProvider).value?.id;
   if (farmId == null) {
     return Stream.value(const []);

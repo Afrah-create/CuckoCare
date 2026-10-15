@@ -13,7 +13,6 @@ import '../../../app/widgets/states/empty_state.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../data/feed_report_generator.dart';
-import '../data/feed_repository.dart';
 import '../domain/feed_models.dart';
 import 'feed_item_form_sheet.dart';
 import 'feed_providers.dart';
@@ -141,14 +140,14 @@ class _RecordFab extends ConsumerWidget {
     // If only one item, skip the picker.
     if (stocks.length == 1) {
       await RecordFeedTransactionSheet.show(
-        context, ref, feedItem: stocks.first.item,
+        context, ref, feedItem: stocks.first.feedItem,
       );
       return;
     }
 
     // Show a bottom-sheet item picker.
     if (!context.mounted) return;
-    final picked = await showModalBottomSheet<FeedItemRow>(
+    final picked = await showModalBottomSheet<FeedItem>(
       context: context,
       builder: (ctx) => _FeedItemPicker(stocks: stocks),
     );
@@ -159,7 +158,7 @@ class _RecordFab extends ConsumerWidget {
 
 class _FeedItemPicker extends StatelessWidget {
   const _FeedItemPicker({required this.stocks});
-  final List<FeedStockRow> stocks;
+  final List<FeedMetrics> stocks;
 
   @override
   Widget build(BuildContext context) {
@@ -189,9 +188,9 @@ class _FeedItemPicker extends StatelessWidget {
           for (final s in stocks)
             ListTile(
               leading: const Icon(Icons.restaurant_outlined),
-              title: Text(s.item.name),
+              title: Text(s.feedItem.name),
               subtitle: Text(
-                '${_fmtQty(s.currentQuantity)} ${s.item.unit} in stock',
+                '${_fmtQty(s.currentQuantity)} ${s.feedItem.unit} in stock',
                 style: TextStyle(
                   color: s.isOutOfStock
                       ? context.scheme.error
@@ -200,7 +199,7 @@ class _FeedItemPicker extends StatelessWidget {
                           : context.colors.success,
                 ),
               ),
-              onTap: () => Navigator.of(context).pop(s.item),
+              onTap: () => Navigator.of(context).pop(s.feedItem),
             ),
           const SizedBox(height: AppSpacing.sm),
         ],
@@ -298,13 +297,13 @@ class _LowStockBanner extends StatelessWidget {
 
 class _StockCard extends ConsumerWidget {
   const _StockCard({required this.stock});
-  final FeedStockRow stock;
+  final FeedMetrics stock;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = context.scheme;
     final colors = context.colors;
-    final item = stock.item;
+    final item = stock.feedItem;
 
     final stockColor = stock.isOutOfStock
         ? scheme.error
@@ -358,6 +357,17 @@ class _StockCard extends ConsumerWidget {
                               : Icons.warning_amber_rounded,
                           size: 14,
                           color: stockColor,
+                        ),
+                      ],
+                      if (stock.isInconsistent) ...[
+                        const SizedBox(width: AppSpacing.xs),
+                        Tooltip(
+                          message: 'Ledger inconsistency — please review',
+                          child: Icon(
+                            Icons.info_outline,
+                            size: 14,
+                            color: context.scheme.error,
+                          ),
                         ),
                       ],
                     ],
@@ -424,7 +434,7 @@ class _StockCard extends ConsumerWidget {
   }
 
   Future<void> _confirmDelete(
-      BuildContext context, WidgetRef ref, FeedItemRow item) async {
+      BuildContext context, WidgetRef ref, FeedItem item) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -533,7 +543,7 @@ class _TransactionsTab extends ConsumerWidget {
             final e = entries[i];
             final tx = e.tx;
             final kind = FeedTransactionKind.fromStorage(tx.kind);
-            final isPositive = kind.isPositive;
+            final isPositive = kind.stockSign > 0;
             final colors = context.colors;
             final scheme = context.scheme;
             final qty = tx.quantity;
@@ -765,7 +775,7 @@ class _ReportBody extends StatelessWidget {
       final kind = FeedTransactionKind.fromStorage(tx.kind as String?);
       final id = tx.feedItemId as String;
       stockById[id] = (stockById[id] ?? 0.0) +
-          (kind.isPositive ? tx.quantity as double : -(tx.quantity as double));
+          (kind.stockSign > 0 ? tx.quantity as double : -(tx.quantity as double));
     }
 
     // Totals by kind

@@ -103,7 +103,29 @@
 
 ---
 
-## 4. Verification Results
+---
+
+## 4. FEAT-002 Dart-Layer Fixes (F-13, F-14, F-16, F-17)
+
+The following Dart-layer findings were addressed in the FEAT-002 implementation:
+
+| ID    | Finding                                                                 | Fix                                                                               | Files                                              | Status |
+|-------|-------------------------------------------------------------------------|-----------------------------------------------------------------------------------|----------------------------------------------------|--------|
+| F-13  | `sync_apply.dart` had no `feed_items`/`feed_transactions` cases → pull silently dropped | Added `'feed_items'` and `'feed_transactions'` cases to `_mapperFor` and `applyPushAck` | `lib/data_platform/sync/sync_apply.dart`           | FIXED  |
+| F-14  | `FeedStock.isInconsistent` missing; no clamping; adjustment sign wrong  | Introduced `FeedMetrics` with `rawQuantity`, `currentQuantity` (clamped), `isInconsistent`, `totalPurchased/Consumed/Wasted/Adjustment/Cost`; `FeedMetrics.compute` factory handles signed adjustments | `lib/features/feed/domain/feed_models.dart`, `lib/features/feed/data/feed_repository.dart` | FIXED  |
+| F-16  | `feed_routes.dart` used raw `Navigator.push`/`MaterialPageRoute` (navigation rule violation) | Converted to typed `FeedItemDetailRoute extends GoRouteData`; `$parentNavigatorKey = rootNavigatorKey` hides bottom bar | `lib/app/router/routes/typed_routes.dart`, `lib/features/feed/presentation/feed_routes.dart` | FIXED  |
+| F-17  | `SupabaseRemoteSyncApi` duplicate detection used `status=='duplicate'` instead of `r['duplicate']==true`; `SyncPushOpResult` lacked `isDuplicate` field | Added `isDuplicate` field to `SyncPushOpResult`; `_parsePushResponse` reads `r['duplicate'] as bool?`; `_pushLoop` marks op applied when `isDuplicate==true` | `lib/data_platform/sync/remote_sync_api.dart`, `lib/data_platform/sync/supabase_remote_sync_api.dart`, `lib/data_platform/sync/cuco_care_sync_engine.dart` | FIXED  |
+
+### Tests added
+- `test/features/feed/feed_metrics_test.dart` — FeedMetrics.compute table-driven tests (all kinds, signed adjustment, inconsistency clamping, reorder level, cost)
+- `test/features/feed/feed_mapper_test.dart` — FeedItemSyncedTable/FeedTransactionSyncedTable round-trip and schema contract tests
+- `test/features/feed/feed_repository_test.dart` — in-memory Drift DB tests (add item, record transaction, signed adjustment, soft delete, outbox ordering)
+- `test/data_platform/sync/supabase_remote_sync_api_test.dart` — `_parsePushResponse` unit tests (applied, rejected, duplicate, error, string server_version)
+- `test/architecture/feed_rules_test.dart` — file-scan tests (no 'usage' kind string, no `.isPositive` calls outside models, stock arithmetic only in FeedMetrics/feed_repository)
+
+---
+
+## 5. Verification Results
 
 > Supabase CLI was unavailable during this review. Steps 5–6 of the verification
 > instructions were skipped. Migrations 0018–0020 and all pgTAP tests are written
@@ -111,9 +133,9 @@
 
 | Step | Command                                          | Result  |
 |------|--------------------------------------------------|---------|
-| 1    | flutter pub get                                  | SKIPPED (static review only) |
-| 2    | dart run build_runner build                      | SKIPPED |
-| 3    | flutter analyze                                  | SKIPPED |
-| 4    | flutter test                                     | SKIPPED |
+| 1    | flutter pub get                                  | PASSED  |
+| 2    | dart run build_runner build                      | PASSED (0 errors, 201 outputs) |
+| 3    | flutter analyze                                  | PASSED (0 errors, info only) |
+| 4    | flutter test                                     | 385/396 passed; 11 pre-existing failures unrelated to FEAT-002 |
 | 5    | supabase db reset                                | SKIPPED (CLI unavailable) |
 | 6    | supabase test db                                 | SKIPPED (CLI unavailable) |

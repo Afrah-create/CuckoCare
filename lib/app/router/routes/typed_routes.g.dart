@@ -16,6 +16,7 @@ List<RouteBase> get $appRoutes => [
   $batchDetailRoute,
   $moreFarmRoute,
   $notificationsSettingsRoute,
+  $feedItemDetailRoute,
 ];
 
 RouteBase get $splashRoute => GoRouteData.$route(
@@ -415,6 +416,37 @@ mixin $NotificationsSettingsRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/more/settings/notifications');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $feedItemDetailRoute => GoRouteData.$route(
+  path: '/feed/:feedItemId',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: FeedItemDetailRoute.$parentNavigatorKey,
+  factory: $FeedItemDetailRoute._fromState,
+);
+
+mixin $FeedItemDetailRoute on GoRouteData {
+  static FeedItemDetailRoute _fromState(GoRouterState state) =>
+      FeedItemDetailRoute(feedItemId: state.pathParameters['feedItemId']!);
+
+  FeedItemDetailRoute get _self => this as FeedItemDetailRoute;
+
+  @override
+  String get location =>
+      GoRouteData.$location('/feed/${Uri.encodeComponent(_self.feedItemId)}');
 
   @override
   void go(BuildContext context) => context.go(location);

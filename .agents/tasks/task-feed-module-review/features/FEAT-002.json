@@ -1,0 +1,45 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Dart layer: introduce FeedMetrics domain class (replacing FeedStock), fix FeedTransactionKind signed semantics, add feed_items/feed_transactions handlers to SyncApply, fix SupabaseRemoteSyncApi result parsing (duplicate flag, numeric server_version), fix feed_routes.dart to use typed GoRouter routes, add FeedMetrics/mapper/API/repo Dart unit tests and architecture tests. Independent of FEAT-001 (can reference schema from plan; does not depend on FEAT-001 being committed first).",
+  "status": "pending",
+  "steps": [
+    "1. Read context.json for project orientation. Read lib/features/feed/domain/feed_models.dart, lib/features/feed/data/feed_repository.dart, lib/data_platform/sync/sync_apply.dart, lib/data_platform/sync/supabase_remote_sync_api.dart, lib/data_platform/sync/remote_sync_api.dart, lib/features/feed/presentation/feed_routes.dart, lib/features/feed/presentation/feed_providers.dart, test/features/batches/batch_metrics_test.dart (pattern), test/architecture/batch_metrics_rule_test.dart (pattern), test/layout/route_samples.dart.",
+    "2. Modify lib/features/feed/domain/feed_models.dart: (a) Add stockSign getter to FeedTransactionKind: purchase=+1, consumption=-1, wastage=-1, adjustment=+1 (quantity carries sign). Mark existing isPositive as deprecated, delegate to stockSign>0. (b) Keep FeedStock as a typedef/alias for FeedMetrics for zero-churn on callers during transition. (c) Add FeedMetrics class with fields: feedItem, rawQuantity (may be negative), currentQuantity (clamped to 0 for display), recentTransactions, totalPurchased, totalConsumed, totalWasted, totalAdjustment, totalCost, isInconsistent (rawQuantity<0). Add FeedMetrics.compute(FeedItem item, List<FeedTransaction> transactions) factory that excludes nothing (callers must pass non-deleted txs). Add belowReorderLevel (uses currentQuantity), isOutOfStock getters.",
+    "3. Modify lib/features/feed/data/feed_repository.dart: (a) Add private _rowToItem(FeedItemRow) and _rowToTransaction(FeedTransactionRow) converters producing domain FeedItem/FeedTransaction. (b) Replace _computeStockRows logic to call FeedMetrics.compute per item using domain objects. (c) Update _assertValidQuantity to accept adjustment kind with non-zero check, all others with >0. (d) Update watchStockLevelsCombined return type to Stream<List<FeedMetrics>>. (e) Keep FeedStockRow as typedef FeedStockRow = FeedMetrics in the file so call sites in feed_providers.dart / feed_screen.dart compile without changes (or update those files too).",
+    "4. Update lib/features/feed/presentation/feed_providers.dart and lib/features/feed/presentation/feed_screen.dart to use FeedMetrics instead of FeedStockRow where the typedef is not sufficient (e.g., FeedMetrics.isInconsistent display, show a 'please review' chip on inconsistent items in the stock card).",
+    "5. Modify lib/data_platform/sync/remote_sync_api.dart: Add isDuplicate bool field to SyncPushOpResult. Update lib/data_platform/sync/cuco_care_sync_engine.dart _pushLoop to treat isDuplicate==true as acknowledged (markApplied).",
+    "6. Modify lib/data_platform/sync/supabase_remote_sync_api.dart _parsePushResponse: change duplicate detection from status=='duplicate' to r['duplicate']==true; keep status field as-is; add isDuplicate: r['duplicate'] as bool? ?? false to SyncPushOpResult constructor.",
+    "7. Modify lib/data_platform/sync/sync_apply.dart: (a) Import FeedItemSyncedTable and FeedTransactionSyncedTable. (b) Add 'feed_items' and 'feed_transactions' cases to _mapperFor. (c) Add feed_items pull-apply handler: full mutable replace using shouldApplyRemoteVersion, insertOnConflictUpdate with all FeedItemsCompanion fields. (d) Add feed_transactions pull-apply handler: append-only, use InsertMode.insertOrIgnore (never overwrite). (e) Add feed_items and feed_transactions cases to applyPushAck writing serverVersion.",
+    "8. Modify lib/features/feed/presentation/feed_routes.dart: Replace FeedItemDetailRoute (which uses raw Navigator.push/MaterialPageRoute) with a typed GoRouteData subclass. Add @TypedGoRoute<FeedItemDetailRoute>(path: '/feed/:feedItemId') annotation. Set $parentNavigatorKey = rootNavigatorKey so the bottom bar hides. Register the route in the app router file (find lib/app/router/app_router.dart or equivalent and add it following the existing pattern). Update callers of FeedItemDetailRoute (in feed_screen.dart / feed_item_detail_screen.dart) to use .push(context) on the typed route.",
+    "9. Add '/feed/:feedItemId' entry to test/layout/route_samples.dart routeSamplePaths set, with PageLayout.reading preset in presetForRoute.",
+    "10. Run dart run build_runner build --delete-conflicting-outputs to regenerate router code. Run flutter analyze; fix any errors.",
+    "11. Create test/features/feed/feed_metrics_test.dart: table-driven FeedMetrics.compute tests covering all four kinds, signed adjustment (positive and negative), isInconsistent clamping, belowReorderLevel, zero-cost entries, empty transactions list.",
+    "12. Create test/features/feed/feed_mapper_test.dart: FeedItemSyncedTable().toPayload round-trip; keys subset of known writable_columns constant; fromRemote handles null optional fields. FeedTransactionSyncedTable() same.",
+    "13. Create test/data_platform/sync/supabase_remote_sync_api_test.dart: unit tests for _parsePushResponse (applied, rejected retryable, rejected non-retryable, duplicate:true+status:applied, error:payload_too_large, server_version as string). Make _parsePushResponse @visibleForTesting or test via a thin wrapper.",
+    "14. Create test/features/feed/feed_repository_test.dart: in-memory Drift DB tests for addFeedItem, recordTransaction (purchase/consumption/signed-adjustment), deleteFeedItem (transactions retained), outbox ordering (item before tx), undo of soft-deleted transaction.",
+    "15. Create test/architecture/feed_rules_test.dart: file-scan tests — no 'usage' kind string in lib/features/feed/ outside fromStorage fallback; no direct FeedTransactionKind.isPositive call outside feed_models.dart; stock arithmetic only in FeedMetrics.compute and feed_repository.dart.",
+    "16. Run flutter test. All new and existing tests must pass. Update docs/feed-module-review.md to mark F-13, F-14, F-16, F-17 as FIXED.",
+    "17. Commit: 'feat(dart): FeedMetrics, sync_apply feed handlers, API parsing fixes, typed feed routes, Dart tests'"
+  ],
+  "acceptance_criteria": [
+    "flutter analyze exits 0",
+    "flutter test exits 0 (all tests pass, none skipped)",
+    "FeedMetrics.compute produces correct stock for all four kinds including signed adjustment",
+    "FeedMetrics.isInconsistent is true when rawQuantity < 0; currentQuantity is clamped to 0",
+    "sync_apply._mapperFor returns non-null for 'feed_items' and 'feed_transactions'",
+    "sync_apply.applyPushAck handles 'feed_items' and 'feed_transactions'",
+    "SyncPushOpResult has isDuplicate field; engine marks op as applied when isDuplicate=true",
+    "feed_routes.dart uses typed GoRouteData, no Navigator.push or MaterialPageRoute",
+    "test/layout/route_samples.dart includes '/feed/:feedItemId'",
+    "test/architecture/feed_rules_test.dart passes (no 'usage' strings, no isPositive calls outside models)",
+    "FeedRepository._assertValidQuantity allows non-zero adjustment quantity (positive or negative)"
+  ],
+  "verification": [
+    "dart run build_runner build --delete-conflicting-outputs",
+    "flutter analyze",
+    "flutter test"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

@@ -10,7 +10,6 @@ import '../../../app/widgets/states/progress_button.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/time/kampala_today.dart';
 import '../../../data_platform/db/app_database.dart';
-import '../data/feed_repository.dart';
 import '../domain/feed_models.dart';
 import 'feed_providers.dart';
 
@@ -18,12 +17,12 @@ import 'feed_providers.dart';
 class RecordFeedTransactionSheet extends ConsumerStatefulWidget {
   const RecordFeedTransactionSheet({required this.feedItem, super.key});
 
-  final FeedItemRow feedItem;
+  final FeedItem feedItem;
 
   static Future<void> show(
     BuildContext context,
     WidgetRef ref, {
-    required FeedItemRow feedItem,
+    required FeedItem feedItem,
   }) async {
     await showModalBottomSheet<void>(
       context: context,
@@ -121,14 +120,9 @@ class _RecordFeedTransactionSheetState
       }),
     );
 
-    final currentStock = ref.watch(feedStockProvider).value
-        ?.firstWhere(
-          (s) => s.item.id == widget.feedItem.id,
-          orElse: () => FeedStockRow(
-            item: widget.feedItem,
-            currentQuantity: 0,
-            lastTransactionOn: null,
-          ),
+    // Look up current stock from the provider; fall back to zero if not found.
+    final currentStock = ref.watch(feedStockProvider).value?.firstWhereOrNull(
+          (s) => s.feedItem.id == widget.feedItem.id,
         );
 
     return Padding(
@@ -337,7 +331,7 @@ class _RecordFeedTransactionSheetState
 class _StockChip extends StatelessWidget {
   const _StockChip({required this.stock});
 
-  final FeedStockRow stock;
+  final FeedMetrics stock;
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +340,7 @@ class _StockChip extends StatelessWidget {
     final qty = stock.currentQuantity;
     final label =
         '${qty.toStringAsFixed(qty.truncateToDouble() == qty ? 0 : 1)} '
-        '${stock.item.unit} in stock';
+        '${stock.feedItem.unit} in stock';
 
     final (bg, fg) = stock.isOutOfStock
         ? (scheme.errorContainer, scheme.onErrorContainer)
@@ -442,5 +436,14 @@ class _SectionLabel extends StatelessWidget {
         color: context.scheme.onSurfaceVariant,
       ),
     );
+  }
+}
+
+extension<T> on List<T> {
+  T? firstWhereOrNull(bool Function(T) test) {
+    for (final element in this) {
+      if (test(element)) return element;
+    }
+    return null;
   }
 }

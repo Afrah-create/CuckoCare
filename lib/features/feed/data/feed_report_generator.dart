@@ -34,7 +34,7 @@ class FeedReportGenerator {
       final kind = FeedTransactionKind.fromStorage(tx.kind);
       final current = stockById[tx.feedItemId] ?? 0.0;
       stockById[tx.feedItemId] =
-          current + (kind.isPositive ? tx.quantity : -tx.quantity);
+          current + (kind.stockSign > 0 ? tx.quantity : -tx.quantity);
     }
 
     final buf = StringBuffer();
@@ -143,7 +143,7 @@ class FeedReportGenerator {
       // Walk oldest-first for running balance
       for (final tx in itemTxs.reversed) {
         final kind = FeedTransactionKind.fromStorage(tx.kind);
-        if (kind.isPositive) {
+        if (kind.stockSign > 0) {
           running += tx.quantity;
         } else {
           running -= tx.quantity;

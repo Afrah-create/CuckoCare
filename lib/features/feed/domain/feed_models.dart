@@ -1,5 +1,5 @@
-/// Pure-Dart domain models for feed management.
-/// No Flutter, Drift, or Supabase imports.
+// Pure-Dart domain models for feed management.
+// No Flutter, Drift, or Supabase imports.
 
 enum FeedTransactionKind {
   purchase,
@@ -25,8 +25,19 @@ enum FeedTransactionKind {
         wastage => 'Wastage',
       };
 
+  /// Signed multiplier for stock arithmetic.
+  /// purchase=+1, adjustment=+1 (quantity may be negative for downward correction),
+  /// consumption=-1, wastage=-1.
+  int get stockSign => switch (this) {
+        purchase => 1,
+        adjustment => 1,
+        consumption => -1,
+        wastage => -1,
+      };
+
   /// Positive kinds add to stock; negative kinds reduce it.
-  bool get isPositive => this == purchase || this == adjustment;
+  @Deprecated('Use stockSign > 0 instead')
+  bool get isPositive => stockSign > 0;
 }
 
 /// Domain representation of a catalogue entry.
@@ -65,39 +76,121 @@ class FeedTransaction {
   final String farmId;
   final String feedItemId;
   final FeedTransactionKind kind;
+
+  /// The signed quantity stored on this transaction.
+  /// For purchases and consumptions this is always positive (the sign comes
+  /// from [FeedTransactionKind.stockSign]).  For adjustments the quantity
+  /// itself may be negative (downward correction) or positive (upward
+  /// correction); [FeedTransactionKind.stockSign] for adjustment is +1 so
+  /// the raw value is used as-is in [FeedMetrics.compute].
   final double quantity;
   final DateTime occurredOn;
   final String? batchId;
   final double? unitCost;
 }
 
-/// Derived stock level for a feed item, computed from the transaction ledger.
+// ── FeedMetrics ───────────────────────────────────────────────────────────────
+
+/// Derived stock metrics for a feed item, computed from the transaction ledger.
+///
 /// Architecture rule 6: never stored — always computed at read time.
-class FeedStock {
-  const FeedStock({
+class FeedMetrics {
+  const FeedMetrics._({
     required this.feedItem,
-    required this.currentQuantity,
+    required this.rawQuantity,
     required this.recentTransactions,
+    required this.totalPurchased,
+    required this.totalConsumed,
+    required this.totalWasted,
+    required this.totalAdjustment,
+    required this.totalCost,
   });
+
+  /// Computes [FeedMetrics] from a [FeedItem] and its non-deleted transactions.
+  ///
+  /// Callers are responsible for filtering out deleted rows before calling
+  /// this factory; nothing is excluded here.
+  factory FeedMetrics.compute(
+    FeedItem item,
+    List<FeedTransaction> transactions,
+  ) {
+    var purchased = 0.0;
+    var consumed = 0.0;
+    var wasted = 0.0;
+    var adjustment = 0.0;
+    var cost = 0.0;
+
+    for (final tx in transactions) {
+      switch (tx.kind) {
+        case FeedTransactionKind.purchase:
+          purchased += tx.quantity;
+          if (tx.unitCost != null) {
+            cost += tx.quantity * tx.unitCost!;
+          }
+        case FeedTransactionKind.consumption:
+          consumed += tx.quantity;
+        case FeedTransactionKind.wastage:
+          wasted += tx.quantity;
+        case FeedTransactionKind.adjustment:
+          // quantity may be positive or negative
+          adjustment += tx.quantity;
+      }
+    }
+
+    // net = purchases − consumption − wastage + signed-adjustment
+    final raw = purchased - consumed - wasted + adjustment;
+
+    return FeedMetrics._(
+      feedItem: item,
+      rawQuantity: raw,
+      recentTransactions: transactions,
+      totalPurchased: purchased,
+      totalConsumed: consumed,
+      totalWasted: wasted,
+      totalAdjustment: adjustment,
+      totalCost: cost,
+    );
+  }
 
   final FeedItem feedItem;
 
-  /// Net quantity on hand (purchases − consumption − wastage + adjustments).
-  final double currentQuantity;
+  /// Raw net quantity — may be negative when ledger is inconsistent.
+  final double rawQuantity;
 
-  /// Most recent transactions for display in the list.
+  /// Clamped to 0 for display purposes; use [rawQuantity] for audit.
+  double get currentQuantity => rawQuantity < 0 ? 0 : rawQuantity;
+
+  /// All transactions passed to [FeedMetrics.compute].
   final List<FeedTransaction> recentTransactions;
 
-  bool get isBelowReorderLevel {
+  final double totalPurchased;
+  final double totalConsumed;
+  final double totalWasted;
+
+  /// Net adjustment (sum of signed adjustment quantities).
+  final double totalAdjustment;
+  final double totalCost;
+
+  /// True when the ledger implies a negative stock level.
+  bool get isInconsistent => rawQuantity < 0;
+
+  bool get belowReorderLevel {
     final level = feedItem.reorderLevel;
-    if (level == null) {
-      return false;
-    }
+    if (level == null) return false;
     return currentQuantity <= level;
   }
 
   bool get isOutOfStock => currentQuantity <= 0;
+
+  // Keep legacy name for older callers during transition.
+  bool get isBelowReorderLevel => belowReorderLevel;
 }
+
+/// Backward-compatibility alias so callers that used [FeedStock] continue
+/// to compile without changes while the codebase migrates to [FeedMetrics].
+typedef FeedStock = FeedMetrics;
+
+// ── Input types ───────────────────────────────────────────────────────────────
 
 /// Input for creating or editing a feed item.
 class FeedItemInput {

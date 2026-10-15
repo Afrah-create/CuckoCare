@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/router/navigator_keys.dart';
-import 'feed_item_detail_screen.dart';
+import '../../../app/router/routes/typed_routes.dart';
 
 /// Navigation helpers for the feed feature.
-/// Detail routes use rootNavigatorKey to hide the bottom bar.
-
-class FeedItemDetailRoute {
-  const FeedItemDetailRoute({required this.feedItemId});
-
-  final String feedItemId;
-
-  Future<T?> push<T>(BuildContext context) {
-    return Navigator.of(
-      rootNavigatorKey.currentContext ?? context,
-      rootNavigator: true,
-    ).push<T>(
-      MaterialPageRoute<T>(
-        builder: (_) => FeedItemDetailScreen(feedItemId: feedItemId),
-        fullscreenDialog: false,
-      ),
-    );
-  }
+/// Uses typed GoRouter routes so the bottom bar is hidden on detail screens.
+///
+/// [FeedItemDetailRoute] sets `$parentNavigatorKey = rootNavigatorKey`, which
+/// pushes the screen above the shell and hides the bottom navigation bar.
+extension FeedItemDetailRouteX on FeedItemDetailRoute {
+  /// Push the feed item detail screen.
+  Future<T?> push<T extends Object?>(BuildContext context) =>
+      FeedItemDetailRoute(feedItemId: feedItemId).push<T>(context);
 }
