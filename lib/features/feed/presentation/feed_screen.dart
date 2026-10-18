@@ -769,7 +769,7 @@ class _ReportBody extends StatelessWidget {
 
     // Stock per item
     final stockById = <String, double>{};
-    for (final i in items) stockById[i.id as String] = 0.0;
+    for (final i in items) { stockById[i.id as String] = 0.0; }
     for (final tx in transactions) {
       final kind = FeedTransactionKind.fromStorage(tx.kind as String?);
       final id = tx.feedItemId as String;

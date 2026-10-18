@@ -1,0 +1,38 @@
+{
+  "id": "FEAT-003",
+  "type": "docs",
+  "description": "Screen alignment audit (small in-scope gaps only), finalise docs/feed-module-review.md, and write the 7 ADRs under docs/adr/. Depends on FEAT-001 and FEAT-002 being complete so findings can be marked FIXED. Independent of FEAT-001/002 only for the ADR writing; the screen audit requires FEAT-002 complete.",
+  "status": "pending",
+  "steps": [
+    "1. Read context.json. Read the current state of docs/feed-module-review.md (written in FEAT-001). Read lib/features/feed/presentation/feed_screen.dart, feed_item_form_sheet.dart, feed_item_detail_screen.dart, record_feed_transaction_sheet.dart, feed_report_screen.dart for the screen audit.",
+    "2. Screen alignment audit — check each screen against: AsyncStateView usage (not .when in screens); enum string values match FeedTransactionKind.storage (consumption not usage); validation (positive qty for purchase/consumption/wastage; non-zero for adjustment; date not in future); DiscardChangesScope/PopScope on dirty forms; no raw Color/Colors.* outside theme; AppPage+PageLayout (not Scaffold in features/); PendingSyncBadge shown after save. Fix only small, clearly-in-scope gaps. For each gap that is too large (screen redesign, new notification wiring), list it in the review doc under 'Out of scope / follow-up'.",
+    "3. If record_feed_transaction_sheet.dart is missing a negative-quantity path for adjustment kind: add a toggle or signed input field for adjustment so the user can enter positive (stock-in) or negative (stock-out) adjustments, validated to be non-zero.",
+    "4. If feed_report_screen.dart (or the _ReportTab in feed_screen.dart) shows a raw CircularProgressIndicator and does not use the standard error widget: swap _ReportLoading for ListSkeleton (from lib/app/widgets/states/screen_skeletons.dart) and _ReportError for a standard error column with retry button matching the ErrorState widget pattern.",
+    "5. Finalise docs/feed-module-review.md: (a) Mark all findings that were fixed in FEAT-001/002 as status=FIXED with the migration or Dart file reference. (b) Mark items not fixed as NOTED with reason. (c) Add 'What could not be verified' section: list if Docker/Supabase CLI was unavailable. (d) Add 'Open questions' section with the items from plan.md step 11a.",
+    "6. Create docs/adr/001_sync_push_writable_columns_and_farm_auth.md with ADR template: Context (clients previously could write server-owned columns and overwrite other farms' rows), Decision (sync_push enforces writable_columns allow-list; authorises against stored farm_id; farm_id immutable after insert), Consequences (security; slightly more complex function; config-driven means adding a table only requires sync_table_config row).",
+    "7. Create docs/adr/002_terminal_only_idempotency_records.md: Context (retryable FK failures were stored in sync_ops_applied, making them permanent), Decision (only terminal outcomes stored), Consequences (clients can retry; idempotency still guaranteed for applied/rejected-permanent).",
+    "8. Create docs/adr/003_canonical_feed_transaction_kinds.md: Context (usage vs consumption ambiguity; unsigned adjustment), Decision (consumption canonical; adjustment is signed non-zero; data migration 0018), Consequences (Dart enum unchanged; DB check updated; existing 'usage' rows migrated).",
+    "9. Create docs/adr/004_feed_stock_derived_in_feed_metrics.md: Context (stock computed in multiple places; inconsistency), Decision (FeedMetrics.compute is sole source of truth; negative raw stock clamped with isInconsistent flag), Consequences (one place to change; architecture test enforces it; display never shows negative).",
+    "10. Create docs/adr/005_server_controlled_vet_request_transitions.md: Context (farmer could revert vet-controlled states; pending_sync leaked as server status), Decision (farmer writes: draft/submitted/cancelled before acceptance only; server-controlled: received/accepted/declined/in_progress/completed; pending_sync normalised to submitted), Consequences (correct workflow enforcement; existing pending_sync server rows need clean-up script noted as open question).",
+    "11. Create docs/adr/006_vet_discovery_privacy_preserving.md: Context (list_available_vets returned raw vet coordinates and farm coordinates without membership check), Decision (returns only distance_km + district; requires farm membership; filters to verified+active+opted-in; result limit), Consequences (privacy; farmers see less detail; vet proximity still useful).",
+    "12. Create docs/adr/007_migration_hygiene.md: Context (pushed migration mixed three concerns and would need rewriting applied migrations to fix), Decision (one concern per migration file; applied migrations never edited; corrective migrations only; rollback notes required in header), Consequences (git history is clean; rollback is always feasible; multiple files per fix is acceptable overhead).",
+    "13. Create or update docs/architecture.md with a 'Sync Protocol' section covering: per-scope counters, sync_push contract (allow-list, stored-farm auth, terminal-only idempotency, farm_id immutable), sync_pull streaming model, SyncApply conflict resolution rules, links to ADRs 001 and 002.",
+    "14. Run flutter analyze && flutter test to confirm all clean.",
+    "15. Commit: 'docs: feed-module review doc, 7 ADRs, architecture sync section, screen alignment fixes'"
+  ],
+  "acceptance_criteria": [
+    "docs/feed-module-review.md complete with all findings resolved (FIXED or NOTED), contract mismatch table, decisions, open questions",
+    "docs/adr/001 through docs/adr/007 all exist with correct ADR structure",
+    "docs/architecture.md exists or is updated with sync protocol section",
+    "No 'usage' enum string literal in any feed screen files",
+    "record_feed_transaction_sheet.dart allows non-zero signed input for adjustment kind",
+    "flutter analyze exits 0",
+    "flutter test exits 0"
+  ],
+  "verification": [
+    "flutter analyze",
+    "flutter test"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

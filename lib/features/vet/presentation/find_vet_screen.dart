@@ -13,19 +13,6 @@ import '../data/vet_directory_repository.dart';
 import '../domain/vet_contact_launcher.dart';
 import 'vet_inbox_providers.dart';
 
-/// Dev-only stub vet injected at the top of the list for testing WhatsApp/SMS.
-/// Removed when [Env.isDev] is false.
-final _stubVet = AvailableVet(
-  userId: 'stub-test-vet-001',
-  displayName: 'Dr. Test Vet (Dev)',
-  organization: 'CucoCare Test Clinic',
-  district: 'Kampala',
-  phone: '+256730561129',
-  offersConsultation: true,
-  offersFarmVisit: true,
-  distanceKm: 0.5,
-);
-
 /// Farmer-facing screen: find a vet near their farm and contact them via
 /// WhatsApp, SMS (Airtel/MTN), or a phone call.
 class FindVetScreen extends ConsumerWidget {
@@ -35,7 +22,6 @@ class FindVetScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final farmId = ref.watch(primaryFarmProvider).value?.id;
     final vetsAsync = ref.watch(availableVetsProvider(farmId));
-    final env = ref.read(envProvider);
 
     return AppPage(
       title: 'Find a Vet',
@@ -52,15 +38,8 @@ class FindVetScreen extends ConsumerWidget {
               value: vetsAsync,
               skeleton: const ListSkeleton(),
               onRetry: () => ref.invalidate(availableVetsProvider(farmId)),
-              // On error in dev: still show the stub so testing is unblocked.
-              error: env.isDev
-                  ? (_, __) => _VetList(vets: [_stubVet])
-                  : null,
               builder: (vets) {
-                final displayVets = env.isDev
-                    ? [_stubVet, ...vets]
-                    : vets;
-                if (displayVets.isEmpty) {
+                if (vets.isEmpty) {
                   return const EmptyState(
                     icon: Icons.person_search_outlined,
                     title: 'No vets found nearby',
@@ -69,7 +48,7 @@ class FindVetScreen extends ConsumerWidget {
                         'once they register and share their location.',
                   );
                 }
-                return _VetList(vets: displayVets);
+                return _VetList(vets: vets);
               },
             ),
           ),

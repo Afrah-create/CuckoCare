@@ -306,7 +306,7 @@ class _RecordFeedTransactionSheetState
                                 ),
                               )
                             : DropdownButtonFormField<String?>(
-                                value: _selectedBatchId,
+                                initialValue: _selectedBatchId,
                                 decoration: const InputDecoration(
                                   hintText: 'Select batch (optional)',
                                 ),
@@ -328,7 +328,7 @@ class _RecordFeedTransactionSheetState
                           height: 24,
                           child: LinearProgressIndicator(),
                         ),
-                        error: (_, __) => const SizedBox.shrink(),
+                        error: (_, _) => const SizedBox.shrink(),
                       ),
                       const SizedBox(height: AppSpacing.md),
                     ],

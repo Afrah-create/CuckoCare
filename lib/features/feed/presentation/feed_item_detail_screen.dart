@@ -98,7 +98,7 @@ class FeedItemDetailScreen extends ConsumerWidget {
                     bottom: AppSpacing.xl + 72,
                   ),
                   itemCount: transactions.length,
-                  separatorBuilder: (_, __) =>
+                  separatorBuilder: (_, _) =>
                       const SizedBox(height: AppSpacing.xs),
                   itemBuilder: (context, i) => _TransactionTile(
                     tx: transactions[i],

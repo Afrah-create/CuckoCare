@@ -153,7 +153,7 @@ class _FeedItemFormSheetState extends ConsumerState<FeedItemFormSheet> {
                     _LabeledField(
                       label: 'Feed type',
                       child: DropdownButtonFormField<String>(
-                        value: _feedType,
+                        initialValue: _feedType,
                         decoration: const InputDecoration(),
                         items: FeedTypes.all
                             .map(
@@ -172,7 +172,7 @@ class _FeedItemFormSheetState extends ConsumerState<FeedItemFormSheet> {
                     _LabeledField(
                       label: 'Unit of measure',
                       child: DropdownButtonFormField<String>(
-                        value: _unit,
+                        initialValue: _unit,
                         decoration: const InputDecoration(),
                         items: FeedUnits.all
                             .map(

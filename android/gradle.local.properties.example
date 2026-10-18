@@ -1,4 +1,4 @@
-# Copy to gradle.local.properties (gitignored) after installing JDK 17:
-#   sudo apt install openjdk-17-jdk
-#
-# org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64
+# Gradle needs a full JDK 17. Point Flutter at it once per machine:
+#   Linux:   flutter config --jdk-dir=/usr/lib/jvm/java-17-openjdk-amd64
+#   Windows: flutter config --jdk-dir="C:\Program Files\Zulu\zulu-17"
+# Never commit org.gradle.java.home in android/gradle.properties.

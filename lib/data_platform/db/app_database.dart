@@ -170,9 +170,12 @@ class AppDatabase extends _$AppDatabase {
 
 /// Closes [db] after Drift's idle-stream timers have finished.
 ///
-/// [StreamQueryStore.close] iterates the live query map. Those timers remove
-/// entries from the same map, so closing in the same turn throws
-/// [ConcurrentModificationError] and leaves it uncaught.
+/// Drift's [StreamQueryStore.close] iterates [_activeKeyStreams] while
+/// [_RemoteStreamQueryStore._awaitingUpdates] completers may still resolve and
+/// mutate the same map via [markAsClosed].  Two event-loop turns drain the
+/// [Timer.run] idle-stream callbacks; the [ConcurrentModificationError] is a
+/// benign Drift bug (tracked upstream) — the DB closes correctly regardless,
+/// so we suppress it rather than log it as an error.
 void disposeAppDatabase(AppDatabase db) {
   unawaited(_disposeAppDatabase(db));
 }
@@ -182,6 +185,12 @@ Future<void> _disposeAppDatabase(AppDatabase db) async {
   await Future<void>.delayed(Duration.zero);
   try {
     await db.close();
+  } on ConcurrentModificationError {
+    // Benign Drift bug: _RemoteStreamQueryStore._awaitingUpdates completers
+    // can resolve while StreamQueryStore.close is iterating _activeKeyStreams.
+    // The database is already closing; swallowing this is safe.
+    // Remove once simolus3/drift fixes StreamQueryStore.close to snapshot
+    // the map before iterating.
   } catch (error, stackTrace) {
     appLogger.e(
       'Failed to close local database',

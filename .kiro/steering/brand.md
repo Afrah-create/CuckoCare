@@ -1,0 +1,10 @@
+---
+inclusion: fileMatch
+fileMatchPattern: ['lib/**/*.dart']
+---
+
+# Brand
+
+- Logo UI must use `AppLogo` or `SplashMark` with assets under `assets/brand/`.
+- Tint colours come from `context.colors.logoTint` / `AppColors` — no hard-coded ink or splash colours in widgets.
+- Do not add `design/brand/source` to `pubspec.yaml` assets.
