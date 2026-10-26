@@ -1,7 +1,0 @@
-{
-  "task_id": "task-feed-module-review",
-  "task_description": "Review and fix the CukoCare feed-module migration (0017) end-to-end: harden sync_push (IDOR, allow-list, idempotency), fix feed schema (canonical kinds, constraints, indexes), harden list_available_vets, fix the Dart layer (FeedMetrics, sync_apply feed handlers, SupabaseRemoteSyncApi parsing, typed routes), add pgTAP and Dart tests, write ADRs and review doc.",
-  "status": "pending",
-  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003"],
-  "blocked_reason": null
-}
