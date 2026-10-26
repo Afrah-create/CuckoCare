@@ -41,6 +41,7 @@ class VetProfileRepository {
     required bool offersConsultation,
     required bool offersFarmVisit,
     required bool optedIn,
+    required bool isActive,
   }) async {
     if (!await ensureSupabaseSessionForNetwork()) {
       return const Error(SyncAuthRequired());
@@ -57,6 +58,7 @@ class VetProfileRepository {
           'offers_consultation': offersConsultation,
           'offers_farm_visit': offersFarmVisit,
           'opted_in': optedIn,
+          'is_active': isActive,
           'updated_at': DateTime.now().toIso8601String(),
         },
         onConflict: 'user_id',

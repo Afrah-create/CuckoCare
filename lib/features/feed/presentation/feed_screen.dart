@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -7,6 +8,8 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
+import '../../../app/widgets/states/app_dialog.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/empty_state.dart';
@@ -191,7 +194,7 @@ class _FeedItemPicker extends StatelessWidget {
               title: Text(s.feedItem.name),
               subtitle: Text(
                 '${_fmtQty(s.currentQuantity)} ${s.feedItem.unit} in stock',
-                style: TextStyle(
+                style: context.text.bodySmall?.copyWith(
                   color: s.isOutOfStock
                       ? context.scheme.error
                       : s.isBelowReorderLevel
@@ -199,7 +202,7 @@ class _FeedItemPicker extends StatelessWidget {
                           : context.colors.success,
                 ),
               ),
-              onTap: () => Navigator.of(context).pop(s.feedItem),
+              onTap: () => context.pop(s.feedItem),
             ),
           const SizedBox(height: AppSpacing.sm),
         ],
@@ -385,12 +388,12 @@ class _StockCard extends ConsumerWidget {
                 minimumSize: const Size(0, 32),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add, size: 16),
-                  SizedBox(width: 4),
-                  Text('Record', style: TextStyle(fontSize: 13)),
+                  const Icon(Icons.add, size: 16),
+                  const SizedBox(width: 4),
+                  Text('Record', style: context.text.labelMedium),
                 ],
               ),
             ),
@@ -421,7 +424,8 @@ class _StockCard extends ConsumerWidget {
                     leading: Icon(Icons.delete_outline,
                         color: context.scheme.error),
                     title: Text('Delete',
-                        style: TextStyle(color: context.scheme.error)),
+                        style: context.text.bodyLarge
+                            ?.copyWith(color: context.scheme.error)),
                     contentPadding: EdgeInsets.zero,
                   ),
                 ),
@@ -435,22 +439,12 @@ class _StockCard extends ConsumerWidget {
 
   Future<void> _confirmDelete(
       BuildContext context, WidgetRef ref, FeedItem item) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete feed item?'),
-        content: Text(
-          '"${item.name}" will be hidden. Transaction history is kept.',
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel')),
-          FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Delete')),
-        ],
-      ),
+      title: 'Delete feed item?',
+      message: '"${item.name}" will be hidden. Transaction history is kept.',
+      confirmLabel: 'Delete',
+      destructive: true,
     );
     if (confirmed != true || !context.mounted) return;
     try {
@@ -912,11 +906,7 @@ class _ReportBody extends StatelessWidget {
         FilledButton.icon(
           onPressed: exporting ? null : onExport,
           icon: exporting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                      strokeWidth: 2))
+              ? const AppBusyIndicator(size: 18)
               : const Icon(Icons.download_outlined),
           label: Text(exporting ? 'Preparing…' : 'Download / Share CSV'),
         ),

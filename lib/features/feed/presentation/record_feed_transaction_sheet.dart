@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/progress_button.dart';
 import '../../../core/logging/app_logger.dart';
@@ -326,7 +328,7 @@ class _RecordFeedTransactionSheetState
                               ),
                         loading: () => const SizedBox(
                           height: 24,
-                          child: LinearProgressIndicator(),
+                          child: Center(child: AppBusyIndicator(size: 18)),
                         ),
                         error: (_, _) => const SizedBox.shrink(),
                       ),
@@ -359,7 +361,7 @@ class _RecordFeedTransactionSheetState
                 label: 'Save transaction',
                 busyLabel: 'Saving…',
                 onPressed: _isValid ? _save : null,
-                onSuccess: () => Navigator.of(context).pop(),
+                onSuccess: () => context.pop(),
               ),
             ),
           ],

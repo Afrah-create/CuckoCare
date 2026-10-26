@@ -1,7 +1,6 @@
 import 'package:cucocare/app/layout/app_page.dart';
 import 'package:cucocare/app/layout/page_layout.dart';
 import 'package:cucocare/features/auth/presentation/sign_up_screen.dart';
-import 'package:cucocare/features/feed/presentation/feed_screen.dart';
 import 'package:flutter/material.dart';
 
 PageLayout presetForRoute(String path) {
@@ -23,7 +22,9 @@ PageLayout presetForRoute(String path) {
     '/more' ||
     '/more/farm' ||
     '/more/settings/notifications' ||
-    '/vet/more' =>
+    '/more/vets' ||
+    '/vet/more' ||
+    '/vet/more/profile' =>
       PageLayout.form,
     _ => PageLayout.standard,
   };
@@ -48,6 +49,7 @@ const routeSamplePaths = <String>{
   '/more',
   '/more/farm',
   '/more/settings/notifications',
+  '/more/vets',
   '/records',
   '/splash',
   '/today',
@@ -56,6 +58,7 @@ const routeSamplePaths = <String>{
   '/vet/incident',
   '/vet/map',
   '/vet/more',
+  '/vet/more/profile',
 };
 
 Widget routeSample(String path) {
@@ -64,7 +67,6 @@ Widget routeSample(String path) {
   }
   return switch (path) {
     '/auth/signup' => const SignUpScreen(),
-    '/feed' => const FeedScreen(),
     _ => RouteChromeSample(path: path, preset: presetForRoute(path)),
   };
 }

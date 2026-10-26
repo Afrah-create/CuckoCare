@@ -14,6 +14,8 @@ import '../../../features/batches/presentation/batch_vaccination_task_screen.dar
 import '../../../features/batches/presentation/loss_form_screen.dart';
 import '../../../features/batches/presentation/losses_screen.dart';
 import '../../../features/feed/presentation/feed_item_detail_screen.dart';
+import '../../../features/vet/presentation/find_vet_screen.dart';
+import '../../../features/vet/presentation/vet_profile_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
 import '../../../features/notifications/presentation/notifications_settings_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
@@ -210,4 +212,28 @@ class FeedItemDetailRoute extends GoRouteData with $FeedItemDetailRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       FeedItemDetailScreen(feedItemId: feedItemId);
+}
+
+@TypedGoRoute<FindVetRoute>(path: '/more/vets')
+class FindVetRoute extends GoRouteData with $FindVetRoute {
+  const FindVetRoute();
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const FindVetScreen();
+}
+
+@TypedGoRoute<VetProfileRoute>(path: '/vet/more/profile')
+class VetProfileRoute extends GoRouteData with $VetProfileRoute {
+  const VetProfileRoute();
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => buildAppPage(
+        preset: PageLayout.form,
+        child: const VetProfileScreen(),
+      );
 }

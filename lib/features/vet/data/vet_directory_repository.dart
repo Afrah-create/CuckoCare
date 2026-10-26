@@ -3,64 +3,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
+import '../domain/available_vet.dart';
 
-class AvailableVet {
-  AvailableVet({
-    required this.userId,
-    required this.displayName,
-    this.organization,
-    this.district,
-    this.phone,
-    required this.offersConsultation,
-    required this.offersFarmVisit,
-    this.latitude,
-    this.longitude,
-    this.distanceKm,
-  });
-
-  final String userId;
-  final String displayName;
-  final String? organization;
-  final String? district;
-
-  /// E.164-formatted phone (e.g. +256701234567). May be null if not shared.
-  final String? phone;
-
-  final bool offersConsultation;
-  final bool offersFarmVisit;
-  final double? latitude;
-  final double? longitude;
-  final double? distanceKm;
-
-  String get subtitle {
-    final parts = <String>[];
-    if (organization != null && organization!.trim().isNotEmpty) {
-      parts.add(organization!.trim());
-    }
-    if (district != null && district!.trim().isNotEmpty) {
-      parts.add(district!.trim());
-    }
-    if (distanceKm != null) {
-      parts.add('${distanceKm!.toStringAsFixed(1)} km away');
-    }
-    return parts.isEmpty ? 'Veterinary officer' : parts.join(' · ');
-  }
-
-  factory AvailableVet.fromJson(Map<String, dynamic> json) {
-    return AvailableVet(
-      userId: json['user_id'] as String,
-      displayName: json['display_name'] as String? ?? 'Veterinarian',
-      organization: json['organization'] as String?,
-      district: json['district'] as String?,
-      phone: json['phone'] as String?,
-      offersConsultation: json['offers_consultation'] as bool? ?? true,
-      offersFarmVisit: json['offers_farm_visit'] as bool? ?? true,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-      distanceKm: (json['distance_km'] as num?)?.toDouble(),
-    );
-  }
-}
+export '../domain/available_vet.dart';
 
 class VetDirectoryRepository {
   VetDirectoryRepository({SupabaseClient? client})
@@ -77,20 +22,50 @@ class VetDirectoryRepository {
         'list_available_vets',
         params: {'p_farm_id': ?farmId},
       );
-      if (raw is! Map<String, dynamic>) {
-        return const Error(UnexpectedFailure('Unexpected vet list response'));
-      }
-      final list = raw['vets'];
-      if (list is! List) {
-        return const Success([]);
-      }
-      return Success(
-        list.whereType<Map<String, dynamic>>().map(AvailableVet.fromJson).toList(),
-      );
+      return Success(_parseVets(raw));
     } on PostgrestException catch (e) {
-      return Error(UnexpectedFailure(e.message));
+      return Error(mapPostgrestFailure(e));
     } catch (e) {
       return Error(UnexpectedFailure('$e'));
     }
   }
+
+  static List<AvailableVet> _parseVets(Object? raw) {
+    List<dynamic>? list;
+    if (raw is Map) {
+      final vets = raw['vets'];
+      if (vets is List) {
+        list = vets;
+      }
+    } else if (raw is List) {
+      list = raw;
+    }
+    if (list == null) {
+      return const [];
+    }
+    return list
+        .whereType<Map>()
+        .map((row) => AvailableVet.fromJson(Map<String, dynamic>.from(row)))
+        .where((v) => v.userId.isNotEmpty)
+        .toList();
+  }
+}
+
+Failure mapPostgrestFailure(PostgrestException e) {
+  return classifyPostgrest(code: e.code, message: e.message);
+}
+
+Failure classifyPostgrest({String? code, String? message}) {
+  final c = (code ?? '').toUpperCase();
+  final text = '${code ?? ''} ${message ?? ''}'.toLowerCase();
+  if (c == 'PGRST202' || text.contains('schema cache') || text.contains('could not find the function')) {
+    return const SyncServerFailure('PGRST202', retryable: false);
+  }
+  if (c == '42501' || text.contains('forbidden')) {
+    return const PermissionFailure();
+  }
+  if (c == '28000' || text.contains('not authenticated')) {
+    return const SyncAuthRequired();
+  }
+  return UnexpectedFailure(message ?? 'Request failed');
 }

@@ -46,6 +46,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.highlightPulse,
     required this.offlineSurface,
     required this.pendingSyncIndicator,
+    required this.whatsappGreen,
   });
 
   final Color success;
@@ -93,6 +94,9 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color offlineSurface;
   final Color pendingSyncIndicator;
 
+  /// WhatsApp brand green. External token, not a CucoCare semantic colour.
+  final Color whatsappGreen;
+
   static AppColors light = AppColors(
     success: BrandPalette.success,
     onSuccess: Colors.white,
@@ -135,6 +139,7 @@ class AppColors extends ThemeExtension<AppColors> {
     highlightPulse: const Color(0xFFC8E6C9),
     offlineSurface: const Color(0xFFFFF3E0),
     pendingSyncIndicator: BrandPalette.warning,
+    whatsappGreen: const Color(0xFF25D366),
   );
 
   static AppColors dark = AppColors(
@@ -179,6 +184,7 @@ class AppColors extends ThemeExtension<AppColors> {
     highlightPulse: const Color(0xFF1B5E20),
     offlineSurface: const Color(0xFF3E2A22),
     pendingSyncIndicator: const Color(0xFFFFB74D),
+    whatsappGreen: const Color(0xFF25D366),
   );
 
   @override
@@ -224,6 +230,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? highlightPulse,
     Color? offlineSurface,
     Color? pendingSyncIndicator,
+    Color? whatsappGreen,
   }) {
     return AppColors(
       success: success ?? this.success,
@@ -268,6 +275,7 @@ class AppColors extends ThemeExtension<AppColors> {
       offlineSurface: offlineSurface ?? this.offlineSurface,
       pendingSyncIndicator:
           pendingSyncIndicator ?? this.pendingSyncIndicator,
+      whatsappGreen: whatsappGreen ?? this.whatsappGreen,
     );
   }
 
@@ -335,6 +343,7 @@ class AppColors extends ThemeExtension<AppColors> {
         other.pendingSyncIndicator,
         t,
       )!,
+      whatsappGreen: _lerpColor(whatsappGreen, other.whatsappGreen, t)!,
     );
   }
 }

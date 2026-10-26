@@ -6,6 +6,7 @@ import '../../../app/layout/app_page.dart';
 import '../../../app/layout/page_layout.dart';
 import '../../auth/presentation/confirm_sign_out.dart';
 import '../../auth/presentation/sign_out.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../../settings/presentation/appearance_section.dart';
 import 'vet_gps_capture_card.dart';
 
@@ -34,6 +35,16 @@ class VetMoreScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
         ],
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.badge_outlined),
+            title: const Text('Your profile'),
+            subtitle: const Text('Name, phone, services, visibility'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => const VetProfileRoute().push(context),
+          ),
+        ),
+        const SizedBox(height: 16),
         const VetGpsCaptureCard(),
         const SizedBox(height: 24),
         const AppearanceSection(),

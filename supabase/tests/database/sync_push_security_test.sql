@@ -301,7 +301,7 @@ select ok(
 
 -- ── 18. list_available_vets not executable by anon ───────────────────────────
 select ok(
-  not has_function_privilege('anon', 'public.list_available_vets(uuid)', 'execute'),
+  not has_function_privilege('anon', 'public.list_available_vets(uuid, integer)', 'execute'),
   'anon cannot execute list_available_vets'
 );
 

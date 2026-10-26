@@ -3,125 +3,198 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/empty_state.dart';
+import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/offline_notice.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
-import '../data/vet_directory_repository.dart';
+import '../../../core/error/failure.dart';
+import '../../../core/error/failure_mapper.dart';
+import '../domain/available_vet.dart';
 import '../domain/vet_contact_launcher.dart';
 import 'vet_inbox_providers.dart';
 
-/// Farmer-facing screen: find a vet near their farm and contact them via
-/// WhatsApp, SMS (Airtel/MTN), or a phone call.
 class FindVetScreen extends ConsumerWidget {
   const FindVetScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final farmId = ref.watch(primaryFarmProvider).value?.id;
-    final vetsAsync = ref.watch(availableVetsProvider(farmId));
+    final profile = ref.watch(userProfileProvider).value;
+    final farmAsync = ref.watch(primaryFarmProvider);
 
     return AppPage(
       title: 'Find a Vet',
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Header(),
-          Expanded(
-            child: AsyncStateView(
-              value: vetsAsync,
-              skeleton: const ListSkeleton(),
-              onRetry: () => ref.invalidate(availableVetsProvider(farmId)),
-              builder: (vets) {
-                if (vets.isEmpty) {
-                  return const EmptyState(
-                    icon: Icons.person_search_outlined,
-                    title: 'No vets found nearby',
-                    message:
-                        'Veterinary officers near your farm will appear here '
-                        'once they register and share their location.',
-                  );
-                }
-                return _VetList(vets: vets);
-              },
-            ),
-          ),
-        ],
-      ),
+      scroll: false,
+      frame: false,
+      body: farmAsync.isLoading && !farmAsync.hasValue
+          ? const ListSkeleton()
+          : profile?.isDemo == true
+              ? const EmptyState(
+                  icon: Icons.lock_outline,
+                  title: 'Sign in to find vets',
+                  message:
+                      'Demo mode has no cloud session. Sign in with a farmer '
+                      'account to see veterinary officers near your farm.',
+                )
+              : _FindVetBody(farmId: farmAsync.value?.id),
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+class _FindVetBody extends ConsumerWidget {
+  const _FindVetBody({required this.farmId});
 
-class _VetList extends StatelessWidget {
-  const _VetList({required this.vets});
-  final List<AvailableVet> vets;
+  final String? farmId;
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.sm,
-        AppSpacing.md,
-        AppSpacing.xl,
-      ),
-      itemCount: vets.length,
-      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
-      itemBuilder: (ctx, i) => _VetCard(vet: vets[i]),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final browse = ref.watch(availableVetsProvider(farmId));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _Header(browse: browse.asData?.value),
+        Expanded(
+          child: AsyncStateView(
+            value: browse,
+            skeleton: const ListSkeleton(),
+            onRetry: () => ref.invalidate(availableVetsProvider(farmId)),
+            error: (error, _) {
+              if (error is SyncSignedOutDemo) {
+                return const EmptyState(
+                  icon: Icons.lock_outline,
+                  title: 'Sign in to find vets',
+                  message:
+                      'Sign in with a farmer account to see veterinary '
+                      'officers near your farm.',
+                );
+              }
+              return ErrorState(
+                failure: FailureMapper.mapObject(error),
+                onRetry: () =>
+                    ref.invalidate(availableVetsProvider(farmId)),
+              );
+            },
+            builder: (data) {
+              if (data.vets.isEmpty) {
+                return RefreshIndicator(
+                  onRefresh: () =>
+                      ref.refresh(availableVetsProvider(farmId).future),
+                  child: ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      SizedBox(height: 48),
+                      EmptyState(
+                        icon: Icons.person_search_outlined,
+                        title: 'No vets found nearby',
+                        message:
+                            'Veterinary officers appear here once they are '
+                            'verified and share a contact number.',
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: () =>
+                    ref.refresh(availableVetsProvider(farmId).future),
+                child: ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.md,
+                    AppSpacing.sm,
+                    AppSpacing.md,
+                    AppSpacing.xl,
+                  ),
+                  itemCount: data.vets.length,
+                  separatorBuilder: (_, _) =>
+                      const SizedBox(height: AppSpacing.xs),
+                  itemBuilder: (ctx, i) => _VetCard(vet: data.vets[i]),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
+  const _Header({this.browse});
+
+  final AvailableVetsBrowse? browse;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final needsLocation = browse != null && !browse!.farmHasLocation;
+    final message = browse?.farmNeedsSync == true
+        ? 'Sync your farm to see distances.'
+        : needsLocation
+            ? 'Add your farm location to see distances.'
+            : 'Contact a vet with WhatsApp, SMS, or a call.';
+
+    return Material(
       color: context.scheme.surfaceContainerLow,
-      padding: const EdgeInsets.fromLTRB(
-          AppSpacing.md, AppSpacing.sm, AppSpacing.md, AppSpacing.md),
-      child: Row(
-        children: [
-          Icon(Icons.location_on_outlined,
-              color: context.scheme.primary, size: 18),
-          const SizedBox(width: AppSpacing.xs),
-          Expanded(
-            child: Text(
-              'Vets sorted by distance from your farm. '
-              'Tap a card to contact them directly.',
-              style: context.text.bodySmall?.copyWith(
-                color: context.scheme.onSurfaceVariant,
-              ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.md,
+          AppSpacing.sm,
+          AppSpacing.md,
+          AppSpacing.md,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.location_on_outlined,
+                  color: context.scheme.primary,
+                  size: 18,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: context.text.bodySmall?.copyWith(
+                      color: context.scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            if (needsLocation) ...[
+              const SizedBox(height: AppSpacing.sm),
+              FilledButton.tonal(
+                onPressed: () => const MoreFarmRoute().push(context),
+                child: const Text('Add farm location'),
+              ),
+            ],
+            if (browse?.fromCache == true) ...[
+              const SizedBox(height: AppSpacing.sm),
+              StaleDataCaption(updatedLabel: _relative(browse!.fetchedAt)),
+            ],
+          ],
+        ),
       ),
     );
   }
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 class _VetCard extends StatelessWidget {
   const _VetCard({required this.vet});
+
   final AvailableVet vet;
 
   @override
   Widget build(BuildContext context) {
     final scheme = context.scheme;
-    final hasPhone = vet.phone != null && vet.phone!.isNotEmpty;
-    final normalizedPhone = hasPhone
-        ? VetContactLauncher.normalizeUgandaPhone(vet.phone!)
-        : null;
+    final phone = VetContactLauncher.normalizeUgandaPhone(vet.phone);
 
     return Card(
       elevation: AppSpacing.elevationCard,
@@ -131,7 +204,6 @@ class _VetCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Name row + distance badge
             Row(
               children: [
                 CircleAvatar(
@@ -157,8 +229,8 @@ class _VetCard extends StatelessWidget {
                       ),
                       Text(
                         vet.subtitle,
-                        style: context.text.bodySmall?.copyWith(
-                            color: scheme.onSurfaceVariant),
+                        style: context.text.bodySmall
+                            ?.copyWith(color: scheme.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -166,7 +238,9 @@ class _VetCard extends StatelessWidget {
                 if (vet.distanceKm != null)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xs, vertical: AppSpacing.xxs),
+                      horizontal: AppSpacing.xs,
+                      vertical: AppSpacing.xxs,
+                    ),
                     decoration: BoxDecoration(
                       color: scheme.secondaryContainer,
                       borderRadius:
@@ -182,25 +256,25 @@ class _VetCard extends StatelessWidget {
                   ),
               ],
             ),
-            // Services
             const SizedBox(height: AppSpacing.xs),
             Wrap(
               spacing: AppSpacing.xs,
               children: [
                 if (vet.offersConsultation)
-                  _ServiceChip(
-                      icon: Icons.medical_services_outlined,
-                      label: 'Consultation'),
+                  const _ServiceChip(
+                    icon: Icons.medical_services_outlined,
+                    label: 'Consultation',
+                  ),
                 if (vet.offersFarmVisit)
-                  _ServiceChip(
-                      icon: Icons.agriculture_outlined,
-                      label: 'Farm visit'),
+                  const _ServiceChip(
+                    icon: Icons.agriculture_outlined,
+                    label: 'Farm visit',
+                  ),
               ],
             ),
             const SizedBox(height: AppSpacing.md),
-            // Contact buttons
-            if (hasPhone && normalizedPhone != null)
-              _ContactButtons(vet: vet, phone: normalizedPhone)
+            if (phone != null)
+              _ContactButtons(vet: vet, phone: phone)
             else
               Text(
                 'No contact number available yet.',
@@ -214,18 +288,19 @@ class _VetCard extends StatelessWidget {
   }
 
   static String _initials(String name) {
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.length >= 2 &&
+        parts.first.isNotEmpty &&
+        parts.last.isNotEmpty) {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     }
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 class _ContactButtons extends StatelessWidget {
   const _ContactButtons({required this.vet, required this.phone});
+
   final AvailableVet vet;
   final String phone;
 
@@ -235,11 +310,11 @@ class _ContactButtons extends StatelessWidget {
       spacing: AppSpacing.xs,
       runSpacing: AppSpacing.xs,
       children: [
-        // WhatsApp
         _ContactButton(
           icon: Icons.chat_outlined,
           label: 'WhatsApp',
-          color: const Color(0xFF25D366),
+          semanticsLabel: 'Message ${vet.displayName} on WhatsApp',
+          color: context.colors.whatsappGreen,
           onTap: () => _launch(
             context,
             () => VetContactLauncher.whatsApp(
@@ -251,10 +326,10 @@ class _ContactButtons extends StatelessWidget {
             fallback: 'WhatsApp is not installed.',
           ),
         ),
-        // SMS
         _ContactButton(
           icon: Icons.sms_outlined,
           label: 'SMS',
+          semanticsLabel: 'Send ${vet.displayName} an SMS',
           color: context.scheme.primary,
           onTap: () => _launch(
             context,
@@ -267,10 +342,10 @@ class _ContactButtons extends StatelessWidget {
             fallback: 'Could not open SMS app.',
           ),
         ),
-        // Call
         _ContactButton(
           icon: Icons.call_outlined,
           label: 'Call',
+          semanticsLabel: 'Call ${vet.displayName}',
           color: context.scheme.tertiary,
           onTap: () => _launch(
             context,
@@ -298,35 +373,41 @@ class _ContactButton extends StatelessWidget {
   const _ContactButton({
     required this.icon,
     required this.label,
+    required this.semanticsLabel,
     required this.color,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
+  final String semanticsLabel;
   final Color color;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: onTap,
-      style: OutlinedButton.styleFrom(
-        foregroundColor: color,
-        side: BorderSide(color: color.withValues(alpha: 0.6)),
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.sm, vertical: AppSpacing.xxs),
-        minimumSize: const Size(0, 36),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    return Semantics(
+      button: true,
+      label: semanticsLabel,
+      child: OutlinedButton.icon(
+        onPressed: onTap,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: color,
+          side: BorderSide(color: color.withValues(alpha: 0.6)),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          minimumSize: const Size(48, 48),
+          tapTargetSize: MaterialTapTargetSize.padded,
+        ),
+        icon: Icon(icon, size: 18),
+        label: Text(label, style: context.text.labelMedium),
       ),
-      icon: Icon(icon, size: 16),
-      label: Text(label, style: const TextStyle(fontSize: 13)),
     );
   }
 }
 
 class _ServiceChip extends StatelessWidget {
   const _ServiceChip({required this.icon, required this.label});
+
   final IconData icon;
   final String label;
 
@@ -340,9 +421,24 @@ class _ServiceChip extends StatelessWidget {
         Text(
           label,
           style: context.text.labelSmall?.copyWith(
-              color: context.scheme.onSurfaceVariant),
+            color: context.scheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
   }
+}
+
+String _relative(DateTime at) {
+  final delta = DateTime.now().difference(at);
+  if (delta.inMinutes < 1) {
+    return 'just now';
+  }
+  if (delta.inHours < 1) {
+    return '${delta.inMinutes} min ago';
+  }
+  if (delta.inHours < 24) {
+    return '${delta.inHours} h ago';
+  }
+  return '${delta.inDays} d ago';
 }

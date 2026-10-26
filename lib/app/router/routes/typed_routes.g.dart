@@ -17,6 +17,8 @@ List<RouteBase> get $appRoutes => [
   $moreFarmRoute,
   $notificationsSettingsRoute,
   $feedItemDetailRoute,
+  $findVetRoute,
+  $vetProfileRoute,
 ];
 
 RouteBase get $splashRoute => GoRouteData.$route(
@@ -447,6 +449,61 @@ mixin $FeedItemDetailRoute on GoRouteData {
   @override
   String get location =>
       GoRouteData.$location('/feed/${Uri.encodeComponent(_self.feedItemId)}');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $findVetRoute => GoRouteData.$route(
+  path: '/more/vets',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: FindVetRoute.$parentNavigatorKey,
+  factory: $FindVetRoute._fromState,
+);
+
+mixin $FindVetRoute on GoRouteData {
+  static FindVetRoute _fromState(GoRouterState state) => const FindVetRoute();
+
+  @override
+  String get location => GoRouteData.$location('/more/vets');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $vetProfileRoute => GoRouteData.$route(
+  path: '/vet/more/profile',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: VetProfileRoute.$parentNavigatorKey,
+  factory: $VetProfileRoute._fromState,
+);
+
+mixin $VetProfileRoute on GoRouteData {
+  static VetProfileRoute _fromState(GoRouterState state) =>
+      const VetProfileRoute();
+
+  @override
+  String get location => GoRouteData.$location('/vet/more/profile');
 
   @override
   void go(BuildContext context) => context.go(location);

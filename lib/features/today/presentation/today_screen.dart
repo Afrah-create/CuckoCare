@@ -17,7 +17,6 @@ import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../batches/presentation/batch_providers.dart';
 import '../../home/presentation/farm_profile_banner.dart';
-import '../../vet/presentation/find_vet_screen.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
@@ -592,11 +591,7 @@ class _QuickActions extends StatelessWidget {
           label: const Text('Sync now'),
         ),
         FilledButton.tonalIcon(
-          onPressed: () => Navigator.of(context, rootNavigator: true).push(
-            MaterialPageRoute<void>(
-              builder: (_) => const FindVetScreen(),
-            ),
-          ),
+          onPressed: () => const FindVetRoute().push(context),
           icon: const Icon(Icons.person_search_outlined),
           label: const Text('Find a vet'),
         ),

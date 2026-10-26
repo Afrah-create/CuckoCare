@@ -18,6 +18,7 @@ import '../../data_platform/db/synced_write.dart';
 import '../../features/health/data/health_incident_photo_storage.dart';
 import '../../features/health/data/health_repository.dart';
 import '../../features/vet/data/vet_inbox_repository.dart';
+import '../../features/vet/data/vet_directory_cache.dart';
 import '../../features/vet/data/vet_directory_repository.dart';
 import '../../features/vet/data/vet_location_repository.dart';
 import '../../features/vet/data/vet_map_repository.dart';
@@ -271,6 +272,10 @@ final vetMapRepositoryProvider = Provider<VetMapRepository>((ref) {
 
 final vetDirectoryRepositoryProvider = Provider<VetDirectoryRepository>((ref) {
   return VetDirectoryRepository();
+});
+
+final vetDirectoryCacheProvider = Provider<VetDirectoryCache>((ref) {
+  return VetDirectoryCache();
 });
 
 final vetLocationRepositoryProvider = Provider<VetLocationRepository>((ref) {

@@ -7,7 +7,6 @@ import '../../auth/presentation/confirm_sign_out.dart';
 import '../../auth/presentation/sign_out.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../settings/presentation/appearance_section.dart';
-import '../../vet/presentation/find_vet_screen.dart';
 
 class MoreScreen extends ConsumerWidget {
   const MoreScreen({super.key});
@@ -73,11 +72,7 @@ class MoreScreen extends ConsumerWidget {
             subtitle: const Text(
                 'Locate a veterinary officer near your farm and contact them'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.of(context, rootNavigator: true).push(
-              MaterialPageRoute<void>(
-                builder: (_) => const FindVetScreen(),
-              ),
-            ),
+            onTap: () => const FindVetRoute().push(context),
           ),
         ),
         const SizedBox(height: 24),

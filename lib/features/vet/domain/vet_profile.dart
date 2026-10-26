@@ -10,6 +10,9 @@ class VetProfile {
     this.offersConsultation = true,
     this.offersFarmVisit = true,
     this.optedIn = true,
+    this.isActive = true,
+    this.isVerified = false,
+    this.hasLocation = false,
   });
 
   final String userId;
@@ -20,6 +23,9 @@ class VetProfile {
   final bool offersConsultation;
   final bool offersFarmVisit;
   final bool optedIn;
+  final bool isActive;
+  final bool isVerified;
+  final bool hasLocation;
 
   factory VetProfile.fromJson(Map<String, dynamic> json) => VetProfile(
         userId: json['user_id'] as String,
@@ -30,5 +36,9 @@ class VetProfile {
         offersConsultation: json['offers_consultation'] as bool? ?? true,
         offersFarmVisit: json['offers_farm_visit'] as bool? ?? true,
         optedIn: json['opted_in'] as bool? ?? true,
+        isActive: json['is_active'] as bool? ?? true,
+        isVerified: json['is_verified'] as bool? ?? false,
+        hasLocation:
+            json['latitude'] != null && json['longitude'] != null,
       );
 }

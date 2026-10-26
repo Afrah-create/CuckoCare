@@ -51,7 +51,7 @@ void main() {
             await tester.pump();
 
             expect(tester.takeException(), isNull);
-            if (path != '/auth/signup' && path != '/feed') {
+            if (path != '/auth/signup') {
               expect(find.text('Primary action'), findsOneWidget);
             }
           },

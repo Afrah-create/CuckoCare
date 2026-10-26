@@ -25,6 +25,13 @@ void main() {
     exit(1);
   }
 
+  final vetSeed = File('supabase/seed_dev_vets.sql');
+  if (vetSeed.existsSync()) {
+    buffer
+      ..writeln()
+      ..writeln(vetSeed.readAsStringSync().trim());
+  }
+
   File('supabase/seed.sql').writeAsStringSync(buffer.toString());
   stdout.writeln('Wrote supabase/seed.sql');
 }

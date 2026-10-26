@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -7,6 +8,7 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_busy_indicator.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../data/feed_report_generator.dart';
@@ -96,18 +98,14 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
       title: 'Feed Report',
       leading: IconButton(
         icon: const Icon(Icons.close),
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => context.pop(),
       ),
       actions: [
         if (_state is _Loaded)
           (_state as _Loaded).exporting
               ? const Padding(
                   padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
+                  child: AppBusyIndicator(size: 20),
                 )
               : IconButton(
                   icon: const Icon(Icons.download_outlined),
@@ -283,13 +281,7 @@ class _ReportPreview extends ConsumerWidget {
         FilledButton.icon(
           onPressed: exporting ? null : onDownload,
           icon: exporting
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
-                )
+              ? const AppBusyIndicator(size: 18)
               : const Icon(Icons.download_outlined),
           label: Text(exporting ? 'Preparing…' : 'Download / Share CSV'),
         ),

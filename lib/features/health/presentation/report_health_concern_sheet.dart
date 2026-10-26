@@ -416,8 +416,8 @@ class _ReportHealthConcernSheetState
                                         child: SkeletonLine(height: 8),
                                       ),
                                       error: (_, __) => const SizedBox.shrink(),
-                                      data: (vets) {
-                                        if (vets.isEmpty) {
+                                      data: (browse) {
+                                        if (browse.vets.isEmpty) {
                                           return const SizedBox.shrink();
                                         }
                                         return DropdownButtonFormField<String?>(
@@ -430,7 +430,7 @@ class _ReportHealthConcernSheetState
                                               value: null,
                                               child: Text('Any available vet'),
                                             ),
-                                            for (final vet in vets)
+                                            for (final vet in browse.vets)
                                               DropdownMenuItem<String?>(
                                                 value: vet.userId,
                                                 child: Text(vet.displayName),

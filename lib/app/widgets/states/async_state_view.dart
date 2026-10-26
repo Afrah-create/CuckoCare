@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/error/failure_mapper.dart';
 import '../../theme/app_motion.dart';
 import '../inline_banner.dart';
+import 'error_state.dart';
 
 /// The only way a screen paints an [AsyncValue].
 ///
@@ -219,7 +221,10 @@ class _AsyncStateViewState<T> extends State<AsyncStateView<T>> {
 
   Widget _error(Object error, StackTrace stack) {
     return widget.error?.call(error, stack) ??
-        const Center(child: Text('Something went wrong. Please try again.'));
+        ErrorState(
+          failure: FailureMapper.mapObject(error),
+          onRetry: widget.onRetry,
+        );
   }
 }
 

@@ -8,7 +8,16 @@ abstract final class FailureMapper {
       SyncOffline() => _offline,
       SyncTimeout() => _timeout,
       LocationCaptureTimeout() => _timeout,
-      SyncServerFailure() => _server,
+      SyncServerFailure(:final message) => message.toUpperCase() == 'PGRST202'
+          ? _info(
+              kind: UiFailureKind.server,
+              code: 'PGRST202',
+              title: 'We could not reach the server',
+              message: 'Try again in a moment.',
+              action: UiAction.retry,
+              presentation: UiPresentation.page,
+            )
+          : _server,
       SyncSchemaMismatch() => _server,
       AuthFailure() => _auth,
       SyncAuthRequired() => _auth,
@@ -66,16 +75,49 @@ abstract final class FailureMapper {
     if (error is Failure) {
       return map(error);
     }
+    final classified = _classifyRemote(error);
+    if (classified != null) {
+      return map(classified);
+    }
     final text = error.toString().toLowerCase();
     if (text.contains('loadtimedout') || text.contains('timeout')) {
       return _timeout;
     }
     if (text.contains('socket') ||
         text.contains('network') ||
-        text.contains('offline')) {
+        text.contains('offline') ||
+        text.contains('failed host lookup') ||
+        text.contains('clientexception')) {
       return _offline;
     }
     return _unknown;
+  }
+
+  static Failure? _classifyRemote(Object error) {
+    try {
+      final dynamic e = error;
+      final code = e.code;
+      final message = e.message;
+      if (code is! String && message is! String) {
+        return null;
+      }
+      final text = '${code ?? ''} ${message ?? ''}'.toLowerCase();
+      final c = (code is String ? code : '').toUpperCase();
+      if (c == 'PGRST202' ||
+          text.contains('schema cache') ||
+          text.contains('could not find the function')) {
+        return const SyncServerFailure('PGRST202', retryable: false);
+      }
+      if (c == '42501' || text.contains('forbidden')) {
+        return const PermissionFailure();
+      }
+      if (c == '28000' || text.contains('not authenticated')) {
+        return const SyncAuthRequired();
+      }
+    } catch (_) {
+      return null;
+    }
+    return null;
   }
 
   static String messageFor(Failure failure) => map(failure).message;

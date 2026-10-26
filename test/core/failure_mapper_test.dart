@@ -64,10 +64,28 @@ void main() {
       FailureMapper.mapObject(LoadTimedOutShim()),
       isA<UiFailure>().having((f) => f.kind, 'kind', UiFailureKind.timeout),
     );
+    expect(
+      FailureMapper.mapObject(FakePostgrest('PGRST202', 'schema cache')).code,
+      'PGRST202',
+    );
+    expect(
+      FailureMapper.mapObject(FakePostgrest('42501', 'forbidden')).kind,
+      UiFailureKind.permissionDenied,
+    );
+    expect(
+      FailureMapper.mapObject(FakePostgrest('28000', 'not authenticated')).kind,
+      UiFailureKind.authRequired,
+    );
   });
 }
 
 class LoadTimedOutShim implements Exception {
   @override
   String toString() => 'LoadTimedOut';
+}
+
+class FakePostgrest {
+  FakePostgrest(this.code, this.message);
+  final String code;
+  final String message;
 }

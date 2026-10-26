@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/states/app_dialog.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/empty_state.dart';
@@ -118,32 +120,20 @@ class FeedItemDetailScreen extends ConsumerWidget {
     WidgetRef ref,
     FeedItem item,
   ) async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete feed item?'),
-        content: Text(
-          'This will hide "${item.name}" from the list. '
-          'Transaction history is preserved.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      title: 'Delete feed item?',
+      message:
+          'This will hide "${item.name}" from the list. Transaction history is preserved.',
+      confirmLabel: 'Delete',
+      destructive: true,
     );
     if (confirmed != true || !context.mounted) return;
     try {
       await ref.read(feedRepositoryProvider).deleteFeedItem(item);
       if (context.mounted) {
         AppSnack.success(context, '${item.name} removed');
-        Navigator.of(context).pop();
+        context.pop();
       }
     } catch (e) {
       if (context.mounted) {
