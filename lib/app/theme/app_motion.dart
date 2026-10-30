@@ -56,4 +56,6 @@ class MotionTokens {
       reduceMotion ? Curves.linear : AppMotion.curveStandard;
   Curve get curveEmphasized =>
       reduceMotion ? Curves.linear : AppMotion.curveEmphasized;
+  Curve get curveDecelerate =>
+      reduceMotion ? Curves.linear : AppMotion.curveDecelerate;
 }

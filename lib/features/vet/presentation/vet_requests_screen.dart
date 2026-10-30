@@ -9,6 +9,7 @@ import '../../../app/layout/content_frame.dart';
 import '../../../app/layout/layout_scope.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/motion/appear.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
 import '../../../app/widgets/states/offline_notice.dart';
@@ -154,11 +155,13 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
             ContentFrame.scrollBottomInset(context),
           ),
           children: [
-            TodayGreetingCard(
-              greeting: greeting,
-              subtitle: online
-                  ? 'Farmer requests waiting for you.'
-                  : 'You are offline. Pull down to refresh when you are back.',
+            Appear(
+              child: TodayGreetingCard(
+                greeting: greeting,
+                subtitle: online
+                    ? 'Farmer requests waiting for you.'
+                    : 'You are offline. Pull down to refresh when you are back.',
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             if (!online) ...[
@@ -276,9 +279,12 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
       return children;
     }
 
-    for (final item in filtered) {
+    for (var i = 0; i < filtered.length; i++) {
+      final item = filtered[i];
       children.add(
-        VetRequestTile(
+        Appear(
+          delay: appearStagger(i),
+          child: VetRequestTile(
             item: item,
             onOpenDetail: () => openVetIncidentDetail(
               context,
@@ -297,6 +303,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
               action: VetCaseAction.decline,
             ),
           ),
+        ),
       );
       children.add(const SizedBox(height: AppSpacing.sm));
     }

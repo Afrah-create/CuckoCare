@@ -17,6 +17,8 @@ import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../batches/presentation/batch_providers.dart';
 import '../../home/presentation/farm_profile_banner.dart';
+import '../../../app/widgets/motion/appear.dart';
+import '../../../app/widgets/motion/press_scale.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
@@ -143,7 +145,9 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: horizontal),
-                    child: _InlineGreetingLine(greeting: greeting),
+                    child: Appear(
+                      child: _InlineGreetingLine(greeting: greeting),
+                    ),
                   ),
                   SizedBox(height: layout.gutter),
                   Expanded(
@@ -155,11 +159,17 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
                           physics: const AlwaysScrollableScrollPhysics(
                             parent: BouncingScrollPhysics(),
                           ),
-                          child: needsAttention,
+                          child: Appear(
+                            delay: appearStagger(1),
+                            child: needsAttention,
+                          ),
                         ),
                         secondary: SingleChildScrollView(
                           padding: EdgeInsets.only(bottom: bottomInset),
-                          child: atAGlance,
+                          child: Appear(
+                            delay: appearStagger(2),
+                            child: atAGlance,
+                          ),
                         ),
                       ),
                     ),
@@ -194,21 +204,30 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   banner,
-                  TodayGreetingCard(
-                    greeting: greeting,
-                    subtitle: "Here's what needs attention on your farm today.",
-                    compact: true,
+                  Appear(
+                    child: TodayGreetingCard(
+                      greeting: greeting,
+                      subtitle:
+                          "Here's what needs attention on your farm today.",
+                      compact: true,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
-                  needsAttention,
+                  Appear(delay: appearStagger(1), child: needsAttention),
                   const SizedBox(height: AppSpacing.lg),
-                  atAGlance,
+                  Appear(delay: appearStagger(2), child: atAGlance),
                   const SizedBox(height: AppSpacing.lg),
-                  const _SectionHeader(title: 'Quick actions'),
+                  Appear(
+                    delay: appearStagger(3),
+                    child: const _SectionHeader(title: 'Quick actions'),
+                  ),
                   const SizedBox(height: AppSpacing.sm),
-                  _QuickActions(
-                    onSync: () =>
-                        ref.read(syncEngineProvider).syncOnce(force: true),
+                  Appear(
+                    delay: appearStagger(4),
+                    child: _QuickActions(
+                      onSync: () =>
+                          ref.read(syncEngineProvider).syncOnce(force: true),
+                    ),
                   ),
                 ]),
               ),
@@ -329,29 +348,40 @@ class _MetricGrid extends ConsumerWidget {
           spacing: AppSpacing.sm,
           runSpacing: AppSpacing.sm,
           children: [
-            _MetricTile(
-              width: tileWidth,
-              icon: Icons.view_module_outlined,
-              label: 'Active batches',
-              count: active,
+            Appear(
+              child: _MetricTile(
+                width: tileWidth,
+                icon: Icons.view_module_outlined,
+                label: 'Active batches',
+                count: active,
+              ),
             ),
-            _MetricTile(
-              width: tileWidth,
-              icon: Icons.egg_outlined,
-              label: 'Live birds',
-              count: liveBirds,
+            Appear(
+              delay: appearStagger(1),
+              child: _MetricTile(
+                width: tileWidth,
+                icon: Icons.egg_outlined,
+                label: 'Live birds',
+                count: liveBirds,
+              ),
             ),
-            _MetricTile(
-              width: tileWidth,
-              icon: Icons.vaccines_outlined,
-              label: 'Due this week',
-              count: dueWeek,
+            Appear(
+              delay: appearStagger(2),
+              child: _MetricTile(
+                width: tileWidth,
+                icon: Icons.vaccines_outlined,
+                label: 'Due this week',
+                count: dueWeek,
+              ),
             ),
-            _MetricTile(
-              width: tileWidth,
-              icon: Icons.favorite_outline,
-              label: 'Health alerts',
-              value: '—',
+            Appear(
+              delay: appearStagger(3),
+              child: _MetricTile(
+                width: tileWidth,
+                icon: Icons.favorite_outline,
+                label: 'Health alerts',
+                value: '—',
+              ),
             ),
           ],
         );
@@ -477,25 +507,34 @@ class _NeedsAttentionList extends ConsumerWidget {
       ),
       builder: (tasks) {
         return Column(
-          children: tasks.take(8).map((task) {
-            final label = _taskLabel(task.stepSnapshot, task.stepId);
-            return Card(
-              margin: const EdgeInsets.only(bottom: AppSpacing.xs),
-              child: ListTile(
-                leading: Icon(
-                  Icons.vaccines_outlined,
-                  color: context.colors.logoTint,
+          children: [
+            for (final entry in tasks.take(8).toList().asMap().entries)
+              Appear(
+                delay: appearStagger(entry.key),
+                child: PressScale(
+                  child: Card(
+                    margin: const EdgeInsets.only(bottom: AppSpacing.xs),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.vaccines_outlined,
+                        color: context.colors.logoTint,
+                      ),
+                      title: Text(
+                        _taskLabel(entry.value.stepSnapshot, entry.value.stepId),
+                      ),
+                      subtitle: Text(
+                        DateFormat.yMMMd().format(entry.value.dueOn.toUtc()),
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => BatchVaccinationTaskRoute(
+                        batchId: entry.value.batchId,
+                        taskId: entry.value.id,
+                      ).push(context),
+                    ),
+                  ),
                 ),
-                title: Text(label),
-                subtitle: Text(DateFormat.yMMMd().format(task.dueOn.toUtc())),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => BatchVaccinationTaskRoute(
-                  batchId: task.batchId,
-                  taskId: task.id,
-                ).push(context),
               ),
-            );
-          }).toList(),
+          ],
         );
       },
     );

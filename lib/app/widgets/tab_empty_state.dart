@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
+import '../theme/theme_context.dart';
+import 'poultry_empty_art.dart';
+
 class TabEmptyState extends StatelessWidget {
   const TabEmptyState({
     required this.icon,
@@ -18,41 +22,31 @@ class TabEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final scheme = theme.colorScheme;
-
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: scheme.primaryContainer.withValues(alpha: 0.35),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, size: 40, color: scheme.primary),
-            ),
-            const SizedBox(height: 20),
+            PoultryEmptyArt(size: 88, fallbackIcon: icon),
+            const SizedBox(height: AppSpacing.md),
             Text(
               title,
-              style: theme.textTheme.titleLarge?.copyWith(
+              style: context.text.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
+              style: context.text.bodyMedium?.copyWith(
+                color: context.scheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
             if (actionLabel != null && onAction != null) ...[
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.md),
               FilledButton.tonal(onPressed: onAction, child: Text(actionLabel!)),
             ],
           ],

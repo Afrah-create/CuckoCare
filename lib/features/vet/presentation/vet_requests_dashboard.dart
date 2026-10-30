@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../app/layout/layout_scope.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/motion/appear.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../domain/vet_inbox_stats.dart';
 
@@ -31,33 +32,44 @@ class VetRequestsStatsPanel extends StatelessWidget {
               spacing: AppSpacing.sm,
               runSpacing: AppSpacing.sm,
               children: [
-                _GlanceTile(
-                  width: tileWidth,
-                  maxHeight: maxH,
-                  icon: Icons.inbox_outlined,
-                  label: 'New requests',
-                  count: stats.pending,
+                Appear(
+                  child: _GlanceTile(
+                    width: tileWidth,
+                    maxHeight: maxH,
+                    icon: Icons.inbox_outlined,
+                    label: 'New requests',
+                    count: stats.pending,
+                  ),
                 ),
-                _GlanceTile(
-                  width: tileWidth,
-                  maxHeight: maxH,
-                  icon: Icons.assignment_outlined,
-                  label: 'Active cases',
-                  count: stats.active,
+                Appear(
+                  delay: appearStagger(1),
+                  child: _GlanceTile(
+                    width: tileWidth,
+                    maxHeight: maxH,
+                    icon: Icons.assignment_outlined,
+                    label: 'Active cases',
+                    count: stats.active,
+                  ),
                 ),
-                _GlanceTile(
-                  width: tileWidth,
-                  maxHeight: maxH,
-                  icon: Icons.directions_walk_outlined,
-                  label: 'In progress',
-                  count: stats.inProgress,
+                Appear(
+                  delay: appearStagger(2),
+                  child: _GlanceTile(
+                    width: tileWidth,
+                    maxHeight: maxH,
+                    icon: Icons.directions_walk_outlined,
+                    label: 'In progress',
+                    count: stats.inProgress,
+                  ),
                 ),
-                _GlanceTile(
-                  width: tileWidth,
-                  maxHeight: maxH,
-                  icon: Icons.person_pin_outlined,
-                  label: 'Directed to you',
-                  count: stats.directedToYouPending,
+                Appear(
+                  delay: appearStagger(3),
+                  child: _GlanceTile(
+                    width: tileWidth,
+                    maxHeight: maxH,
+                    icon: Icons.person_pin_outlined,
+                    label: 'Directed to you',
+                    count: stats.directedToYouPending,
+                  ),
                 ),
               ],
             );

@@ -8,6 +8,8 @@ import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/motion/appear.dart';
+import '../../../app/widgets/motion/press_scale.dart';
 import '../../../app/widgets/states/app_busy_indicator.dart';
 import '../../../app/widgets/states/app_dialog.dart';
 import '../../../app/widgets/states/app_snack.dart';
@@ -267,7 +269,12 @@ class _StockTab extends ConsumerWidget {
               sliver: SliverList.separated(
                 itemCount: stocks.length,
                 separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.xs),
-                itemBuilder: (ctx, i) => _StockCard(stock: stocks[i]),
+                itemBuilder: (ctx, i) => Appear(
+                  delay: appearStagger(i),
+                  child: PressScale(
+                    child: _StockCard(stock: stocks[i]),
+                  ),
+                ),
               ),
             ),
           ],
@@ -560,7 +567,10 @@ class _TransactionsTab extends ConsumerWidget {
             final qtyLabel =
                 '${isPositive ? '+' : '−'}${_fmtQty(qty)} ${e.item?.unit ?? ''}';
 
-            return Card(
+            return Appear(
+              delay: appearStagger(i),
+              child: PressScale(
+                child: Card(
               elevation: AppSpacing.elevationCard,
               margin: EdgeInsets.zero,
               child: Padding(
@@ -612,6 +622,8 @@ class _TransactionsTab extends ConsumerWidget {
                             color: isPositive ? colors.success : scheme.error,
                             fontWeight: FontWeight.w700)),
                   ],
+                ),
+              ),
                 ),
               ),
             );

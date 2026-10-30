@@ -5,6 +5,7 @@ import '../../layout/layout_scope.dart';
 import '../../theme/app_spacing.dart';
 import '../../theme/theme_context.dart';
 import '../app_logo.dart';
+import '../poultry_empty_art.dart';
 
 enum EmptyKind { firstUse, filtered, cleared, permission }
 
@@ -44,6 +45,8 @@ class EmptyState extends StatelessWidget {
               size: compact ? AppLogoSize.small : AppLogoSize.medium,
             ),
           )
+        : kind == EmptyKind.firstUse
+        ? PoultryEmptyArt(size: compact ? 56 : 88)
         : _IconMedallion(icon: icon, kind: kind, compact: compact);
 
     final copy = Column(

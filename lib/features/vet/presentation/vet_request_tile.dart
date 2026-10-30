@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/motion/press_scale.dart';
 import '../data/vet_inbox_repository.dart';
 import '../domain/vet_case_workflow.dart';
 
@@ -29,7 +30,8 @@ class VetRequestTile extends StatelessWidget {
     final date = DateFormat.MMMd().add_jm().format(item.createdAt.toLocal());
     final scheme = context.scheme;
 
-    return Card(
+    return PressScale(
+      child: Card(
       elevation: 0,
       color: scheme.surfaceContainerLow,
       clipBehavior: Clip.antiAlias,
@@ -204,6 +206,7 @@ class VetRequestTile extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

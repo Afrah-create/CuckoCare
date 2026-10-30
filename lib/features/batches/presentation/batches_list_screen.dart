@@ -8,6 +8,8 @@ import '../../../app/layout/layout_scope.dart';
 import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../app/widgets/motion/appear.dart';
+import '../../../app/widgets/motion/press_scale.dart';
 import '../../../app/widgets/states/animated_count.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/empty_state.dart';
@@ -185,8 +187,16 @@ class _BatchesListScreenState extends ConsumerState<BatchesListScreen> {
             padding: EdgeInsets.only(top: AppSpacing.md, bottom: bottom),
             child: _CardGrid(
               children: [
-                for (final item in items)
-                  _BatchCard(summary: item, permissions: permissions),
+                for (final entry in items.asMap().entries)
+                  Appear(
+                    delay: appearStagger(entry.key),
+                    child: PressScale(
+                      child: _BatchCard(
+                        summary: entry.value,
+                        permissions: permissions,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
