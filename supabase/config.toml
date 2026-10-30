@@ -10,11 +10,14 @@ enabled = true
 port = 54322
 major_version = 15
 
-# Sign-up without Supabase email confirmation (OTP via Gmail planned later).
 [auth]
 enabled = true
 
 [auth.email]
 enable_signup = true
-enable_confirmations = false
+enable_confirmations = true
 double_confirm_changes = false
+
+# Called while signed out (sign-up and password reset).
+[functions.email-otp]
+verify_jwt = false

@@ -13,6 +13,7 @@ import '../layout/shell_chrome.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/cuco_app_bar.dart';
 import 'back_behavior.dart';
+import 'tab_scroll_registry.dart';
 import 'vet_shell_destinations.dart';
 
 class VetShell extends ConsumerStatefulWidget {
@@ -51,6 +52,7 @@ class _VetShellState extends ConsumerState<VetShell> {
       while (router.canPop()) {
         router.pop();
       }
+      ref.read(tabScrollRegistryProvider.notifier).scrollToTop(index);
       return;
     }
     shell.goBranch(index, initialLocation: false);

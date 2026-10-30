@@ -11,7 +11,7 @@ import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/progress_button.dart';
 import '../../../core/logging/app_logger.dart';
 import '../../../core/time/kampala_today.dart';
-import '../../../data_platform/db/app_database.dart';
+import '../../batches/presentation/batch_providers.dart';
 import '../domain/feed_models.dart';
 import 'feed_providers.dart';
 
@@ -125,15 +125,7 @@ class _RecordFeedTransactionSheetState
   @override
   Widget build(BuildContext context) {
     final today = ref.watch(kampalaTodayProvider);
-    final activeBatches = ref.watch(
-      StreamProvider<List<BatchRow>>((ref) {
-        final farmId = ref.watch(primaryFarmProvider).value?.id;
-        if (farmId == null) return Stream.value(<BatchRow>[]);
-        return ref
-            .watch(batchRepositoryProvider)
-            .watchActiveForFarm(farmId);
-      }),
-    );
+    final activeBatches = ref.watch(activeBatchesForFarmProvider);
 
     // Look up current stock from the provider; fall back to zero if not found.
     final currentStock = ref.watch(feedStockProvider).value?.firstWhereOrNull(
@@ -308,12 +300,19 @@ class _RecordFeedTransactionSheetState
                                 ),
                               )
                             : DropdownButtonFormField<String?>(
-                                initialValue: _selectedBatchId,
+                                key: ValueKey(
+                                  batches.map((b) => b.id).join(','),
+                                ),
+                                initialValue:
+                                    batches.any((b) => b.id == _selectedBatchId)
+                                    ? _selectedBatchId
+                                    : null,
                                 decoration: const InputDecoration(
                                   hintText: 'Select batch (optional)',
                                 ),
                                 items: [
                                   const DropdownMenuItem<String?>(
+                                    value: null,
                                     child: Text('None'),
                                   ),
                                   ...batches.map(
@@ -330,7 +329,14 @@ class _RecordFeedTransactionSheetState
                           height: 24,
                           child: Center(child: AppBusyIndicator(size: 18)),
                         ),
-                        error: (_, _) => const SizedBox.shrink(),
+                        error: (_, _) => Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            onPressed: () =>
+                                ref.invalidate(activeBatchesForFarmProvider),
+                            child: const Text('Retry loading batches'),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.md),
                     ],

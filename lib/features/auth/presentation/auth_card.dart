@@ -51,18 +51,13 @@ class AuthCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(padding),
           child: twoColumn
-              ? IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(child: Center(child: headerWidget)),
-                      VerticalDivider(
-                        width: layout.gutter * 2,
-                        color: scheme.outlineVariant,
-                      ),
-                      Expanded(child: formColumn),
-                    ],
-                  ),
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: headerWidget),
+                    SizedBox(width: layout.gutter * 2),
+                    Expanded(child: formColumn),
+                  ],
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

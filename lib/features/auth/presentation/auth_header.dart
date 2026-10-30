@@ -74,7 +74,5 @@ class AuthHeader extends StatelessWidget {
 }
 
 bool authHeaderCompact(BuildContext context) {
-  final layout = context.layout;
-  final keyboard = MediaQuery.viewInsetsOf(context).bottom > 0;
-  return layout.isCompactHeight || keyboard;
+  return context.layout.isCompactHeight;
 }

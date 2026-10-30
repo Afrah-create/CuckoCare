@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -168,6 +169,55 @@ class FeedReportGenerator {
     final file = File('${dir.path}/feed_report_$ts.csv');
     await file.writeAsString(buf.toString());
     return file;
+  }
+
+  /// Saves [file] into the phone Downloads folder when possible.
+  /// Returns a short location label for the snack.
+  Future<String> saveToDevice(File file) async {
+    final name = file.uri.pathSegments.last;
+    if (Platform.isAndroid) {
+      try {
+        const channel = MethodChannel('ug.cucocare/system_settings');
+        final saved = await channel.invokeMethod<String>(
+          'saveToDownloads',
+          {
+            'fileName': name,
+            'bytes': await file.readAsBytes(),
+            'mimeType': 'text/csv',
+          },
+        );
+        if (saved != null && saved.isNotEmpty) {
+          return saved;
+        }
+      } catch (_) {}
+    }
+
+    final destinations = <Directory>[];
+    if (Platform.isAndroid) {
+      destinations.add(Directory('/storage/emulated/0/Download'));
+      try {
+        final dirs = await getExternalStorageDirectories(
+          type: StorageDirectory.downloads,
+        );
+        if (dirs != null) {
+          destinations.addAll(dirs);
+        }
+      } catch (_) {}
+    }
+    destinations.add(await getApplicationDocumentsDirectory());
+
+    Object? lastError;
+    for (final dir in destinations) {
+      try {
+        await dir.create(recursive: true);
+        final dest = File('${dir.path}/$name');
+        await file.copy(dest.path);
+        return dest.path;
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    throw lastError ?? StateError('Could not save the report on this phone.');
   }
 
   /// Escapes a single CSV cell: wraps in quotes and escapes internal quotes.

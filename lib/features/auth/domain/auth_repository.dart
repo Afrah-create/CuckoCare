@@ -1,6 +1,13 @@
 import '../../../core/error/result.dart';
 import 'app_role.dart';
 
+enum EmailOtpPurpose { signup, passwordReset }
+
+extension EmailOtpPurposeWire on EmailOtpPurpose {
+  String get wireValue =>
+      this == EmailOtpPurpose.signup ? 'signup' : 'password_reset';
+}
+
 class SignInRequest {
   const SignInRequest({
     required this.email,
@@ -46,6 +53,22 @@ abstract class AuthRepository {
   Future<Result<AuthSessionResult>> signInWithEmail(SignInRequest request);
 
   Future<Result<AuthSessionResult>> signUpWithEmail(SignUpRequest request);
+
+  Future<Result<void>> requestEmailOtp({
+    required String email,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? displayName,
+    AppRole? appRole,
+  });
+
+  Future<Result<AuthSessionResult>> verifyEmailOtp({
+    required String email,
+    required String code,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? newPassword,
+  });
 
   Future<Result<AuthSessionResult>> refreshMembershipFromServer();
 

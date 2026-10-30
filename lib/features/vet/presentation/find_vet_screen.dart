@@ -62,6 +62,7 @@ class _FindVetBody extends ConsumerWidget {
           child: AsyncStateView(
             value: browse,
             skeleton: const ListSkeleton(),
+            loadTimeout: const Duration(seconds: 20),
             onRetry: () => ref.invalidate(availableVetsProvider(farmId)),
             error: (error, _) {
               if (error is SyncSignedOutDemo) {

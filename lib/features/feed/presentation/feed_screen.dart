@@ -77,15 +77,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
           primary: false,
           frame: false,
           title: 'Feed',
-          actions: [
-            // Stock tab: add feed item catalogue entry
-            if (_tabs.index == 0)
-              IconButton(
-                icon: const Icon(Icons.add),
-                tooltip: 'Add feed item',
-                onPressed: () => FeedItemFormSheet.show(context, ref),
-              ),
-          ],
           bottom: TabBar(
             controller: _tabs,
             tabs: const [
@@ -94,9 +85,16 @@ class _FeedScreenState extends ConsumerState<FeedScreen>
               Tab(icon: Icon(Icons.bar_chart_outlined), text: 'Report'),
             ],
           ),
-          floatingActionButton: _tabs.index == 1
-              ? _RecordFab(tabController: _tabs)
-              : null,
+          floatingActionButton: switch (_tabs.index) {
+            0 => FloatingActionButton.extended(
+                heroTag: 'feed_add_item',
+                onPressed: () => FeedItemFormSheet.show(context, ref),
+                icon: const Icon(Icons.add),
+                label: const Text('Add item'),
+              ),
+            1 => _RecordFab(tabController: _tabs),
+            _ => null,
+          },
           body: TabBarView(
             controller: _tabs,
             children: const [
@@ -242,6 +240,24 @@ class _StockTab extends ConsumerWidget {
         final lowStock = stocks.where((s) => s.isBelowReorderLevel).toList();
         return CustomScrollView(
           slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.sm,
+                  AppSpacing.md,
+                  0,
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton.tonalIcon(
+                    onPressed: () => FeedItemFormSheet.show(context, ref),
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add item'),
+                  ),
+                ),
+              ),
+            ),
             if (lowStock.isNotEmpty)
               SliverToBoxAdapter(child: _LowStockBanner(count: lowStock.length)),
             SliverPadding(
@@ -658,7 +674,7 @@ class _ReportTabState extends ConsumerState<_ReportTab>
     }
   }
 
-  Future<void> _export() async {
+  Future<void> _export({required bool share}) async {
     final loaded = _loadState;
     if (loaded is! _ReportLoaded || _exporting) return;
     final farm = ref.read(primaryFarmProvider).value;
@@ -667,13 +683,20 @@ class _ReportTabState extends ConsumerState<_ReportTab>
       final file = await FeedReportGenerator()
           .generate(loaded.data, farmName: farm?.name ?? 'Farm');
       if (!mounted) return;
-      await SharePlus.instance.share(ShareParams(
-        files: [XFile(file.path, mimeType: 'text/csv')],
-        subject: 'CucoCare Feed Report — ${farm?.name ?? 'Farm'}',
-        text:
-            'Feed report generated on ${DateFormat('dd MMM yyyy HH:mm').format(loaded.data.generatedAt.toLocal())}',
-      ));
-      if (mounted) AppSnack.success(context, 'Report ready to share.');
+      if (share) {
+        await SharePlus.instance.share(ShareParams(
+          files: [XFile(file.path, mimeType: 'text/csv')],
+          subject: 'CucoCare Feed Report — ${farm?.name ?? 'Farm'}',
+          text:
+              'Feed report generated on ${DateFormat('dd MMM yyyy HH:mm').format(loaded.data.generatedAt.toLocal())}',
+        ));
+        if (mounted) AppSnack.success(context, 'Report ready to share.');
+        return;
+      }
+      final saved = await FeedReportGenerator().saveToDevice(file);
+      if (mounted) {
+        AppSnack.success(context, 'Saved to $saved');
+      }
     } catch (_) {
       if (mounted) {
         AppSnack.error(context, 'Could not generate report. Please try again.');
@@ -708,7 +731,8 @@ class _ReportTabState extends ConsumerState<_ReportTab>
       _ReportLoaded(:final data) => _ReportBody(
           data: data,
           exporting: _exporting,
-          onExport: _export,
+          onSave: () => _export(share: false),
+          onShare: () => _export(share: true),
           onRefresh: _load,
         ),
     };
@@ -745,13 +769,15 @@ class _ReportBody extends StatelessWidget {
   const _ReportBody({
     required this.data,
     required this.exporting,
-    required this.onExport,
+    required this.onSave,
+    required this.onShare,
     required this.onRefresh,
   });
 
   final FeedReportData data;
   final bool exporting;
-  final VoidCallback onExport;
+  final VoidCallback onSave;
+  final VoidCallback onShare;
   final VoidCallback onRefresh;
 
   static final _tsFmt = DateFormat('dd MMM yyyy, HH:mm');
@@ -902,17 +928,22 @@ class _ReportBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.lg),
 
-        // Download button
         FilledButton.icon(
-          onPressed: exporting ? null : onExport,
+          onPressed: exporting ? null : onSave,
           icon: exporting
               ? const AppBusyIndicator(size: 18)
               : const Icon(Icons.download_outlined),
-          label: Text(exporting ? 'Preparing…' : 'Download / Share CSV'),
+          label: Text(exporting ? 'Saving…' : 'Save CSV to phone'),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        OutlinedButton.icon(
+          onPressed: exporting ? null : onShare,
+          icon: const Icon(Icons.ios_share_outlined),
+          label: const Text('Share CSV'),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          'Opens in Excel, Google Sheets, or any spreadsheet app.',
+          'Save puts the file in Downloads. Share opens WhatsApp, Drive, or Files.',
           style: context.text.bodySmall
               ?.copyWith(color: context.scheme.onSurfaceVariant),
           textAlign: TextAlign.center,

@@ -33,6 +33,30 @@ class _FakeAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<Result<void>> requestEmailOtp({
+    required String email,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? displayName,
+    AppRole? appRole,
+  }) async {
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<AuthSessionResult>> verifyEmailOtp({
+    required String email,
+    required String code,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? newPassword,
+  }) async {
+    return const Success(
+      AuthSessionResult(appRole: AppRole.farmer, needsFarmSetup: false),
+    );
+  }
+
+  @override
   Future<void> signOut() async {}
 }
 

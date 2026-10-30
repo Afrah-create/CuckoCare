@@ -11,7 +11,6 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_snack.dart';
 import '../../../app/widgets/states/async_state_view.dart';
-import '../../../app/widgets/states/empty_state.dart';
 import '../../../app/widgets/states/error_state.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../core/error/failure_mapper.dart';
@@ -77,12 +76,6 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
       value: mapAsync,
       onRetry: () => ref.invalidate(vetMapProvider),
       skeleton: const MapSkeleton(),
-      isEmpty: (items) => items.isEmpty,
-      empty: const EmptyState(
-        icon: Icons.map_outlined,
-        title: 'No farms on the map',
-        message: 'Requests with a saved location will appear here.',
-      ),
       error: (error, _) => ErrorState(
         failure: FailureMapper.mapObject(error),
         onRetry: () => ref.invalidate(vetMapProvider),
@@ -190,7 +183,7 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                   onAccept: () => _accept(_selected!.id),
                 ),
               ),
-            if (_selected == null && pins.isEmpty && items.isNotEmpty)
+            if (_selected == null && pins.isEmpty)
               Positioned(
                 bottom: 72,
                 left: AppSpacing.md,
@@ -199,8 +192,10 @@ class _VetMapScreenState extends ConsumerState<VetMapScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     child: Text(
-                      'Some farmers have not shared farm GPS. '
-                      'Check the Requests tab for full details.',
+                      items.isEmpty
+                          ? 'No requests yet. The map stays here so you can pan around while you wait.'
+                          : 'Some farmers have not shared farm GPS. '
+                              'Check the Requests tab for full details.',
                       style: context.text.bodyMedium,
                     ),
                   ),

@@ -43,6 +43,23 @@ class SupabaseAuthRepository implements AuthRepository {
       await _readSnapshots().persistFromSupabaseUser(user);
       return await refreshMembershipFromServer();
     } on AuthException catch (e) {
+      if (_isEmailNotConfirmedError(e.message)) {
+        final sent = await requestEmailOtp(
+          email: request.email,
+          purpose: EmailOtpPurpose.signup,
+          password: request.password,
+        );
+        return switch (sent) {
+          Error(:final failure) => Error(failure),
+          Success() => Success(
+              AuthSessionResult(
+                appRole: AppRole.farmer,
+                needsFarmSetup: true,
+                emailConfirmationPending: true,
+              ),
+            ),
+        };
+      }
       return Error(AuthFailure(mapSupabaseAuthMessage(e.message)));
     } catch (e) {
       return Error(AuthFailure(userMessageForError(e)));
@@ -51,79 +68,93 @@ class SupabaseAuthRepository implements AuthRepository {
 
   @override
   Future<Result<AuthSessionResult>> signUpWithEmail(SignUpRequest request) async {
-    final email = request.email.trim();
-    final password = request.password;
+    final sent = await requestEmailOtp(
+      email: request.email,
+      purpose: EmailOtpPurpose.signup,
+      password: request.password,
+      displayName: request.displayName,
+      appRole: request.appRole,
+    );
+    return switch (sent) {
+      Error(:final failure) => Error(failure),
+      Success() => Success(
+          AuthSessionResult(
+            appRole: request.appRole,
+            needsFarmSetup: request.appRole == AppRole.farmer,
+            emailConfirmationPending: true,
+          ),
+        ),
+    };
+  }
 
+  @override
+  Future<Result<void>> requestEmailOtp({
+    required String email,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? displayName,
+    AppRole? appRole,
+  }) async {
+    return _invokeEmailOtp({
+      'action': 'send',
+      'email': email.trim(),
+      'purpose': purpose.wireValue,
+      'password': ?password,
+      if (displayName != null && displayName.trim().isNotEmpty)
+        'display_name': displayName.trim(),
+      if (appRole != null) 'app_role': appRole.wireValue,
+    });
+  }
+
+  @override
+  Future<Result<AuthSessionResult>> verifyEmailOtp({
+    required String email,
+    required String code,
+    required EmailOtpPurpose purpose,
+    String? password,
+    String? newPassword,
+  }) async {
+    final trimmedEmail = email.trim();
+    final verified = await _invokeEmailOtp({
+      'action': 'verify',
+      'email': trimmedEmail,
+      'purpose': purpose.wireValue,
+      'code': code.trim(),
+      'new_password': ?newPassword,
+    });
+    if (verified case Error(:final failure)) {
+      return Error(failure);
+    }
+
+    final signInPassword = purpose == EmailOtpPurpose.passwordReset
+        ? newPassword
+        : password;
+    if (signInPassword == null || signInPassword.isEmpty) {
+      return const Error(
+        AuthFailure('Enter your password to finish signing in.'),
+      );
+    }
+    return signInWithEmail(
+      SignInRequest(email: trimmedEmail, password: signInPassword),
+    );
+  }
+
+  Future<Result<void>> _invokeEmailOtp(Map<String, dynamic> body) async {
     try {
-      final response = await _client.auth.signUp(
-        email: email,
-        password: password,
-        data: {
-          'app_role': request.appRole.wireValue,
-          if (request.displayName != null && request.displayName!.trim().isNotEmpty)
-            'display_name': request.displayName!.trim(),
-        },
+      final response = await _client.functions.invoke(
+        'email-otp',
+        body: body,
       );
-
-      Session? session = response.session;
-      User? user = response.user;
-
-      if (user == null) {
-        return const Error(
-          AuthFailure('Could not create your account. Try again or sign in.'),
-        );
+      final data = response.data;
+      final errorCode = data is Map ? data['error'] as String? : null;
+      if (response.status >= 400 || errorCode != null) {
+        return Error(AuthFailure(mapEmailOtpError(errorCode)));
       }
-
-      if (session == null && _needsEmailConfirmation(user)) {
-        return Success(
-          AuthSessionResult(
-            appRole: request.appRole,
-            needsFarmSetup: request.appRole == AppRole.farmer,
-            emailConfirmationPending: true,
-          ),
-        );
-      }
-
-      if (session == null) {
-        try {
-          final signIn = await _client.auth.signInWithPassword(
-            email: email,
-            password: password,
-          );
-          session = signIn.session;
-          user = signIn.user ?? user;
-        } on AuthException catch (e) {
-          if (_isEmailNotConfirmedError(e.message)) {
-            return Success(
-              AuthSessionResult(
-                appRole: request.appRole,
-                needsFarmSetup: request.appRole == AppRole.farmer,
-                emailConfirmationPending: true,
-              ),
-            );
-          }
-          return Error(AuthFailure(mapSupabaseAuthMessage(e.message)));
-        }
-      }
-
-      if (session == null) {
-        return Success(
-          AuthSessionResult(
-            appRole: request.appRole,
-            needsFarmSetup: request.appRole == AppRole.farmer,
-            emailConfirmationPending: true,
-          ),
-        );
-      }
-
-      await _activateAccount(user.id);
-      await _readSnapshots().persistFromSupabaseUser(
-        user,
-        appRole: request.appRole,
-      );
-      return await refreshMembershipFromServer();
-    } on AuthException catch (e) {
-      return Error(AuthFailure(mapSupabaseAuthMessage(e.message)));
+      return const Success(null);
+    } on FunctionException catch (e) {
+      final details = e.details;
+      final code = details is Map ? details['error'] as String? : null;
+      return Error(AuthFailure(mapEmailOtpError(code)));
     } catch (e) {
       return Error(AuthFailure(userMessageForError(e)));
     }
@@ -197,10 +228,6 @@ class SupabaseAuthRepository implements AuthRepository {
     } catch (_) {
       return snapshots.loadAppRole();
     }
-  }
-
-  bool _needsEmailConfirmation(User user) {
-    return user.emailConfirmedAt == null;
   }
 
   bool _isEmailNotConfirmedError(String message) {

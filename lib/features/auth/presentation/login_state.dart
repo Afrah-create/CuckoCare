@@ -1,4 +1,5 @@
 import '../domain/app_role.dart';
+import '../domain/auth_repository.dart';
 
 enum AuthFormMode { signIn, signUp }
 
@@ -9,7 +10,7 @@ enum LoginStatus {
   submitting,
   success,
   failure,
-  emailConfirmationSent,
+  awaitingEmailOtp,
 }
 
 class LoginUiState {
@@ -22,6 +23,9 @@ class LoginUiState {
     this.infoMessage,
     this.obscurePassword = true,
     this.isOnline = true,
+    this.otpEmail,
+    this.otpPassword,
+    this.otpPurpose,
   });
 
   final LoginStatus status;
@@ -32,8 +36,14 @@ class LoginUiState {
   final String? infoMessage;
   final bool obscurePassword;
   final bool isOnline;
+  final String? otpEmail;
+  final String? otpPassword;
+  final EmailOtpPurpose? otpPurpose;
 
   bool get isSubmitting => status == LoginStatus.submitting;
+  bool get awaitingEmailOtp =>
+      status == LoginStatus.awaitingEmailOtp ||
+      (otpEmail != null && otpPurpose != null);
 
   LoginUiState copyWith({
     LoginStatus? status,
@@ -46,6 +56,10 @@ class LoginUiState {
     bool clearInfo = false,
     bool? obscurePassword,
     bool? isOnline,
+    String? otpEmail,
+    String? otpPassword,
+    EmailOtpPurpose? otpPurpose,
+    bool clearOtp = false,
   }) {
     return LoginUiState(
       status: status ?? this.status,
@@ -56,6 +70,9 @@ class LoginUiState {
       infoMessage: clearInfo ? null : (infoMessage ?? this.infoMessage),
       obscurePassword: obscurePassword ?? this.obscurePassword,
       isOnline: isOnline ?? this.isOnline,
+      otpEmail: clearOtp ? null : (otpEmail ?? this.otpEmail),
+      otpPassword: clearOtp ? null : (otpPassword ?? this.otpPassword),
+      otpPurpose: clearOtp ? null : (otpPurpose ?? this.otpPurpose),
     );
   }
 }

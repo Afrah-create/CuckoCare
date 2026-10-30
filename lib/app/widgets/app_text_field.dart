@@ -62,6 +62,12 @@ class _AppTextFieldState extends State<AppTextField> {
   }
 
   @override
+  void deactivate() {
+    _typedHint?.onFocus(false, reduceMotion: true);
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _focusNode.removeListener(_onFocusChange);
     widget.controller.removeListener(_onTextChange);
@@ -192,6 +198,12 @@ class _PasswordFieldState extends State<PasswordField> {
   }
 
   @override
+  void deactivate() {
+    _typedHint?.onFocus(false, reduceMotion: true);
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
@@ -234,14 +246,10 @@ class _PasswordFieldState extends State<PasswordField> {
         suffixIcon: IconButton(
           onPressed: widget.enabled ? widget.onToggleVisibility : null,
           tooltip: widget.obscured ? 'Show password' : 'Hide password',
-          icon: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 150),
-            child: Icon(
-              widget.obscured
-                  ? Icons.visibility_outlined
-                  : Icons.visibility_off_outlined,
-              key: ValueKey(widget.obscured),
-            ),
+          icon: Icon(
+            widget.obscured
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
           ),
         ),
       ),

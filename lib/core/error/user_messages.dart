@@ -70,7 +70,7 @@ String mapSupabaseAuthMessage(String message) {
     return 'Use a stronger password (at least 6 characters).';
   }
   if (lower.contains('email not confirmed')) {
-    return 'Confirm your email using the link Supabase sent, then sign in here.';
+    return 'Enter the 6-digit code we sent to your email.';
   }
   if (lower.contains('signup') && lower.contains('disabled')) {
     return 'New sign-ups are not available right now.';
@@ -105,6 +105,21 @@ String _mapPostgrest(PostgrestException error) {
     return 'Farm profiles are for farmer accounts only.';
   }
   return 'Could not save your farm. Try again.';
+}
+
+String mapEmailOtpError(String? code) {
+  return switch (code) {
+    'already_registered' =>
+      'An account with this email already exists. Try signing in.',
+    'invalid_code' => 'That code is incorrect. Try again.',
+    'expired' => 'That code expired. Request a new one.',
+    'rate_limited' || 'resend_wait' =>
+      'Wait a minute before requesting another code.',
+    'too_many_attempts' => 'Too many tries. Request a new code.',
+    'weak_password' => 'Use a stronger password (at least 8 characters).',
+    'invalid_email' => 'Enter a valid email.',
+    _ => 'Could not send or verify the code. Try again.',
+  };
 }
 
 String _sanitizeServerMessage(String message) {

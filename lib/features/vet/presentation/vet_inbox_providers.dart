@@ -40,10 +40,14 @@ final availableVetsProvider =
 
   final farm = await ref.watch(primaryFarmProvider.future);
   final resolvedFarmId = farmId ?? farm?.id;
+  final farmIdLooksSynced = resolvedFarmId != null &&
+      RegExp(
+        r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$',
+      ).hasMatch(resolvedFarmId);
   final farmHasLocation =
       farm != null && farm.id == resolvedFarmId && farmHasGps(farm);
-  final farmNeedsSync =
-      farm != null && farm.id == resolvedFarmId && farm.serverVersion == null;
+  final farmNeedsSync = !farmIdLooksSynced ||
+      (farm != null && farm.id == resolvedFarmId && farm.serverVersion == null);
   final cacheKey = resolvedFarmId ?? '_none';
   final cache = ref.read(vetDirectoryCacheProvider);
   final repo = ref.read(vetDirectoryRepositoryProvider);
@@ -64,10 +68,7 @@ final availableVetsProvider =
   }
 
   Future<Result<List<AvailableVet>>> fetch(String? id) {
-    return repo.listAvailableVets(farmId: id).timeout(
-      const Duration(seconds: 20),
-      onTimeout: () => const Error(SyncTimeout()),
-    );
+    return repo.listAvailableVets(farmId: id);
   }
 
   if (!online) {

@@ -32,10 +32,6 @@ class VetRequestTile extends StatelessWidget {
     return Card(
       elevation: 0,
       color: scheme.surfaceContainerLow,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.6)),
-      ),
       clipBehavior: Clip.antiAlias,
       child: SizedBox(
         width: double.infinity,
@@ -50,11 +46,12 @@ class VetRequestTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  radius: 22,
+                  radius: 20,
                   backgroundColor: scheme.primaryContainer,
                   child: Icon(
                     _serviceIcon(item.serviceType),
                     color: scheme.onPrimaryContainer,
+                    size: 20,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
@@ -70,34 +67,24 @@ class VetRequestTile extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        date,
+                        [
+                          date,
+                          item.farmLocationLabel,
+                          if (item.distanceKm != null)
+                            '${item.distanceKm!.toStringAsFixed(1)} km',
+                        ].join(' · '),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: context.text.bodySmall?.copyWith(
                           color: scheme.onSurfaceVariant,
                         ),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        item.farmLocationLabel,
-                        style: context.text.bodySmall?.copyWith(
-                          color: scheme.onSurfaceVariant,
-                        ),
-                      ),
-                      if (item.distanceKm != null)
-                        Text(
-                          '${item.distanceKm!.toStringAsFixed(1)} km from you',
-                          style: context.text.labelSmall?.copyWith(
-                            color: scheme.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
                     ],
                   ),
                 ),
-                Flexible(
-                  child: _StatusChip(
-                    status: item.status,
-                    priority: item.priority,
-                  ),
+                _StatusChip(
+                  status: item.status,
+                  priority: item.priority,
                 ),
               ],
             ),
@@ -118,13 +105,20 @@ class VetRequestTile extends StatelessWidget {
             if (item.symptoms.isNotEmpty) ...[
               const SizedBox(height: AppSpacing.sm),
               Wrap(
-                spacing: 6,
-                runSpacing: 6,
+                spacing: AppSpacing.xs,
+                runSpacing: AppSpacing.xs,
                 children: [
-                  for (final s in item.symptoms)
+                  for (final s in item.symptoms.take(4))
                     Chip(
                       label: Text(s),
                       visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  if (item.symptoms.length > 4)
+                    Chip(
+                      label: Text('+${item.symptoms.length - 4}'),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                 ],
               ),
@@ -133,6 +127,8 @@ class VetRequestTile extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 item.farmerNotes!.trim(),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: context.text.bodyMedium,
               ),
             ],

@@ -11,6 +11,7 @@ import '../../../app/widgets/requirement_chips.dart';
 import '../domain/auth_repository.dart';
 import 'auth_card.dart';
 import 'auth_mode_switch.dart';
+import 'email_otp_panel.dart';
 import 'login_controller.dart';
 import 'login_state.dart';
 import 'sign_up_role_picker.dart';
@@ -79,10 +80,17 @@ class _LoginFormState extends ConsumerState<LoginForm> {
     final login = ref.watch(loginControllerProvider);
     final isSignUp = login.formMode == AuthFormMode.signUp;
 
-    if (_lastMode != null && _lastMode != login.formMode) {
-      _passwordController.clear();
+    if (_lastMode != login.formMode) {
+      final shouldClearPassword = _lastMode != null;
+      _lastMode = login.formMode;
+      if (shouldClearPassword) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _passwordController.clear();
+          }
+        });
+      }
     }
-    _lastMode = login.formMode;
 
     final offlineBanner = !login.isOnline
         ? InlineBanner(
@@ -111,26 +119,14 @@ class _LoginFormState extends ConsumerState<LoginForm> {
           )
         : null;
 
+    final awaitingOtp = login.awaitingEmailOtp &&
+        login.otpEmail != null &&
+        login.otpPurpose != null;
+
     final formBody = Form(
       key: _formKey,
       child: AutofillGroup(
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 220),
-          switchInCurve: Curves.easeOut,
-          switchOutCurve: Curves.easeIn,
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 0.02),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
-            );
-          },
-          child: Column(
+        child: Column(
             key: ValueKey(isSignUp),
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -247,21 +243,43 @@ class _LoginFormState extends ConsumerState<LoginForm> {
                     : _submit,
               ),
             ],
-          ),
         ),
       ),
     );
 
     return AuthCard(
       header: 'Poultry records that work offline.',
-      modeSwitch: AuthModeSwitch(
-        mode: login.formMode,
-        enabled: !login.isSubmitting,
-        onChanged: (mode) {
-          ref.read(loginControllerProvider.notifier).setFormMode(mode);
-        },
-      ),
-      body: formBody,
+      modeSwitch: awaitingOtp
+          ? const SizedBox.shrink()
+          : AuthModeSwitch(
+              mode: login.formMode,
+              enabled: !login.isSubmitting,
+              onChanged: (mode) {
+                ref.read(loginControllerProvider.notifier).setFormMode(mode);
+              },
+            ),
+      body: awaitingOtp
+          ? EmailOtpPanel(
+              email: login.otpEmail!,
+              purpose: login.otpPurpose!,
+              submitting: login.isSubmitting,
+              errorMessage: login.errorMessage,
+              infoMessage: login.infoMessage,
+              onDismissError: () =>
+                  ref.read(loginControllerProvider.notifier).clearError(),
+              onDismissInfo: () =>
+                  ref.read(loginControllerProvider.notifier).clearInfo(),
+              onVerify: (code) async {
+                await ref
+                    .read(loginControllerProvider.notifier)
+                    .verifyEmailOtp(code: code);
+              },
+              onResend: () =>
+                  ref.read(loginControllerProvider.notifier).resendEmailOtp(),
+              onBack: () =>
+                  ref.read(loginControllerProvider.notifier).cancelEmailOtp(),
+            )
+          : formBody,
     );
   }
 }

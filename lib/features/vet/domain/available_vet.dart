@@ -46,15 +46,40 @@ class AvailableVet {
 
   factory AvailableVet.fromJson(Map<String, dynamic> json) {
     return AvailableVet(
-      userId: json['user_id'] as String? ?? '',
-      displayName: json['display_name'] as String? ?? 'Veterinarian',
+      userId: json['user_id']?.toString() ?? '',
+      displayName: (json['display_name'] as String?)?.trim().isNotEmpty == true
+          ? json['display_name'] as String
+          : 'Veterinarian',
       organization: json['organization'] as String?,
       district: json['district'] as String?,
-      phone: json['phone'] as String?,
-      offersConsultation: json['offers_consultation'] as bool? ?? true,
-      offersFarmVisit: json['offers_farm_visit'] as bool? ?? true,
-      distanceKm: (json['distance_km'] as num?)?.toDouble(),
+      phone: json['phone']?.toString(),
+      offersConsultation: _asBool(json['offers_consultation'], true),
+      offersFarmVisit: _asBool(json['offers_farm_visit'], true),
+      distanceKm: _asDouble(json['distance_km']),
     );
+  }
+
+  static bool _asBool(Object? value, bool fallback) {
+    if (value is bool) {
+      return value;
+    }
+    if (value is num) {
+      return value != 0;
+    }
+    if (value is String) {
+      return value.toLowerCase() == 'true' || value == '1';
+    }
+    return fallback;
+  }
+
+  static double? _asDouble(Object? value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      return double.tryParse(value);
+    }
+    return null;
   }
 }
 

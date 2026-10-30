@@ -155,6 +155,15 @@ final batchSummariesProvider = StreamProvider<List<BatchSummary>>((ref) {
       );
 });
 
+/// Active flocks for pickers such as feed consumption.
+final activeBatchesForFarmProvider = StreamProvider<List<BatchRow>>((ref) {
+  final farmId = ref.watch(primaryFarmProvider).value?.id;
+  if (farmId == null) {
+    return Stream.value(const <BatchRow>[]);
+  }
+  return ref.watch(batchRepositoryProvider).watchActiveForFarm(farmId);
+});
+
 /// All batches on the farm (active and closed), newest first.
 final allBatchSummariesProvider = StreamProvider<List<BatchSummary>>((ref) {
   final farmId = ref.watch(primaryFarmProvider).value?.id;

@@ -50,7 +50,7 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
     }
   }
 
-  Future<void> _download() async {
+  Future<void> _download({required bool share}) async {
     final loaded = _state;
     if (loaded is! _Loaded) return;
 
@@ -67,19 +67,25 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
 
       if (!mounted) return;
 
-      // Share / save via Android share sheet
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path, mimeType: 'text/csv')],
-          subject: 'CucoCare Feed Report — $farmName',
-          text:
-              'Feed management report generated on '
-              '${DateFormat('dd MMM yyyy HH:mm').format(loaded.data.generatedAt.toLocal())}',
-        ),
-      );
+      if (share) {
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [XFile(file.path, mimeType: 'text/csv')],
+            subject: 'CucoCare Feed Report — $farmName',
+            text:
+                'Feed management report generated on '
+                '${DateFormat('dd MMM yyyy HH:mm').format(loaded.data.generatedAt.toLocal())}',
+          ),
+        );
+        if (mounted) {
+          AppSnack.success(context, 'Report ready to share.');
+        }
+        return;
+      }
 
+      final saved = await FeedReportGenerator().saveToDevice(file);
       if (mounted) {
-        AppSnack.success(context, 'Report ready to save or share.');
+        AppSnack.success(context, 'Saved to $saved');
       }
     } catch (e) {
       if (mounted) {
@@ -109,8 +115,8 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
                 )
               : IconButton(
                   icon: const Icon(Icons.download_outlined),
-                  tooltip: 'Download / Share CSV',
-                  onPressed: _download,
+                  tooltip: 'Save CSV to phone',
+                  onPressed: () => _download(share: false),
                 ),
       ],
       body: switch (_state) {
@@ -140,7 +146,8 @@ class _FeedReportScreenState extends ConsumerState<FeedReportScreen> {
         _Loaded(:final data, :final exporting) => _ReportPreview(
             data: data,
             exporting: exporting,
-            onDownload: _download,
+            onSave: () => _download(share: false),
+            onShare: () => _download(share: true),
           ),
         _Idle() => const SizedBox.shrink(),
       },
@@ -179,12 +186,14 @@ class _ReportPreview extends ConsumerWidget {
   const _ReportPreview({
     required this.data,
     required this.exporting,
-    required this.onDownload,
+    required this.onSave,
+    required this.onShare,
   });
 
   final FeedReportData data;
   final bool exporting;
-  final VoidCallback onDownload;
+  final VoidCallback onSave;
+  final VoidCallback onShare;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -277,18 +286,22 @@ class _ReportPreview extends ConsumerWidget {
         _TransactionLogTable(data: data),
         const SizedBox(height: AppSpacing.xl),
 
-        // Download button
         FilledButton.icon(
-          onPressed: exporting ? null : onDownload,
+          onPressed: exporting ? null : onSave,
           icon: exporting
               ? const AppBusyIndicator(size: 18)
               : const Icon(Icons.download_outlined),
-          label: Text(exporting ? 'Preparing…' : 'Download / Share CSV'),
+          label: Text(exporting ? 'Saving…' : 'Save CSV to phone'),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        OutlinedButton.icon(
+          onPressed: exporting ? null : onShare,
+          icon: const Icon(Icons.ios_share_outlined),
+          label: const Text('Share CSV'),
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'The CSV file can be opened in Excel, Google Sheets, or any '
-          'spreadsheet app.',
+          'Save puts the file in Downloads. Share opens WhatsApp, Drive, or Files.',
           style: context.text.bodySmall?.copyWith(
             color: context.scheme.onSurfaceVariant,
           ),

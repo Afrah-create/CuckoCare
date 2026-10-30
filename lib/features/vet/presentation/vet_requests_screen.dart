@@ -3,16 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/shell/tab_scroll_registry.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/layout_scope.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
 import '../../../app/widgets/states/offline_notice.dart';
+import '../../../app/widgets/states/pull_to_refresh.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../app/widgets/tab_empty_state.dart';
 import '../../../core/error/failure_mapper.dart';
+import '../../today/presentation/today_greeting_card.dart';
 import '../data/vet_inbox_repository.dart';
 import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
@@ -33,14 +37,38 @@ class VetRequestsScreen extends ConsumerStatefulWidget {
 }
 
 class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
+  static const _tabIndex = 0;
+
   _VetRequestFilter _filter = _VetRequestFilter.all;
+  final _scrollController = ScrollController();
+  TabScrollRegistry? _tabScrollRegistryNotifier;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.invalidate(vetInboxProvider);
+      if (!mounted) {
+        return;
+      }
+      _tabScrollRegistryNotifier = ref.read(tabScrollRegistryProvider.notifier);
+      _tabScrollRegistryNotifier!.register(_tabIndex, () {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _tabScrollRegistryNotifier?.unregister(_tabIndex);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -103,47 +131,40 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     final online = ref.watch(connectivityOnlineProvider).value ?? true;
     final inboxAsync = ref.watch(vetInboxProvider);
     final vetUserId = ref.watch(authUserIdProvider).value;
+    final profile = ref.watch(userProfileProvider).value;
+    final layout = context.layout;
+    final horizontal = layout.margin;
+    final greeting = _vetGreeting(profile?.displayName);
 
     return AppPage(
       primary: false,
       frame: false,
-      body: RefreshIndicator(
-      onRefresh: _refresh,
-      child: ContentFrame(
+      body: PullToRefresh(
+        online: online,
+        onSync: _refresh,
         child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.only(
-            bottom: ContentFrame.scrollBottomInset(context),
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          padding: EdgeInsets.fromLTRB(
+            horizontal,
+            AppSpacing.xs,
+            horizontal,
+            ContentFrame.scrollBottomInset(context),
           ),
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.sm,
-                AppSpacing.md,
-                AppSpacing.md,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      online
-                          ? 'Open farmer requests waiting for a vet.'
-                          : 'Offline — pull down to refresh when online.',
-                      style: context.text.bodyMedium?.copyWith(
-                        color: context.scheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Refresh',
-                    onPressed: _refresh,
-                    icon: const Icon(Icons.refresh),
-                  ),
-                ],
-              ),
+            TodayGreetingCard(
+              greeting: greeting,
+              subtitle: online
+                  ? 'Farmer requests waiting for you.'
+                  : 'You are offline. Pull down to refresh when you are back.',
             ),
-            if (!online) const OfflineNotice(),
+            const SizedBox(height: AppSpacing.md),
+            if (!online) ...[
+              const OfflineNotice(),
+              const SizedBox(height: AppSpacing.md),
+            ],
             AsyncStateView<List<VetInboxItem>>(
               expand: false,
               value: inboxAsync,
@@ -164,8 +185,20 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
           ],
         ),
       ),
-      ),
     );
+  }
+
+  String _vetGreeting(String? name) {
+    final hour = DateTime.now().hour;
+    final period = hour < 12
+        ? 'Good morning'
+        : hour < 17
+            ? 'Good afternoon'
+            : 'Good evening';
+    if (name == null || name.isEmpty || name == 'Farmer') {
+      return period;
+    }
+    return '$period, $name';
   }
 
   List<Widget> _inboxListChildren(
@@ -187,18 +220,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     final filtered = _applyFilter(pending, vetUserId, effectiveFilter);
 
     final children = <Widget>[
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-        child: VetRequestsStatsPanel(stats: stats),
-      ),
-      const SizedBox(height: AppSpacing.md),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-        child: VetRequestsQuickActions(
-          stats: stats,
-          onRefresh: _refresh,
-        ),
-      ),
+      VetRequestsStatsPanel(stats: stats),
       const SizedBox(height: AppSpacing.lg),
     ];
 
@@ -214,25 +236,29 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
     }
 
     children.addAll([
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Queue',
-              style: context.text.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Needs attention',
+            style: context.text.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
             ),
-            const SizedBox(height: AppSpacing.md),
-            _FilterRow(
-              selected: effectiveFilter,
-              showUrgent: urgentCount > 0,
-              onSelected: (f) => setState(() => _filter = f),
+          ),
+          const SizedBox(height: AppSpacing.xxs),
+          Text(
+            'New and waiting farmer requests',
+            style: context.text.bodySmall?.copyWith(
+              color: context.scheme.onSurfaceVariant,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          _FilterRow(
+            selected: effectiveFilter,
+            showUrgent: urgentCount > 0,
+            onSelected: (f) => setState(() => _filter = f),
+          ),
+        ],
       ),
       const SizedBox(height: AppSpacing.md),
     ]);
@@ -252,9 +278,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
 
     for (final item in filtered) {
       children.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: VetRequestTile(
+        VetRequestTile(
             item: item,
             onOpenDetail: () => openVetIncidentDetail(
               context,
@@ -273,7 +297,6 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
               action: VetCaseAction.decline,
             ),
           ),
-        ),
       );
       children.add(const SizedBox(height: AppSpacing.sm));
     }
@@ -295,8 +318,8 @@ class _FilterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
       children: [
         _FilterChip(
           label: 'All',
@@ -337,28 +360,12 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = context.scheme;
-    return Material(
-      color: selected
-          ? scheme.primaryContainer
-          : scheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(20),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          child: Text(
-            label,
-            style: context.text.labelLarge?.copyWith(
-              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-              color: selected
-                  ? scheme.onPrimaryContainer
-                  : scheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-      ),
+    return FilterChip(
+      label: Text(label),
+      selected: selected,
+      showCheckmark: false,
+      onSelected: (_) => onTap(),
+      visualDensity: VisualDensity.compact,
     );
   }
 }

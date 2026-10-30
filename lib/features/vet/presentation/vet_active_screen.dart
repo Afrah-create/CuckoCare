@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
+import '../../../app/layout/layout_scope.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/async_state_view.dart';
 import '../../../app/widgets/states/error_state.dart';
+import '../../../app/widgets/states/pull_to_refresh.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../app/widgets/tab_empty_state.dart';
 import '../../../core/error/failure_mapper.dart';
@@ -31,21 +33,33 @@ class VetActiveScreen extends ConsumerWidget {
       await ref.read(vetInboxProvider.future);
     }
 
+    final layout = context.layout;
+    final online = ref.watch(connectivityOnlineProvider).value ?? true;
+
     return AppPage(
       primary: false,
       frame: false,
-      body: RefreshIndicator(
-      onRefresh: refresh,
-      child: ContentFrame(
-        child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
+      body: PullToRefresh(
+      onSync: refresh,
+      online: online,
+      child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           padding: EdgeInsets.fromLTRB(
-            AppSpacing.md,
-            AppSpacing.sm,
-            AppSpacing.md,
+            layout.margin,
+            AppSpacing.xs,
+            layout.margin,
             ContentFrame.scrollBottomInset(context),
           ),
           children: [
+            Text(
+              'Needs attention',
+              style: context.text.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xxs),
             Text(
               'Accepted cases — start the visit, then mark complete when done.',
               style: context.text.bodyMedium?.copyWith(
@@ -106,7 +120,6 @@ class VetActiveScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
       ),
     );
   }

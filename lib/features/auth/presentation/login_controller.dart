@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,6 +20,7 @@ class LoginController extends Notifier<LoginUiState> {
       formMode: mode,
       clearError: true,
       clearInfo: true,
+      clearOtp: true,
       status: LoginStatus.idle,
     );
   }
@@ -70,7 +72,15 @@ class LoginController extends Notifier<LoginUiState> {
 
     return result.when(
       success: (session) {
-        state = state.copyWith(status: LoginStatus.success);
+        if (session.emailConfirmationPending) {
+          _beginEmailOtp(
+            email: email,
+            password: password,
+            purpose: EmailOtpPurpose.signup,
+          );
+          return null;
+        }
+        state = state.copyWith(status: LoginStatus.success, clearOtp: true);
         _afterLocalAuthWrite(ref);
         ref.read(syncSchedulerProvider).onForeground();
         return session;
@@ -117,14 +127,14 @@ class LoginController extends Notifier<LoginUiState> {
     return result.when(
       success: (session) {
         if (session.emailConfirmationPending) {
-          state = state.copyWith(
-            status: LoginStatus.emailConfirmationSent,
-            infoMessage:
-                'Account created. Confirm the email from Supabase, then sign in.',
+          _beginEmailOtp(
+            email: email,
+            password: password,
+            purpose: EmailOtpPurpose.signup,
           );
           return null;
         }
-        state = state.copyWith(status: LoginStatus.success);
+        state = state.copyWith(status: LoginStatus.success, clearOtp: true);
         _afterLocalAuthWrite(ref);
         ref.read(syncSchedulerProvider).onForeground();
         return session;
@@ -136,6 +146,93 @@ class LoginController extends Notifier<LoginUiState> {
         );
         return null;
       },
+    );
+  }
+
+  Future<AuthSessionResult?> verifyEmailOtp({required String code}) async {
+    final email = state.otpEmail;
+    final purpose = state.otpPurpose;
+    if (email == null || purpose == null) {
+      return null;
+    }
+    FocusManager.instance.primaryFocus?.unfocus();
+    state = state.copyWith(status: LoginStatus.submitting, clearError: true);
+    final result = await ref.read(authRepositoryProvider).verifyEmailOtp(
+          email: email,
+          code: code,
+          purpose: purpose,
+          password: state.otpPassword,
+        );
+    return result.when(
+      success: (session) {
+        state = state.copyWith(status: LoginStatus.success, clearOtp: true);
+        _afterLocalAuthWrite(ref);
+        ref.read(syncSchedulerProvider).onForeground();
+        return session;
+      },
+      failure: (failure) {
+        state = state.copyWith(
+          status: LoginStatus.awaitingEmailOtp,
+          errorMessage: userMessageForFailure(failure),
+        );
+        return null;
+      },
+    );
+  }
+
+  Future<void> resendEmailOtp() async {
+    final email = state.otpEmail;
+    final purpose = state.otpPurpose;
+    if (email == null || purpose == null) {
+      return;
+    }
+    state = state.copyWith(status: LoginStatus.submitting, clearError: true);
+    final result = await ref.read(authRepositoryProvider).requestEmailOtp(
+          email: email,
+          purpose: purpose,
+          password: state.otpPassword,
+          appRole: state.signUpRole,
+        );
+    result.when(
+      success: (_) {
+        state = state.copyWith(
+          status: LoginStatus.awaitingEmailOtp,
+          infoMessage: 'A new code is on the way.',
+          clearError: true,
+        );
+      },
+      failure: (failure) {
+        state = state.copyWith(
+          status: LoginStatus.awaitingEmailOtp,
+          errorMessage: userMessageForFailure(failure),
+        );
+      },
+    );
+  }
+
+  void cancelEmailOtp() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    state = state.copyWith(
+      status: LoginStatus.idle,
+      clearOtp: true,
+      clearError: true,
+      clearInfo: true,
+    );
+  }
+
+  void _beginEmailOtp({
+    required String email,
+    required String password,
+    required EmailOtpPurpose purpose,
+  }) {
+    FocusManager.instance.primaryFocus?.unfocus();
+    state = state.copyWith(
+      status: LoginStatus.awaitingEmailOtp,
+      otpEmail: email.trim(),
+      otpPassword: password,
+      otpPurpose: purpose,
+      infoMessage: 'We sent a 6-digit code to ${email.trim()}.',
+      clearError: true,
     );
   }
 

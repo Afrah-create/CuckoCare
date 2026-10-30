@@ -104,8 +104,10 @@ abstract final class FailureMapper {
       final text = '${code ?? ''} ${message ?? ''}'.toLowerCase();
       final c = (code is String ? code : '').toUpperCase();
       if (c == 'PGRST202' ||
+          c == 'PGRST203' ||
           text.contains('schema cache') ||
-          text.contains('could not find the function')) {
+          text.contains('could not find the function') ||
+          text.contains('could not choose the best candidate function')) {
         return const SyncServerFailure('PGRST202', retryable: false);
       }
       if (c == '42501' || text.contains('forbidden')) {

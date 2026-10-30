@@ -13,6 +13,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/states/app_busy_indicator.dart';
 import '../../../app/widgets/states/app_snack.dart';
+import '../../../app/widgets/inline_banner.dart';
 import '../../../app/widgets/states/skeleton.dart';
 import '../../batches/presentation/batch_labels.dart';
 import '../../batches/presentation/batch_providers.dart';
@@ -415,7 +416,26 @@ class _ReportHealthConcernSheetState
                                       loading: () => const SkeletonScope(
                                         child: SkeletonLine(height: 8),
                                       ),
-                                      error: (_, __) => const SizedBox.shrink(),
+                                      error: (_, __) => Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          const InlineBanner(
+                                            message:
+                                                'Could not load vets. You can still request any available vet.',
+                                            icon: Icons.person_search_outlined,
+                                            tone: BannerTone.warning,
+                                          ),
+                                          TextButton(
+                                            onPressed: () => ref.invalidate(
+                                              availableVetsProvider(
+                                                widget.farmId,
+                                              ),
+                                            ),
+                                            child: const Text('Try again'),
+                                          ),
+                                        ],
+                                      ),
                                       data: (browse) {
                                         if (browse.vets.isEmpty) {
                                           return const SizedBox.shrink();

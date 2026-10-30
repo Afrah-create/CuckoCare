@@ -18,16 +18,10 @@ class AuthShell extends ConsumerStatefulWidget {
 
 class _AuthShellState extends ConsumerState<AuthShell> {
   AppLifecycleService? _lifecycle;
-  bool _entered = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() => _entered = true);
-      }
-    });
     ref.listenManual(connectivityOnlineProvider, (_, next) {
       if (!mounted) {
         return;
@@ -58,7 +52,6 @@ class _AuthShellState extends ConsumerState<AuthShell> {
   @override
   Widget build(BuildContext context) {
     final bg = context.colors.authBackground;
-    final reduceMotion = MediaQuery.disableAnimationsOf(context);
 
     return ColoredBox(
       color: bg,
@@ -75,37 +68,7 @@ class _AuthShellState extends ConsumerState<AuthShell> {
                 child: Column(
                   children: [
                     SizedBox(height: constraints.maxHeight * 0.08),
-                    AnimatedOpacity(
-                      opacity: _entered || reduceMotion ? 1 : 0,
-                      duration: const Duration(milliseconds: 300),
-                      child: AnimatedSlide(
-                        offset: _entered || reduceMotion
-                            ? Offset.zero
-                            : const Offset(0, 0.05),
-                        duration: const Duration(milliseconds: 300),
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 220),
-                          switchInCurve: Curves.easeOut,
-                          switchOutCurve: Curves.easeIn,
-                          transitionBuilder: (child, animation) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(0, 0.02),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: KeyedSubtree(
-                            key: ValueKey(widget.child.runtimeType.toString()),
-                            child: widget.child,
-                          ),
-                        ),
-                      ),
-                    ),
+                    widget.child,
                     SizedBox(height: constraints.maxHeight * 0.06),
                   ],
                 ),
