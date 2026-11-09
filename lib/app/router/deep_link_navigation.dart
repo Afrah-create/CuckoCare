@@ -20,6 +20,8 @@ Future<void> navigateAuthenticatedDeepLink(GoRouter router, String path) async {
     shellTab = '/records';
   } else if (uri.path.startsWith('/feed')) {
     shellTab = '/feed';
+  } else if (uri.path.startsWith('/cases') || uri.path.startsWith('/vet')) {
+    shellTab = uri.path.startsWith('/vet') ? '/vet' : '/records';
   }
 
   router.go(shellTab);

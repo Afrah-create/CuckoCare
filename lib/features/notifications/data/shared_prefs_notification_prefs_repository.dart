@@ -13,6 +13,7 @@ class SharedPrefsNotificationPrefsRepository
   static const _overdueMode = '${_prefix}overdue_mode';
   static const _reminderTime = '${_prefix}reminder_time_minutes';
   static const _denialCount = '${_prefix}permission_denial_count';
+  static const _vetMessagesEnabled = '${_prefix}vet_messages_enabled';
 
   @override
   Future<NotificationPrefs> load() async {
@@ -27,6 +28,7 @@ class SharedPrefsNotificationPrefsRepository
           prefs.getInt(_reminderTime) ?? NotificationPrefs.defaults.reminderTimeMinutes,
         ),
         permissionDenialCount: prefs.getInt(_denialCount) ?? 0,
+        vetMessagesEnabled: prefs.getBool(_vetMessagesEnabled) ?? true,
       );
     } catch (_) {
       return NotificationPrefs.defaults;
@@ -42,6 +44,7 @@ class SharedPrefsNotificationPrefsRepository
     await sp.setString(_overdueMode, prefs.overdueMode.name);
     await sp.setInt(_reminderTime, prefs.reminderTimeMinutes);
     await sp.setInt(_denialCount, prefs.permissionDenialCount);
+    await sp.setBool(_vetMessagesEnabled, prefs.vetMessagesEnabled);
   }
 
   OverdueReminderMode _parseMode(String? raw) {

@@ -2,6 +2,8 @@ package com.cucocare.cucocare
 
 import android.content.ContentValues
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Environment
 import android.os.PowerManager
@@ -54,6 +56,9 @@ class MainActivity : FlutterActivity() {
                         val ignoring = pm.isIgnoringBatteryOptimizations(packageName)
                         result.success(ignoring)
                     }
+                    "getLinkCapabilities" -> {
+                        result.success(linkCapabilities())
+                    }
                     "saveToDownloads" -> {
                         val fileName = call.argument<String>("fileName")
                         val bytes = call.argument<ByteArray>("bytes")
@@ -71,6 +76,26 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    private fun linkCapabilities(): Map<String, Any> {
+        val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = cm.activeNetwork
+        val caps = if (network != null) cm.getNetworkCapabilities(network) else null
+        val metered = caps == null ||
+            !caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+        val dataSaver = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            cm.restrictBackgroundStatus ==
+                ConnectivityManager.RESTRICT_BACKGROUND_STATUS_ENABLED
+        } else {
+            false
+        }
+        return mapOf(
+            "downstreamKbps" to (caps?.linkDownstreamBandwidthKbps ?: 0),
+            "upstreamKbps" to (caps?.linkUpstreamBandwidthKbps ?: 0),
+            "metered" to metered,
+            "dataSaver" to dataSaver,
+        )
     }
 
     private fun saveToDownloads(fileName: String, bytes: ByteArray, mime: String): String {

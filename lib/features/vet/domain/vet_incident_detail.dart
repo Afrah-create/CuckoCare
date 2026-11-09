@@ -5,6 +5,7 @@ import '../data/vet_map_repository.dart';
 class VetIncidentDetail {
   const VetIncidentDetail({
     required this.requestId,
+    required this.farmId,
     required this.summary,
     required this.status,
     required this.serviceType,
@@ -22,6 +23,7 @@ class VetIncidentDetail {
   });
 
   final String requestId;
+  final String farmId;
   final String summary;
   final String status;
   final String serviceType;
@@ -40,6 +42,7 @@ class VetIncidentDetail {
   factory VetIncidentDetail.fromInbox(VetInboxItem item) {
     return VetIncidentDetail(
       requestId: item.id,
+      farmId: item.farmId,
       summary: item.summary ?? item.serviceType,
       status: item.status,
       serviceType: item.serviceType,
@@ -60,6 +63,7 @@ class VetIncidentDetail {
   factory VetIncidentDetail.fromMap(VetMapRequest request) {
     return VetIncidentDetail(
       requestId: request.id,
+      farmId: request.farmId,
       summary: request.summary,
       status: request.status,
       serviceType: request.serviceType,

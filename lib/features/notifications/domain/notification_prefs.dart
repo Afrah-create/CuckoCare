@@ -11,6 +11,7 @@ class NotificationPrefs {
     required this.overdueMode,
     required this.reminderTimeMinutes,
     required this.permissionDenialCount,
+    this.vetMessagesEnabled = true,
   });
 
   final bool remindersEnabled;
@@ -19,6 +20,7 @@ class NotificationPrefs {
   final OverdueReminderMode overdueMode;
   final int reminderTimeMinutes;
   final int permissionDenialCount;
+  final bool vetMessagesEnabled;
 
   static const defaults = NotificationPrefs(
     remindersEnabled: true,
@@ -27,6 +29,7 @@ class NotificationPrefs {
     overdueMode: OverdueReminderMode.standard,
     reminderTimeMinutes: 420,
     permissionDenialCount: 0,
+    vetMessagesEnabled: true,
   );
 
   NotificationPrefs copyWith({
@@ -36,6 +39,7 @@ class NotificationPrefs {
     OverdueReminderMode? overdueMode,
     int? reminderTimeMinutes,
     int? permissionDenialCount,
+    bool? vetMessagesEnabled,
   }) {
     return NotificationPrefs(
       remindersEnabled: remindersEnabled ?? this.remindersEnabled,
@@ -46,6 +50,7 @@ class NotificationPrefs {
       reminderTimeMinutes: reminderTimeMinutes ?? this.reminderTimeMinutes,
       permissionDenialCount:
           permissionDenialCount ?? this.permissionDenialCount,
+      vetMessagesEnabled: vetMessagesEnabled ?? this.vetMessagesEnabled,
     );
   }
 }

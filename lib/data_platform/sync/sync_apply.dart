@@ -10,6 +10,7 @@ import '../../features/feed/data/feed_item_synced_table.dart';
 import '../../features/feed/data/feed_transaction_synced_table.dart';
 import '../../features/health/data/health_record_synced_table.dart';
 import '../../features/health/data/vet_assistance_request_synced_table.dart';
+import '../../features/messaging/data/case_message_synced_table.dart';
 import '../../features/vaccination/data/vaccination_task_synced_table.dart';
 
 int taskStatusRank(String status) => switch (status) {
@@ -33,6 +34,9 @@ class SyncApply {
   final _farms = FarmSyncedTable();
   final _feedItems = FeedItemSyncedTable();
   final _feedTransactions = FeedTransactionSyncedTable();
+  final _caseMessages = CaseMessageSyncedTable();
+  final _caseAttachments = CaseMessageAttachmentSyncedTable();
+  final _caseRead = CaseReadStateSyncedTable();
 
   Future<void> applyPullPage(List<SyncPullRow> rows) async {
     await _db.customStatement('PRAGMA defer_foreign_keys = ON');
@@ -77,6 +81,9 @@ class SyncApply {
         'farms' => _farms,
         'feed_items' => _feedItems,
         'feed_transactions' => _feedTransactions,
+        'case_messages' => _caseMessages,
+        'case_message_attachments' => _caseAttachments,
+        'case_read_state' => _caseRead,
         _ => null,
       };
 
@@ -443,6 +450,45 @@ class SyncApply {
             ),
             mode: InsertMode.insertOrIgnore,
           );
+      return;
+    }
+
+    if (mapper.tableName == 'case_messages') {
+      await _db.into(_db.caseMessages).insert(
+            (incoming as CaseMessageRow).toCompanion(false).copyWith(
+              serverVersion: Value(incomingVersion),
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+      return;
+    }
+
+    if (mapper.tableName == 'case_message_attachments') {
+      final row = incoming as CaseMessageAttachmentRow;
+      await _db.into(_db.caseMessageAttachments).insertOnConflictUpdate(
+            row.toCompanion(false).copyWith(
+              serverVersion: Value(incomingVersion),
+            ),
+          );
+      return;
+    }
+
+    if (mapper.tableName == 'case_read_state') {
+      final row = incoming as CaseReadStateRow;
+      final local = await (_db.select(_db.caseReadStates)
+            ..where(
+              (t) =>
+                  t.requestId.equals(row.requestId) & t.userId.equals(row.userId),
+            ))
+          .getSingleOrNull();
+      if (local != null && local.lastReadAt.isAfter(row.lastReadAt)) {
+        return;
+      }
+      await _db.into(_db.caseReadStates).insertOnConflictUpdate(
+            row.toCompanion(false).copyWith(
+              serverVersion: Value(incomingVersion),
+            ),
+          );
     }
   }
 
@@ -495,6 +541,15 @@ class SyncApply {
       await (_db.update(_db.feedTransactions)..where((b) => b.id.equals(id)))
           .write(
         FeedTransactionsCompanion(serverVersion: Value(serverVersion)),
+      );
+    } else if (table == 'case_messages') {
+      await (_db.update(_db.caseMessages)..where((b) => b.id.equals(id))).write(
+        CaseMessagesCompanion(serverVersion: Value(serverVersion)),
+      );
+    } else if (table == 'case_message_attachments') {
+      await (_db.update(_db.caseMessageAttachments)..where((b) => b.id.equals(id)))
+          .write(
+        CaseMessageAttachmentsCompanion(serverVersion: Value(serverVersion)),
       );
     }
   }

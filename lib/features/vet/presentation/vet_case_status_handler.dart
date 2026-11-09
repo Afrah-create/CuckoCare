@@ -27,7 +27,8 @@ Future<void> applyVetCaseAction({
       ref.invalidate(vetInboxProvider);
       ref.invalidate(vetMapProvider);
       final message = switch (action) {
-        VetCaseAction.accept => 'Request accepted — open Active to start the visit.',
+        VetCaseAction.accept =>
+          'Request accepted. You can message the farmer now.',
         VetCaseAction.startVisit => 'Visit started.',
         VetCaseAction.markComplete => 'Case marked complete.',
         VetCaseAction.decline => 'Request declined.',

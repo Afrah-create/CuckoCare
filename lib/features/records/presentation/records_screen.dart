@@ -5,6 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
+import '../../messaging/presentation/messaging_providers.dart';
+import '../../messaging/presentation/unread_badge.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
 import '../../../app/theme/app_spacing.dart';
@@ -18,6 +21,8 @@ import '../../../app/widgets/states/screen_skeletons.dart';
 import '../../../core/error/failure_mapper.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../health/data/health_repository.dart';
+import '../domain/farmer_incident_filters.dart';
+import 'farmer_incident_filter_bar.dart';
 import 'mortality_records_view.dart';
 
 final farmerIncidentsProvider = StreamProvider<List<FarmerIncidentEntry>>((
@@ -92,11 +97,45 @@ class RecordsScreen extends ConsumerWidget {
   }
 }
 
-class _HealthRecordsView extends ConsumerWidget {
+class _HealthRecordsView extends ConsumerStatefulWidget {
   const _HealthRecordsView();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_HealthRecordsView> createState() => _HealthRecordsViewState();
+}
+
+class _HealthRecordsViewState extends ConsumerState<_HealthRecordsView> {
+  FarmerIncidentFilters _filters = const FarmerIncidentFilters();
+
+  List<String> _symptomsOf(FarmerIncidentEntry entry) {
+    return (jsonDecode(entry.record.symptomsJson) as List)
+        .map((e) => e.toString())
+        .where((s) => s.isNotEmpty)
+        .toList();
+  }
+
+  List<FarmerIncidentEntry> _apply(List<FarmerIncidentEntry> entries) {
+    final filtered = entries
+        .where(
+          (entry) => _filters.matches(
+            requestStatus: entry.vetRequest?.status,
+            symptoms: _symptomsOf(entry),
+          ),
+        )
+        .toList();
+    filtered.sort(
+      (a, b) => _filters.compare(
+        aOccurredOn: a.record.occurredOn,
+        bOccurredOn: b.record.occurredOn,
+        aAffected: a.record.affectedBirdCount,
+        bAffected: b.record.affectedBirdCount,
+      ),
+    );
+    return filtered;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final incidentsAsync = ref.watch(farmerIncidentsProvider);
 
     return AsyncStateView<List<FarmerIncidentEntry>>(
@@ -115,25 +154,69 @@ class _HealthRecordsView extends ConsumerWidget {
         onRetry: () => ref.invalidate(farmerIncidentsProvider),
       ),
       builder: (entries) {
+        final visible = _apply(entries);
+        final symptoms = FarmerIncidentFilters.symptomsPresent(
+          entries.map(_symptomsOf),
+        );
         return ContentFrame(
-          child: ListView.separated(
-            padding: EdgeInsets.only(
-              top: AppSpacing.md,
-              bottom: ContentFrame.scrollBottomInset(context),
-            ),
-            itemCount: entries.length + 1,
-            separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return Text(
-                  'Health incidents',
-                  style: context.text.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                );
-              }
-              return _IncidentRecordCard(entry: entries[index - 1]);
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.md),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Health incidents',
+                      style: context.text.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      visible.length == entries.length
+                          ? '${entries.length} saved on this farm'
+                          : '${visible.length} of ${entries.length} shown',
+                      style: context.text.bodySmall?.copyWith(
+                        color: context.scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    FarmerIncidentFilterBar(
+                      value: _filters,
+                      symptoms: symptoms,
+                      onChanged: (next) => setState(() => _filters = next),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Expanded(
+                child: visible.isEmpty
+                    ? EmptyState(
+                        kind: EmptyKind.filtered,
+                        icon: Icons.filter_alt_off_outlined,
+                        title: 'No incidents match',
+                        message:
+                            'Clear a filter or change the sort to see more.',
+                        actionLabel: 'Clear filters',
+                        onAction: () => setState(
+                          () => _filters = const FarmerIncidentFilters(),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: EdgeInsets.only(
+                          bottom: ContentFrame.scrollBottomInset(context),
+                        ),
+                        itemCount: visible.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: AppSpacing.sm),
+                        itemBuilder: (context, index) =>
+                            _IncidentRecordCard(entry: visible[index]),
+                      ),
+              ),
+            ],
           ),
         );
       },
@@ -193,7 +276,16 @@ class _IncidentRecordCard extends ConsumerWidget {
                 runSpacing: 6,
                 children: [
                   for (final s in symptoms)
-                    Chip(label: Text(s), visualDensity: VisualDensity.compact),
+                    Chip(
+                      label: Text(s),
+                      visualDensity: const VisualDensity(
+                        horizontal: -4,
+                        vertical: -4,
+                      ),
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: EdgeInsets.zero,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+                    ),
                 ],
               ),
             ],
@@ -287,13 +379,13 @@ class _DraftVetRequestRow extends StatelessWidget {
   }
 }
 
-class _VetRequestStatusRow extends StatelessWidget {
+class _VetRequestStatusRow extends ConsumerWidget {
   const _VetRequestStatusRow({required this.request});
 
   final VetAssistanceRequestRow request;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final status = request.status;
     final (label, color) = _statusStyle(context, status);
     final directed = request.requestedVetUserId != null;
@@ -347,6 +439,30 @@ class _VetRequestStatusRow extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: AppSpacing.sm),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.tonal(
+              onPressed: () => CaseMessagesRoute(
+                requestId: request.id,
+                farmId: request.farmId,
+                status: request.status,
+                priority: request.priority,
+                summary: request.farmerNotes,
+              ).push(context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  UnreadBadge(
+                    count:
+                        ref.watch(caseUnreadProvider(request.id)).value ?? 0,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(_chatActionLabel(status)),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -369,5 +485,11 @@ class _VetRequestStatusRow extends StatelessWidget {
     'consultation' => 'Consultation',
     'farm_visit' => 'Farm visit',
     _ => 'Assistance',
+  };
+
+  static String _chatActionLabel(String status) => switch (status) {
+    'accepted' || 'in_progress' => 'Message vet',
+    'completed' || 'declined' || 'cancelled' => 'View messages',
+    _ => 'View messages',
   };
 }

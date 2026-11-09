@@ -14,6 +14,8 @@ import '../theme/app_spacing.dart';
 import '../widgets/cuco_app_bar.dart';
 import 'back_behavior.dart';
 import 'tab_scroll_registry.dart';
+import '../../features/messaging/presentation/messaging_providers.dart';
+import '../../features/messaging/presentation/unread_badge.dart';
 import 'vet_shell_destinations.dart';
 
 class VetShell extends ConsumerStatefulWidget {
@@ -21,7 +23,7 @@ class VetShell extends ConsumerStatefulWidget {
 
   final StatefulNavigationShell navigationShell;
 
-  static const _titles = ['Requests', 'Map', 'Active cases', 'More'];
+  static const _titles = ['Requests', 'Map', 'Active', 'More'];
 
   @override
   ConsumerState<VetShell> createState() => _VetShellState();
@@ -80,6 +82,9 @@ class _VetShellState extends ConsumerState<VetShell> {
     final hideTopBar = layout.hideTabRootAppBar;
     final railExtended = layout.size.width >= Breakpoints.railExtendedMinWidth;
 
+    ref.watch(caseRadioForegroundProvider);
+    final unread = ref.watch(navUnreadProvider).value ?? 0;
+
     final rail = NavigationRail(
       extended: railExtended,
       selectedIndex: index,
@@ -92,11 +97,15 @@ class _VetShellState extends ConsumerState<VetShell> {
         onProfileTap: _openProfile,
       ),
       destinations: [
-        for (final d in VetShellDestinations.tabs)
+        for (final entry in VetShellDestinations.tabs.asMap().entries)
           NavigationRailDestination(
-            icon: Icon(d.outlined),
-            selectedIcon: Icon(d.filled),
-            label: Text(d.label),
+            icon: entry.key == 0
+                ? NavUnreadIcon(icon: entry.value.outlined, count: unread)
+                : Icon(entry.value.outlined),
+            selectedIcon: entry.key == 0
+                ? NavUnreadIcon(icon: entry.value.filled, count: unread)
+                : Icon(entry.value.filled),
+            label: Text(entry.value.label),
           ),
       ],
     );
@@ -105,11 +114,15 @@ class _VetShellState extends ConsumerState<VetShell> {
       selectedIndex: index,
       onDestinationSelected: _onDestinationSelected,
       destinations: [
-        for (final d in VetShellDestinations.tabs)
+        for (final entry in VetShellDestinations.tabs.asMap().entries)
           NavigationDestination(
-            icon: Icon(d.outlined),
-            selectedIcon: Icon(d.filled),
-            label: d.label,
+            icon: entry.key == 0
+                ? NavUnreadIcon(icon: entry.value.outlined, count: unread)
+                : Icon(entry.value.outlined),
+            selectedIcon: entry.key == 0
+                ? NavUnreadIcon(icon: entry.value.filled, count: unread)
+                : Icon(entry.value.filled),
+            label: entry.value.label,
           ),
       ],
     );

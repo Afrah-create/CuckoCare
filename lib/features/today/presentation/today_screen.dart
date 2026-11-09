@@ -17,6 +17,8 @@ import '../../../data_platform/db/app_database.dart';
 import '../../auth/domain/user_profile.dart';
 import '../../batches/presentation/batch_providers.dart';
 import '../../home/presentation/farm_profile_banner.dart';
+import '../../messaging/presentation/messaging_providers.dart';
+import '../../messaging/presentation/unread_badge.dart';
 import '../../../app/widgets/motion/appear.dart';
 import '../../../app/widgets/motion/press_scale.dart';
 import '../../../app/widgets/states/animated_count.dart';
@@ -98,6 +100,7 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         const GettingStartedCard(),
+        const _UnreadMessagesCard(),
         const _SectionHeader(
           title: 'Needs attention',
           subtitle: 'Overdue and due-today tasks',
@@ -278,6 +281,40 @@ class _InlineGreetingLine extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _UnreadMessagesCard extends ConsumerWidget {
+  const _UnreadMessagesCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hint = ref.watch(newestUnreadHintProvider).value;
+    if (hint == null || hint.unread <= 0) {
+      return const SizedBox.shrink();
+    }
+    final label = hint.unread == 1
+        ? '1 new message from your vet'
+        : '${hint.unread} new messages from your vet';
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: PressScale(
+        child: Card(
+          child: ListTile(
+            leading: const Icon(Icons.forum_outlined),
+            title: Text(label),
+            trailing: UnreadBadge(count: hint.unread),
+            onTap: () => CaseMessagesRoute(
+              requestId: hint.requestId,
+              farmId: hint.farmId,
+              status: hint.status,
+              priority: hint.priority,
+              summary: hint.summary,
+            ).push(context),
+          ),
+        ),
+      ),
     );
   }
 }

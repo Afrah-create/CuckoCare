@@ -10,7 +10,8 @@ PageLayout presetForRoute(String path) {
     '/batches/:batchId/vaccinations/:taskId' ||
     '/batches/:batchId/losses' ||
     '/feed/:feedItemId' ||
-    '/vet/incident' =>
+    '/vet/incident' ||
+    '/cases/:requestId/messages' =>
       PageLayout.reading,
     '/auth/login' ||
     '/auth/signup' ||
@@ -59,6 +60,7 @@ const routeSamplePaths = <String>{
   '/vet/map',
   '/vet/more',
   '/vet/more/profile',
+  '/cases/:requestId/messages',
 };
 
 Widget routeSample(String path) {

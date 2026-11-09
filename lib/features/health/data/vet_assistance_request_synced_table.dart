@@ -16,23 +16,21 @@ class VetAssistanceRequestSyncedTable
   @override
   VetAssistanceRequestRow fromRemote(Map<String, dynamic> json) {
     return VetAssistanceRequestRow(
-      id: json['id'] as String,
-      farmId: json['farm_id'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      deletedAt: json['deleted_at'] == null
-          ? null
-          : DateTime.parse(json['deleted_at'] as String),
+      id: syncJsonString(json['id'])!,
+      farmId: syncJsonString(json['farm_id'])!,
+      createdAt: syncJsonDateTime(json['created_at'])!,
+      updatedAt: syncJsonDateTime(json['updated_at'])!,
+      deletedAt: syncJsonDateTime(json['deleted_at']),
       serverVersion: syncJsonInt(json['server_version']),
-      batchId: json['batch_id'] as String,
-      healthRecordId: json['health_record_id'] as String,
-      serviceType: json['service_type'] as String,
-      status: json['status'] as String,
+      batchId: syncJsonString(json['batch_id'])!,
+      healthRecordId: syncJsonString(json['health_record_id'])!,
+      serviceType: syncJsonString(json['service_type']) ?? 'either',
+      status: syncJsonString(json['status']) ?? 'submitted',
       shareLocation: syncJsonBool(json['share_location']),
-      priority: json['priority'] as String? ?? 'normal',
-      farmerNotes: json['farmer_notes'] as String?,
-      assignedVetUserId: json['assigned_vet_user_id'] as String?,
-      requestedVetUserId: json['requested_vet_user_id'] as String?,
+      priority: syncJsonString(json['priority']) ?? 'normal',
+      farmerNotes: syncJsonString(json['farmer_notes']),
+      assignedVetUserId: syncJsonString(json['assigned_vet_user_id']),
+      requestedVetUserId: syncJsonString(json['requested_vet_user_id']),
     );
   }
 
@@ -48,7 +46,8 @@ class VetAssistanceRequestSyncedTable
       'share_location': row.shareLocation,
       'priority': row.priority,
       if (row.farmerNotes != null) 'farmer_notes': row.farmerNotes,
-      if (row.requestedVetUserId != null)
+      if (row.requestedVetUserId != null &&
+          row.requestedVetUserId!.trim().isNotEmpty)
         'requested_vet_user_id': row.requestedVetUserId,
       'created_at': row.createdAt.toIso8601String(),
     };

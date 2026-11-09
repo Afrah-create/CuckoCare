@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../app/widgets/motion/press_scale.dart';
 import '../data/vet_inbox_repository.dart';
+import '../../messaging/presentation/messaging_providers.dart';
+import '../../messaging/presentation/unread_badge.dart';
 import '../domain/vet_case_workflow.dart';
 
-class VetRequestTile extends StatelessWidget {
+class VetRequestTile extends ConsumerWidget {
   const VetRequestTile({
     required this.item,
     this.onAccept,
     this.onDecline,
     this.onMarkInProgress,
     this.onMarkComplete,
+    this.onMessage,
     this.onOpenDetail,
     super.key,
   });
@@ -23,12 +27,14 @@ class VetRequestTile extends StatelessWidget {
   final VoidCallback? onDecline;
   final VoidCallback? onMarkInProgress;
   final VoidCallback? onMarkComplete;
+  final VoidCallback? onMessage;
   final VoidCallback? onOpenDetail;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final date = DateFormat.MMMd().add_jm().format(item.createdAt.toLocal());
     final scheme = context.scheme;
+    final unread = ref.watch(caseUnreadProvider(item.id)).value ?? 0;
 
     return PressScale(
       child: Card(
@@ -84,6 +90,7 @@ class VetRequestTile extends StatelessWidget {
                     ],
                   ),
                 ),
+                UnreadBadge(count: unread),
                 _StatusChip(
                   status: item.status,
                   priority: item.priority,
@@ -172,7 +179,8 @@ class VetRequestTile extends StatelessWidget {
             if (onAccept != null ||
                 onDecline != null ||
                 onMarkInProgress != null ||
-                onMarkComplete != null) ...[
+                onMarkComplete != null ||
+                onMessage != null) ...[
               const SizedBox(height: AppSpacing.md),
               Wrap(
                 alignment: WrapAlignment.end,
@@ -183,6 +191,11 @@ class VetRequestTile extends StatelessWidget {
                     TextButton(
                       onPressed: onDecline,
                       child: const Text('Decline'),
+                    ),
+                  if (onMessage != null)
+                    FilledButton(
+                      onPressed: onMessage,
+                      child: const Text('Message farmer'),
                     ),
                   if (onMarkInProgress != null)
                     FilledButton.tonal(

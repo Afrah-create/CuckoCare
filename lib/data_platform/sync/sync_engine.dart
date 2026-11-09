@@ -50,6 +50,9 @@ abstract class SyncEngine {
 
   Future<Result<void>> syncOnce({bool force = false});
 
+  /// Realtime/UI hint: ingest only through the normal sync path.
+  Future<Result<void>> requestPull() => syncOnce(force: true);
+
   Future<void> fullResync();
 
   /// Updates status when connectivity is unavailable (no remote calls).

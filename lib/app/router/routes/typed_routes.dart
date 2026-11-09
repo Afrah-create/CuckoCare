@@ -16,6 +16,7 @@ import '../../../features/batches/presentation/losses_screen.dart';
 import '../../../features/feed/presentation/feed_item_detail_screen.dart';
 import '../../../features/vet/presentation/find_vet_screen.dart';
 import '../../../features/vet/presentation/vet_profile_screen.dart';
+import '../../../features/messaging/presentation/case_messages_screen.dart';
 import '../../../features/farms/presentation/farm_setup_screen.dart';
 import '../../../features/notifications/presentation/notifications_settings_screen.dart';
 import '../../../features/today/presentation/today_screen.dart';
@@ -223,6 +224,35 @@ class FindVetRoute extends GoRouteData with $FindVetRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const FindVetScreen();
+}
+
+@TypedGoRoute<CaseMessagesRoute>(path: '/cases/:requestId/messages')
+class CaseMessagesRoute extends GoRouteData with $CaseMessagesRoute {
+  const CaseMessagesRoute({
+    required this.requestId,
+    this.farmId,
+    this.status,
+    this.priority,
+    this.summary,
+  });
+
+  final String requestId;
+  final String? farmId;
+  final String? status;
+  final String? priority;
+  final String? summary;
+
+  static GlobalKey<NavigatorState> get $parentNavigatorKey => rootNavigatorKey;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      CaseMessagesScreen(
+        requestId: requestId,
+        farmId: farmId ?? state.uri.queryParameters['farmId'] ?? '',
+        status: status ?? state.uri.queryParameters['status'] ?? 'submitted',
+        priority: priority ?? state.uri.queryParameters['priority'] ?? 'normal',
+        summary: summary,
+      );
 }
 
 @TypedGoRoute<VetProfileRoute>(path: '/vet/more/profile')

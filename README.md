@@ -1,6 +1,8 @@
 # CucoCare
 
-Offline-first Android poultry farm management for smallholder farmers in Uganda (batches, vaccination schedules, sync, reminders).
+Offline-first Android poultry farm management for smallholder farmers in Uganda, plus a vet portal in the same app (batches, vaccination, feed, health incidents, Case Radio messaging, sync, reminders).
+
+**Start here:** [docs/overview.md](docs/overview.md) — product, architecture, tech stack, and every feature.
 
 ## Prerequisites
 
@@ -55,6 +57,9 @@ dart run drift_dev schema dump lib/data_platform/db/app_database.dart test/drift
 
 ## Docs
 
-- [Architecture](docs/architecture.md)
+- [Overview](docs/overview.md) — architecture, stack, and features
+- [Architecture](docs/architecture.md) — sync protocol
+- [Case Radio](docs/case-messaging.md)
+- [Vet directory](docs/vet-directory.md)
 - [ADRs](docs/adr/)
 - [Supabase functions](supabase/functions/README.md)

@@ -7,6 +7,7 @@ import '../db/app_database.dart';
 import 'remote_sync_api.dart';
 import 'sync_apply.dart';
 import 'sync_engine.dart';
+import 'sync_json.dart';
 import 'sync_push_order.dart';
 
 class CucoCareSyncEngine implements SyncEngine {
@@ -41,6 +42,9 @@ class CucoCareSyncEngine implements SyncEngine {
       _statusController.add(next);
     }
   }
+
+  @override
+  Future<Result<void>> requestPull() => syncOnce(force: true);
 
   @override
   Future<void> fullResync() async {
@@ -156,7 +160,9 @@ class CucoCareSyncEngine implements SyncEngine {
               table: row.targetTable,
               rowId: row.rowId,
               op: row.op,
-              payload: jsonDecode(row.payload) as Map<String, dynamic>,
+              payload: sanitizeSyncPayload(
+                jsonDecode(row.payload) as Map<String, dynamic>,
+              ),
               clientCreatedAt: row.createdAt,
             ),
           )
@@ -182,14 +188,23 @@ class CucoCareSyncEngine implements SyncEngine {
         if (opResult.status == 'applied' ||
             opResult.status == 'duplicate' ||
             opResult.isDuplicate) {
+          if (opResult.serverVersion == null) {
+            // 0028 could ack applied without writing. Do not drop the outbox.
+            await _db.outboxDao.reissue(opResult.opId);
+            continue;
+          }
           await _db.outboxDao.markApplied(opResult.opId);
-          if (opResult.row != null && opResult.serverVersion != null) {
+          if (opResult.row != null) {
             final table = ops.firstWhere((o) => o.opId == opResult.opId).table;
-            await _apply.applyPushAck(
-              table: table,
-              row: opResult.row!,
-              serverVersion: opResult.serverVersion!,
-            );
+            try {
+              await _apply.applyPushAck(
+                table: table,
+                row: opResult.row!,
+                serverVersion: opResult.serverVersion!,
+              );
+            } catch (_) {
+              // Outbox is already cleared. Do not stall the rest of the batch.
+            }
           }
         } else {
           await _db.outboxDao.markFailed(

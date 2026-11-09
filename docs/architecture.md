@@ -1,5 +1,7 @@
 # CukoCare Architecture
 
+For a product-wide tour (roles, features, stack), see [overview.md](overview.md).
+
 CukoCare is an offline-first Android Flutter application for poultry farmers.
 Drift is the on-device source of truth. Supabase is the sync target, backup, and RPC host.
 The device works fully without a connection; changes are queued and reconciled transparently.

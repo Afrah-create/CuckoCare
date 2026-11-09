@@ -18,6 +18,7 @@ List<RouteBase> get $appRoutes => [
   $notificationsSettingsRoute,
   $feedItemDetailRoute,
   $findVetRoute,
+  $caseMessagesRoute,
   $vetProfileRoute,
 ];
 
@@ -476,6 +477,49 @@ mixin $FindVetRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/more/vets');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $caseMessagesRoute => GoRouteData.$route(
+  path: '/cases/:requestId/messages',
+  hasOverriddenOnExit: false,
+  parentNavigatorKey: CaseMessagesRoute.$parentNavigatorKey,
+  factory: $CaseMessagesRoute._fromState,
+);
+
+mixin $CaseMessagesRoute on GoRouteData {
+  static CaseMessagesRoute _fromState(GoRouterState state) => CaseMessagesRoute(
+    requestId: state.pathParameters['requestId']!,
+    farmId: state.uri.queryParameters['farm-id'],
+    status: state.uri.queryParameters['status'],
+    priority: state.uri.queryParameters['priority'],
+    summary: state.uri.queryParameters['summary'],
+  );
+
+  CaseMessagesRoute get _self => this as CaseMessagesRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/cases/${Uri.encodeComponent(_self.requestId)}/messages',
+    queryParams: {
+      if (_self.farmId != null) 'farm-id': _self.farmId,
+      if (_self.status != null) 'status': _self.status,
+      if (_self.priority != null) 'priority': _self.priority,
+      if (_self.summary != null) 'summary': _self.summary,
+    },
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

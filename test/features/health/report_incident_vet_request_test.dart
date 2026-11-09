@@ -4,6 +4,7 @@ import 'package:cucocare/data_platform/db/synced_write.dart';
 import 'package:cucocare/features/batches/data/batch_repository.dart';
 import 'package:cucocare/features/health/data/health_incident_photo_storage.dart';
 import 'package:cucocare/features/health/data/health_repository.dart';
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase/supabase.dart';
@@ -70,12 +71,62 @@ void main() {
     expect(vetRows.single.status, 'submitted');
     final outbox = await db.select(db.outbox).get();
     expect(
+      outbox.where((o) => o.targetTable == 'batches').length,
+      1,
+    );
+    expect(
       outbox.where((o) => o.targetTable == 'health_records').length,
       1,
     );
     expect(
       outbox.where((o) => o.targetTable == 'vet_assistance_requests').length,
       1,
+    );
+  });
+
+  test('repairIncidentOutbox mints a new op for failed health rows', () async {
+    await health.reportConcern(
+      ReportHealthConcernInput(
+        batchId: batchId,
+        farmId: farmId,
+        summary: 'Coughing birds',
+        requestVet: true,
+      ),
+    );
+    final first = (await db.select(db.outbox).get())
+        .firstWhere((o) => o.targetTable == 'health_records');
+    await (db.update(db.outbox)..where((o) => o.opId.equals(first.opId))).write(
+      const OutboxCompanion(
+        state: Value('failed'),
+        retryable: Value(false),
+        errorCode: Value('42501'),
+      ),
+    );
+    await health.repairIncidentOutbox();
+    final after = (await db.select(db.outbox).get())
+        .where((o) => o.targetTable == 'health_records');
+    expect(after, hasLength(1));
+    expect(after.first.opId, isNot(first.opId));
+    expect(after.first.state, 'pending');
+  });
+
+  test('repairIncidentOutbox requeues rows whose outbox was dropped', () async {
+    await health.reportConcern(
+      ReportHealthConcernInput(
+        batchId: batchId,
+        farmId: farmId,
+        summary: 'Coughing birds',
+        requestVet: true,
+      ),
+    );
+    await db.outboxDao.deleteAllRows();
+    await health.repairIncidentOutbox();
+    final tables = (await db.select(db.outbox).get())
+        .map((o) => o.targetTable)
+        .toSet();
+    expect(
+      tables,
+      containsAll(['batches', 'health_records', 'vet_assistance_requests']),
     );
   });
 

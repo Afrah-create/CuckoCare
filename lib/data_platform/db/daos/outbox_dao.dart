@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+import '../../../core/utils/uuid_v7.dart';
 import '../app_database.dart';
 import '../tables/outbox.dart';
 
@@ -71,6 +72,31 @@ class OutboxDao extends DatabaseAccessor<AppDatabase> with _$OutboxDaoMixin {
 
   Future<void> markApplied(String opId) {
     return (delete(outbox)..where((t) => t.opId.equals(opId))).go();
+  }
+
+  /// New op_id, same payload. Used when the server acked 'applied' without a
+  /// row (poisoned duplicate in sync_ops_applied).
+  Future<void> reissue(String opId) async {
+    final row = await (select(outbox)..where((t) => t.opId.equals(opId)))
+        .getSingleOrNull();
+    if (row == null) {
+      return;
+    }
+    await (delete(outbox)..where((t) => t.opId.equals(opId))).go();
+    await into(outbox).insert(
+      OutboxCompanion.insert(
+        opId: newId(),
+        targetTable: row.targetTable,
+        rowId: row.rowId,
+        op: row.op,
+        payload: row.payload,
+        createdAt: DateTime.now().toUtc(),
+        state: const Value('pending'),
+        nextAttemptAt: Value(
+          DateTime.now().toUtc().add(const Duration(seconds: 30)),
+        ),
+      ),
+    );
   }
 
   Future<void> markFailed({

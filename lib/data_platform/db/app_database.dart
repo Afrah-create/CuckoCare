@@ -12,6 +12,7 @@ import 'daos/sync_dao.dart';
 import 'daos/sync_meta_dao.dart';
 import 'tables/auth_snapshot.dart';
 import 'tables/batches.dart';
+import 'tables/case_messages.dart';
 import 'tables/entitlements.dart';
 import 'tables/farm_events.dart';
 import 'tables/farm_members.dart';
@@ -53,6 +54,12 @@ part 'app_database.g.dart';
     SyncLock,
     AuthSnapshot,
     VetAssistanceRequests,
+    CaseMessages,
+    CaseMessageAttachments,
+    CaseReadStates,
+    MediaUploadJobs,
+    MediaCache,
+    PushRegistrations,
   ],
   daos: [OutboxDao, SyncDao, SyncMetaDao],
 )
@@ -65,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -155,6 +162,14 @@ class AppDatabase extends _$AppDatabase {
             );
             await m.createIndex(mortalityBatchOccurredIdx);
             await m.createIndex(batchesFarmStatusIdx);
+          }
+          if (from < 10) {
+            await m.createTable(caseMessages);
+            await m.createTable(caseMessageAttachments);
+            await m.createTable(caseReadStates);
+            await m.createTable(mediaUploadJobs);
+            await m.createTable(mediaCache);
+            await m.createTable(pushRegistrations);
           }
         },
       );

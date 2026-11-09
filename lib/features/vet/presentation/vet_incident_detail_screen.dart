@@ -6,8 +6,12 @@ import 'package:intl/intl.dart';
 import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/layout/page_layout.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../messaging/domain/messaging_rules.dart';
+import '../../messaging/presentation/messaging_providers.dart';
+import '../../messaging/presentation/unread_badge.dart';
 import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
 import 'vet_case_status_handler.dart';
@@ -15,6 +19,16 @@ import 'vet_incident_photo_gallery.dart';
 
 void openVetIncidentDetail(BuildContext context, VetIncidentDetail detail) {
   context.push('/vet/incident', extra: detail);
+}
+
+void openVetCaseMessages(BuildContext context, VetIncidentDetail detail) {
+  CaseMessagesRoute(
+    requestId: detail.requestId,
+    farmId: detail.farmId,
+    status: detail.status,
+    priority: detail.priority,
+    summary: detail.summary,
+  ).push(context);
 }
 
 class VetIncidentDetailScreen extends ConsumerWidget {
@@ -164,6 +178,8 @@ class VetIncidentDetailScreen extends ConsumerWidget {
             ),
           ],
           const SizedBox(height: AppSpacing.lg),
+          _MessagesEntry(detail: detail),
+          const SizedBox(height: AppSpacing.md),
           VetIncidentPhotoGallery(photoObjectKeys: detail.photoObjectKeys),
           const SizedBox(height: AppSpacing.xl),
           if (actions.isNotEmpty)
@@ -185,14 +201,26 @@ class VetIncidentDetailScreen extends ConsumerWidget {
                     )
                   else
                     FilledButton(
-                      onPressed: () => applyVetCaseAction(
-                        context: context,
-                        ref: ref,
-                        requestId: detail.requestId,
-                        action: action,
-                        popAfterSuccess:
-                            action == VetCaseAction.markComplete,
-                      ),
+                      onPressed: () async {
+                        await applyVetCaseAction(
+                          context: context,
+                          ref: ref,
+                          requestId: detail.requestId,
+                          action: action,
+                          popAfterSuccess:
+                              action == VetCaseAction.markComplete,
+                        );
+                        if (action == VetCaseAction.accept &&
+                            context.mounted) {
+                          CaseMessagesRoute(
+                            requestId: detail.requestId,
+                            farmId: detail.farmId,
+                            status: 'accepted',
+                            priority: detail.priority,
+                            summary: detail.summary,
+                          ).push(context);
+                        }
+                      },
                       child: Text(vetCaseActionLabel(action)),
                     ),
               ],
@@ -207,6 +235,62 @@ class VetIncidentDetailScreen extends ConsumerWidget {
         'farm_visit' => 'Farm visit',
         _ => 'Assistance',
       };
+}
+
+class _MessagesEntry extends ConsumerWidget {
+  const _MessagesEntry({required this.detail});
+
+  final VetIncidentDetail detail;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final unread = ref.watch(caseUnreadProvider(detail.requestId)).value ?? 0;
+    final open = MessagingRules().isOpen(detail.status);
+    final archived = MessagingRules().isArchived(detail.status);
+    return Card(
+      elevation: 0,
+      color: context.scheme.surfaceContainerLow,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.forum_outlined, color: context.scheme.primary),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    'Chat with farmer',
+                    style: context.text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                UnreadBadge(count: unread),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              open
+                  ? 'Keep advising until this case is complete.'
+                  : archived
+                      ? 'Read-only — this case is closed.'
+                      : 'Accept the request to start chatting.',
+              style: context.text.bodySmall?.copyWith(
+                color: context.scheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            FilledButton.tonal(
+              onPressed: () => openVetCaseMessages(context, detail),
+              child: Text(open ? 'Open chat' : 'View messages'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _Section extends StatelessWidget {

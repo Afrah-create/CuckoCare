@@ -35,6 +35,14 @@ class FlutterLocalNotificationsGateway implements NotificationsGateway {
     importance: Importance.high,
   );
 
+  static const AndroidNotificationChannel _caseMessagesChannel =
+      AndroidNotificationChannel(
+    NotificationChannels.caseMessages,
+    'Vet messages',
+    description: 'New messages on your vet requests',
+    importance: Importance.high,
+  );
+
   @override
   Future<void> initialize({void Function(String? payload)? onTap}) async {
     KampalaTime.ensureInitialized();
@@ -53,6 +61,7 @@ class FlutterLocalNotificationsGateway implements NotificationsGateway {
         AndroidFlutterLocalNotificationsPlugin>();
     await androidPlugin?.createNotificationChannel(_dueChannel);
     await androidPlugin?.createNotificationChannel(_overdueChannel);
+    await androidPlugin?.createNotificationChannel(_caseMessagesChannel);
   }
 
   @override

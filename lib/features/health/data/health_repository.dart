@@ -7,6 +7,7 @@ import '../../../core/utils/uuid_v7.dart';
 import '../../../data_platform/db/app_database.dart';
 import '../../../data_platform/db/synced_write.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
+import '../../batches/data/batch_synced_table.dart';
 import '../../farms/data/farm_repository.dart';
 import 'health_incident_photo_storage.dart';
 import 'health_record_synced_table.dart';
@@ -66,6 +67,7 @@ class HealthRepository {
         _clock = clock ?? SystemClock(),
         _healthMapper = HealthRecordSyncedTable(),
         _vetRequestMapper = VetAssistanceRequestSyncedTable(),
+        _batchMapper = BatchSyncedTable(),
         _photoStorage = photoStorage ?? HealthIncidentPhotoStorage();
 
   final AppDatabase _db;
@@ -75,6 +77,7 @@ class HealthRepository {
   final Clock _clock;
   final HealthRecordSyncedTable _healthMapper;
   final VetAssistanceRequestSyncedTable _vetRequestMapper;
+  final BatchSyncedTable _batchMapper;
   final HealthIncidentPhotoStorage _photoStorage;
 
   Stream<List<HealthRecordRow>> watchForBatch(String batchId) {
@@ -167,7 +170,22 @@ class HealthRepository {
       pendingPhotoPathsJson: pendingPhotosJson,
     );
 
-    final ops = <SyncedWriteOp>[
+    final ops = <SyncedWriteOp>[];
+    final parentBatch = await (_db.select(_db.batches)
+          ..where((b) => b.id.equals(input.batchId) & b.deletedAt.isNull()))
+        .getSingleOrNull();
+    if (parentBatch != null) {
+      ops.add(
+        SyncedWriteOp(
+          writeRow: () async {},
+          table: _batchMapper.tableName,
+          rowId: parentBatch.id,
+          op: 'upsert',
+          payload: _batchMapper.toPayload(parentBatch),
+        ),
+      );
+    }
+    ops.add(
       SyncedWriteOp(
         writeRow: () => _db.into(_db.healthRecords).insert(
               HealthRecordsCompanion.insert(
@@ -190,7 +208,7 @@ class HealthRepository {
         op: 'upsert',
         payload: _healthMapper.toPayload(healthRow),
       ),
-    ];
+    );
 
     final requestId = newId();
     final notifyVet = input.requestVet;
@@ -239,7 +257,122 @@ class HealthRepository {
     );
 
     await _syncedWrite.writeSyncedMany(ops);
-    await flushPendingPhotos(healthRecordId: healthId);
+    try {
+      await flushPendingPhotos(healthRecordId: healthId);
+    } catch (_) {
+      // Local incident + vet request are already queued. Photo upload must
+      // not roll back or skip the sync notification.
+    }
+  }
+
+  /// Re-enqueue rejected incident ops with a new op_id so a prior 42501
+  /// stored in sync_ops_applied cannot block a retry.
+  Future<void> repairIncidentOutbox() async {
+    final unackedHealthRows = await (_db.select(_db.healthRecords)
+          ..where((t) => t.serverVersion.isNull() & t.deletedAt.isNull()))
+        .get();
+    final parentIds = unackedHealthRows.map((h) => h.batchId).toSet();
+    final parentBatches = parentIds.isEmpty
+        ? <BatchRow>[]
+        : await (_db.select(_db.batches)
+              ..where((b) => b.id.isIn(parentIds.toList())))
+            .get();
+    await _requeueUnacked(
+      table: _batchMapper.tableName,
+      rows: parentBatches,
+      payloadOf: _batchMapper.toPayload,
+      idOf: (row) => row.id,
+    );
+    await _requeueUnacked(
+      table: _healthMapper.tableName,
+      rows: unackedHealthRows,
+      payloadOf: _healthMapper.toPayload,
+      idOf: (row) => row.id,
+    );
+    await _requeueUnacked(
+      table: _vetRequestMapper.tableName,
+      rows: await (_db.select(_db.vetAssistanceRequests)
+            ..where((t) => t.serverVersion.isNull() & t.deletedAt.isNull()))
+          .get(),
+      payloadOf: _vetRequestMapper.toPayload,
+      idOf: (row) => row.id,
+    );
+    final failed = await (_db.select(_db.outbox)
+          ..where(
+            (o) =>
+                (o.targetTable.equals('health_records') |
+                    o.targetTable.equals('vet_assistance_requests')) &
+                o.state.equals('failed'),
+          ))
+        .get();
+    for (final op in failed) {
+      if (op.targetTable == 'health_records') {
+        final row = await (_db.select(_db.healthRecords)
+              ..where((t) => t.id.equals(op.rowId)))
+            .getSingleOrNull();
+        if (row == null || row.serverVersion != null) {
+          await (_db.delete(_db.outbox)..where((o) => o.opId.equals(op.opId)))
+              .go();
+          continue;
+        }
+        await (_db.delete(_db.outbox)..where((o) => o.opId.equals(op.opId)))
+            .go();
+        await _syncedWrite.writeSynced(
+          writeRow: () async {},
+          table: _healthMapper.tableName,
+          rowId: row.id,
+          op: 'upsert',
+          payload: _healthMapper.toPayload(row),
+        );
+      } else {
+        final row = await (_db.select(_db.vetAssistanceRequests)
+              ..where((t) => t.id.equals(op.rowId)))
+            .getSingleOrNull();
+        if (row == null || row.serverVersion != null) {
+          await (_db.delete(_db.outbox)..where((o) => o.opId.equals(op.opId)))
+              .go();
+          continue;
+        }
+        await (_db.delete(_db.outbox)..where((o) => o.opId.equals(op.opId)))
+            .go();
+        await _syncedWrite.writeSynced(
+          writeRow: () async {},
+          table: _vetRequestMapper.tableName,
+          rowId: row.id,
+          op: 'upsert',
+          payload: _vetRequestMapper.toPayload(row),
+        );
+      }
+    }
+  }
+
+  Future<void> _requeueUnacked<T>({
+    required String table,
+    required List<T> rows,
+    required Map<String, dynamic> Function(T row) payloadOf,
+    required String Function(T row) idOf,
+  }) async {
+    for (final row in rows) {
+      final id = idOf(row);
+      final pending = await (_db.select(_db.outbox)
+            ..where(
+              (o) =>
+                  o.targetTable.equals(table) &
+                  o.rowId.equals(id) &
+                  (o.state.equals('pending') | o.state.equals('in_flight')),
+            ))
+          .get();
+      if (pending.isNotEmpty) {
+        continue;
+      }
+      await _syncedWrite.writeSynced(
+        writeRow: () async {},
+        table: table,
+        rowId: id,
+        op: 'upsert',
+        payload: payloadOf(row),
+      );
+    }
   }
 
   Future<FarmRow?> _loadPrimaryFarm() async {

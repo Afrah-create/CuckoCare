@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
 import '../../../app/layout/app_page.dart';
@@ -15,24 +16,47 @@ import '../../../app/widgets/tab_empty_state.dart';
 import '../../../core/error/failure_mapper.dart';
 import '../domain/vet_case_workflow.dart';
 import '../domain/vet_incident_detail.dart';
+import '../domain/vet_incident_filters.dart';
 import 'vet_case_status_handler.dart';
 import 'vet_incident_detail_screen.dart';
+import 'vet_incident_filter_bar.dart';
 import 'vet_inbox_providers.dart';
 import 'vet_request_tile.dart';
 
-class VetActiveScreen extends ConsumerWidget {
+class VetActiveScreen extends ConsumerStatefulWidget {
   const VetActiveScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VetActiveScreen> createState() => _VetActiveScreenState();
+}
+
+class _VetActiveScreenState extends ConsumerState<VetActiveScreen> {
+  VetIncidentFilters _filters = const VetIncidentFilters();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.invalidate(vetInboxProvider);
+    });
+  }
+
+  Future<void> _refresh() async {
+    ref.invalidate(vetInboxProvider);
+    await ref.read(vetInboxProvider.future);
+  }
+
+  void _openRequests() {
+    final shell = StatefulNavigationShell.maybeOf(context);
+    if (shell != null) {
+      shell.goBranch(0);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final inboxAsync = ref.watch(vetInboxProvider);
     final vetUserId = ref.watch(authUserIdProvider).value;
-
-    Future<void> refresh() async {
-      ref.invalidate(vetInboxProvider);
-      await ref.read(vetInboxProvider.future);
-    }
-
     final layout = context.layout;
     final online = ref.watch(connectivityOnlineProvider).value ?? true;
 
@@ -40,101 +64,145 @@ class VetActiveScreen extends ConsumerWidget {
       primary: false,
       frame: false,
       body: PullToRefresh(
-      onSync: refresh,
-      online: online,
-      child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
+        onSync: _refresh,
+        online: online,
+        child: AsyncStateView(
+          value: inboxAsync,
+          onRetry: _refresh,
+          skeleton: const ListSkeleton(count: 3),
+          error: (error, _) => ErrorState(
+            failure: FailureMapper.mapObject(error),
+            onRetry: _refresh,
           ),
-          padding: EdgeInsets.fromLTRB(
-            layout.margin,
-            AppSpacing.xs,
-            layout.margin,
-            ContentFrame.scrollBottomInset(context),
-          ),
-          children: [
-            Text(
-              'Needs attention',
-              style: context.text.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
+          builder: (items) {
+            if (vetUserId == null) {
+              return const ListSkeleton(count: 3);
+            }
+            final active = items
+                .where((i) => vetInboxItemIsActive(i, vetUserId))
+                .toList(growable: false);
+            final filtered = active
+                .where(
+                  (i) => _filters.matches(
+                    serviceType: i.serviceType,
+                    symptoms: i.symptoms,
+                  ),
+                )
+                .toList(growable: false);
+            if (active.isEmpty) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                children: [
+                  SizedBox(
+                    height: (MediaQuery.sizeOf(context).height - 280)
+                        .clamp(360.0, 720.0),
+                    child: TabEmptyState(
+                      icon: Icons.assignment_outlined,
+                      title: 'No visits yet',
+                      message:
+                          'Accept a request and it will land here. You can chat with the farmer, then start the visit when you are on the farm.',
+                      actionLabel: 'Go to Requests',
+                      onAction: _openRequests,
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            final accepted = active.where((i) => i.status == 'accepted').length;
+            final inProgress =
+                active.where((i) => i.status == 'in_progress').length;
+            final presentSymptoms = VetIncidentFilters.symptomsPresent(
+              active.map((i) => i.symptoms),
+            );
+            final subtitle = [
+              if (accepted > 0)
+                '$accepted waiting to start',
+              if (inProgress > 0) '$inProgress in progress',
+            ].join(' · ');
+
+            return ListView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
               ),
-            ),
-            const SizedBox(height: AppSpacing.xxs),
-            Text(
-              'Accepted cases — start the visit, then mark complete when done.',
-              style: context.text.bodyMedium?.copyWith(
-                color: context.scheme.onSurfaceVariant,
+              padding: EdgeInsets.fromLTRB(
+                layout.margin,
+                AppSpacing.xs,
+                layout.margin,
+                ContentFrame.scrollBottomInset(context),
               ),
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            AsyncStateView(
-              expand: false,
-              value: inboxAsync,
-              onRetry: refresh,
-              skeleton: const ListSkeleton(count: 3, scrollable: false),
-              error: (error, _) => ErrorState(
-                failure: FailureMapper.mapObject(error),
-                onRetry: refresh,
-              ),
-              builder: (items) {
-                if (vetUserId == null) {
-                  return const _EmptyActive();
-                }
-                final active = items
-                    .where((i) => vetInboxItemIsActive(i, vetUserId))
-                    .toList(growable: false);
-                if (active.isEmpty) {
-                  return const _EmptyActive();
-                }
-                return Column(
-                  children: [
-                    for (final item in active) ...[
-                      VetRequestTile(
-                        item: item,
-                        onOpenDetail: () => openVetIncidentDetail(
-                          context,
-                          VetIncidentDetail.fromInbox(item),
-                        ),
-                        onMarkInProgress: item.status == 'accepted'
-                            ? () => applyVetCaseAction(
-                                  context: context,
-                                  ref: ref,
-                                  requestId: item.id,
-                                  action: VetCaseAction.startVisit,
-                                )
-                            : null,
-                        onMarkComplete: item.status == 'in_progress'
-                            ? () => applyVetCaseAction(
-                                  context: context,
-                                  ref: ref,
-                                  requestId: item.id,
-                                  action: VetCaseAction.markComplete,
-                                )
-                            : null,
+              children: [
+                Text(
+                  'Your cases',
+                  style: context.text.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xxs),
+                Text(
+                  subtitle.isEmpty
+                      ? 'Message the farmer, then start the visit when you arrive.'
+                      : subtitle,
+                  style: context.text.bodyMedium?.copyWith(
+                    color: context.scheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                VetIncidentFilterBar(
+                  value: _filters,
+                  symptoms: presentSymptoms,
+                  onChanged: (next) => setState(() => _filters = next),
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (filtered.isEmpty)
+                  TabEmptyState(
+                    icon: Icons.filter_list_off,
+                    title: 'No matches',
+                    message: 'Try another symptom or service filter.',
+                    actionLabel: 'Show all',
+                    onAction: () => setState(
+                      () => _filters = const VetIncidentFilters(),
+                    ),
+                  )
+                else ...[
+                  for (final item in filtered) ...[
+                    VetRequestTile(
+                      item: item,
+                      onOpenDetail: () => openVetIncidentDetail(
+                        context,
+                        VetIncidentDetail.fromInbox(item),
                       ),
-                      const SizedBox(height: AppSpacing.sm),
-                    ],
+                      onMessage: () => openVetCaseMessages(
+                        context,
+                        VetIncidentDetail.fromInbox(item),
+                      ),
+                      onMarkInProgress: item.status == 'accepted'
+                          ? () => applyVetCaseAction(
+                                context: context,
+                                ref: ref,
+                                requestId: item.id,
+                                action: VetCaseAction.startVisit,
+                              )
+                          : null,
+                      onMarkComplete: item.status == 'in_progress'
+                          ? () => applyVetCaseAction(
+                                context: context,
+                                ref: ref,
+                                requestId: item.id,
+                                action: VetCaseAction.markComplete,
+                              )
+                          : null,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
                   ],
-                );
-              },
-            ),
-          ],
+                ],
+              ],
+            );
+          },
         ),
       ),
-    );
-  }
-}
-
-class _EmptyActive extends StatelessWidget {
-  const _EmptyActive();
-
-  @override
-  Widget build(BuildContext context) {
-    return TabEmptyState(
-      icon: Icons.assignment_outlined,
-      title: 'No active cases',
-      message:
-          'Accept a request from the Requests tab, then start the visit here.',
     );
   }
 }

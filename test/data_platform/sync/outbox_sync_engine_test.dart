@@ -84,6 +84,29 @@ void main() {
     expect(batch.serverVersion, isNot(null));
   });
 
+  test('applied without server_version keeps outbox with a new op_id', () async {
+    final write = SyncedWrite(db);
+    await write.writeSynced(
+      writeRow: () async {},
+      table: 'health_records',
+      rowId: 'health-1',
+      op: 'upsert',
+      payload: const {'id': 'health-1', 'farm_id': 'farm-1'},
+    );
+    final before = (await db.select(db.outbox).get()).single.opId;
+    final phantom = _PhantomApplyRemote();
+    final engine = CucoCareSyncEngine(
+      db: db,
+      remote: phantom,
+      hasRealSession: () async => true,
+    );
+    await engine.syncOnce();
+    final after = await db.select(db.outbox).get();
+    expect(after, hasLength(1));
+    expect(after.single.opId, isNot(before));
+    expect(after.single.state, 'pending');
+  });
+
   test('demo session no-ops sync', () async {
     final engine = CucoCareSyncEngine(
       db: db,
@@ -129,4 +152,19 @@ void main() {
     await engine.syncOnce();
     expect(await db.syncDao.cursorFor('farm-1'), 3);
   });
+}
+
+class _PhantomApplyRemote extends MemoryRemoteSyncApi {
+  @override
+  Future<Result<SyncPushResponse>> push(List<SyncPushOp> ops) async {
+    return Success(
+      SyncPushResponse(
+        results: [
+          for (final op in ops)
+            SyncPushOpResult(opId: op.opId, status: 'applied'),
+        ],
+        epoch: 1,
+      ),
+    );
+  }
 }

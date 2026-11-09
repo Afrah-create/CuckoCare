@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/di/providers.dart';
+import '../../../app/router/routes/typed_routes.dart';
 import '../../../app/shell/tab_scroll_registry.dart';
 import '../../../app/layout/app_page.dart';
 import '../../../app/layout/content_frame.dart';
@@ -15,6 +16,7 @@ import '../../../app/widgets/states/error_state.dart';
 import '../../../app/widgets/states/offline_notice.dart';
 import '../../../app/widgets/states/pull_to_refresh.dart';
 import '../../../app/widgets/states/screen_skeletons.dart';
+import '../../../app/widgets/filter_chip_strip.dart';
 import '../../../app/widgets/tab_empty_state.dart';
 import '../../../core/error/failure_mapper.dart';
 import '../../today/presentation/today_greeting_card.dart';
@@ -24,7 +26,9 @@ import '../domain/vet_incident_detail.dart';
 import 'vet_case_status_handler.dart';
 import 'vet_incident_detail_screen.dart';
 import '../domain/vet_inbox_stats.dart';
+import '../domain/vet_incident_filters.dart';
 import 'vet_inbox_providers.dart';
+import 'vet_incident_filter_bar.dart';
 import 'vet_request_tile.dart';
 import 'vet_requests_dashboard.dart';
 
@@ -41,6 +45,7 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
   static const _tabIndex = 0;
 
   _VetRequestFilter _filter = _VetRequestFilter.all;
+  VetIncidentFilters _incidentFilters = const VetIncidentFilters();
   final _scrollController = ScrollController();
   TabScrollRegistry? _tabScrollRegistryNotifier;
 
@@ -220,7 +225,18 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
         _filter == _VetRequestFilter.urgent && urgentCount == 0
             ? _VetRequestFilter.all
             : _filter;
-    final filtered = _applyFilter(pending, vetUserId, effectiveFilter);
+    final queued = _applyFilter(pending, vetUserId, effectiveFilter);
+    final filtered = queued
+        .where(
+          (i) => _incidentFilters.matches(
+            serviceType: i.serviceType,
+            symptoms: i.symptoms,
+          ),
+        )
+        .toList(growable: false);
+    final presentSymptoms = VetIncidentFilters.symptomsPresent(
+      queued.map((i) => i.symptoms),
+    );
 
     final children = <Widget>[
       VetRequestsStatsPanel(stats: stats),
@@ -261,6 +277,12 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
             showUrgent: urgentCount > 0,
             onSelected: (f) => setState(() => _filter = f),
           ),
+          const SizedBox(height: AppSpacing.sm),
+          VetIncidentFilterBar(
+            value: _incidentFilters,
+            symptoms: presentSymptoms,
+            onChanged: (next) => setState(() => _incidentFilters = next),
+          ),
         ],
       ),
       const SizedBox(height: AppSpacing.md),
@@ -273,7 +295,10 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
           title: 'No matches',
           message: 'Try another filter or refresh the list.',
           actionLabel: 'Show all',
-          onAction: () => setState(() => _filter = _VetRequestFilter.all),
+          onAction: () => setState(() {
+            _filter = _VetRequestFilter.all;
+            _incidentFilters = const VetIncidentFilters();
+          }),
         ),
       );
       return children;
@@ -290,12 +315,23 @@ class _VetRequestsScreenState extends ConsumerState<VetRequestsScreen> {
               context,
               VetIncidentDetail.fromInbox(item),
             ),
-            onAccept: () => applyVetCaseAction(
-              context: context,
-              ref: ref,
-              requestId: item.id,
-              action: VetCaseAction.accept,
-            ),
+            onAccept: () async {
+              await applyVetCaseAction(
+                context: context,
+                ref: ref,
+                requestId: item.id,
+                action: VetCaseAction.accept,
+              );
+              if (context.mounted) {
+                CaseMessagesRoute(
+                  requestId: item.id,
+                  farmId: item.farmId,
+                  status: 'accepted',
+                  priority: item.priority,
+                  summary: item.summary ?? item.serviceType,
+                ).push(context);
+              }
+            },
             onDecline: () => applyVetCaseAction(
               context: context,
               ref: ref,
@@ -324,55 +360,22 @@ class _FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: AppSpacing.xs,
-      runSpacing: AppSpacing.xs,
-      children: [
-        _FilterChip(
-          label: 'All',
-          selected: selected == _VetRequestFilter.all,
-          onTap: () => onSelected(_VetRequestFilter.all),
-        ),
-        _FilterChip(
-          label: 'New',
-          selected: selected == _VetRequestFilter.newOnly,
-          onTap: () => onSelected(_VetRequestFilter.newOnly),
-        ),
-        _FilterChip(
+    return FilterChipStrip<_VetRequestFilter>(
+      selected: selected,
+      options: [
+        const FilterChipOption(value: _VetRequestFilter.all, label: 'All'),
+        const FilterChipOption(value: _VetRequestFilter.newOnly, label: 'New'),
+        const FilterChipOption(
+          value: _VetRequestFilter.directed,
           label: 'For you',
-          selected: selected == _VetRequestFilter.directed,
-          onTap: () => onSelected(_VetRequestFilter.directed),
         ),
         if (showUrgent)
-          _FilterChip(
+          const FilterChipOption(
+            value: _VetRequestFilter.urgent,
             label: 'Urgent',
-            selected: selected == _VetRequestFilter.urgent,
-            onTap: () => onSelected(_VetRequestFilter.urgent),
           ),
       ],
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      showCheckmark: false,
-      onSelected: (_) => onTap(),
-      visualDensity: VisualDensity.compact,
+      onSelected: onSelected,
     );
   }
 }

@@ -107,6 +107,7 @@ final syncSchedulerProvider = Provider<SyncScheduler>((ref) {
     beforeNetworkSync: () async {
       await farms.ensureSyncScopesAligned();
       await farms.pushPendingFarmProfileToServer();
+      await ref.read(healthRepositoryProvider).repairIncidentOutbox();
       await ref.read(healthRepositoryProvider).flushAllPendingIncidentPhotos();
     },
   );

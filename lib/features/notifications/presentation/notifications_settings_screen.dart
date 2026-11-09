@@ -217,6 +217,21 @@ class NotificationsSettingsScreen extends ConsumerWidget {
               ),
             const SizedBox(height: AppSpacing.md),
             Card(
+              child: SwitchListTile(
+                title: const Text('Vet messages'),
+                subtitle: const Text(
+                  'Notify me when there is a new message on a vet request',
+                ),
+                value: prefs.vetMessagesEnabled && masterEnabled,
+                onChanged: masterEnabled
+                    ? (v) => ref
+                        .read(notificationPrefsProvider.notifier)
+                        .update(prefs.copyWith(vetMessagesEnabled: v))
+                    : null,
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Card(
               child: ListTile(
                 title: const Text('Remind me at'),
                 subtitle: Text(_formatMinutes(prefs.reminderTimeMinutes)),

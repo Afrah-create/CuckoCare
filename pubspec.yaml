@@ -62,6 +62,7 @@ dependencies:
   share_plus: ^13.3.1
   url_launcher: ^6.3.1
   image_picker: ^1.1.2
+  image: ^4.5.4
   flutter_map: ^8.2.2
   latlong2: ^0.9.1
 
@@ -82,7 +83,6 @@ dev_dependencies:
   json_serializable: ^6.14.1
   mocktail: ^1.0.5
   go_router_builder: ^4.5.0
-  image: ^4.5.4
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.2.16
 

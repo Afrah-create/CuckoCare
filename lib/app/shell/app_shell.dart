@@ -10,6 +10,8 @@ import '../layout/breakpoints.dart';
 import '../layout/layout_profile.dart';
 import '../layout/layout_scope.dart';
 import '../layout/shell_chrome.dart';
+import '../../features/messaging/presentation/messaging_providers.dart';
+import '../../features/messaging/presentation/unread_badge.dart';
 import 'shell_destinations.dart';
 import '../theme/app_spacing.dart';
 import '../widgets/cuco_app_bar.dart';
@@ -82,6 +84,9 @@ class _AppShellState extends ConsumerState<AppShell> {
     final hideTopBar = layout.hideTabRootAppBar;
     final railExtended = layout.size.width >= Breakpoints.railExtendedMinWidth;
 
+    ref.watch(caseRadioForegroundProvider);
+    final unread = ref.watch(navUnreadProvider).value ?? 0;
+
     final rail = NavigationRail(
       extended: railExtended,
       selectedIndex: index,
@@ -94,11 +99,15 @@ class _AppShellState extends ConsumerState<AppShell> {
         onProfileTap: _openProfile,
       ),
       destinations: [
-        for (final d in ShellDestinations.tabs)
+        for (final entry in ShellDestinations.tabs.asMap().entries)
           NavigationRailDestination(
-            icon: Icon(d.outlined),
-            selectedIcon: Icon(d.filled),
-            label: Text(d.label),
+            icon: entry.key == 3
+                ? NavUnreadIcon(icon: entry.value.outlined, count: unread)
+                : Icon(entry.value.outlined),
+            selectedIcon: entry.key == 3
+                ? NavUnreadIcon(icon: entry.value.filled, count: unread)
+                : Icon(entry.value.filled),
+            label: Text(entry.value.label),
           ),
       ],
     );
@@ -107,11 +116,15 @@ class _AppShellState extends ConsumerState<AppShell> {
       selectedIndex: index,
       onDestinationSelected: _onDestinationSelected,
       destinations: [
-        for (final d in ShellDestinations.tabs)
+        for (final entry in ShellDestinations.tabs.asMap().entries)
           NavigationDestination(
-            icon: Icon(d.outlined),
-            selectedIcon: Icon(d.filled),
-            label: d.label,
+            icon: entry.key == 3
+                ? NavUnreadIcon(icon: entry.value.outlined, count: unread)
+                : Icon(entry.value.outlined),
+            selectedIcon: entry.key == 3
+                ? NavUnreadIcon(icon: entry.value.filled, count: unread)
+                : Icon(entry.value.filled),
+            label: entry.value.label,
           ),
       ],
     );

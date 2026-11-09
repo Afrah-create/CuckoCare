@@ -12760,6 +12760,3437 @@ class VetAssistanceRequestsCompanion
   }
 }
 
+class $CaseMessagesTable extends CaseMessages
+    with TableInfo<$CaseMessagesTable, CaseMessageRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CaseMessagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _requestIdMeta = const VerificationMeta(
+    'requestId',
+  );
+  @override
+  late final GeneratedColumn<String> requestId = GeneratedColumn<String>(
+    'request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _senderUserIdMeta = const VerificationMeta(
+    'senderUserId',
+  );
+  @override
+  late final GeneratedColumn<String> senderUserId = GeneratedColumn<String>(
+    'sender_user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _senderRoleMeta = const VerificationMeta(
+    'senderRole',
+  );
+  @override
+  late final GeneratedColumn<String> senderRole = GeneratedColumn<String>(
+    'sender_role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+    'body',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _clientCreatedAtMeta = const VerificationMeta(
+    'clientCreatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> clientCreatedAt =
+      GeneratedColumn<DateTime>(
+        'client_created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _localFailReasonMeta = const VerificationMeta(
+    'localFailReason',
+  );
+  @override
+  late final GeneratedColumn<String> localFailReason = GeneratedColumn<String>(
+    'local_fail_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    requestId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    senderUserId,
+    senderRole,
+    kind,
+    body,
+    clientCreatedAt,
+    localFailReason,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'case_messages';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CaseMessageRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('request_id')) {
+      context.handle(
+        _requestIdMeta,
+        requestId.isAcceptableOrUnknown(data['request_id']!, _requestIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_requestIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sender_user_id')) {
+      context.handle(
+        _senderUserIdMeta,
+        senderUserId.isAcceptableOrUnknown(
+          data['sender_user_id']!,
+          _senderUserIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sender_role')) {
+      context.handle(
+        _senderRoleMeta,
+        senderRole.isAcceptableOrUnknown(data['sender_role']!, _senderRoleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_senderRoleMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+        _bodyMeta,
+        body.isAcceptableOrUnknown(data['body']!, _bodyMeta),
+      );
+    }
+    if (data.containsKey('client_created_at')) {
+      context.handle(
+        _clientCreatedAtMeta,
+        clientCreatedAt.isAcceptableOrUnknown(
+          data['client_created_at']!,
+          _clientCreatedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_clientCreatedAtMeta);
+    }
+    if (data.containsKey('local_fail_reason')) {
+      context.handle(
+        _localFailReasonMeta,
+        localFailReason.isAcceptableOrUnknown(
+          data['local_fail_reason']!,
+          _localFailReasonMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CaseMessageRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CaseMessageRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      requestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}request_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      senderUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sender_user_id'],
+      ),
+      senderRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sender_role'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      body: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body'],
+      ),
+      clientCreatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}client_created_at'],
+      )!,
+      localFailReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_fail_reason'],
+      ),
+    );
+  }
+
+  @override
+  $CaseMessagesTable createAlias(String alias) {
+    return $CaseMessagesTable(attachedDatabase, alias);
+  }
+}
+
+class CaseMessageRow extends DataClass implements Insertable<CaseMessageRow> {
+  final String id;
+  final String farmId;
+  final String requestId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String? senderUserId;
+  final String senderRole;
+  final String kind;
+  final String? body;
+  final DateTime clientCreatedAt;
+  final String? localFailReason;
+  const CaseMessageRow({
+    required this.id,
+    required this.farmId,
+    required this.requestId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    this.senderUserId,
+    required this.senderRole,
+    required this.kind,
+    this.body,
+    required this.clientCreatedAt,
+    this.localFailReason,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['request_id'] = Variable<String>(requestId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    if (!nullToAbsent || senderUserId != null) {
+      map['sender_user_id'] = Variable<String>(senderUserId);
+    }
+    map['sender_role'] = Variable<String>(senderRole);
+    map['kind'] = Variable<String>(kind);
+    if (!nullToAbsent || body != null) {
+      map['body'] = Variable<String>(body);
+    }
+    map['client_created_at'] = Variable<DateTime>(clientCreatedAt);
+    if (!nullToAbsent || localFailReason != null) {
+      map['local_fail_reason'] = Variable<String>(localFailReason);
+    }
+    return map;
+  }
+
+  CaseMessagesCompanion toCompanion(bool nullToAbsent) {
+    return CaseMessagesCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      requestId: Value(requestId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      senderUserId: senderUserId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(senderUserId),
+      senderRole: Value(senderRole),
+      kind: Value(kind),
+      body: body == null && nullToAbsent ? const Value.absent() : Value(body),
+      clientCreatedAt: Value(clientCreatedAt),
+      localFailReason: localFailReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localFailReason),
+    );
+  }
+
+  factory CaseMessageRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CaseMessageRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      requestId: serializer.fromJson<String>(json['requestId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      senderUserId: serializer.fromJson<String?>(json['senderUserId']),
+      senderRole: serializer.fromJson<String>(json['senderRole']),
+      kind: serializer.fromJson<String>(json['kind']),
+      body: serializer.fromJson<String?>(json['body']),
+      clientCreatedAt: serializer.fromJson<DateTime>(json['clientCreatedAt']),
+      localFailReason: serializer.fromJson<String?>(json['localFailReason']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'requestId': serializer.toJson<String>(requestId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'senderUserId': serializer.toJson<String?>(senderUserId),
+      'senderRole': serializer.toJson<String>(senderRole),
+      'kind': serializer.toJson<String>(kind),
+      'body': serializer.toJson<String?>(body),
+      'clientCreatedAt': serializer.toJson<DateTime>(clientCreatedAt),
+      'localFailReason': serializer.toJson<String?>(localFailReason),
+    };
+  }
+
+  CaseMessageRow copyWith({
+    String? id,
+    String? farmId,
+    String? requestId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    Value<String?> senderUserId = const Value.absent(),
+    String? senderRole,
+    String? kind,
+    Value<String?> body = const Value.absent(),
+    DateTime? clientCreatedAt,
+    Value<String?> localFailReason = const Value.absent(),
+  }) => CaseMessageRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    requestId: requestId ?? this.requestId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    senderUserId: senderUserId.present ? senderUserId.value : this.senderUserId,
+    senderRole: senderRole ?? this.senderRole,
+    kind: kind ?? this.kind,
+    body: body.present ? body.value : this.body,
+    clientCreatedAt: clientCreatedAt ?? this.clientCreatedAt,
+    localFailReason: localFailReason.present
+        ? localFailReason.value
+        : this.localFailReason,
+  );
+  CaseMessageRow copyWithCompanion(CaseMessagesCompanion data) {
+    return CaseMessageRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      requestId: data.requestId.present ? data.requestId.value : this.requestId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      senderUserId: data.senderUserId.present
+          ? data.senderUserId.value
+          : this.senderUserId,
+      senderRole: data.senderRole.present
+          ? data.senderRole.value
+          : this.senderRole,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      body: data.body.present ? data.body.value : this.body,
+      clientCreatedAt: data.clientCreatedAt.present
+          ? data.clientCreatedAt.value
+          : this.clientCreatedAt,
+      localFailReason: data.localFailReason.present
+          ? data.localFailReason.value
+          : this.localFailReason,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseMessageRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('requestId: $requestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('senderUserId: $senderUserId, ')
+          ..write('senderRole: $senderRole, ')
+          ..write('kind: $kind, ')
+          ..write('body: $body, ')
+          ..write('clientCreatedAt: $clientCreatedAt, ')
+          ..write('localFailReason: $localFailReason')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    requestId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    senderUserId,
+    senderRole,
+    kind,
+    body,
+    clientCreatedAt,
+    localFailReason,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CaseMessageRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.requestId == this.requestId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.senderUserId == this.senderUserId &&
+          other.senderRole == this.senderRole &&
+          other.kind == this.kind &&
+          other.body == this.body &&
+          other.clientCreatedAt == this.clientCreatedAt &&
+          other.localFailReason == this.localFailReason);
+}
+
+class CaseMessagesCompanion extends UpdateCompanion<CaseMessageRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<String> requestId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String?> senderUserId;
+  final Value<String> senderRole;
+  final Value<String> kind;
+  final Value<String?> body;
+  final Value<DateTime> clientCreatedAt;
+  final Value<String?> localFailReason;
+  final Value<int> rowid;
+  const CaseMessagesCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.requestId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.senderUserId = const Value.absent(),
+    this.senderRole = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.body = const Value.absent(),
+    this.clientCreatedAt = const Value.absent(),
+    this.localFailReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CaseMessagesCompanion.insert({
+    required String id,
+    required String farmId,
+    required String requestId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.senderUserId = const Value.absent(),
+    required String senderRole,
+    required String kind,
+    this.body = const Value.absent(),
+    required DateTime clientCreatedAt,
+    this.localFailReason = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       requestId = Value(requestId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       senderRole = Value(senderRole),
+       kind = Value(kind),
+       clientCreatedAt = Value(clientCreatedAt);
+  static Insertable<CaseMessageRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<String>? requestId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? senderUserId,
+    Expression<String>? senderRole,
+    Expression<String>? kind,
+    Expression<String>? body,
+    Expression<DateTime>? clientCreatedAt,
+    Expression<String>? localFailReason,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (requestId != null) 'request_id': requestId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (senderUserId != null) 'sender_user_id': senderUserId,
+      if (senderRole != null) 'sender_role': senderRole,
+      if (kind != null) 'kind': kind,
+      if (body != null) 'body': body,
+      if (clientCreatedAt != null) 'client_created_at': clientCreatedAt,
+      if (localFailReason != null) 'local_fail_reason': localFailReason,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CaseMessagesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<String>? requestId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String?>? senderUserId,
+    Value<String>? senderRole,
+    Value<String>? kind,
+    Value<String?>? body,
+    Value<DateTime>? clientCreatedAt,
+    Value<String?>? localFailReason,
+    Value<int>? rowid,
+  }) {
+    return CaseMessagesCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      requestId: requestId ?? this.requestId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      senderUserId: senderUserId ?? this.senderUserId,
+      senderRole: senderRole ?? this.senderRole,
+      kind: kind ?? this.kind,
+      body: body ?? this.body,
+      clientCreatedAt: clientCreatedAt ?? this.clientCreatedAt,
+      localFailReason: localFailReason ?? this.localFailReason,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (requestId.present) {
+      map['request_id'] = Variable<String>(requestId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (senderUserId.present) {
+      map['sender_user_id'] = Variable<String>(senderUserId.value);
+    }
+    if (senderRole.present) {
+      map['sender_role'] = Variable<String>(senderRole.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (clientCreatedAt.present) {
+      map['client_created_at'] = Variable<DateTime>(clientCreatedAt.value);
+    }
+    if (localFailReason.present) {
+      map['local_fail_reason'] = Variable<String>(localFailReason.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseMessagesCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('requestId: $requestId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('senderUserId: $senderUserId, ')
+          ..write('senderRole: $senderRole, ')
+          ..write('kind: $kind, ')
+          ..write('body: $body, ')
+          ..write('clientCreatedAt: $clientCreatedAt, ')
+          ..write('localFailReason: $localFailReason, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CaseMessageAttachmentsTable extends CaseMessageAttachments
+    with TableInfo<$CaseMessageAttachmentsTable, CaseMessageAttachmentRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CaseMessageAttachmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _requestIdMeta = const VerificationMeta(
+    'requestId',
+  );
+  @override
+  late final GeneratedColumn<String> requestId = GeneratedColumn<String>(
+    'request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _messageIdMeta = const VerificationMeta(
+    'messageId',
+  );
+  @override
+  late final GeneratedColumn<String> messageId = GeneratedColumn<String>(
+    'message_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _objectKeyMeta = const VerificationMeta(
+    'objectKey',
+  );
+  @override
+  late final GeneratedColumn<String> objectKey = GeneratedColumn<String>(
+    'object_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeMeta = const VerificationMeta('mime');
+  @override
+  late final GeneratedColumn<String> mime = GeneratedColumn<String>(
+    'mime',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('image/jpeg'),
+  );
+  static const VerificationMeta _bytesMeta = const VerificationMeta('bytes');
+  @override
+  late final GeneratedColumn<int> bytes = GeneratedColumn<int>(
+    'bytes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _widthMeta = const VerificationMeta('width');
+  @override
+  late final GeneratedColumn<int> width = GeneratedColumn<int>(
+    'width',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _heightMeta = const VerificationMeta('height');
+  @override
+  late final GeneratedColumn<int> height = GeneratedColumn<int>(
+    'height',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _thumbB64Meta = const VerificationMeta(
+    'thumbB64',
+  );
+  @override
+  late final GeneratedColumn<String> thumbB64 = GeneratedColumn<String>(
+    'thumb_b64',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    farmId,
+    requestId,
+    messageId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    objectKey,
+    mime,
+    bytes,
+    width,
+    height,
+    thumbB64,
+    status,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'case_message_attachments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CaseMessageAttachmentRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_farmIdMeta);
+    }
+    if (data.containsKey('request_id')) {
+      context.handle(
+        _requestIdMeta,
+        requestId.isAcceptableOrUnknown(data['request_id']!, _requestIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_requestIdMeta);
+    }
+    if (data.containsKey('message_id')) {
+      context.handle(
+        _messageIdMeta,
+        messageId.isAcceptableOrUnknown(data['message_id']!, _messageIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_messageIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('object_key')) {
+      context.handle(
+        _objectKeyMeta,
+        objectKey.isAcceptableOrUnknown(data['object_key']!, _objectKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_objectKeyMeta);
+    }
+    if (data.containsKey('mime')) {
+      context.handle(
+        _mimeMeta,
+        mime.isAcceptableOrUnknown(data['mime']!, _mimeMeta),
+      );
+    }
+    if (data.containsKey('bytes')) {
+      context.handle(
+        _bytesMeta,
+        bytes.isAcceptableOrUnknown(data['bytes']!, _bytesMeta),
+      );
+    }
+    if (data.containsKey('width')) {
+      context.handle(
+        _widthMeta,
+        width.isAcceptableOrUnknown(data['width']!, _widthMeta),
+      );
+    }
+    if (data.containsKey('height')) {
+      context.handle(
+        _heightMeta,
+        height.isAcceptableOrUnknown(data['height']!, _heightMeta),
+      );
+    }
+    if (data.containsKey('thumb_b64')) {
+      context.handle(
+        _thumbB64Meta,
+        thumbB64.isAcceptableOrUnknown(data['thumb_b64']!, _thumbB64Meta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CaseMessageAttachmentRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CaseMessageAttachmentRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      )!,
+      requestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}request_id'],
+      )!,
+      messageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}message_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+      objectKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}object_key'],
+      )!,
+      mime: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime'],
+      )!,
+      bytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bytes'],
+      ),
+      width: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}width'],
+      ),
+      height: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height'],
+      ),
+      thumbB64: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}thumb_b64'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+    );
+  }
+
+  @override
+  $CaseMessageAttachmentsTable createAlias(String alias) {
+    return $CaseMessageAttachmentsTable(attachedDatabase, alias);
+  }
+}
+
+class CaseMessageAttachmentRow extends DataClass
+    implements Insertable<CaseMessageAttachmentRow> {
+  final String id;
+  final String farmId;
+  final String requestId;
+  final String messageId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  final String objectKey;
+  final String mime;
+  final int? bytes;
+  final int? width;
+  final int? height;
+  final String? thumbB64;
+  final String status;
+  const CaseMessageAttachmentRow({
+    required this.id,
+    required this.farmId,
+    required this.requestId,
+    required this.messageId,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+    required this.objectKey,
+    required this.mime,
+    this.bytes,
+    this.width,
+    this.height,
+    this.thumbB64,
+    required this.status,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['farm_id'] = Variable<String>(farmId);
+    map['request_id'] = Variable<String>(requestId);
+    map['message_id'] = Variable<String>(messageId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    map['object_key'] = Variable<String>(objectKey);
+    map['mime'] = Variable<String>(mime);
+    if (!nullToAbsent || bytes != null) {
+      map['bytes'] = Variable<int>(bytes);
+    }
+    if (!nullToAbsent || width != null) {
+      map['width'] = Variable<int>(width);
+    }
+    if (!nullToAbsent || height != null) {
+      map['height'] = Variable<int>(height);
+    }
+    if (!nullToAbsent || thumbB64 != null) {
+      map['thumb_b64'] = Variable<String>(thumbB64);
+    }
+    map['status'] = Variable<String>(status);
+    return map;
+  }
+
+  CaseMessageAttachmentsCompanion toCompanion(bool nullToAbsent) {
+    return CaseMessageAttachmentsCompanion(
+      id: Value(id),
+      farmId: Value(farmId),
+      requestId: Value(requestId),
+      messageId: Value(messageId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+      objectKey: Value(objectKey),
+      mime: Value(mime),
+      bytes: bytes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bytes),
+      width: width == null && nullToAbsent
+          ? const Value.absent()
+          : Value(width),
+      height: height == null && nullToAbsent
+          ? const Value.absent()
+          : Value(height),
+      thumbB64: thumbB64 == null && nullToAbsent
+          ? const Value.absent()
+          : Value(thumbB64),
+      status: Value(status),
+    );
+  }
+
+  factory CaseMessageAttachmentRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CaseMessageAttachmentRow(
+      id: serializer.fromJson<String>(json['id']),
+      farmId: serializer.fromJson<String>(json['farmId']),
+      requestId: serializer.fromJson<String>(json['requestId']),
+      messageId: serializer.fromJson<String>(json['messageId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+      objectKey: serializer.fromJson<String>(json['objectKey']),
+      mime: serializer.fromJson<String>(json['mime']),
+      bytes: serializer.fromJson<int?>(json['bytes']),
+      width: serializer.fromJson<int?>(json['width']),
+      height: serializer.fromJson<int?>(json['height']),
+      thumbB64: serializer.fromJson<String?>(json['thumbB64']),
+      status: serializer.fromJson<String>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'farmId': serializer.toJson<String>(farmId),
+      'requestId': serializer.toJson<String>(requestId),
+      'messageId': serializer.toJson<String>(messageId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+      'objectKey': serializer.toJson<String>(objectKey),
+      'mime': serializer.toJson<String>(mime),
+      'bytes': serializer.toJson<int?>(bytes),
+      'width': serializer.toJson<int?>(width),
+      'height': serializer.toJson<int?>(height),
+      'thumbB64': serializer.toJson<String?>(thumbB64),
+      'status': serializer.toJson<String>(status),
+    };
+  }
+
+  CaseMessageAttachmentRow copyWith({
+    String? id,
+    String? farmId,
+    String? requestId,
+    String? messageId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+    String? objectKey,
+    String? mime,
+    Value<int?> bytes = const Value.absent(),
+    Value<int?> width = const Value.absent(),
+    Value<int?> height = const Value.absent(),
+    Value<String?> thumbB64 = const Value.absent(),
+    String? status,
+  }) => CaseMessageAttachmentRow(
+    id: id ?? this.id,
+    farmId: farmId ?? this.farmId,
+    requestId: requestId ?? this.requestId,
+    messageId: messageId ?? this.messageId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+    objectKey: objectKey ?? this.objectKey,
+    mime: mime ?? this.mime,
+    bytes: bytes.present ? bytes.value : this.bytes,
+    width: width.present ? width.value : this.width,
+    height: height.present ? height.value : this.height,
+    thumbB64: thumbB64.present ? thumbB64.value : this.thumbB64,
+    status: status ?? this.status,
+  );
+  CaseMessageAttachmentRow copyWithCompanion(
+    CaseMessageAttachmentsCompanion data,
+  ) {
+    return CaseMessageAttachmentRow(
+      id: data.id.present ? data.id.value : this.id,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      requestId: data.requestId.present ? data.requestId.value : this.requestId,
+      messageId: data.messageId.present ? data.messageId.value : this.messageId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      objectKey: data.objectKey.present ? data.objectKey.value : this.objectKey,
+      mime: data.mime.present ? data.mime.value : this.mime,
+      bytes: data.bytes.present ? data.bytes.value : this.bytes,
+      width: data.width.present ? data.width.value : this.width,
+      height: data.height.present ? data.height.value : this.height,
+      thumbB64: data.thumbB64.present ? data.thumbB64.value : this.thumbB64,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseMessageAttachmentRow(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('requestId: $requestId, ')
+          ..write('messageId: $messageId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('objectKey: $objectKey, ')
+          ..write('mime: $mime, ')
+          ..write('bytes: $bytes, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('thumbB64: $thumbB64, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    farmId,
+    requestId,
+    messageId,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+    objectKey,
+    mime,
+    bytes,
+    width,
+    height,
+    thumbB64,
+    status,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CaseMessageAttachmentRow &&
+          other.id == this.id &&
+          other.farmId == this.farmId &&
+          other.requestId == this.requestId &&
+          other.messageId == this.messageId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion &&
+          other.objectKey == this.objectKey &&
+          other.mime == this.mime &&
+          other.bytes == this.bytes &&
+          other.width == this.width &&
+          other.height == this.height &&
+          other.thumbB64 == this.thumbB64 &&
+          other.status == this.status);
+}
+
+class CaseMessageAttachmentsCompanion
+    extends UpdateCompanion<CaseMessageAttachmentRow> {
+  final Value<String> id;
+  final Value<String> farmId;
+  final Value<String> requestId;
+  final Value<String> messageId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<String> objectKey;
+  final Value<String> mime;
+  final Value<int?> bytes;
+  final Value<int?> width;
+  final Value<int?> height;
+  final Value<String?> thumbB64;
+  final Value<String> status;
+  final Value<int> rowid;
+  const CaseMessageAttachmentsCompanion({
+    this.id = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.requestId = const Value.absent(),
+    this.messageId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.objectKey = const Value.absent(),
+    this.mime = const Value.absent(),
+    this.bytes = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.thumbB64 = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CaseMessageAttachmentsCompanion.insert({
+    required String id,
+    required String farmId,
+    required String requestId,
+    required String messageId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    required String objectKey,
+    this.mime = const Value.absent(),
+    this.bytes = const Value.absent(),
+    this.width = const Value.absent(),
+    this.height = const Value.absent(),
+    this.thumbB64 = const Value.absent(),
+    this.status = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       farmId = Value(farmId),
+       requestId = Value(requestId),
+       messageId = Value(messageId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       objectKey = Value(objectKey);
+  static Insertable<CaseMessageAttachmentRow> custom({
+    Expression<String>? id,
+    Expression<String>? farmId,
+    Expression<String>? requestId,
+    Expression<String>? messageId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<String>? objectKey,
+    Expression<String>? mime,
+    Expression<int>? bytes,
+    Expression<int>? width,
+    Expression<int>? height,
+    Expression<String>? thumbB64,
+    Expression<String>? status,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (farmId != null) 'farm_id': farmId,
+      if (requestId != null) 'request_id': requestId,
+      if (messageId != null) 'message_id': messageId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (objectKey != null) 'object_key': objectKey,
+      if (mime != null) 'mime': mime,
+      if (bytes != null) 'bytes': bytes,
+      if (width != null) 'width': width,
+      if (height != null) 'height': height,
+      if (thumbB64 != null) 'thumb_b64': thumbB64,
+      if (status != null) 'status': status,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CaseMessageAttachmentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? farmId,
+    Value<String>? requestId,
+    Value<String>? messageId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<String>? objectKey,
+    Value<String>? mime,
+    Value<int?>? bytes,
+    Value<int?>? width,
+    Value<int?>? height,
+    Value<String?>? thumbB64,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
+    return CaseMessageAttachmentsCompanion(
+      id: id ?? this.id,
+      farmId: farmId ?? this.farmId,
+      requestId: requestId ?? this.requestId,
+      messageId: messageId ?? this.messageId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      objectKey: objectKey ?? this.objectKey,
+      mime: mime ?? this.mime,
+      bytes: bytes ?? this.bytes,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      thumbB64: thumbB64 ?? this.thumbB64,
+      status: status ?? this.status,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (requestId.present) {
+      map['request_id'] = Variable<String>(requestId.value);
+    }
+    if (messageId.present) {
+      map['message_id'] = Variable<String>(messageId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (objectKey.present) {
+      map['object_key'] = Variable<String>(objectKey.value);
+    }
+    if (mime.present) {
+      map['mime'] = Variable<String>(mime.value);
+    }
+    if (bytes.present) {
+      map['bytes'] = Variable<int>(bytes.value);
+    }
+    if (width.present) {
+      map['width'] = Variable<int>(width.value);
+    }
+    if (height.present) {
+      map['height'] = Variable<int>(height.value);
+    }
+    if (thumbB64.present) {
+      map['thumb_b64'] = Variable<String>(thumbB64.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseMessageAttachmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('farmId: $farmId, ')
+          ..write('requestId: $requestId, ')
+          ..write('messageId: $messageId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('objectKey: $objectKey, ')
+          ..write('mime: $mime, ')
+          ..write('bytes: $bytes, ')
+          ..write('width: $width, ')
+          ..write('height: $height, ')
+          ..write('thumbB64: $thumbB64, ')
+          ..write('status: $status, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CaseReadStatesTable extends CaseReadStates
+    with TableInfo<$CaseReadStatesTable, CaseReadStateRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CaseReadStatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _requestIdMeta = const VerificationMeta(
+    'requestId',
+  );
+  @override
+  late final GeneratedColumn<String> requestId = GeneratedColumn<String>(
+    'request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _farmIdMeta = const VerificationMeta('farmId');
+  @override
+  late final GeneratedColumn<String> farmId = GeneratedColumn<String>(
+    'farm_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastReadAtMeta = const VerificationMeta(
+    'lastReadAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastReadAt = GeneratedColumn<DateTime>(
+    'last_read_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastReadMessageIdMeta = const VerificationMeta(
+    'lastReadMessageId',
+  );
+  @override
+  late final GeneratedColumn<String> lastReadMessageId =
+      GeneratedColumn<String>(
+        'last_read_message_id',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _mutedMeta = const VerificationMeta('muted');
+  @override
+  late final GeneratedColumn<bool> muted = GeneratedColumn<bool>(
+    'muted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("muted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<int> serverVersion = GeneratedColumn<int>(
+    'server_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    requestId,
+    userId,
+    farmId,
+    lastReadAt,
+    lastReadMessageId,
+    muted,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'case_read_states';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CaseReadStateRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('request_id')) {
+      context.handle(
+        _requestIdMeta,
+        requestId.isAcceptableOrUnknown(data['request_id']!, _requestIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_requestIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('farm_id')) {
+      context.handle(
+        _farmIdMeta,
+        farmId.isAcceptableOrUnknown(data['farm_id']!, _farmIdMeta),
+      );
+    }
+    if (data.containsKey('last_read_at')) {
+      context.handle(
+        _lastReadAtMeta,
+        lastReadAt.isAcceptableOrUnknown(
+          data['last_read_at']!,
+          _lastReadAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastReadAtMeta);
+    }
+    if (data.containsKey('last_read_message_id')) {
+      context.handle(
+        _lastReadMessageIdMeta,
+        lastReadMessageId.isAcceptableOrUnknown(
+          data['last_read_message_id']!,
+          _lastReadMessageIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('muted')) {
+      context.handle(
+        _mutedMeta,
+        muted.isAcceptableOrUnknown(data['muted']!, _mutedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {requestId, userId};
+  @override
+  CaseReadStateRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CaseReadStateRow(
+      requestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}request_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      farmId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}farm_id'],
+      ),
+      lastReadAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_read_at'],
+      )!,
+      lastReadMessageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_read_message_id'],
+      ),
+      muted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}muted'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}server_version'],
+      ),
+    );
+  }
+
+  @override
+  $CaseReadStatesTable createAlias(String alias) {
+    return $CaseReadStatesTable(attachedDatabase, alias);
+  }
+}
+
+class CaseReadStateRow extends DataClass
+    implements Insertable<CaseReadStateRow> {
+  final String requestId;
+  final String userId;
+  final String? farmId;
+  final DateTime lastReadAt;
+  final String? lastReadMessageId;
+  final bool muted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int? serverVersion;
+  const CaseReadStateRow({
+    required this.requestId,
+    required this.userId,
+    this.farmId,
+    required this.lastReadAt,
+    this.lastReadMessageId,
+    required this.muted,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    this.serverVersion,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['request_id'] = Variable<String>(requestId);
+    map['user_id'] = Variable<String>(userId);
+    if (!nullToAbsent || farmId != null) {
+      map['farm_id'] = Variable<String>(farmId);
+    }
+    map['last_read_at'] = Variable<DateTime>(lastReadAt);
+    if (!nullToAbsent || lastReadMessageId != null) {
+      map['last_read_message_id'] = Variable<String>(lastReadMessageId);
+    }
+    map['muted'] = Variable<bool>(muted);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || serverVersion != null) {
+      map['server_version'] = Variable<int>(serverVersion);
+    }
+    return map;
+  }
+
+  CaseReadStatesCompanion toCompanion(bool nullToAbsent) {
+    return CaseReadStatesCompanion(
+      requestId: Value(requestId),
+      userId: Value(userId),
+      farmId: farmId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(farmId),
+      lastReadAt: Value(lastReadAt),
+      lastReadMessageId: lastReadMessageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastReadMessageId),
+      muted: Value(muted),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      serverVersion: serverVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverVersion),
+    );
+  }
+
+  factory CaseReadStateRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CaseReadStateRow(
+      requestId: serializer.fromJson<String>(json['requestId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      farmId: serializer.fromJson<String?>(json['farmId']),
+      lastReadAt: serializer.fromJson<DateTime>(json['lastReadAt']),
+      lastReadMessageId: serializer.fromJson<String?>(
+        json['lastReadMessageId'],
+      ),
+      muted: serializer.fromJson<bool>(json['muted']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      serverVersion: serializer.fromJson<int?>(json['serverVersion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'requestId': serializer.toJson<String>(requestId),
+      'userId': serializer.toJson<String>(userId),
+      'farmId': serializer.toJson<String?>(farmId),
+      'lastReadAt': serializer.toJson<DateTime>(lastReadAt),
+      'lastReadMessageId': serializer.toJson<String?>(lastReadMessageId),
+      'muted': serializer.toJson<bool>(muted),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'serverVersion': serializer.toJson<int?>(serverVersion),
+    };
+  }
+
+  CaseReadStateRow copyWith({
+    String? requestId,
+    String? userId,
+    Value<String?> farmId = const Value.absent(),
+    DateTime? lastReadAt,
+    Value<String?> lastReadMessageId = const Value.absent(),
+    bool? muted,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<int?> serverVersion = const Value.absent(),
+  }) => CaseReadStateRow(
+    requestId: requestId ?? this.requestId,
+    userId: userId ?? this.userId,
+    farmId: farmId.present ? farmId.value : this.farmId,
+    lastReadAt: lastReadAt ?? this.lastReadAt,
+    lastReadMessageId: lastReadMessageId.present
+        ? lastReadMessageId.value
+        : this.lastReadMessageId,
+    muted: muted ?? this.muted,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    serverVersion: serverVersion.present
+        ? serverVersion.value
+        : this.serverVersion,
+  );
+  CaseReadStateRow copyWithCompanion(CaseReadStatesCompanion data) {
+    return CaseReadStateRow(
+      requestId: data.requestId.present ? data.requestId.value : this.requestId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      farmId: data.farmId.present ? data.farmId.value : this.farmId,
+      lastReadAt: data.lastReadAt.present
+          ? data.lastReadAt.value
+          : this.lastReadAt,
+      lastReadMessageId: data.lastReadMessageId.present
+          ? data.lastReadMessageId.value
+          : this.lastReadMessageId,
+      muted: data.muted.present ? data.muted.value : this.muted,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseReadStateRow(')
+          ..write('requestId: $requestId, ')
+          ..write('userId: $userId, ')
+          ..write('farmId: $farmId, ')
+          ..write('lastReadAt: $lastReadAt, ')
+          ..write('lastReadMessageId: $lastReadMessageId, ')
+          ..write('muted: $muted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    requestId,
+    userId,
+    farmId,
+    lastReadAt,
+    lastReadMessageId,
+    muted,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    serverVersion,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CaseReadStateRow &&
+          other.requestId == this.requestId &&
+          other.userId == this.userId &&
+          other.farmId == this.farmId &&
+          other.lastReadAt == this.lastReadAt &&
+          other.lastReadMessageId == this.lastReadMessageId &&
+          other.muted == this.muted &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.serverVersion == this.serverVersion);
+}
+
+class CaseReadStatesCompanion extends UpdateCompanion<CaseReadStateRow> {
+  final Value<String> requestId;
+  final Value<String> userId;
+  final Value<String?> farmId;
+  final Value<DateTime> lastReadAt;
+  final Value<String?> lastReadMessageId;
+  final Value<bool> muted;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<int?> serverVersion;
+  final Value<int> rowid;
+  const CaseReadStatesCompanion({
+    this.requestId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.farmId = const Value.absent(),
+    this.lastReadAt = const Value.absent(),
+    this.lastReadMessageId = const Value.absent(),
+    this.muted = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CaseReadStatesCompanion.insert({
+    required String requestId,
+    required String userId,
+    this.farmId = const Value.absent(),
+    required DateTime lastReadAt,
+    this.lastReadMessageId = const Value.absent(),
+    this.muted = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : requestId = Value(requestId),
+       userId = Value(userId),
+       lastReadAt = Value(lastReadAt),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CaseReadStateRow> custom({
+    Expression<String>? requestId,
+    Expression<String>? userId,
+    Expression<String>? farmId,
+    Expression<DateTime>? lastReadAt,
+    Expression<String>? lastReadMessageId,
+    Expression<bool>? muted,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<int>? serverVersion,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (requestId != null) 'request_id': requestId,
+      if (userId != null) 'user_id': userId,
+      if (farmId != null) 'farm_id': farmId,
+      if (lastReadAt != null) 'last_read_at': lastReadAt,
+      if (lastReadMessageId != null) 'last_read_message_id': lastReadMessageId,
+      if (muted != null) 'muted': muted,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CaseReadStatesCompanion copyWith({
+    Value<String>? requestId,
+    Value<String>? userId,
+    Value<String?>? farmId,
+    Value<DateTime>? lastReadAt,
+    Value<String?>? lastReadMessageId,
+    Value<bool>? muted,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<int?>? serverVersion,
+    Value<int>? rowid,
+  }) {
+    return CaseReadStatesCompanion(
+      requestId: requestId ?? this.requestId,
+      userId: userId ?? this.userId,
+      farmId: farmId ?? this.farmId,
+      lastReadAt: lastReadAt ?? this.lastReadAt,
+      lastReadMessageId: lastReadMessageId ?? this.lastReadMessageId,
+      muted: muted ?? this.muted,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      serverVersion: serverVersion ?? this.serverVersion,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (requestId.present) {
+      map['request_id'] = Variable<String>(requestId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (farmId.present) {
+      map['farm_id'] = Variable<String>(farmId.value);
+    }
+    if (lastReadAt.present) {
+      map['last_read_at'] = Variable<DateTime>(lastReadAt.value);
+    }
+    if (lastReadMessageId.present) {
+      map['last_read_message_id'] = Variable<String>(lastReadMessageId.value);
+    }
+    if (muted.present) {
+      map['muted'] = Variable<bool>(muted.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<int>(serverVersion.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CaseReadStatesCompanion(')
+          ..write('requestId: $requestId, ')
+          ..write('userId: $userId, ')
+          ..write('farmId: $farmId, ')
+          ..write('lastReadAt: $lastReadAt, ')
+          ..write('lastReadMessageId: $lastReadMessageId, ')
+          ..write('muted: $muted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MediaUploadJobsTable extends MediaUploadJobs
+    with TableInfo<$MediaUploadJobsTable, MediaUploadJobRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MediaUploadJobsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attachmentIdMeta = const VerificationMeta(
+    'attachmentId',
+  );
+  @override
+  late final GeneratedColumn<String> attachmentId = GeneratedColumn<String>(
+    'attachment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _requestIdMeta = const VerificationMeta(
+    'requestId',
+  );
+  @override
+  late final GeneratedColumn<String> requestId = GeneratedColumn<String>(
+    'request_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('queued'),
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _bytesSentMeta = const VerificationMeta(
+    'bytesSent',
+  );
+  @override
+  late final GeneratedColumn<int> bytesSent = GeneratedColumn<int>(
+    'bytes_sent',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _nextAttemptAtMeta = const VerificationMeta(
+    'nextAttemptAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextAttemptAt =
+      GeneratedColumn<DateTime>(
+        'next_attempt_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _userForcedMeta = const VerificationMeta(
+    'userForced',
+  );
+  @override
+  late final GeneratedColumn<bool> userForced = GeneratedColumn<bool>(
+    'user_forced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("user_forced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    attachmentId,
+    requestId,
+    localPath,
+    state,
+    attempts,
+    bytesSent,
+    nextAttemptAt,
+    userForced,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'media_upload_jobs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MediaUploadJobRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('attachment_id')) {
+      context.handle(
+        _attachmentIdMeta,
+        attachmentId.isAcceptableOrUnknown(
+          data['attachment_id']!,
+          _attachmentIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_attachmentIdMeta);
+    }
+    if (data.containsKey('request_id')) {
+      context.handle(
+        _requestIdMeta,
+        requestId.isAcceptableOrUnknown(data['request_id']!, _requestIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_requestIdMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localPathMeta);
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('bytes_sent')) {
+      context.handle(
+        _bytesSentMeta,
+        bytesSent.isAcceptableOrUnknown(data['bytes_sent']!, _bytesSentMeta),
+      );
+    }
+    if (data.containsKey('next_attempt_at')) {
+      context.handle(
+        _nextAttemptAtMeta,
+        nextAttemptAt.isAcceptableOrUnknown(
+          data['next_attempt_at']!,
+          _nextAttemptAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('user_forced')) {
+      context.handle(
+        _userForcedMeta,
+        userForced.isAcceptableOrUnknown(data['user_forced']!, _userForcedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MediaUploadJobRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MediaUploadJobRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      attachmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}attachment_id'],
+      )!,
+      requestId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}request_id'],
+      )!,
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      )!,
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      bytesSent: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bytes_sent'],
+      )!,
+      nextAttemptAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_attempt_at'],
+      ),
+      userForced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}user_forced'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MediaUploadJobsTable createAlias(String alias) {
+    return $MediaUploadJobsTable(attachedDatabase, alias);
+  }
+}
+
+class MediaUploadJobRow extends DataClass
+    implements Insertable<MediaUploadJobRow> {
+  final String id;
+  final String attachmentId;
+  final String requestId;
+  final String localPath;
+  final String state;
+  final int attempts;
+  final int bytesSent;
+  final DateTime? nextAttemptAt;
+  final bool userForced;
+  final DateTime createdAt;
+  const MediaUploadJobRow({
+    required this.id,
+    required this.attachmentId,
+    required this.requestId,
+    required this.localPath,
+    required this.state,
+    required this.attempts,
+    required this.bytesSent,
+    this.nextAttemptAt,
+    required this.userForced,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['attachment_id'] = Variable<String>(attachmentId);
+    map['request_id'] = Variable<String>(requestId);
+    map['local_path'] = Variable<String>(localPath);
+    map['state'] = Variable<String>(state);
+    map['attempts'] = Variable<int>(attempts);
+    map['bytes_sent'] = Variable<int>(bytesSent);
+    if (!nullToAbsent || nextAttemptAt != null) {
+      map['next_attempt_at'] = Variable<DateTime>(nextAttemptAt);
+    }
+    map['user_forced'] = Variable<bool>(userForced);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MediaUploadJobsCompanion toCompanion(bool nullToAbsent) {
+    return MediaUploadJobsCompanion(
+      id: Value(id),
+      attachmentId: Value(attachmentId),
+      requestId: Value(requestId),
+      localPath: Value(localPath),
+      state: Value(state),
+      attempts: Value(attempts),
+      bytesSent: Value(bytesSent),
+      nextAttemptAt: nextAttemptAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextAttemptAt),
+      userForced: Value(userForced),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MediaUploadJobRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MediaUploadJobRow(
+      id: serializer.fromJson<String>(json['id']),
+      attachmentId: serializer.fromJson<String>(json['attachmentId']),
+      requestId: serializer.fromJson<String>(json['requestId']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      state: serializer.fromJson<String>(json['state']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      bytesSent: serializer.fromJson<int>(json['bytesSent']),
+      nextAttemptAt: serializer.fromJson<DateTime?>(json['nextAttemptAt']),
+      userForced: serializer.fromJson<bool>(json['userForced']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'attachmentId': serializer.toJson<String>(attachmentId),
+      'requestId': serializer.toJson<String>(requestId),
+      'localPath': serializer.toJson<String>(localPath),
+      'state': serializer.toJson<String>(state),
+      'attempts': serializer.toJson<int>(attempts),
+      'bytesSent': serializer.toJson<int>(bytesSent),
+      'nextAttemptAt': serializer.toJson<DateTime?>(nextAttemptAt),
+      'userForced': serializer.toJson<bool>(userForced),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MediaUploadJobRow copyWith({
+    String? id,
+    String? attachmentId,
+    String? requestId,
+    String? localPath,
+    String? state,
+    int? attempts,
+    int? bytesSent,
+    Value<DateTime?> nextAttemptAt = const Value.absent(),
+    bool? userForced,
+    DateTime? createdAt,
+  }) => MediaUploadJobRow(
+    id: id ?? this.id,
+    attachmentId: attachmentId ?? this.attachmentId,
+    requestId: requestId ?? this.requestId,
+    localPath: localPath ?? this.localPath,
+    state: state ?? this.state,
+    attempts: attempts ?? this.attempts,
+    bytesSent: bytesSent ?? this.bytesSent,
+    nextAttemptAt: nextAttemptAt.present
+        ? nextAttemptAt.value
+        : this.nextAttemptAt,
+    userForced: userForced ?? this.userForced,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  MediaUploadJobRow copyWithCompanion(MediaUploadJobsCompanion data) {
+    return MediaUploadJobRow(
+      id: data.id.present ? data.id.value : this.id,
+      attachmentId: data.attachmentId.present
+          ? data.attachmentId.value
+          : this.attachmentId,
+      requestId: data.requestId.present ? data.requestId.value : this.requestId,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      state: data.state.present ? data.state.value : this.state,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      bytesSent: data.bytesSent.present ? data.bytesSent.value : this.bytesSent,
+      nextAttemptAt: data.nextAttemptAt.present
+          ? data.nextAttemptAt.value
+          : this.nextAttemptAt,
+      userForced: data.userForced.present
+          ? data.userForced.value
+          : this.userForced,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MediaUploadJobRow(')
+          ..write('id: $id, ')
+          ..write('attachmentId: $attachmentId, ')
+          ..write('requestId: $requestId, ')
+          ..write('localPath: $localPath, ')
+          ..write('state: $state, ')
+          ..write('attempts: $attempts, ')
+          ..write('bytesSent: $bytesSent, ')
+          ..write('nextAttemptAt: $nextAttemptAt, ')
+          ..write('userForced: $userForced, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    attachmentId,
+    requestId,
+    localPath,
+    state,
+    attempts,
+    bytesSent,
+    nextAttemptAt,
+    userForced,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MediaUploadJobRow &&
+          other.id == this.id &&
+          other.attachmentId == this.attachmentId &&
+          other.requestId == this.requestId &&
+          other.localPath == this.localPath &&
+          other.state == this.state &&
+          other.attempts == this.attempts &&
+          other.bytesSent == this.bytesSent &&
+          other.nextAttemptAt == this.nextAttemptAt &&
+          other.userForced == this.userForced &&
+          other.createdAt == this.createdAt);
+}
+
+class MediaUploadJobsCompanion extends UpdateCompanion<MediaUploadJobRow> {
+  final Value<String> id;
+  final Value<String> attachmentId;
+  final Value<String> requestId;
+  final Value<String> localPath;
+  final Value<String> state;
+  final Value<int> attempts;
+  final Value<int> bytesSent;
+  final Value<DateTime?> nextAttemptAt;
+  final Value<bool> userForced;
+  final Value<DateTime> createdAt;
+  final Value<int> rowid;
+  const MediaUploadJobsCompanion({
+    this.id = const Value.absent(),
+    this.attachmentId = const Value.absent(),
+    this.requestId = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.state = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.bytesSent = const Value.absent(),
+    this.nextAttemptAt = const Value.absent(),
+    this.userForced = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MediaUploadJobsCompanion.insert({
+    required String id,
+    required String attachmentId,
+    required String requestId,
+    required String localPath,
+    this.state = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.bytesSent = const Value.absent(),
+    this.nextAttemptAt = const Value.absent(),
+    this.userForced = const Value.absent(),
+    required DateTime createdAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       attachmentId = Value(attachmentId),
+       requestId = Value(requestId),
+       localPath = Value(localPath),
+       createdAt = Value(createdAt);
+  static Insertable<MediaUploadJobRow> custom({
+    Expression<String>? id,
+    Expression<String>? attachmentId,
+    Expression<String>? requestId,
+    Expression<String>? localPath,
+    Expression<String>? state,
+    Expression<int>? attempts,
+    Expression<int>? bytesSent,
+    Expression<DateTime>? nextAttemptAt,
+    Expression<bool>? userForced,
+    Expression<DateTime>? createdAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (attachmentId != null) 'attachment_id': attachmentId,
+      if (requestId != null) 'request_id': requestId,
+      if (localPath != null) 'local_path': localPath,
+      if (state != null) 'state': state,
+      if (attempts != null) 'attempts': attempts,
+      if (bytesSent != null) 'bytes_sent': bytesSent,
+      if (nextAttemptAt != null) 'next_attempt_at': nextAttemptAt,
+      if (userForced != null) 'user_forced': userForced,
+      if (createdAt != null) 'created_at': createdAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MediaUploadJobsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? attachmentId,
+    Value<String>? requestId,
+    Value<String>? localPath,
+    Value<String>? state,
+    Value<int>? attempts,
+    Value<int>? bytesSent,
+    Value<DateTime?>? nextAttemptAt,
+    Value<bool>? userForced,
+    Value<DateTime>? createdAt,
+    Value<int>? rowid,
+  }) {
+    return MediaUploadJobsCompanion(
+      id: id ?? this.id,
+      attachmentId: attachmentId ?? this.attachmentId,
+      requestId: requestId ?? this.requestId,
+      localPath: localPath ?? this.localPath,
+      state: state ?? this.state,
+      attempts: attempts ?? this.attempts,
+      bytesSent: bytesSent ?? this.bytesSent,
+      nextAttemptAt: nextAttemptAt ?? this.nextAttemptAt,
+      userForced: userForced ?? this.userForced,
+      createdAt: createdAt ?? this.createdAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (attachmentId.present) {
+      map['attachment_id'] = Variable<String>(attachmentId.value);
+    }
+    if (requestId.present) {
+      map['request_id'] = Variable<String>(requestId.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (bytesSent.present) {
+      map['bytes_sent'] = Variable<int>(bytesSent.value);
+    }
+    if (nextAttemptAt.present) {
+      map['next_attempt_at'] = Variable<DateTime>(nextAttemptAt.value);
+    }
+    if (userForced.present) {
+      map['user_forced'] = Variable<bool>(userForced.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MediaUploadJobsCompanion(')
+          ..write('id: $id, ')
+          ..write('attachmentId: $attachmentId, ')
+          ..write('requestId: $requestId, ')
+          ..write('localPath: $localPath, ')
+          ..write('state: $state, ')
+          ..write('attempts: $attempts, ')
+          ..write('bytesSent: $bytesSent, ')
+          ..write('nextAttemptAt: $nextAttemptAt, ')
+          ..write('userForced: $userForced, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MediaCacheTable extends MediaCache
+    with TableInfo<$MediaCacheTable, MediaCacheRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MediaCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _objectKeyMeta = const VerificationMeta(
+    'objectKey',
+  );
+  @override
+  late final GeneratedColumn<String> objectKey = GeneratedColumn<String>(
+    'object_key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localPathMeta = const VerificationMeta(
+    'localPath',
+  );
+  @override
+  late final GeneratedColumn<String> localPath = GeneratedColumn<String>(
+    'local_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bytesMeta = const VerificationMeta('bytes');
+  @override
+  late final GeneratedColumn<int> bytes = GeneratedColumn<int>(
+    'bytes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastAccessAtMeta = const VerificationMeta(
+    'lastAccessAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastAccessAt = GeneratedColumn<DateTime>(
+    'last_access_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    objectKey,
+    localPath,
+    bytes,
+    lastAccessAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'media_cache';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MediaCacheRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('object_key')) {
+      context.handle(
+        _objectKeyMeta,
+        objectKey.isAcceptableOrUnknown(data['object_key']!, _objectKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_objectKeyMeta);
+    }
+    if (data.containsKey('local_path')) {
+      context.handle(
+        _localPathMeta,
+        localPath.isAcceptableOrUnknown(data['local_path']!, _localPathMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_localPathMeta);
+    }
+    if (data.containsKey('bytes')) {
+      context.handle(
+        _bytesMeta,
+        bytes.isAcceptableOrUnknown(data['bytes']!, _bytesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bytesMeta);
+    }
+    if (data.containsKey('last_access_at')) {
+      context.handle(
+        _lastAccessAtMeta,
+        lastAccessAt.isAcceptableOrUnknown(
+          data['last_access_at']!,
+          _lastAccessAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastAccessAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {objectKey};
+  @override
+  MediaCacheRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MediaCacheRow(
+      objectKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}object_key'],
+      )!,
+      localPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_path'],
+      )!,
+      bytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bytes'],
+      )!,
+      lastAccessAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_access_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MediaCacheTable createAlias(String alias) {
+    return $MediaCacheTable(attachedDatabase, alias);
+  }
+}
+
+class MediaCacheRow extends DataClass implements Insertable<MediaCacheRow> {
+  final String objectKey;
+  final String localPath;
+  final int bytes;
+  final DateTime lastAccessAt;
+  const MediaCacheRow({
+    required this.objectKey,
+    required this.localPath,
+    required this.bytes,
+    required this.lastAccessAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['object_key'] = Variable<String>(objectKey);
+    map['local_path'] = Variable<String>(localPath);
+    map['bytes'] = Variable<int>(bytes);
+    map['last_access_at'] = Variable<DateTime>(lastAccessAt);
+    return map;
+  }
+
+  MediaCacheCompanion toCompanion(bool nullToAbsent) {
+    return MediaCacheCompanion(
+      objectKey: Value(objectKey),
+      localPath: Value(localPath),
+      bytes: Value(bytes),
+      lastAccessAt: Value(lastAccessAt),
+    );
+  }
+
+  factory MediaCacheRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MediaCacheRow(
+      objectKey: serializer.fromJson<String>(json['objectKey']),
+      localPath: serializer.fromJson<String>(json['localPath']),
+      bytes: serializer.fromJson<int>(json['bytes']),
+      lastAccessAt: serializer.fromJson<DateTime>(json['lastAccessAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'objectKey': serializer.toJson<String>(objectKey),
+      'localPath': serializer.toJson<String>(localPath),
+      'bytes': serializer.toJson<int>(bytes),
+      'lastAccessAt': serializer.toJson<DateTime>(lastAccessAt),
+    };
+  }
+
+  MediaCacheRow copyWith({
+    String? objectKey,
+    String? localPath,
+    int? bytes,
+    DateTime? lastAccessAt,
+  }) => MediaCacheRow(
+    objectKey: objectKey ?? this.objectKey,
+    localPath: localPath ?? this.localPath,
+    bytes: bytes ?? this.bytes,
+    lastAccessAt: lastAccessAt ?? this.lastAccessAt,
+  );
+  MediaCacheRow copyWithCompanion(MediaCacheCompanion data) {
+    return MediaCacheRow(
+      objectKey: data.objectKey.present ? data.objectKey.value : this.objectKey,
+      localPath: data.localPath.present ? data.localPath.value : this.localPath,
+      bytes: data.bytes.present ? data.bytes.value : this.bytes,
+      lastAccessAt: data.lastAccessAt.present
+          ? data.lastAccessAt.value
+          : this.lastAccessAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MediaCacheRow(')
+          ..write('objectKey: $objectKey, ')
+          ..write('localPath: $localPath, ')
+          ..write('bytes: $bytes, ')
+          ..write('lastAccessAt: $lastAccessAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(objectKey, localPath, bytes, lastAccessAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MediaCacheRow &&
+          other.objectKey == this.objectKey &&
+          other.localPath == this.localPath &&
+          other.bytes == this.bytes &&
+          other.lastAccessAt == this.lastAccessAt);
+}
+
+class MediaCacheCompanion extends UpdateCompanion<MediaCacheRow> {
+  final Value<String> objectKey;
+  final Value<String> localPath;
+  final Value<int> bytes;
+  final Value<DateTime> lastAccessAt;
+  final Value<int> rowid;
+  const MediaCacheCompanion({
+    this.objectKey = const Value.absent(),
+    this.localPath = const Value.absent(),
+    this.bytes = const Value.absent(),
+    this.lastAccessAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MediaCacheCompanion.insert({
+    required String objectKey,
+    required String localPath,
+    required int bytes,
+    required DateTime lastAccessAt,
+    this.rowid = const Value.absent(),
+  }) : objectKey = Value(objectKey),
+       localPath = Value(localPath),
+       bytes = Value(bytes),
+       lastAccessAt = Value(lastAccessAt);
+  static Insertable<MediaCacheRow> custom({
+    Expression<String>? objectKey,
+    Expression<String>? localPath,
+    Expression<int>? bytes,
+    Expression<DateTime>? lastAccessAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (objectKey != null) 'object_key': objectKey,
+      if (localPath != null) 'local_path': localPath,
+      if (bytes != null) 'bytes': bytes,
+      if (lastAccessAt != null) 'last_access_at': lastAccessAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MediaCacheCompanion copyWith({
+    Value<String>? objectKey,
+    Value<String>? localPath,
+    Value<int>? bytes,
+    Value<DateTime>? lastAccessAt,
+    Value<int>? rowid,
+  }) {
+    return MediaCacheCompanion(
+      objectKey: objectKey ?? this.objectKey,
+      localPath: localPath ?? this.localPath,
+      bytes: bytes ?? this.bytes,
+      lastAccessAt: lastAccessAt ?? this.lastAccessAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (objectKey.present) {
+      map['object_key'] = Variable<String>(objectKey.value);
+    }
+    if (localPath.present) {
+      map['local_path'] = Variable<String>(localPath.value);
+    }
+    if (bytes.present) {
+      map['bytes'] = Variable<int>(bytes.value);
+    }
+    if (lastAccessAt.present) {
+      map['last_access_at'] = Variable<DateTime>(lastAccessAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MediaCacheCompanion(')
+          ..write('objectKey: $objectKey, ')
+          ..write('localPath: $localPath, ')
+          ..write('bytes: $bytes, ')
+          ..write('lastAccessAt: $lastAccessAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PushRegistrationsTable extends PushRegistrations
+    with TableInfo<$PushRegistrationsTable, PushRegistrationRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PushRegistrationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tokenHashMeta = const VerificationMeta(
+    'tokenHash',
+  );
+  @override
+  late final GeneratedColumn<String> tokenHash = GeneratedColumn<String>(
+    'token_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _registeredAtMeta = const VerificationMeta(
+    'registeredAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> registeredAt = GeneratedColumn<DateTime>(
+    'registered_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [tokenHash, registeredAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'push_registrations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PushRegistrationRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('token_hash')) {
+      context.handle(
+        _tokenHashMeta,
+        tokenHash.isAcceptableOrUnknown(data['token_hash']!, _tokenHashMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tokenHashMeta);
+    }
+    if (data.containsKey('registered_at')) {
+      context.handle(
+        _registeredAtMeta,
+        registeredAt.isAcceptableOrUnknown(
+          data['registered_at']!,
+          _registeredAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_registeredAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tokenHash};
+  @override
+  PushRegistrationRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PushRegistrationRow(
+      tokenHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}token_hash'],
+      )!,
+      registeredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}registered_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PushRegistrationsTable createAlias(String alias) {
+    return $PushRegistrationsTable(attachedDatabase, alias);
+  }
+}
+
+class PushRegistrationRow extends DataClass
+    implements Insertable<PushRegistrationRow> {
+  final String tokenHash;
+  final DateTime registeredAt;
+  const PushRegistrationRow({
+    required this.tokenHash,
+    required this.registeredAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['token_hash'] = Variable<String>(tokenHash);
+    map['registered_at'] = Variable<DateTime>(registeredAt);
+    return map;
+  }
+
+  PushRegistrationsCompanion toCompanion(bool nullToAbsent) {
+    return PushRegistrationsCompanion(
+      tokenHash: Value(tokenHash),
+      registeredAt: Value(registeredAt),
+    );
+  }
+
+  factory PushRegistrationRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PushRegistrationRow(
+      tokenHash: serializer.fromJson<String>(json['tokenHash']),
+      registeredAt: serializer.fromJson<DateTime>(json['registeredAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tokenHash': serializer.toJson<String>(tokenHash),
+      'registeredAt': serializer.toJson<DateTime>(registeredAt),
+    };
+  }
+
+  PushRegistrationRow copyWith({String? tokenHash, DateTime? registeredAt}) =>
+      PushRegistrationRow(
+        tokenHash: tokenHash ?? this.tokenHash,
+        registeredAt: registeredAt ?? this.registeredAt,
+      );
+  PushRegistrationRow copyWithCompanion(PushRegistrationsCompanion data) {
+    return PushRegistrationRow(
+      tokenHash: data.tokenHash.present ? data.tokenHash.value : this.tokenHash,
+      registeredAt: data.registeredAt.present
+          ? data.registeredAt.value
+          : this.registeredAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PushRegistrationRow(')
+          ..write('tokenHash: $tokenHash, ')
+          ..write('registeredAt: $registeredAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tokenHash, registeredAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PushRegistrationRow &&
+          other.tokenHash == this.tokenHash &&
+          other.registeredAt == this.registeredAt);
+}
+
+class PushRegistrationsCompanion extends UpdateCompanion<PushRegistrationRow> {
+  final Value<String> tokenHash;
+  final Value<DateTime> registeredAt;
+  final Value<int> rowid;
+  const PushRegistrationsCompanion({
+    this.tokenHash = const Value.absent(),
+    this.registeredAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  PushRegistrationsCompanion.insert({
+    required String tokenHash,
+    required DateTime registeredAt,
+    this.rowid = const Value.absent(),
+  }) : tokenHash = Value(tokenHash),
+       registeredAt = Value(registeredAt);
+  static Insertable<PushRegistrationRow> custom({
+    Expression<String>? tokenHash,
+    Expression<DateTime>? registeredAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tokenHash != null) 'token_hash': tokenHash,
+      if (registeredAt != null) 'registered_at': registeredAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  PushRegistrationsCompanion copyWith({
+    Value<String>? tokenHash,
+    Value<DateTime>? registeredAt,
+    Value<int>? rowid,
+  }) {
+    return PushRegistrationsCompanion(
+      tokenHash: tokenHash ?? this.tokenHash,
+      registeredAt: registeredAt ?? this.registeredAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tokenHash.present) {
+      map['token_hash'] = Variable<String>(tokenHash.value);
+    }
+    if (registeredAt.present) {
+      map['registered_at'] = Variable<DateTime>(registeredAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PushRegistrationsCompanion(')
+          ..write('tokenHash: $tokenHash, ')
+          ..write('registeredAt: $registeredAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12789,6 +16220,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AuthSnapshotTable authSnapshot = $AuthSnapshotTable(this);
   late final $VetAssistanceRequestsTable vetAssistanceRequests =
       $VetAssistanceRequestsTable(this);
+  late final $CaseMessagesTable caseMessages = $CaseMessagesTable(this);
+  late final $CaseMessageAttachmentsTable caseMessageAttachments =
+      $CaseMessageAttachmentsTable(this);
+  late final $CaseReadStatesTable caseReadStates = $CaseReadStatesTable(this);
+  late final $MediaUploadJobsTable mediaUploadJobs = $MediaUploadJobsTable(
+    this,
+  );
+  late final $MediaCacheTable mediaCache = $MediaCacheTable(this);
+  late final $PushRegistrationsTable pushRegistrations =
+      $PushRegistrationsTable(this);
   late final Index batchesFarmStatusIdx = Index(
     'batches_farm_status_idx',
     'CREATE INDEX batches_farm_status_idx ON batches (farm_id, status)',
@@ -12824,6 +16265,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncLock,
     authSnapshot,
     vetAssistanceRequests,
+    caseMessages,
+    caseMessageAttachments,
+    caseReadStates,
+    mediaUploadJobs,
+    mediaCache,
+    pushRegistrations,
     batchesFarmStatusIdx,
     mortalityBatchOccurredIdx,
   ];
@@ -19089,6 +22536,1791 @@ typedef $$VetAssistanceRequestsTableProcessedTableManager =
       VetAssistanceRequestRow,
       PrefetchHooks Function()
     >;
+typedef $$CaseMessagesTableCreateCompanionBuilder =
+    CaseMessagesCompanion Function({
+      required String id,
+      required String farmId,
+      required String requestId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String?> senderUserId,
+      required String senderRole,
+      required String kind,
+      Value<String?> body,
+      required DateTime clientCreatedAt,
+      Value<String?> localFailReason,
+      Value<int> rowid,
+    });
+typedef $$CaseMessagesTableUpdateCompanionBuilder =
+    CaseMessagesCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<String> requestId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String?> senderUserId,
+      Value<String> senderRole,
+      Value<String> kind,
+      Value<String?> body,
+      Value<DateTime> clientCreatedAt,
+      Value<String?> localFailReason,
+      Value<int> rowid,
+    });
+
+class $$CaseMessagesTableFilterComposer
+    extends Composer<_$AppDatabase, $CaseMessagesTable> {
+  $$CaseMessagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get senderUserId => $composableBuilder(
+    column: $table.senderUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get senderRole => $composableBuilder(
+    column: $table.senderRole,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get clientCreatedAt => $composableBuilder(
+    column: $table.clientCreatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localFailReason => $composableBuilder(
+    column: $table.localFailReason,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CaseMessagesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CaseMessagesTable> {
+  $$CaseMessagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get senderUserId => $composableBuilder(
+    column: $table.senderUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get senderRole => $composableBuilder(
+    column: $table.senderRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get clientCreatedAt => $composableBuilder(
+    column: $table.clientCreatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localFailReason => $composableBuilder(
+    column: $table.localFailReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CaseMessagesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CaseMessagesTable> {
+  $$CaseMessagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<String> get requestId =>
+      $composableBuilder(column: $table.requestId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get senderUserId => $composableBuilder(
+    column: $table.senderUserId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get senderRole => $composableBuilder(
+    column: $table.senderRole,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get body =>
+      $composableBuilder(column: $table.body, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get clientCreatedAt => $composableBuilder(
+    column: $table.clientCreatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get localFailReason => $composableBuilder(
+    column: $table.localFailReason,
+    builder: (column) => column,
+  );
+}
+
+class $$CaseMessagesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CaseMessagesTable,
+          CaseMessageRow,
+          $$CaseMessagesTableFilterComposer,
+          $$CaseMessagesTableOrderingComposer,
+          $$CaseMessagesTableAnnotationComposer,
+          $$CaseMessagesTableCreateCompanionBuilder,
+          $$CaseMessagesTableUpdateCompanionBuilder,
+          (
+            CaseMessageRow,
+            BaseReferences<_$AppDatabase, $CaseMessagesTable, CaseMessageRow>,
+          ),
+          CaseMessageRow,
+          PrefetchHooks Function()
+        > {
+  $$CaseMessagesTableTableManager(_$AppDatabase db, $CaseMessagesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CaseMessagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CaseMessagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CaseMessagesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<String> requestId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String?> senderUserId = const Value.absent(),
+                Value<String> senderRole = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String?> body = const Value.absent(),
+                Value<DateTime> clientCreatedAt = const Value.absent(),
+                Value<String?> localFailReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseMessagesCompanion(
+                id: id,
+                farmId: farmId,
+                requestId: requestId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                senderUserId: senderUserId,
+                senderRole: senderRole,
+                kind: kind,
+                body: body,
+                clientCreatedAt: clientCreatedAt,
+                localFailReason: localFailReason,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required String requestId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String?> senderUserId = const Value.absent(),
+                required String senderRole,
+                required String kind,
+                Value<String?> body = const Value.absent(),
+                required DateTime clientCreatedAt,
+                Value<String?> localFailReason = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseMessagesCompanion.insert(
+                id: id,
+                farmId: farmId,
+                requestId: requestId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                senderUserId: senderUserId,
+                senderRole: senderRole,
+                kind: kind,
+                body: body,
+                clientCreatedAt: clientCreatedAt,
+                localFailReason: localFailReason,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CaseMessagesTable, CaseMessageRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CaseMessagesTable,
+                    CaseMessageRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CaseMessagesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CaseMessagesTable,
+      CaseMessageRow,
+      $$CaseMessagesTableFilterComposer,
+      $$CaseMessagesTableOrderingComposer,
+      $$CaseMessagesTableAnnotationComposer,
+      $$CaseMessagesTableCreateCompanionBuilder,
+      $$CaseMessagesTableUpdateCompanionBuilder,
+      (
+        CaseMessageRow,
+        BaseReferences<_$AppDatabase, $CaseMessagesTable, CaseMessageRow>,
+      ),
+      CaseMessageRow,
+      PrefetchHooks Function()
+    >;
+typedef $$CaseMessageAttachmentsTableCreateCompanionBuilder =
+    CaseMessageAttachmentsCompanion Function({
+      required String id,
+      required String farmId,
+      required String requestId,
+      required String messageId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      required String objectKey,
+      Value<String> mime,
+      Value<int?> bytes,
+      Value<int?> width,
+      Value<int?> height,
+      Value<String?> thumbB64,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$CaseMessageAttachmentsTableUpdateCompanionBuilder =
+    CaseMessageAttachmentsCompanion Function({
+      Value<String> id,
+      Value<String> farmId,
+      Value<String> requestId,
+      Value<String> messageId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<String> objectKey,
+      Value<String> mime,
+      Value<int?> bytes,
+      Value<int?> width,
+      Value<int?> height,
+      Value<String?> thumbB64,
+      Value<String> status,
+      Value<int> rowid,
+    });
+
+class $$CaseMessageAttachmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $CaseMessageAttachmentsTable> {
+  $$CaseMessageAttachmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get messageId => $composableBuilder(
+    column: $table.messageId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get objectKey => $composableBuilder(
+    column: $table.objectKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mime => $composableBuilder(
+    column: $table.mime,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get thumbB64 => $composableBuilder(
+    column: $table.thumbB64,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CaseMessageAttachmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CaseMessageAttachmentsTable> {
+  $$CaseMessageAttachmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get messageId => $composableBuilder(
+    column: $table.messageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get objectKey => $composableBuilder(
+    column: $table.objectKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mime => $composableBuilder(
+    column: $table.mime,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get width => $composableBuilder(
+    column: $table.width,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get height => $composableBuilder(
+    column: $table.height,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get thumbB64 => $composableBuilder(
+    column: $table.thumbB64,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CaseMessageAttachmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CaseMessageAttachmentsTable> {
+  $$CaseMessageAttachmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<String> get requestId =>
+      $composableBuilder(column: $table.requestId, builder: (column) => column);
+
+  GeneratedColumn<String> get messageId =>
+      $composableBuilder(column: $table.messageId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get objectKey =>
+      $composableBuilder(column: $table.objectKey, builder: (column) => column);
+
+  GeneratedColumn<String> get mime =>
+      $composableBuilder(column: $table.mime, builder: (column) => column);
+
+  GeneratedColumn<int> get bytes =>
+      $composableBuilder(column: $table.bytes, builder: (column) => column);
+
+  GeneratedColumn<int> get width =>
+      $composableBuilder(column: $table.width, builder: (column) => column);
+
+  GeneratedColumn<int> get height =>
+      $composableBuilder(column: $table.height, builder: (column) => column);
+
+  GeneratedColumn<String> get thumbB64 =>
+      $composableBuilder(column: $table.thumbB64, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+}
+
+class $$CaseMessageAttachmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CaseMessageAttachmentsTable,
+          CaseMessageAttachmentRow,
+          $$CaseMessageAttachmentsTableFilterComposer,
+          $$CaseMessageAttachmentsTableOrderingComposer,
+          $$CaseMessageAttachmentsTableAnnotationComposer,
+          $$CaseMessageAttachmentsTableCreateCompanionBuilder,
+          $$CaseMessageAttachmentsTableUpdateCompanionBuilder,
+          (
+            CaseMessageAttachmentRow,
+            BaseReferences<
+              _$AppDatabase,
+              $CaseMessageAttachmentsTable,
+              CaseMessageAttachmentRow
+            >,
+          ),
+          CaseMessageAttachmentRow,
+          PrefetchHooks Function()
+        > {
+  $$CaseMessageAttachmentsTableTableManager(
+    _$AppDatabase db,
+    $CaseMessageAttachmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CaseMessageAttachmentsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$CaseMessageAttachmentsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CaseMessageAttachmentsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> farmId = const Value.absent(),
+                Value<String> requestId = const Value.absent(),
+                Value<String> messageId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<String> objectKey = const Value.absent(),
+                Value<String> mime = const Value.absent(),
+                Value<int?> bytes = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<String?> thumbB64 = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseMessageAttachmentsCompanion(
+                id: id,
+                farmId: farmId,
+                requestId: requestId,
+                messageId: messageId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                objectKey: objectKey,
+                mime: mime,
+                bytes: bytes,
+                width: width,
+                height: height,
+                thumbB64: thumbB64,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String farmId,
+                required String requestId,
+                required String messageId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                required String objectKey,
+                Value<String> mime = const Value.absent(),
+                Value<int?> bytes = const Value.absent(),
+                Value<int?> width = const Value.absent(),
+                Value<int?> height = const Value.absent(),
+                Value<String?> thumbB64 = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseMessageAttachmentsCompanion.insert(
+                id: id,
+                farmId: farmId,
+                requestId: requestId,
+                messageId: messageId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                objectKey: objectKey,
+                mime: mime,
+                bytes: bytes,
+                width: width,
+                height: height,
+                thumbB64: thumbB64,
+                status: status,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $CaseMessageAttachmentsTable,
+                    CaseMessageAttachmentRow
+                  >(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CaseMessageAttachmentsTable,
+                    CaseMessageAttachmentRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CaseMessageAttachmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CaseMessageAttachmentsTable,
+      CaseMessageAttachmentRow,
+      $$CaseMessageAttachmentsTableFilterComposer,
+      $$CaseMessageAttachmentsTableOrderingComposer,
+      $$CaseMessageAttachmentsTableAnnotationComposer,
+      $$CaseMessageAttachmentsTableCreateCompanionBuilder,
+      $$CaseMessageAttachmentsTableUpdateCompanionBuilder,
+      (
+        CaseMessageAttachmentRow,
+        BaseReferences<
+          _$AppDatabase,
+          $CaseMessageAttachmentsTable,
+          CaseMessageAttachmentRow
+        >,
+      ),
+      CaseMessageAttachmentRow,
+      PrefetchHooks Function()
+    >;
+typedef $$CaseReadStatesTableCreateCompanionBuilder =
+    CaseReadStatesCompanion Function({
+      required String requestId,
+      required String userId,
+      Value<String?> farmId,
+      required DateTime lastReadAt,
+      Value<String?> lastReadMessageId,
+      Value<bool> muted,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<int> rowid,
+    });
+typedef $$CaseReadStatesTableUpdateCompanionBuilder =
+    CaseReadStatesCompanion Function({
+      Value<String> requestId,
+      Value<String> userId,
+      Value<String?> farmId,
+      Value<DateTime> lastReadAt,
+      Value<String?> lastReadMessageId,
+      Value<bool> muted,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<int?> serverVersion,
+      Value<int> rowid,
+    });
+
+class $$CaseReadStatesTableFilterComposer
+    extends Composer<_$AppDatabase, $CaseReadStatesTable> {
+  $$CaseReadStatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastReadAt => $composableBuilder(
+    column: $table.lastReadAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastReadMessageId => $composableBuilder(
+    column: $table.lastReadMessageId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get muted => $composableBuilder(
+    column: $table.muted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CaseReadStatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CaseReadStatesTable> {
+  $$CaseReadStatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get farmId => $composableBuilder(
+    column: $table.farmId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastReadAt => $composableBuilder(
+    column: $table.lastReadAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastReadMessageId => $composableBuilder(
+    column: $table.lastReadMessageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get muted => $composableBuilder(
+    column: $table.muted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CaseReadStatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CaseReadStatesTable> {
+  $$CaseReadStatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get requestId =>
+      $composableBuilder(column: $table.requestId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get farmId =>
+      $composableBuilder(column: $table.farmId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastReadAt => $composableBuilder(
+    column: $table.lastReadAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastReadMessageId => $composableBuilder(
+    column: $table.lastReadMessageId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get muted =>
+      $composableBuilder(column: $table.muted, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+}
+
+class $$CaseReadStatesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CaseReadStatesTable,
+          CaseReadStateRow,
+          $$CaseReadStatesTableFilterComposer,
+          $$CaseReadStatesTableOrderingComposer,
+          $$CaseReadStatesTableAnnotationComposer,
+          $$CaseReadStatesTableCreateCompanionBuilder,
+          $$CaseReadStatesTableUpdateCompanionBuilder,
+          (
+            CaseReadStateRow,
+            BaseReferences<
+              _$AppDatabase,
+              $CaseReadStatesTable,
+              CaseReadStateRow
+            >,
+          ),
+          CaseReadStateRow,
+          PrefetchHooks Function()
+        > {
+  $$CaseReadStatesTableTableManager(
+    _$AppDatabase db,
+    $CaseReadStatesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CaseReadStatesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CaseReadStatesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CaseReadStatesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> requestId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String?> farmId = const Value.absent(),
+                Value<DateTime> lastReadAt = const Value.absent(),
+                Value<String?> lastReadMessageId = const Value.absent(),
+                Value<bool> muted = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseReadStatesCompanion(
+                requestId: requestId,
+                userId: userId,
+                farmId: farmId,
+                lastReadAt: lastReadAt,
+                lastReadMessageId: lastReadMessageId,
+                muted: muted,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String requestId,
+                required String userId,
+                Value<String?> farmId = const Value.absent(),
+                required DateTime lastReadAt,
+                Value<String?> lastReadMessageId = const Value.absent(),
+                Value<bool> muted = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<int?> serverVersion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CaseReadStatesCompanion.insert(
+                requestId: requestId,
+                userId: userId,
+                farmId: farmId,
+                lastReadAt: lastReadAt,
+                lastReadMessageId: lastReadMessageId,
+                muted: muted,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                serverVersion: serverVersion,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CaseReadStatesTable, CaseReadStateRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CaseReadStatesTable,
+                    CaseReadStateRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CaseReadStatesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CaseReadStatesTable,
+      CaseReadStateRow,
+      $$CaseReadStatesTableFilterComposer,
+      $$CaseReadStatesTableOrderingComposer,
+      $$CaseReadStatesTableAnnotationComposer,
+      $$CaseReadStatesTableCreateCompanionBuilder,
+      $$CaseReadStatesTableUpdateCompanionBuilder,
+      (
+        CaseReadStateRow,
+        BaseReferences<_$AppDatabase, $CaseReadStatesTable, CaseReadStateRow>,
+      ),
+      CaseReadStateRow,
+      PrefetchHooks Function()
+    >;
+typedef $$MediaUploadJobsTableCreateCompanionBuilder =
+    MediaUploadJobsCompanion Function({
+      required String id,
+      required String attachmentId,
+      required String requestId,
+      required String localPath,
+      Value<String> state,
+      Value<int> attempts,
+      Value<int> bytesSent,
+      Value<DateTime?> nextAttemptAt,
+      Value<bool> userForced,
+      required DateTime createdAt,
+      Value<int> rowid,
+    });
+typedef $$MediaUploadJobsTableUpdateCompanionBuilder =
+    MediaUploadJobsCompanion Function({
+      Value<String> id,
+      Value<String> attachmentId,
+      Value<String> requestId,
+      Value<String> localPath,
+      Value<String> state,
+      Value<int> attempts,
+      Value<int> bytesSent,
+      Value<DateTime?> nextAttemptAt,
+      Value<bool> userForced,
+      Value<DateTime> createdAt,
+      Value<int> rowid,
+    });
+
+class $$MediaUploadJobsTableFilterComposer
+    extends Composer<_$AppDatabase, $MediaUploadJobsTable> {
+  $$MediaUploadJobsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bytesSent => $composableBuilder(
+    column: $table.bytesSent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get userForced => $composableBuilder(
+    column: $table.userForced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MediaUploadJobsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MediaUploadJobsTable> {
+  $$MediaUploadJobsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get requestId => $composableBuilder(
+    column: $table.requestId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bytesSent => $composableBuilder(
+    column: $table.bytesSent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get userForced => $composableBuilder(
+    column: $table.userForced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MediaUploadJobsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MediaUploadJobsTable> {
+  $$MediaUploadJobsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get attachmentId => $composableBuilder(
+    column: $table.attachmentId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get requestId =>
+      $composableBuilder(column: $table.requestId, builder: (column) => column);
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<int> get bytesSent =>
+      $composableBuilder(column: $table.bytesSent, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get userForced => $composableBuilder(
+    column: $table.userForced,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$MediaUploadJobsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MediaUploadJobsTable,
+          MediaUploadJobRow,
+          $$MediaUploadJobsTableFilterComposer,
+          $$MediaUploadJobsTableOrderingComposer,
+          $$MediaUploadJobsTableAnnotationComposer,
+          $$MediaUploadJobsTableCreateCompanionBuilder,
+          $$MediaUploadJobsTableUpdateCompanionBuilder,
+          (
+            MediaUploadJobRow,
+            BaseReferences<
+              _$AppDatabase,
+              $MediaUploadJobsTable,
+              MediaUploadJobRow
+            >,
+          ),
+          MediaUploadJobRow,
+          PrefetchHooks Function()
+        > {
+  $$MediaUploadJobsTableTableManager(
+    _$AppDatabase db,
+    $MediaUploadJobsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MediaUploadJobsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MediaUploadJobsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MediaUploadJobsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> attachmentId = const Value.absent(),
+                Value<String> requestId = const Value.absent(),
+                Value<String> localPath = const Value.absent(),
+                Value<String> state = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<int> bytesSent = const Value.absent(),
+                Value<DateTime?> nextAttemptAt = const Value.absent(),
+                Value<bool> userForced = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MediaUploadJobsCompanion(
+                id: id,
+                attachmentId: attachmentId,
+                requestId: requestId,
+                localPath: localPath,
+                state: state,
+                attempts: attempts,
+                bytesSent: bytesSent,
+                nextAttemptAt: nextAttemptAt,
+                userForced: userForced,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String attachmentId,
+                required String requestId,
+                required String localPath,
+                Value<String> state = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<int> bytesSent = const Value.absent(),
+                Value<DateTime?> nextAttemptAt = const Value.absent(),
+                Value<bool> userForced = const Value.absent(),
+                required DateTime createdAt,
+                Value<int> rowid = const Value.absent(),
+              }) => MediaUploadJobsCompanion.insert(
+                id: id,
+                attachmentId: attachmentId,
+                requestId: requestId,
+                localPath: localPath,
+                state: state,
+                attempts: attempts,
+                bytesSent: bytesSent,
+                nextAttemptAt: nextAttemptAt,
+                userForced: userForced,
+                createdAt: createdAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MediaUploadJobsTable, MediaUploadJobRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $MediaUploadJobsTable,
+                    MediaUploadJobRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MediaUploadJobsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MediaUploadJobsTable,
+      MediaUploadJobRow,
+      $$MediaUploadJobsTableFilterComposer,
+      $$MediaUploadJobsTableOrderingComposer,
+      $$MediaUploadJobsTableAnnotationComposer,
+      $$MediaUploadJobsTableCreateCompanionBuilder,
+      $$MediaUploadJobsTableUpdateCompanionBuilder,
+      (
+        MediaUploadJobRow,
+        BaseReferences<_$AppDatabase, $MediaUploadJobsTable, MediaUploadJobRow>,
+      ),
+      MediaUploadJobRow,
+      PrefetchHooks Function()
+    >;
+typedef $$MediaCacheTableCreateCompanionBuilder = MediaCacheCompanion Function({
+  required String objectKey,
+  required String localPath,
+  required int bytes,
+  required DateTime lastAccessAt,
+  Value<int> rowid,
+});
+typedef $$MediaCacheTableUpdateCompanionBuilder = MediaCacheCompanion Function({
+  Value<String> objectKey,
+  Value<String> localPath,
+  Value<int> bytes,
+  Value<DateTime> lastAccessAt,
+  Value<int> rowid,
+});
+
+class $$MediaCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $MediaCacheTable> {
+  $$MediaCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get objectKey => $composableBuilder(
+    column: $table.objectKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastAccessAt => $composableBuilder(
+    column: $table.lastAccessAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MediaCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $MediaCacheTable> {
+  $$MediaCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get objectKey => $composableBuilder(
+    column: $table.objectKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localPath => $composableBuilder(
+    column: $table.localPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastAccessAt => $composableBuilder(
+    column: $table.lastAccessAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MediaCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MediaCacheTable> {
+  $$MediaCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get objectKey =>
+      $composableBuilder(column: $table.objectKey, builder: (column) => column);
+
+  GeneratedColumn<String> get localPath =>
+      $composableBuilder(column: $table.localPath, builder: (column) => column);
+
+  GeneratedColumn<int> get bytes =>
+      $composableBuilder(column: $table.bytes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastAccessAt => $composableBuilder(
+    column: $table.lastAccessAt,
+    builder: (column) => column,
+  );
+}
+
+class $$MediaCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MediaCacheTable,
+          MediaCacheRow,
+          $$MediaCacheTableFilterComposer,
+          $$MediaCacheTableOrderingComposer,
+          $$MediaCacheTableAnnotationComposer,
+          $$MediaCacheTableCreateCompanionBuilder,
+          $$MediaCacheTableUpdateCompanionBuilder,
+          (
+            MediaCacheRow,
+            BaseReferences<_$AppDatabase, $MediaCacheTable, MediaCacheRow>,
+          ),
+          MediaCacheRow,
+          PrefetchHooks Function()
+        > {
+  $$MediaCacheTableTableManager(_$AppDatabase db, $MediaCacheTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MediaCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MediaCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MediaCacheTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> objectKey = const Value.absent(),
+                Value<String> localPath = const Value.absent(),
+                Value<int> bytes = const Value.absent(),
+                Value<DateTime> lastAccessAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => MediaCacheCompanion(
+                objectKey: objectKey,
+                localPath: localPath,
+                bytes: bytes,
+                lastAccessAt: lastAccessAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String objectKey,
+                required String localPath,
+                required int bytes,
+                required DateTime lastAccessAt,
+                Value<int> rowid = const Value.absent(),
+              }) => MediaCacheCompanion.insert(
+                objectKey: objectKey,
+                localPath: localPath,
+                bytes: bytes,
+                lastAccessAt: lastAccessAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$MediaCacheTable, MediaCacheRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $MediaCacheTable,
+                    MediaCacheRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MediaCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MediaCacheTable,
+      MediaCacheRow,
+      $$MediaCacheTableFilterComposer,
+      $$MediaCacheTableOrderingComposer,
+      $$MediaCacheTableAnnotationComposer,
+      $$MediaCacheTableCreateCompanionBuilder,
+      $$MediaCacheTableUpdateCompanionBuilder,
+      (
+        MediaCacheRow,
+        BaseReferences<_$AppDatabase, $MediaCacheTable, MediaCacheRow>,
+      ),
+      MediaCacheRow,
+      PrefetchHooks Function()
+    >;
+typedef $$PushRegistrationsTableCreateCompanionBuilder =
+    PushRegistrationsCompanion Function({
+      required String tokenHash,
+      required DateTime registeredAt,
+      Value<int> rowid,
+    });
+typedef $$PushRegistrationsTableUpdateCompanionBuilder =
+    PushRegistrationsCompanion Function({
+      Value<String> tokenHash,
+      Value<DateTime> registeredAt,
+      Value<int> rowid,
+    });
+
+class $$PushRegistrationsTableFilterComposer
+    extends Composer<_$AppDatabase, $PushRegistrationsTable> {
+  $$PushRegistrationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get registeredAt => $composableBuilder(
+    column: $table.registeredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PushRegistrationsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PushRegistrationsTable> {
+  $$PushRegistrationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get tokenHash => $composableBuilder(
+    column: $table.tokenHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get registeredAt => $composableBuilder(
+    column: $table.registeredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PushRegistrationsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PushRegistrationsTable> {
+  $$PushRegistrationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get tokenHash =>
+      $composableBuilder(column: $table.tokenHash, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get registeredAt => $composableBuilder(
+    column: $table.registeredAt,
+    builder: (column) => column,
+  );
+}
+
+class $$PushRegistrationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PushRegistrationsTable,
+          PushRegistrationRow,
+          $$PushRegistrationsTableFilterComposer,
+          $$PushRegistrationsTableOrderingComposer,
+          $$PushRegistrationsTableAnnotationComposer,
+          $$PushRegistrationsTableCreateCompanionBuilder,
+          $$PushRegistrationsTableUpdateCompanionBuilder,
+          (
+            PushRegistrationRow,
+            BaseReferences<
+              _$AppDatabase,
+              $PushRegistrationsTable,
+              PushRegistrationRow
+            >,
+          ),
+          PushRegistrationRow,
+          PrefetchHooks Function()
+        > {
+  $$PushRegistrationsTableTableManager(
+    _$AppDatabase db,
+    $PushRegistrationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PushRegistrationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PushRegistrationsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PushRegistrationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> tokenHash = const Value.absent(),
+                Value<DateTime> registeredAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => PushRegistrationsCompanion(
+                tokenHash: tokenHash,
+                registeredAt: registeredAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tokenHash,
+                required DateTime registeredAt,
+                Value<int> rowid = const Value.absent(),
+              }) => PushRegistrationsCompanion.insert(
+                tokenHash: tokenHash,
+                registeredAt: registeredAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PushRegistrationsTable, PushRegistrationRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $PushRegistrationsTable,
+                    PushRegistrationRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PushRegistrationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PushRegistrationsTable,
+      PushRegistrationRow,
+      $$PushRegistrationsTableFilterComposer,
+      $$PushRegistrationsTableOrderingComposer,
+      $$PushRegistrationsTableAnnotationComposer,
+      $$PushRegistrationsTableCreateCompanionBuilder,
+      $$PushRegistrationsTableUpdateCompanionBuilder,
+      (
+        PushRegistrationRow,
+        BaseReferences<
+          _$AppDatabase,
+          $PushRegistrationsTable,
+          PushRegistrationRow
+        >,
+      ),
+      PushRegistrationRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19131,4 +24363,19 @@ class $AppDatabaseManager {
       $$AuthSnapshotTableTableManager(_db, _db.authSnapshot);
   $$VetAssistanceRequestsTableTableManager get vetAssistanceRequests =>
       $$VetAssistanceRequestsTableTableManager(_db, _db.vetAssistanceRequests);
+  $$CaseMessagesTableTableManager get caseMessages =>
+      $$CaseMessagesTableTableManager(_db, _db.caseMessages);
+  $$CaseMessageAttachmentsTableTableManager get caseMessageAttachments =>
+      $$CaseMessageAttachmentsTableTableManager(
+        _db,
+        _db.caseMessageAttachments,
+      );
+  $$CaseReadStatesTableTableManager get caseReadStates =>
+      $$CaseReadStatesTableTableManager(_db, _db.caseReadStates);
+  $$MediaUploadJobsTableTableManager get mediaUploadJobs =>
+      $$MediaUploadJobsTableTableManager(_db, _db.mediaUploadJobs);
+  $$MediaCacheTableTableManager get mediaCache =>
+      $$MediaCacheTableTableManager(_db, _db.mediaCache);
+  $$PushRegistrationsTableTableManager get pushRegistrations =>
+      $$PushRegistrationsTableTableManager(_db, _db.pushRegistrations);
 }

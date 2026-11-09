@@ -3,6 +3,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/error/result.dart';
 import '../../../data_platform/supabase/offline_first_auth.dart';
+import '../../../data_platform/sync/sync_json.dart';
 import '../domain/vet_request_visibility.dart';
 
 class VetInboxItem {
@@ -67,30 +68,30 @@ class VetInboxItem {
     final symptomsRaw = json['symptoms'];
     final photosRaw = json['photo_object_keys'];
     return VetInboxItem(
-      id: json['id'] as String,
-      farmId: json['farm_id'] as String,
-      batchId: json['batch_id'] as String,
-      healthRecordId: json['health_record_id'] as String,
-      serviceType: json['service_type'] as String,
-      status: json['status'] as String,
-      shareLocation: json['share_location'] as bool? ?? false,
-      priority: json['priority'] as String? ?? 'normal',
-      createdAt: DateTime.parse(json['created_at'] as String),
-      farmerNotes: json['farmer_notes'] as String?,
-      summary: json['summary'] as String?,
-      affectedBirdCount: json['affected_bird_count'] as int?,
+      id: syncJsonString(json['id'])!,
+      farmId: syncJsonString(json['farm_id'])!,
+      batchId: syncJsonString(json['batch_id']) ?? '',
+      healthRecordId: syncJsonString(json['health_record_id']) ?? '',
+      serviceType: syncJsonString(json['service_type']) ?? 'either',
+      status: syncJsonString(json['status']) ?? 'submitted',
+      shareLocation: syncJsonBool(json['share_location']),
+      priority: syncJsonString(json['priority']) ?? 'normal',
+      createdAt: syncJsonDateTime(json['created_at']) ?? DateTime.now().toUtc(),
+      farmerNotes: syncJsonString(json['farmer_notes']),
+      summary: syncJsonString(json['summary']),
+      affectedBirdCount: syncJsonInt(json['affected_bird_count']),
       symptoms: symptomsRaw is List
           ? symptomsRaw.map((e) => e.toString()).toList()
           : const [],
       photoObjectKeys: photosRaw is List
           ? photosRaw.map((e) => e.toString()).toList()
           : const [],
-      farmName: json['farm_name'] as String?,
-      farmDistrict: json['farm_district'] as String?,
-      farmVillage: json['farm_village'] as String?,
+      farmName: syncJsonString(json['farm_name']),
+      farmDistrict: syncJsonString(json['farm_district']),
+      farmVillage: syncJsonString(json['farm_village']),
       distanceKm: (json['distance_km'] as num?)?.toDouble(),
-      requestedVetUserId: json['requested_vet_user_id'] as String?,
-      assignedVetUserId: json['assigned_vet_user_id'] as String?,
+      requestedVetUserId: syncJsonString(json['requested_vet_user_id']),
+      assignedVetUserId: syncJsonString(json['assigned_vet_user_id']),
     );
   }
 }
@@ -118,19 +119,25 @@ class VetInboxRepository {
         return const Success([]);
       }
       final viewerId = _client.auth.currentUser?.id;
-      final items = list
-          .whereType<Map<String, dynamic>>()
-          .map(VetInboxItem.fromJson)
-          .where(
-            (item) =>
-                viewerId == null ||
-                vetCanViewRequest(
-                  assignedVetUserId: item.assignedVetUserId,
-                  requestedVetUserId: item.requestedVetUserId,
-                  viewerUserId: viewerId,
-                ),
-          )
-          .toList();
+      final items = <VetInboxItem>[];
+      for (final rawItem in list) {
+        if (rawItem is! Map) {
+          continue;
+        }
+        try {
+          final item = VetInboxItem.fromJson(
+            Map<String, dynamic>.from(rawItem),
+          );
+          if (viewerId == null ||
+              vetCanViewRequest(
+                assignedVetUserId: item.assignedVetUserId,
+                requestedVetUserId: item.requestedVetUserId,
+                viewerUserId: viewerId,
+              )) {
+            items.add(item);
+          }
+        } catch (_) {}
+      }
       return Success(items);
     } on PostgrestException catch (e) {
       return Error(UnexpectedFailure(e.message));

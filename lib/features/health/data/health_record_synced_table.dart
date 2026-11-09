@@ -9,7 +9,7 @@ class HealthRecordSyncedTable implements SyncedTable<HealthRecordRow> {
   String get tableName => 'health_records';
 
   @override
-  SyncTableKind get kind => SyncTableKind.appendOnly;
+  SyncTableKind get kind => SyncTableKind.mutable;
 
   @override
   String scopeForRow(HealthRecordRow row) => row.farmId;
@@ -18,23 +18,21 @@ class HealthRecordSyncedTable implements SyncedTable<HealthRecordRow> {
   HealthRecordRow fromRemote(Map<String, dynamic> json) {
     final symptoms = json['symptoms'];
     return HealthRecordRow(
-      id: json['id'] as String,
-      farmId: json['farm_id'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
-      deletedAt: json['deleted_at'] == null
-          ? null
-          : DateTime.parse(json['deleted_at'] as String),
+      id: syncJsonString(json['id'])!,
+      farmId: syncJsonString(json['farm_id'])!,
+      createdAt: syncJsonDateTime(json['created_at'])!,
+      updatedAt: syncJsonDateTime(json['updated_at'])!,
+      deletedAt: syncJsonDateTime(json['deleted_at']),
       serverVersion: syncJsonInt(json['server_version']),
-      batchId: json['batch_id'] as String,
-      occurredOn: DateTime.parse(json['occurred_on'] as String),
-      summary: json['summary'] as String,
-      notes: json['notes'] as String?,
+      batchId: syncJsonString(json['batch_id'])!,
+      occurredOn: syncJsonDateTime(json['occurred_on'])!,
+      summary: syncJsonString(json['summary']) ?? '',
+      notes: syncJsonString(json['notes']),
       affectedBirdCount: syncJsonInt(json['affected_bird_count']),
       symptomsJson: symptoms is List
           ? jsonEncode(symptoms)
-          : (symptoms as String? ?? '[]'),
-      recordKind: json['record_kind'] as String? ?? 'observation',
+          : (syncJsonString(symptoms) ?? '[]'),
+      recordKind: syncJsonString(json['record_kind']) ?? 'observation',
       photoObjectKeysJson: _photoKeysJson(json['photo_object_keys']),
       pendingPhotoPathsJson: '[]',
     );

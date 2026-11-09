@@ -293,6 +293,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       $notificationsSettingsRoute,
       $feedItemDetailRoute,
       $findVetRoute,
+      $caseMessagesRoute,
       $vetProfileRoute,
       ..._vetShellRoutes(),
       ..._shellRoutes(),

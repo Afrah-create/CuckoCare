@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../../core/utils/uuid_v7.dart';
+import '../sync/sync_json.dart';
 import 'app_database.dart';
 class SyncedWriteOp {
   SyncedWriteOp({
@@ -59,7 +60,7 @@ class SyncedWrite {
                 targetTable: op.table,
                 rowId: op.rowId,
                 op: op.op,
-                payload: jsonEncode(op.payload),
+                payload: jsonEncode(sanitizeSyncPayload(op.payload)),
                 createdAt: DateTime.now().toUtc(),
                 state: const Value('pending'),
               ),

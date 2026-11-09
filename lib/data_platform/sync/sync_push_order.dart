@@ -13,6 +13,9 @@ int syncPushTablePriority(String table) {
     'vaccination_tasks' => 35,
     'vet_assistance_requests' => 40,
     'vet_consultations' => 41,
+    'case_messages' => 42,
+    'case_message_attachments' => 43,
+    'case_read_state' => 44,
     _ => 50,
   };
 }
