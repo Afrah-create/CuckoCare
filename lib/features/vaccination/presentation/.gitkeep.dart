@@ -1,1 +1,0 @@
-// CucoCare vaccination / presentation scaffold

@@ -20,7 +20,7 @@ cp .env.example .env
 dart run tool/sync_env.dart dev   # writes env/dev.json for Flutter (no service role)
 
 flutter pub get
-dart run build_runner build
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 ## Run (flavors)
@@ -41,6 +41,32 @@ flutter run --flavor prod --dart-define-from-file=env/prod.json
 ```
 
 On first launch in **dev**, use **Continue with offline demo session** on the sign-in screen to reach the home shell with sync status.
+
+## Release APK (under 100MB)
+
+GitHub rejects files ≥ 100MB. **Do not commit APKs.** Build a **release** split APK (phone ABIs only) and attach it to a [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+
+```bash
+chmod +x scripts/build_apk.sh
+./scripts/build_apk.sh prod
+```
+
+That runs:
+
+```bash
+flutter build apk --release --flavor prod \
+  --dart-define-from-file=env/prod.json \
+  --split-per-abi
+```
+
+Outputs (each should be well under 100MB):
+
+- `build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk` — most phones (upload this)
+- `build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk` — 32-bit phones
+
+**Do not upload a debug APK.** Debug builds include the Dart kernel blob and extra native libs and routinely exceed 100MB.
+
+Release signing currently uses the debug keystore (`android/app/build.gradle.kts`). Replace that before a Play Store upload.
 
 ## Quality
 

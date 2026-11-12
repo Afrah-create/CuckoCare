@@ -47,6 +47,12 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
+# Android packages (GitHub file limit is 100MB; attach APKs to Releases)
+*.apk
+*.aab
+*.apks
+*.idsig
+
 # Local environment (commit *.example.json only)
 .env
 env/dev.json

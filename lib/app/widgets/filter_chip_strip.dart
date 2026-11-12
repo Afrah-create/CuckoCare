@@ -33,7 +33,7 @@ class FilterChipStrip<T> extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: options.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.xs),
+        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.xs),
         itemBuilder: (context, index) {
           final option = options[index];
           final isSelected = option.value == selected;

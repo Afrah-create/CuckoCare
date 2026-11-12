@@ -1,1 +1,0 @@
-// CucoCare subscription / domain scaffold

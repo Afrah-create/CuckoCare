@@ -20,6 +20,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Phone ABIs only. Including x86_64 (emulators) makes a fat APK >100MB.
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     flavorDimensions += "env"
@@ -40,6 +44,18 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+        }
+    }
+
+    packaging {
+        jniLibs {
+            excludes += "**/libVkLayer_khronos_validation.so"
         }
     }
 }

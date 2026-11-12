@@ -1,1 +1,0 @@
-// CucoCare farms / presentation scaffold

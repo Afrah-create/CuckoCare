@@ -1,1 +1,0 @@
-// CucoCare health / domain scaffold

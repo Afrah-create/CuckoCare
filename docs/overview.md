@@ -274,6 +274,8 @@ flutter run --flavor prod --dart-define-from-file=env/prod.json
 
 Dev shortcut: `./scripts/run_dev.sh`. Quality: `flutter analyze` and `flutter test`.
 
+Release APK for GitHub (must stay under 100MB — **do not commit debug APKs**): `./scripts/build_apk.sh prod`. Attach the `arm64-v8a` file to a GitHub Release. See [README.md](../README.md).
+
 New backend behaviour needs a **new numbered migration** applied to the hosted project (SQL editor or Supabase CLI). The Flutter client alone cannot change `sync_push` or `vet_inbox`.
 
 ---

@@ -1,1 +1,0 @@
-// CucoCare auth / domain scaffold

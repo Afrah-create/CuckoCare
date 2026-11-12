@@ -1,1 +1,0 @@
-// CucoCare vaccination / domain scaffold
