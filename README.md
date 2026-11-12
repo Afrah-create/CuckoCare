@@ -44,27 +44,19 @@ On first launch in **dev**, use **Continue with offline demo session** on the si
 
 ## Release APK (under 100MB)
 
-GitHub rejects files ≥ 100MB. **Do not commit APKs.** Build a **release** split APK (phone ABIs only) and attach it to a [GitHub Release](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository).
+GitHub rejects files ≥ 100MB. The tracked installable is:
+
+`releases/cucocare-prod-release.apk` (~78MB)
+
+Rebuild and overwrite that file (phone ABIs only; **never** a debug APK):
 
 ```bash
 chmod +x scripts/build_apk.sh
 ./scripts/build_apk.sh prod
+cp build/app/outputs/flutter-apk/app-prod-release.apk releases/cucocare-prod-release.apk
 ```
 
-That runs:
-
-```bash
-flutter build apk --release --flavor prod \
-  --dart-define-from-file=env/prod.json \
-  --split-per-abi
-```
-
-Outputs (each should be well under 100MB):
-
-- `build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk` — most phones (upload this)
-- `build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk` — 32-bit phones
-
-**Do not upload a debug APK.** Debug builds include the Dart kernel blob and extra native libs and routinely exceed 100MB.
+Debug APKs include the Dart kernel blob and extra native libs and routinely exceed 100MB — they stay gitignored under `build/`.
 
 Release signing currently uses the debug keystore (`android/app/build.gradle.kts`). Replace that before a Play Store upload.
 
