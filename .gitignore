@@ -53,8 +53,6 @@ app.*.map.json
 *.aab
 *.apks
 *.idsig
-!apk/
-!apk/cucocare.apk
 
 # Local environment (commit *.example.json only)
 .env
