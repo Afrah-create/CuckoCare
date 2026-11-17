@@ -47,13 +47,14 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
-# Android packages. GitHub rejects files ≥100MB. Only the lean prod APK in
-# releases/ is tracked; debug and Gradle outputs stay ignored.
+# Android packages. GitHub rejects files ≥100MB. Only the published APK in
+# apk/ is tracked; debug and Gradle outputs stay ignored.
 *.apk
 *.aab
 *.apks
 *.idsig
-!releases/*.apk
+!apk/
+!apk/cucocare.apk
 
 # Local environment (commit *.example.json only)
 .env

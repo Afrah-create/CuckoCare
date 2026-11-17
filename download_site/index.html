@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CucoCare — Download for Android</title>
+  <meta name="description" content="Download CucoCare for Android. Poultry records that work offline.">
+
+  <meta name="theme-color" content="#EAF3EA" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101A12" media="(prefers-color-scheme: dark)">
+
+  <link rel="icon" href="assets/favicon.png" type="image/png" sizes="48x48">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" sizes="180x180">
+
+  <!--
+    Open Graph / Twitter: set the production domain below when deploying
+    (e.g. https://download.cucocare.example). Paths are relative to that origin.
+    PRODUCTION_ORIGIN = https://YOUR-VERCEL-OR-CUSTOM-DOMAIN
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CucoCare — Download for Android">
+  <meta property="og:description" content="Poultry records that work offline.">
+  <meta property="og:image" content="https://YOUR-VERCEL-OR-CUSTOM-DOMAIN/assets/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CucoCare — Download for Android">
+  <meta name="twitter:description" content="Poultry records that work offline.">
+  <meta name="twitter:image" content="https://YOUR-VERCEL-OR-CUSTOM-DOMAIN/assets/og-image.png">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <article class="sheet">
+      <header class="hero">
+        <div class="logo-wrap">
+          <img
+            src="assets/logo.png"
+            alt="CucoCare logo"
+            width="88"
+            height="88"
+            decoding="async">
+        </div>
+        <h1 class="wordmark" id="app-name">CucoCare</h1>
+        <p class="tagline" id="tagline">Poultry records that work offline.</p>
+        <ul class="chips" aria-label="Highlights">
+          <li class="chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M2 8.5C5.5 5 10 4 12 4s6.5 1 10 4.5" stroke-linecap="round"/>
+              <path d="M5 12.5c2.2-2 4.6-2.8 7-2.8s4.8.8 7 2.8" stroke-linecap="round"/>
+              <path d="M8.5 16.2c1.1-.9 2.3-1.3 3.5-1.3s2.4.4 3.5 1.3" stroke-linecap="round"/>
+              <circle cx="12" cy="19.5" r="1.2" fill="currentColor" stroke="none"/>
+              <path d="M4 4l16 16" stroke-linecap="round"/>
+            </svg>
+            Works offline
+          </li>
+          <li class="chip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 21s-7-4.5-7-10a7 7 0 1 1 14 0c0 5.5-7 10-7 10z" stroke-linejoin="round"/>
+              <circle cx="12" cy="11" r="2.5"/>
+            </svg>
+            Made for Ugandan farmers
+          </li>
+        </ul>
+      </header>
+
+      <hr class="divider">
+
+      <section aria-labelledby="download-heading">
+        <h2 id="download-heading" class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Download</h2>
+        <a class="download-btn" id="download-btn" href="#" aria-disabled="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+            <path d="M12 3v12" stroke-linecap="round"/>
+            <path d="m7 11 5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 21h14" stroke-linecap="round"/>
+          </svg>
+          <span id="download-label">Loading…</span>
+        </a>
+        <noscript>
+          <!-- Keep this URL in sync with download_site/config.js (OWNER/REPO/BRANCH/APK_PATH). -->
+          <p class="noscript-fallback">
+            <a class="download-btn" href="https://github.com/Afrah-create/CuckoCare/raw/main/apk/cucocare.apk">
+              Download for Android
+            </a>
+          </p>
+        </noscript>
+        <p class="meta" id="meta">
+          <span id="version-line"></span><span id="released-sep" hidden> · </span><span id="released-line"></span><span id="size-sep" hidden> · </span><span id="size-line"></span>
+        </p>
+        <p class="platform-note" id="desktop-note" hidden>Open this page on your Android phone to install, or download here and transfer the file.</p>
+        <p class="platform-note" id="ios-note" hidden>CucoCare is currently Android only.</p>
+      </section>
+
+      <hr class="divider" style="margin-top: 24px;">
+
+      <section aria-labelledby="features-heading">
+        <h2 id="features-heading" class="section-title">What you get</h2>
+        <ul class="features">
+          <li class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M6 19V9l6-4 6 4v10M9 19v-5h6v5" stroke-linejoin="round"/></svg>
+            </span>
+            <p>Manage flocks and batches</p>
+          </li>
+          <li class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/></svg>
+            </span>
+            <p>Vaccination schedules</p>
+          </li>
+          <li class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4h10l1 4H6l1-4zM6 8h12v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8z" stroke-linejoin="round"/><path d="M9 12h6M9 16h4"/></svg>
+            </span>
+            <p>Farm records offline</p>
+          </li>
+          <li class="feature">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a8 8 0 1 0-8-8c0 2.5 1.2 3.8 3 5 .8.5 1.2 1.4 1.2 2.3V21h3.6" stroke-linejoin="round"/><circle cx="10" cy="10" r="1"/><circle cx="14" cy="10" r="1"/></svg>
+            </span>
+            <p>Request vet assistance</p>
+          </li>
+        </ul>
+      </section>
+
+      <hr class="divider" style="margin-top: 24px;">
+
+      <section aria-labelledby="install-heading">
+        <h2 id="install-heading" class="section-title">How to install</h2>
+        <ol class="steps">
+          <li class="step">
+            <span class="step-num" aria-hidden="true">1</span>
+            <div class="step-body">
+              <p>Tap Download for Android and open the file when it finishes.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">2</span>
+            <div class="step-body">
+              <p>If asked, allow your browser to install unknown apps.</p>
+              <details class="setting-details">
+                <summary>Where is this setting?</summary>
+                <p class="setting-path">Settings &gt; Apps &gt; Special access &gt; Install unknown apps</p>
+              </details>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">3</span>
+            <div class="step-body">
+              <p>Tap Install, then open CucoCare.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="callout" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3z" stroke-linejoin="round"/>
+            <path d="M12 11v4M12 8h.01" stroke-linecap="round"/>
+          </svg>
+          <p>If Google Play Protect shows a warning, choose Install anyway. CucoCare is shared directly, not through the Play Store.</p>
+        </div>
+        <p class="update-note">Updating? Download and install over the existing app. Your data is kept.</p>
+      </section>
+    </article>
+
+    <footer class="site-footer" id="footer">Android 7.0 or newer</footer>
+  </main>
+
+  <script src="config.js"></script>
+  <script>
+    (function () {
+      var cfg = window.APP_CONFIG || {};
+      var btn = document.getElementById("download-btn");
+      var label = document.getElementById("download-label");
+      var appName = document.getElementById("app-name");
+      var tagline = document.getElementById("tagline");
+      var versionLine = document.getElementById("version-line");
+      var releasedLine = document.getElementById("released-line");
+      var releasedSep = document.getElementById("released-sep");
+      var sizeLine = document.getElementById("size-line");
+      var sizeSep = document.getElementById("size-sep");
+      var footer = document.getElementById("footer");
+      var desktopNote = document.getElementById("desktop-note");
+      var iosNote = document.getElementById("ios-note");
+
+      if (cfg.APP_NAME) appName.textContent = cfg.APP_NAME;
+      if (cfg.TAGLINE) tagline.textContent = cfg.TAGLINE;
+      if (cfg.VERSION) versionLine.textContent = "Version " + cfg.VERSION;
+      if (cfg.RELEASED) {
+        releasedLine.textContent = "Released " + cfg.RELEASED;
+        releasedSep.hidden = false;
+      }
+      if (cfg.MIN_ANDROID) footer.textContent = "Android " + cfg.MIN_ANDROID + " or newer";
+
+      var owner = cfg.OWNER || "";
+      var repo = cfg.REPO || "";
+      var branch = cfg.BRANCH || "main";
+      var apkPath = cfg.APK_PATH || "apk/cucocare.apk";
+      // ?v= omitted: could not verify against this private repo's raw URL.
+      var href = "https://github.com/" + owner + "/" + repo + "/raw/" + branch + "/" + apkPath;
+
+      label.textContent = "Download for Android";
+      btn.setAttribute("href", href);
+      btn.removeAttribute("aria-disabled");
+
+      var ua = navigator.userAgent || "";
+      var isAndroid = /Android/i.test(ua);
+      var isIOS = /iPhone|iPad|iPod/i.test(ua);
+      if (isIOS) {
+        iosNote.hidden = false;
+        btn.classList.add("is-ios");
+      } else if (!isAndroid) {
+        desktopNote.hidden = false;
+      }
+
+      if (owner && repo && apkPath) {
+        var apiUrl =
+          "https://api.github.com/repos/" +
+          owner +
+          "/" +
+          repo +
+          "/contents/" +
+          apkPath +
+          "?ref=" +
+          encodeURIComponent(branch);
+
+        fetch(apiUrl)
+          .then(function (res) {
+            if (!res.ok) return null;
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || typeof data.size !== "number") return;
+            var mb = data.size / (1024 * 1024);
+            sizeLine.textContent = mb.toFixed(1) + " MB";
+            sizeSep.hidden = false;
+          })
+          .catch(function () {
+            /* size is best-effort; page works without it */
+          });
+      }
+    })();
+  </script>
+</body>
+</html>
