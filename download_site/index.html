@@ -72,9 +72,9 @@
           <span id="download-label">Loading…</span>
         </a>
         <noscript>
-          <!-- Keep this URL in sync with download_site/config.js (OWNER/REPO/BRANCH/APK_PATH). -->
+          <!-- Keep this URL in sync with download_site/config.js APK_URL. -->
           <p class="noscript-fallback">
-            <a class="download-btn" href="https://github.com/Afrah-create/CuckoCare/raw/main/apk/cucocare.apk">
+            <a class="download-btn" href="https://sqcybrqirdwcnhdljfwh.supabase.co/storage/v1/object/public/app-releases/android/CucoCare-1.0.0.apk?download=CucoCare.apk">
               Download for Android
             </a>
           </p>
@@ -82,7 +82,6 @@
         <p class="meta" id="meta">
           <span id="version-line"></span><span id="released-sep" hidden> · </span><span id="released-line"></span><span id="size-sep" hidden> · </span><span id="size-line"></span>
         </p>
-        <p class="platform-note" id="desktop-note" hidden>Open this page on your Android phone to install, or download here and transfer the file.</p>
         <p class="platform-note" id="ios-note" hidden>CucoCare is currently Android only.</p>
       </section>
 
@@ -186,15 +185,16 @@
       }
       if (cfg.MIN_ANDROID) footer.textContent = "Android " + cfg.MIN_ANDROID + " or newer";
 
-      var owner = cfg.OWNER || "";
-      var repo = cfg.REPO || "";
-      var branch = cfg.BRANCH || "main";
-      var apkPath = cfg.APK_PATH || "apk/cucocare.apk";
-      var href = "https://github.com/" + owner + "/" + repo + "/raw/" + branch + "/" + apkPath;
+      var apkUrl = cfg.APK_URL || "";
+      var href = apkUrl
+        ? apkUrl + (apkUrl.indexOf("?") >= 0 ? "&" : "?") + "download=CucoCare.apk"
+        : "#";
 
       label.textContent = "Download for Android";
       btn.setAttribute("href", href);
-      btn.removeAttribute("aria-disabled");
+      if (apkUrl) {
+        btn.removeAttribute("aria-disabled");
+      }
 
       var ua = navigator.userAgent || "";
       var isAndroid = /Android/i.test(ua);
@@ -206,26 +206,15 @@
         desktopNote.hidden = false;
       }
 
-      if (owner && repo && apkPath) {
-        var apiUrl =
-          "https://api.github.com/repos/" +
-          owner +
-          "/" +
-          repo +
-          "/contents/" +
-          apkPath +
-          "?ref=" +
-          encodeURIComponent(branch);
-
-        fetch(apiUrl)
+      if (apkUrl) {
+        fetch(apkUrl, { method: "HEAD" })
           .then(function (res) {
-            if (!res.ok) return null;
-            return res.json();
-          })
-          .then(function (data) {
-            if (!data || typeof data.size !== "number") return;
-            var mb = data.size / (1024 * 1024);
-            sizeLine.textContent = mb.toFixed(1) + " MB";
+            if (!res.ok) return;
+            var len = res.headers.get("content-length");
+            if (!len) return;
+            var bytes = parseInt(len, 10);
+            if (!bytes) return;
+            sizeLine.textContent = (bytes / (1024 * 1024)).toFixed(1) + " MB";
             sizeSep.hidden = false;
           })
           .catch(function () {

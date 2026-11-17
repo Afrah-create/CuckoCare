@@ -1,8 +1,5 @@
 window.APP_CONFIG = {
-  OWNER: "Afrah-create",
-  REPO: "CuckoCare",
-  BRANCH: "main",
-  APK_PATH: "apk/cucocare.apk",
+  APK_URL: "https://sqcybrqirdwcnhdljfwh.supabase.co/storage/v1/object/public/app-releases/android/CucoCare-1.0.0.apk",
   VERSION: "1.0.0",
   RELEASED: "17 Nov 2026",
   APP_NAME: "CucoCare",

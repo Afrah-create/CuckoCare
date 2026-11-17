@@ -1,49 +1,50 @@
-# Releasing CucoCare (APK download page)
+# Releasing CucoCare (APK + download page)
 
-Short guide for shipping a new Android build and updating the download page.
+Ship a new Android build, host it in Supabase Storage, and update the download page.
 
-## Steps
+## First-time setup (once)
 
-1. **Bump the version** in `pubspec.yaml` (`version: x.y.z+build`).
-   Raise the build number (the part after `+`) so Android treats it as an update.
+1. Open the Supabase SQL editor.
+2. Run `scripts/supabase_bucket_setup.sql`.
+   That creates the public bucket `app-releases`. Public reads are allowed; uploads use the **service-role key** from your laptop, not from the app.
 
-2. **Build and place the APK**:
+## Each release
+
+1. **Bump `version:` in `pubspec.yaml`** (`x.y.z+build`).
+   Raise the number after `+` so Android treats the file as an update.
+
+2. **Build with the correct flags** (prod flavor + dart-defines + phone ABIs only):
    ```bash
    ./scripts/publish_apk.sh
    ```
-   Optional: `./scripts/publish_apk.sh --universal` for a single fat APK (larger; easier to hit GitHub’s 100 MB limit).
+   Output: `build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk`
 
-3. **Update the download page config** in `download_site/config.js`:
-   - `VERSION` — e.g. `"1.0.1"`
-   - `RELEASED` — e.g. `"17 Nov 2026"`
-
-4. **Commit and push** (force-add the APK because `*.apk` is gitignored by default):
+3. **Install on a real phone over USB** and confirm **sign-in and sync** work **before** uploading:
    ```bash
-   git add -f apk/cucocare.apk download_site/config.js
-   git commit -m "Release vX.Y.Z"
-   git push
+   adb install -r build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk
    ```
 
-5. **Vercel** redeploys the download site automatically. The Download button still points at GitHub’s raw file URL, so users get the new APK from the repo after the push propagates.
+4. **Export secrets in this shell only** (never a file in the repo):
+   ```bash
+   export SUPABASE_URL="https://YOUR_PROJECT_REF.supabase.co"
+   export SUPABASE_SERVICE_ROLE_KEY="..."
+   ```
 
-## Deploy the download page
+5. **Upload:**
+   ```bash
+   ./scripts/upload_apk_supabase.sh
+   ```
+   It prints the public URL and the `APK_URL` / `VERSION` lines for the next step.
 
-### Vercel (recommended)
+6. **Edit `download_site/config.js`:** set `VERSION`, `RELEASED`, and `APK_URL`.
+   Then commit and push **`download_site/` only** (not the APK, not `.env`).
 
-1. Import this repository in Vercel.
-2. Set **Root Directory** to `download_site`.
-3. Set **Framework Preset** to **Other**.
-4. Leave **Build Command** and **Output Directory** empty.
-5. Deploy. Point your public download URL at this Vercel project.
-
-### GitHub Pages (alternative)
-
-GitHub Pages can only serve from the repo root or a `/docs` folder. This project keeps the site in `download_site/` so it does not collide with Flutter’s `web/` folder. To use Pages you would need to copy the contents of `download_site/` into `docs/` (and keep them in sync). Prefer Vercel to avoid that duplication. Do not add a Pages workflow unless you explicitly want one.
+7. Open the download page on a phone, tap Download, and install over the old version.
 
 ## Gotchas
 
-- The **repo must be public** for anonymous APK downloads via the GitHub raw URL.
-- Always **sign with the same keystore**, or Android will refuse the update over an existing install.
-- Each committed APK stays in **git history forever**; the repo grows with every release.
-- GitHub rejects files **over 100 MB**. Prefer `./scripts/publish_apk.sh` (split-per-ABI / arm64) over `--universal`.
-- After a push, the **raw download URL can take a minute or two** to reflect the new file.
+- Always **sign with the same keystore**, or Android refuses the update. Today release builds still use the **debug** keystore until you add a real `key.properties`.
+- The **service-role key is full access**. It never goes in the repo, the APK, `config.js`, or screenshots.
+- Check the **Supabase free-plan per-file limit** in Dashboard → Storage settings.
+- Old versions stay in the bucket (`android/CucoCare-<VERSION>.apk`). Delete unused objects from the dashboard if you want.
+- The Flutter app needs `SUPABASE_URL` and `SUPABASE_ANON_KEY` at **compile time** (`--dart-define-from-file=env/prod.json`). A release APK built without that file will install and then fail on launch.

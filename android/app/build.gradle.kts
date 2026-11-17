@@ -20,10 +20,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        // Phone ABIs only. Including x86_64 (emulators) makes a fat APK >100MB.
-        ndk {
-            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
-        }
+        // Do not set ndk.abiFilters here: --split-per-abi sets splits and Gradle
+        // errors if both are present. Phone-only ABIs are selected on the
+        // flutter CLI via --target-platform android-arm,android-arm64.
     }
 
     flavorDimensions += "env"
