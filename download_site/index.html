@@ -152,7 +152,7 @@
             <path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3z" stroke-linejoin="round"/>
             <path d="M12 11v4M12 8h.01" stroke-linecap="round"/>
           </svg>
-          <p>If Google Play Protect shows a warning, choose Install anyway. CucoCare is shared directly, not through the Play Store.</p>
+          <p>If Google Play Protect shows a warning, choose Install anyway.</p>
         </div>
       </section>
     </article>
@@ -190,7 +190,6 @@
       var repo = cfg.REPO || "";
       var branch = cfg.BRANCH || "main";
       var apkPath = cfg.APK_PATH || "apk/cucocare.apk";
-      // ?v= omitted: could not verify against this private repo's raw URL.
       var href = "https://github.com/" + owner + "/" + repo + "/raw/" + branch + "/" + apkPath;
 
       label.textContent = "Download for Android";
