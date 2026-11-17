@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# Release APKs under GitHub's 100MB file limit (split per ABI, no x86_64).
+
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

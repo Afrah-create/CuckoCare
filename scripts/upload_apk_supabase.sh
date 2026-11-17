@@ -1,13 +1,4 @@
-#!/usr/bin/env bash
-# Upload a built release APK to the public Supabase Storage bucket.
-#
-# Usage:
-#   ./scripts/upload_apk_supabase.sh
-#   ./scripts/upload_apk_supabase.sh --apk path/to.apk --version 1.0.1
-#
-# Reads SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from the environment, or
-# from the gitignored repo-root .env (same names). Never prints secrets.
-# Does not run git. Do not use set -x.
+
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

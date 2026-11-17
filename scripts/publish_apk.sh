@@ -16,8 +16,6 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
-# --target-platform must match android/app ndk abiFilters (no x86_64).
-# Otherwise Gradle fails: conflicting abiFilters vs splits.
 flutter build apk \
   --release \
   --flavor "$FLAVOR" \
